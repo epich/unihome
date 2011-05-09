@@ -1,0 +1,39 @@
+#! /bin/sh
+# Catenate search paths together, and output the resulting path.
+# Don't include any argument that is a sub-path of the entire path.
+#
+# Originally written for setting the PATH env var, this can be
+# used for similarly structured env vars such as LD_LIBRARY_PATH.
+#
+# These aliases may be made separately (using PATH as an example):
+#   alias append_path 'set path=( `$unihomeDir/scripts/addpaths_csh $path \!*` )'
+#   alias prepend_path 'set path=( `$unihomeDir/scripts/addpaths_csh \!* $path ` )'
+
+# set the path to something safe for the shell script
+PATH=/bin:/usr/bin:/local/bin:/local/tools/bin
+
+result=""
+while [ $# -gt 0 ]; do
+    case "${result}" in
+        *:$1:*|*:$1|$1:*|$1)
+	    ;;
+        "")
+	    result="$1"
+	    ;;
+        *)
+	    case "$1" in
+	        *:${result}:*|*:${result}|${result}:*|${result})
+		    result="$1"
+		    ;;
+	        "")
+		    ;;
+	        *)
+		    result="${result}:$1"
+		    ;;
+	    esac
+    esac
+    shift
+done
+#IFS=:
+echo ${result}
+

@@ -1,0 +1,6 @@
+[ui]
+username = epich
+# username = firstName lastName <me@here.com>
+[extensions]
+hgext.graphlog =
+
