@@ -10,8 +10,8 @@
 #       export unihomeDir <path>
 #       source $unihomeDir/rc/unihome.sh
 #   : If do not like dir colors (eg RHEL), 'cp /etc/DIR_COLORS ~/.dir_colors' and change 'DIR 01;34' to 'DIR 01;37'.
-#   : ln -s $unihomeDir/.vimrc ~
-#   : ln -s $unihomeDir/.hgrc ~
+#   : ln -s $unihomeDir/rc/.vimrc ~
+#   : ln -s $unihomeDir/rc/.hgrc ~
 
 echo "No op"
 
