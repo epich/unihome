@@ -25,6 +25,8 @@ set history=10000
 # Change how shell keeps command history
 set histdup erase
 set ignoreeof=1
+# Allow core files, sys default is 0.  No particular reason for chosen value.
+limit coredumpsize 50000
 
 #alias title 'echo -n "\033]0;\!*\007"'
 alias title 'echo -n "]2;\!*"'
