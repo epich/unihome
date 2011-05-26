@@ -37,18 +37,28 @@ set hostString=`hostname | sed 's/\..*$//'`
 #
 # To use cyan color prompt: [36m%}
 # To use yellow color prompt: [33m%}
-if ($?prompt) then
-  if (-o /bin/su ) then
-    set prompt = "$hostString : \!# "
-  else
-    if ($CLEARCASE_ROOT == 0 ) then
-      set ccroot = ""
-    else
-      set ccroot = " `basename $CLEARCASE_ROOT`"
-    endif
-  endif
-  set prompt = "%{\033[36m%}$hostString$ccroot %~ :%{\033[0m%} "
-endif
+#if ($?prompt) then
+#  if (-o /bin/su ) then
+#    set prompt = "$hostString : \!# "
+#  else
+#    if ($CLEARCASE_ROOT == 0 ) then
+#      set ccroot = ""
+#    else
+#      set ccroot = " `basename $CLEARCASE_ROOT`"
+#    endif
+#  endif
+#  set prompt = "%{\033[33m%}$hostString$ccroot %~ :%{\033[0m%} "
+#endif
+
+# Set prompt
+#
+# To use cyan color prompt: [36m%}
+# To use yellow color prompt: [33m%}
+alias setprompt 'set prompt="%{\033[33m%}`hostname` `pwd` :%{\033[0m%} "'
+setprompt
+alias cd 'chdir \!* && setprompt'
+alias pushd 'pushd \!* && setprompt'
+alias pushd 'pushd \!* && setprompt'
 
 alias cwdcmd title "$hostString : '`pwd`'"
 
