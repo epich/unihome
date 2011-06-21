@@ -64,7 +64,7 @@ alias cwdcmd title "$hostString : '`pwd`'"
 
 alias vim 'vim \!*; echo "Thanks for flying Vim"; cwdcmd'
 alias v 'vim'
-alias sa 'source $unihomeDir/rc/unihome.cshrc'
+alias sa 'source ~/.cshrc'
 alias ip '/sbin/ifconfig -a'
 alias skt 'netstat -anu -f inet'
 alias dt '/usr/dt/bin/dtterm'
@@ -75,11 +75,12 @@ alias l 'ls -lart1'
 alias fdate "date '+%Y%m%d_%H%M%S'"
 alias h history
 alias sv 'cleartool setview'
+alias p 'python'
 alias append_bin_path 'setenv PATH `$unihomeDir/scripts/addpaths_csh $PATH \!*`'
 alias prepend_bin_path 'setenv PATH `$unihomeDir/scripts/addpaths_csh \!* $PATH `'
 alias append_lib_path 'setenv LD_LIBRARY_PATH `$unihomeDir/scripts/addpaths_csh $LD_LIBRARY_PATH \!*`'
 alias prepend_lib_path 'setenv LD_LIBRARY_PATH `$unihomeDir/scripts/addpaths_csh \!* $LD_LIBRARY_PATH `'
 
 # Files of interest for opening up together in an editor.
-setenv unihomeFiles "README rc/unihome.sh rc/unihome.cshrc rc/.vimrc rc/.hgrc scripts/unihomeSetup.sh scripts/addpaths_csh scripts/open.pl"
+setenv unihomeFiles "$unihomeDir/README $unihomeDir/rc/unihome.sh $unihomeDir/rc/unihome.cshrc $unihomeDir/rc/.vimrc $unihomeDir/rc/.hgrc $unihomeDir/scripts/unihomeSetup.sh $unihomeDir/scripts/addpaths_csh $unihomeDir/scripts/open.pl"
 
