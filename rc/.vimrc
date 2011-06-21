@@ -1,3 +1,11 @@
+" Some notes on configuring jVi in NetBeans:
+"   Set ignorecase
+"   Mappings for:
+"       -
+"       ;
+"       '
+"   Bind Ctrl+[ to Esc
+
 " Make searches case insensitive, unless they contain upper case letters
 " Also, highlight the searches.
 set ignorecase
@@ -40,9 +48,24 @@ set textwidth=0 wrapmargin=0
 " /etc/vimrc undermines my .vimrc, so this corrects for it.
 autocmd BufRead *.txt set tw=0
 
+" smartindent doesn't work properly in python files
+autocmd BufRead *.py set nosmartindent
+
 " No beep
 set vb
 "set t_vb=
+
+" When typing '#' as the first character in a new line, the indent for
+" that line is removed, the '#' is put in the first column.  The indent
+" is restored for the next line.  If you don't want this, use this
+" mapping: ":inoremap # X^H#", where ^H is entered with CTRL-V CTRL-H.
+" When using the ">>" command, lines starting with '#' are not shifted
+" right.
+"
+" Note: I tried this to get # style comments to work properly with smartindent,
+" but with smartindent on or off, it doesn't behave quite right.  Instead I
+" ended up turning smartindent for Python.
+"inoremap # X#
 
 set laststatus=2
 " now set it up to change the status line based on mode
@@ -201,4 +224,9 @@ highlight Character ctermfg=white guifg=white term=none cterm=none gui=none
 highlight Number ctermfg=white guifg=white term=none cterm=none gui=none
 highlight Boolean ctermfg=white guifg=white term=none cterm=none gui=none
 highlight Float ctermfg=white guifg=white term=none cterm=none gui=none
+
+" XML syntax highlighting
+highlight xmlTag ctermfg=yellow
+highlight xmlTagName ctermfg=yellow
+highlight xmlEndTag ctermfg=yellow
 
