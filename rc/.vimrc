@@ -209,17 +209,16 @@ highlight cFloat ctermfg=white guifg=white term=none cterm=none gui=none
 highlight Character ctermfg=white guifg=white term=none cterm=none gui=none
 highlight cNumber ctermfg=white guifg=white term=none cterm=none gui=none
 highlight cppBoolean ctermfg=white guifg=white term=none cterm=none gui=none
-highlight cString ctermfg=white guifg=white term=none cterm=none gui=none
-highlight cType ctermfg=magenta guifg=magenta term=none cterm=none gui=none
+highlight cString ctermfg=magenta guifg=magenta term=none cterm=none gui=none
+highlight cType ctermfg=green guifg=green term=none cterm=none gui=none
 " Regretably, bool is lumped in with virtual, explicit, etc. in cppType instead of cType. Lame.
 highlight cppType ctermfg=green guifg=green term=none cterm=none gui=none
 highlight perlIdentifier ctermfg=white guifg=white term=none cterm=none gui=none
 
 highlight Todo ctermfg=blue guifg=blue ctermbg=black guibg=black term=none cterm=none gui=none
 
-highlight String ctermfg=white guifg=white term=none cterm=none gui=none
+highlight String ctermfg=magenta guifg=magenta term=none cterm=none gui=none
 highlight Constant ctermfg=white guifg=white term=none cterm=none gui=none
-highlight String ctermfg=white guifg=white term=none cterm=none gui=none
 highlight Character ctermfg=white guifg=white term=none cterm=none gui=none
 highlight Number ctermfg=white guifg=white term=none cterm=none gui=none
 highlight Boolean ctermfg=white guifg=white term=none cterm=none gui=none

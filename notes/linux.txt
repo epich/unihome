@@ -1,0 +1,135 @@
+SSH:
+    Enabled SSH HostbasedAuthorization in order to allow all users except root to SSH between hosts on the private network without the need for a user password.  For this to work with root, set up SSH keys for the user.
+
+    Set in /etc/ssh/sshd_config in order to prevent SSH timeouts:
+        TCPKeepAlive yes
+        ClientAliveInterval 0
+
+Firewall:
+    The iptables firewall on the ccgwrksn and dvswrksn allow only SSH over their Internet-facing NIC.  There are no restrictions between hosts on the private network.
+
+RPM repo mirror:
+    Using mrepo software, ccgwrksn is set up as a mirror of public RPM repositories, available only to hosts on the private network.
+
+    A sketch of steps to set up the mirror:
+        : Install mrepo RPM package.
+        : Place RHEL ISOs on the filesystem.
+        : Set up /etc/mrepo.conf .
+        : Create /etc/yum.repos.d/mine.repo .
+        : Set cron job to run mrepo -ugvvv during off hours, which updates the mirror.
+        : Turn httpd on and start it.
+
+    For the client to use the mirror, disable its existing repos under /etc/yum.repos.d/ (rename to a bogus extension) and place mine.repo there.  Thereafter the yum program will use RPMs on the mirror.
+
+    Occasionally there are conflicts where different versions of the same RPM are in different repos.  You can disable these as you encounter them in mrepo.conf, typically in the EPEL repo.
+
+    Look for guides on the Internet to fill in details of the above.
+
+AES EPICS setup:
+    See epics/README.aesEpicsSetupRhel5.txt and accompanying files.
+
+RTEMS boot services:
+    The MVME3100 VME module uses beamctrl as a bootup server.  It finds the dhcpd running on beamctrl to get its static IPv4 address and related configuration, and gets the boot image from an NFS share on beamctrl.  The README.rtemsBootServices.rhel5.txt contains the detailed notes.
+
+Installed software:
+    : In addition, should install RPMs: nvidia nmap mercurial
+    : Cisco VPN client
+        : Note that on the ccgwrksn, When disconnecting from the VPN client, it necessary to: sudo cp /etc/resolv.conf.mit /etc/resolv.conf .  Reason is that the dhclient overwrites the /etc/resolv.conf when it gets info from the Raytheon DHCP servers, but since we don't use DHCP for connectivity on the MIT network, we continue to point to Raytheon nameservers.
+    : Eclipse IDE
+    : Rational System Architect (TODO)
+    : wxWidgets
+        : We needed a newer version than an RPM is available for, so we installed wxWidgets 2.9.2 from source.
+        : Before building from source, be sure these are installed (not a complete dependency list):
+            : yum install GConf2 gstreamer gstreamer-plugins-base GConf2-devel gstreamer-devel gstreamer-plugins-base-devel
+        : We installed this on devsvr, ccgwrksn, dvswrksn .
+
+Performance tuning:
+    : In the BIOS, disable power management.. max speed, static high, disable asr
+        : power management options -> power profile -> max performance
+        : server availability -> ASR status -> disabled
+    : A lot of unused services are disabled and RPMs removed to improve performance.  This also fixes errors due to conflicts between MRG kernel and HP drivers.  See the server-changes.sh file for the list.
+
+Kickstart:
+    Kenneth created Kickstart configurations located at ccgwrksn:/repo/kickstart/ .  Some tweaking of these may be necessary if installing RHEL on a host.
+
+Linux configurations:
+    Changed /etc/DIR_COLORS.xterm DIR 00;34 to DIR 01;34 to get better contrasting colors for 'ls' command.
+
+    Additions to LD path:
+        /etc/ld.so.conf.d/usr-local.conf for /usr/local/lib .
+
+        This ensures a system will find the dynamic(shared) libs
+
+
+        /etc/ld.so.conf.d/isis.conf copied from /vobs/isis_sw/Devel/tools/scripts/isis.conf
+        for dynamic links to $ISIS_LIB_PATH/RCCE/ace.
+
+        Remember to update the LD path with: sudo /sbin/ldconfig
+
+        Caution:
+        /sbin/ldconfig update links to libraries only if they exist.
+        This means that if the $ISIS_LIB_PATH/RCCE/ace libs are not installed
+        when /sbin/ldconfig is run, they will not be found, even if they are installed
+        right after a run.
+
+        Whenever an isis component cores because missing an RCCE/ace lib do the
+        following:
+        1. Ensure the libs actually exist on this path $ISIS_LIB_PATH/RCCE/ace
+        2. run sudo /sbin/ldconfig
+
+        Use this command to verify that /usr/isis libs are being referenced
+         /sbin/ldconfig -p | grep isis
+         expect to see a lot of elements
+
+    Additions to environment:
+        : /etc/profile.d/isis.sh copied from /vobs/isis_sw/Devel/tools/scripts/isis.sh .
+        : /etc/profile.d/isis.csh copied from /vobs/isis_sw/Devel/tools/scripts/isis.csh .
+
+    Network:
+        : The ccgwrksn and dvswrksn have two NICs.  eth0 for the Internet and eth1 for the private network.
+        : For the hosts with two NICs, both of which reside on the 192.168.160/24 subnet, the following was added to /etc/sysconfig/network-scripts/route-eth1 :
+            GATEWAY0=192.168.160.1
+            NETMASK0=255.255.0.0
+            ADDRESS0=192.168.0.0
+            NETMASK1=240.0.0.0
+            ADDRESS1=224.0.0.0
+
+Error values on system:
+    cpp -dM /usr/include/errno.h | grep 'define E' | sort -n -k 3
+    perl -MPOSIX -e 'print strerror(13)."\n"'
+
+Zip files:
+    7za a -p<password> filename.zip filename
+    mv filename.zip filename.NOTzip
+    (Don't use .NOTzip when using 7za.)
+    To extract:
+    7za e filename.zip
+
+Convert files with spaces (more robust than simpler forms):
+    #!/bin/bash
+    ls | while read -r FILE
+    do
+        mv -v "$FILE" `echo $FILE | tr ' ' '_' `
+    done
+
+Debug symbol notes:
+    Post at 29th July 2009, 03:50 PM of http://nixcraft.com/linux-software/12412-segfault-error-4-a.html looks useful for using objdump and the segfault message in /var/log/messages to narrow down the problem.
+
+Interesting commands (RPMs in parans):
+    : cut
+    : df
+        : To get summary information about file system disk space: df -h
+    : du
+        : To get recursive information about disk size: du -s *
+    : dstat (dstat)
+    : locate (mlocate)
+    : netstat - Print network connections, routing tables, interface statistics, masquerade connections, and multicast memberships
+    : nmap
+        : To scan devices connected to the network: nmap -sP 192.168.128.0/24
+    : traceroute - print the route packets trace to network host
+    : wc
+    : /sbin/arp - manipulate the system ARP cache
+    : /sbin/ethtool - Display or change ethernet card settings
+    : /sbin/ifconfig
+    : /sbin/iptables - administration tool for IPv4 packet filtering and NAT
+

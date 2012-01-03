@@ -1,0 +1,16 @@
+Boost libs of interest:
+    Asio
+    Date Time
+    Exception
+    Filesystem
+    Interprocess
+    Pool
+    Program Options
+    Regex
+    Serialization
+    Smart Ptr
+    Test
+    Thread
+    Timer
+    Units (doesn't work with all compilers)
+

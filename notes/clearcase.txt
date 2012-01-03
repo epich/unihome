@@ -1,0 +1,32 @@
+To import files.  Use -preview if desired.
+    clearfsimport -preview -nsetevent -recurse -mklabel SORDS_CODE_DROP_20091203 -upd ~/sords/codeDeliveries/SORDS_Desktop_20091203/SORDS_Desktop/* /vobs/sords/Devel/Code/SORDS_Desktop | & tee import_`fdate`.txt
+
+Latest on a branch
+    ct find . -version "version(.../branch/LATEST)" -print
+
+To merge files.
+    Set view of versions to merge to.
+    ct findmerge . -c "Merge 20091203 scrubbed drop" -fversion ".../srnl_scrub/LATEST" -merge [or -print]
+
+Get a list of files that have changed amongst checkouts
+    cleartool lsco -r -cvi -fmt 'diff -options \"-hea\" -pred \"%n\"\n' | cleartool | grep '>>>'
+
+Make script executable when in source control
+    cleartool protect -chmod +x <file>
+
+Create ISIS view:
+    Karl:
+        /home/tools/bin/makeviews_netapp isis <view_name>
+        send me the view names you just created and I will make them available for export.
+
+Viewing mounting
+    : To get slpcc4's /view/<viewname> to appear, setview on the slpcc4 host.
+    : /etc/auto.view shows views that will mount
+    : On slpcc4 have superuser execute 'export_mvfs -a'
+
+Used the following to determine directory changes after date.
+    cleartool find . -version "brtype(main) && created_since(16-Feb.23:00)" -print
+
+Files added after a TimeDate:
+    cleartool find <vobtag> -version "{created_since(target-data-time)}" -print
+

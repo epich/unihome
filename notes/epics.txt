@@ -1,0 +1,156 @@
+: Install RTEMS cross toolchain RPMs
+
+http://www.rtems.org/ftp/pub/rtems/linux/4.9/redhat/el5/x86_64/
+
+Install:
+    rtems-4.9-yum-conf-0.20110805.1-1.el5.noarch.rpm
+    rtems-4.9-release-0.20110805.1-1.el5.noarch.rpm
+
+The rtems-4.9 repo was added to the set of RPM repo mirrors on ccgwrksn.  This involved roughly:
+    : Install the recommend RPMs.
+    : Use the installed RTEMS repo in /etc/yum.repos.d to find the URL for the mirror website.
+    : Disable the installed RTEMS repo.
+    : Edit the ccgwrksn:/etc/mrepo.conf .
+    : Edit the /etc/yum.repos.d/etwk-isis.repo and copy to each host.
+
+Then use the 'yum' utility to install:
+    rtems-4.9-powerpc-rtems4.9-gcc
+    rtems-4.9-powerpc-rtems4.9-gdb
+    rtems-4.9-powerpc-rtems4.9-gcc-c++
+and all their dependencies
+
+: Build RTEMS target OS images
+
+# install -d /opt/rtems/source
+# install -d /opt/rtems/build
+# cd /opt/rtems/source
+
+Download the following files in to /opt/rtems/source
+
+> http://epics.nsls2.bnl.gov/debian/pool/main/r/rtems/rtems_4.9.3-3.diff.gz
+> http://epics.nsls2.bnl.gov/debian/pool/main/r/rtems/rtems_4.9.3.orig.tar.gz
+> http://epics.nsls2.bnl.gov/debian/pool/main/r/rtems-cexp/rtems-cexp_2.0b-4.diff.gz
+> http://epics.nsls2.bnl.gov/debian/pool/main/r/rtems-cexp/rtems-cexp_2.0b.orig.tar.gz
+> http://epics.nsls2.bnl.gov/debian/pool/main/r/rtems-telnetd/rtems-telnetd_1.3-4.diff.gz
+> http://epics.nsls2.bnl.gov/debian/pool/main/r/rtems-telnetd/rtems-telnetd_1.3.orig.tar.gz
+> http://epics.nsls2.bnl.gov/debian/pool/main/r/rtems-libbspext/rtems-libbspext_1.5-7.diff.gz
+> http://epics.nsls2.bnl.gov/debian/pool/main/r/rtems-libbspext/rtems-libbspext_1.5.orig.tar.gz
+> http://epics.nsls2.bnl.gov/debian/pool/main/r/rtems-gesys/rtems-gesys_2.4-4.diff.gz
+> http://epics.nsls2.bnl.gov/debian/pool/main/r/rtems-gesys/rtems-gesys_2.4.orig.tar.gz
+> http://epics.nsls2.bnl.gov/debian/pool/main/r/rtems-gdbstub/rtems-gdbstub_1.5.orig.tar.gz
+> http://epics.nsls2.bnl.gov/debian/pool/main/r/rtems-gdbstub/rtems-gdbstub_1.5-5.diff.gz
+
+In the attached zip info copy rtems/*.sh to /opt/rtems/build
+
+# cd /opt/rtems/build
+# build-rtems.sh
+# build-libbspext.sh
+# build-cexp.sh
+# build-gdbstub.sh
+# build-telnetd.sh
+# build-gesys.sh
+
+When doing build-gesys.sh, you will get some alarming warnings.  They are ok; to verify it built correctly, check for the existence of: /opt/rtems/4.9/powerpc-rtems4.9/mvme3100/bin/rtems.boot .
+
+Copy the accompanying rtems.sh to /etc/profile.d/ .
+
+3) Build EPICS Base libraries
+
+Follow directions in README.clientEpicsSetupRhel5.txt and then return here.
+
+In EPICS Base, edit 'configure/CONFIG_SITE' and add the following lines
+
+> CROSS_COMPILER_TARGET_ARCHS+=$(EPICS_HOST_ARCH)-debug
+> CROSS_COMPILER_TARGET_ARCHS+=RTEMS-mvme2100
+> CROSS_COMPILER_TARGET_ARCHS+=RTEMS-mvme3100
+
+Edit 'configure/os/CONFIG_SITE.Common.RTEMS' and change the appropriate
+lines to read
+
+> RTEMS_VERSION=4.9
+> RTEMS_BASE=/opt/rtems/$(RTEMS_VERSION)
+> RTEMS_TOOLS=/opt/rtems-$(RTEMS_VERSION)
+
+Now run 'make'
+
+4) Building EPICS support modules
+
+Download the support modules from the BNL EPICS repository.
+Sites to get support modules:
+    : http://epics.nsls2.bnl.gov/debian/pool/ (check here first)
+    : http://www.aps.anl.gov/epics/
+    : http://www.aps.anl.gov/bcda/synApps/index.php
+
+areaDetectorR1-6.tgz
+asyn4-14.tar.gz
+autosave_R4-7.tar.gz
+busy_R1-3.tar.gz
+calc_R2-8.tar.gz
+channelarchiver_2.9.2+dfsg-10.diff.gz
+channelarchiver_2.9.2+dfsg.orig.tar.gz
+devIocStats-3.1.5.tar.gz
+devlib2-2.2.tar.gz
+edm_1.12.57-1.diff.gz
+edm_1.12.57.orig.tar.gz
+epics-extensions_20091204.1.tar.gz
+epics-msi_1.5-5.diff.gz
+epics-msi_1.5.orig.tar.gz
+mcaR6-12-2.tgz
+motorR6-5-2.tar.gz
+procserv_2.5.1.orig.tar.gz
+seq-2.0.12.tar.gz
+sscan_R2-6-6.tar.gz
+std_R2-8.tar.gz
+StreamDevice-2.tgz
+
+
+Create a directory for each module.
+    export modules="areaDetector asyn autosave busy calc channelarchiver devIocStats devlib2 edm epics-extensions epics-msi mca motor procserv seq sscan std StreamDevice"
+Unpack each tar (*.orig.tar.gz) and rename to eg
+/ope/epics/areaDetector/1-6.  Create a symlink to 'current'.
+
+Apply any patches (*.diff.gz), as listed above or in accompanying this document.
+
+Building a support module involves editing each 'configure/RELEASE' file
+to set the location of all of the modules it depends on.  All modules
+will have "EPICS_BASE=/opt/epics/base/current".
+
+For EPICS extensions, you need to (using epics-msi for example):
+    ln -s /opt/epics/epics-extensions/current/configure /opt/epics/epics-msi/current/configure
+    ln -s /opt/epics/epics-msi/current/bin/linux-x86_64/msi /opt/epics/epics-extensions/current/bin/linux-x86_64/msi
+
+The support modules have interdependencies that constrain the order you build them.  Here's one possible sequence to build and notes.
+    autosave
+    ipac
+    seq
+    asyn
+    busy
+    sscan
+    calc
+    epics-msi (extension)
+    devIocStats
+    devlib2
+    motor
+    std
+    mca
+    areaDetector
+        : Added to CONFIG file:
+            CROSS_COMPILER_TARGET_ARCHS:=
+        : In ADApp/Makefile comment out the line DIRS += apex2Src
+    procserv
+        Install RPMs: asciidoc
+    StreamDevice
+        Need to apply Michael's patches 19-20, and maybe 21.
+        Need to edit streamApp/Makefile and uncomment:
+            PROD_LIBS += sscan
+    edm (extensions)
+        Install RPMs: openmotif-devel .
+        Fails to find /usr/lib/libXm.a , /usr/lib64/libXm.a exists -- need to resolve this.
+        For the additional steps to build EDM see:
+            http://ics-web.sns.ornl.gov/edm/edmUserManual/index.html
+    channelarchiver (extensions)
+        Install RPMs: xerces-c-devel xmlrpc-c-devel
+        Need Michael Davidsaver's patch 11 for an issue.
+        For the additional steps to build the Channel Archiver see:
+            http://www.slac.stanford.edu/grp/lcls/controls/global/sw/epics/extensions/ChannelArchiver/manual.pdf
+

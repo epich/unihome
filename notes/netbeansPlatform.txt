@@ -1,0 +1,131 @@
+Notes on NetBeans Platform:
+    : FAQ of interest: "Common calls that should be done slightly differently in NetBeans than standard Swing apps (loading images, localized strings, showing dialogs)"
+        *  Loading images - Don't use ImageIO.read() or Toolkit.loadImage()  - instead, use ImageUtilities.loadImage() - it has an optimized image caching strategy, and will play nicely with NetBeans module class loaders
+        * Creating icons from images - Rather than use new ImageIcon(someImage), use ImageUtilities.image2Icon(someImage) which manages memory better.
+        * Loading resource bundles/localized strings - Don't use ResourceBundle directly - instead, use NbBundle.getMessage() - it will play nicely with NetBeans class loaders, and Strings resolved this way can be branded using the standard branding mechanism (this is the way you change the title of your application from "NetBeans" to something else). Also, do not hold a reference to a resource bundle - just call NbBundle.getMessage() every time - bundles are cached for a period of time, the call is fast. In a large application, holding resource bundles eats memory wastefully
+        * Assigning mnemonics to labels and buttons - use Mnemonics to assign text and mnemonic to a widget with one call using one key value pair in properties file and annotate the mnemonic with & character. Also do not reuse the same text if it is used in different UI components. This is more freindly to localization.
+        Tip: Check 'Generate Mnemonics Code' checkbox in properties of your form if you are using NetBeans GUI editing support.
+        * Showing dialogs - instead of creating a JDialog and showing it, or using JOptionPane, use NotifyDescriptor or DialogDescriptor to define your dialog and its contents, then pass these to DialogDisplayer.notify - such dialogs will play nicely with NetBeans' windowing system, global actions, etc.
+        * Reading/writing/listing files - in most cases, rather than work with java.io.File, you will want to work with org.openide.filesystems.FileObject.
+
+Description of the SordsDesktopApp as relevant to a SW engineer (version 2.2):
+
+Summary:
+
+    The SordsDesktopApp is the SORDS GUI.  It runs on Microsoft Windows on a touch screen laptop on the SORDS truck.  It is the second generation of the SORDS GUI, with the obsolete SORDS_Desktop being the first.  It is based on the "NetBeans Platform" which is the collective term for Java APIs that provide RCP (Rich Client Platform) functionality.  The NetBeans IDE is notably also based on the NetBeans Platform.  The SORDS_Desktop was ported to the SordsDesktopApp with the Swing components mostly the same but with other code reworked to fit within the NetBeans Platform's modular framework.
+
+Implementation overview:
+
+    The NetBeans Platform enforces decoupling through division of code into modules.  A description of the modules of the SordsDesktopApp are provided here.  First, as a matter of naming conventions: modules of the form *View generally manage a window in the GUI; modules of the form *Svc are used by more than one higher level module.  When one module A needs to invoke another module B, it generally uses a third *Svc module to do so, with the *Svc module using the NetBeans Platform's Lookup API to decouple the interaction.
+
+    Modules have to explicitly declare dependancies on each other.  They also have to explicitly make their packages public before another module can declare dependancy on it.  Both of these functions are accessible by right clicking the module, selecting properties, in "Libraries" and "API Versioning".
+
+    Modules:
+
+        AlertSvc:
+            Any module that needs to raise an alert uses the services provided by this module.  It provides the Java interface AlertIntf so as any class that implements it can be treated as an alert.  The two classes that implement this are the GeneralAlert and ScanReport.
+
+        AlertsView:
+            Registers a listener with the AlertSvc so as to process and display raised alerts in the Alerts window.
+
+        Brand:
+            Provides modifications related to "branding".  This includes the About box accessed via the Help menu and layer file modifications to hide unnecessary menus and toolbars provided by default when using the NetBeans Platform.
+
+        CameraView:
+            Displays the Camera window.
+
+        Common:
+            Contains common datatypes, utilities, message definitions, and resources.
+
+        CommunicationsMgmt:
+            Provides the code to manage socket connections.  Uses the CommunicationsSvc to pass incoming messages to other modules and registers listeners with the CommunicationsSvc as a means to allow other modules to send outgoing messages.
+
+        CommunicationsSvc:
+            Any module that needs to process data received over socket connections can register a listener with this module.  If a module needs to send a message it uses this same service.
+
+        DayLogEditor:
+            Displays the Day Log editor window.
+
+        ManualSwTest:
+            When the dcpTestEnabled property is true, this module contributes the "Test" menu for purposes of testing the SordsDesktopApp as a standalone app.  In the deployed SW this module is still present but is inconsequential since the dcpTestEnabled property will be false.
+
+        MapView:
+            This view shows the map upon which data about the SORDS mission is visualized geospatially.  It uses the NASA WWJ (World Wind Java) SDK, an open source GIS SDK similar to Google Earth, but with a more permissive license.  The map images WWJ deals with by default also have permissive licensing.
+
+        MigLayoutWrapper:
+            The visual GUI builder in NetBeans is, frankly, crap.  The MIG Layout is a widely used third party alternative API for laying out GUI components programmatically rather than visually.  This module is a wrapper for this third party .jar file.  Modules that use the MIG Layout declare a dependancy on this module in order to use it.  Though the MIG Layout is only partially in use in the SordsDesktopApp, we should move towards using it more, on an as-needed basis.  If you're new to MIG Layout be sure to download the Cheat Sheet on the official website.
+
+        NavigationView:
+            Displays the navigation compass and GPS information.
+
+        ScanReportSvc:
+            Provides the ScanReport class encapsulating Scan Reports, and also provides the Lookup to allow the AlertsView to pass ScanReport objects to the ScanReportView.
+
+        ScanReportView:
+            Manages the display of ScanReport objects, one Scan Report per window tab.  The ScanReportMgr is a singleton which manages the Scan Reports while the ScanReportTopComponent is the top level component for each Scan Report.  The ScanReportPanel is the sole child component of the ScanReportTopComponent and displays the ScanReport.  The ScanReportMgr receives ScanReport objects when they first come in on the socket, but merely raises the alert.  If selected via the AlertsView, the AlertsView passes the Scan Report object back to the ScanReportMgr via a Lookup contained in the ScanReportSvc module.  At that point the ScanReportView opens up the window tab to display it.
+
+        ShadowView:
+            Displays the Shadow Detection window.
+
+        StatusView:
+            Displays the Status window.  This module processes quite a few of the messages the SordsDesktopApp receives.
+
+        TaskMgmt:
+            The TaskMgmt handles high level processing for the SordsDesktopApp.  It (primarily the module's TaskMgr class) manages startup and shutdown processing, including management of the sockets via the CommunicationsMgmt module.  The DynFileSystem class allows for dynamic alteration of the virtual file system which the NetBeans Platform provides.  The TaskMgmt also implements the Action classes invoked when menu items are selected.
+
+        UnitTestSvc:
+            A module upon which unit tests can depend upon for common services.
+
+        WorldWindWrapper:
+            Wraps the third party libs necessary to run the NASA WWJ SDK code.  This includes principally JOGL and WWJ.  Library types include .jar, .dll for Windows, and .so for Linux.  Note however that I have not tested the SordsDesktopApp on Linux.
+
+    The ANT build scripts are mostly auto generated by NetBeans.  The only notable alteration Barry made to the build scripts is in the Common module's build.xml, which copies properties files into the installation so as they will reside outside of .jar files to allow editting in the field.
+
+Building and running:
+
+    To build the SordsDesktopApp, open up the SordsDesktopApp project in the NetBeans IDE.  Write permissions may be necessary on some files.  The "Location" property should be set to "Tewks" when running from the IDE.  Build and run the SordsDesktopApp from within the NetBeans IDE.
+
+Notable files:
+
+    Notable files when in the IDE:
+        : <projectDir> is /vobs/sords/Devel/Code/SordsDesktopApp
+        : <userDir> is <projectDir>/build/testuserdir and has the same directory structure as the <userDir> in the deployed environment.
+        : Where you change command line arguments: <projectDir>/nbproject/project.properties
+        : Where you change SORDS properties, including logging levels: <projectDir>/Common/src/com/raytheon/sords/common/resources/properties/*.Properties
+        : Location of log file: <userDir>/var/log/SordsDesktopApp.<time_date>.log
+    Notable files when in the deployed environment:
+        : <installDir> is whereever the sordsdesktopapp.zip file is unzipped to.
+        : <userDir> is C:\Documents and Settings\<user>\Application Data\.sordsdesktopapp\dev and has the same directory structure as the <userDir> in the IDE.
+        : The bin that runs the app: <installDir>\bin\sordsdesktopapp.exe
+        : Where you change command line arguments: <installDir>\etc\sordsdesktopapp.conf
+        : Where you change SORDS properties, including logging levels: <installDir>\sordsdesktopapp\config\Adaptation\*.Properties
+        : Location of log file: <userDir>\var\log\SordsDesktopApp.<time_date>.log
+
+Version control:
+    This software is version controlled with Mercurial.  There are a couple of central repositories:
+        : etwk-sords-dev:/home2/mercurial/sords_dvp (or use the symbolic link /sords_dvp)
+        : (on the truck):TBD
+    To make source code changes:
+        hg clone /sords_dvp <your_dir>
+        cd <your_dir>
+        [make changes]
+        hg commit
+        hg push /sords_dvp
+    Mercurial newbies can reference http://mercurial.selenic.com/wiki/BeginnersGuides .
+
+How to deploy the SW from the IDE.
+
+    : Right click the SordsDesktopApp project in the NetBeans IDE and select "Build ZIP Distribution"
+    : sordsdesktopapp.zip is placed in the SordsDesktopApp/dist directory.
+    : Unzip to the directory of your choice, most likely where previous versions are installed.
+    : Open <installDir>\sordsdesktopapp\config\Adaptation\Sords.Properties.Location.Properties and change if necessary.  "Default" is used on the truck.
+    : The .exe is at <installDir>\bin\sordsdesktopapp.exe .  Right click and "Send To" the "Desktop (create shortcut)".
+
+    Note that the old SORDS_Desktop GUI (version 1.0b) had an additional step to copy the resources directory.  That is no longer necessary because the ANT script copies the .properties files to <installDir>\sordsdesktopapp\config\Adaptation\ .  Other resources such as images and sound files are accessed via their .jar files.
+
+How to prepare for a demo:
+    : Prepare offline map cache
+        The SORDS laptop on the truck is offline, and as such the GIS (Geographic Information System) we use, NASA WWJ (World Wind Java) SDK, cannot retrieve map tiles from the Internet.  Our current approach is to download a cache of map tiles and then copy it to the laptop.  The cache directory is located at: C:\Documents and Settings\All Users\Application Data\WorldWindData\ .  If I recall correctly, the laptop has something on the order of 30GiB of free space.  There are a couple ways to download map tiles:
+        : (Recommended): The NASA WWJ SDK comes with example executable code.  One of these is BulkDownload.java.  When you run this you can select a box region and the map layers you want to download.  It tells you how much memory the download is as you make your selections.
+        : You can use any WWJ program (this SordsDesktopApp or any of the online examples) to view maps.  Whichever map tiles it downloads for you are placed in your cache.
+

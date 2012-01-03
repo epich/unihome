@@ -1,0 +1,20 @@
+These notes cover getting Ubuntu Linux working in a virtual machine on Windows Xp and networking correctly.
+
+: Download and install Oracle VirtualBox.
+: Get the .iso for the Ubuntu version you want.  (scp from etwk-sords-dev:~oreillb/sords/downloads/ubuntu-10.04.2-desktop-i386.iso or download from the Ubuntu website.)
+: In VirtualBox, create a new VM for Ubuntu.  Put the Ubuntu .iso in the VM's CD ROM drive (virtually not literally).  Install Ubuntu on the VM.  There are plenty of online guides for this whole process.
+: Remove the .iso and virtually put in the C:\Program Files\Oracle\VirtualBox\VBoxGuestAdditions.iso .  Ubuntu automounts it and you can then install VBoxGuestAdditions.
+: DNS does not work correctly out of the box on the Raytheon network.  A fix is to add a line to /etc/dhcp3/dhclient.conf :
+        append domain-search " twk.us.ray.com";
+You'll have to restart the dhclient (or just reboot Ubuntu).
+: To communicate outside the Raytheon network, set the proxy server to: bos-proxy.ext.ray.com:80 .  This is necessary for firefox or apt-get to work, for example.  See http://www.ubuntugeek.com/how-to-configure-ubuntu-desktop-to-use-your-proxy-server.html for a list of the various places you might need to set this.
+: Per VirtualBox documentation ( http://www.virtualbox.org/manual/ch04.html ) you should:
+    : sudo apt-get update
+    : sudo apt-get upgrade
+    : sudo apt-get install dkms
+    : reboot
+: I recommend setting up a shared folder which the host (Windows) and the guest (Ubuntu) can share.  Create the dir in Windows, then Ubuntu's VirtualBox menu -> Device -> Shared Folders... .  I allow write perms, select automounting, and make permanent.  Then add user to the vboxsf group.  Reboot Ubuntu and find the folders under /media/ .  Note: It works just fine to make VirtualBox shared folders out of Samba shares mapped to a network drive on the Windows host.  (This would be an alternative to making the Ubuntu guest an NFS client.)
+: I recommend setting VirtualBox window to "seamless" mode.
+: I recommend adding the terminal to the launch panel.
+
+

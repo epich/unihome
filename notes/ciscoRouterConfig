@@ -1,0 +1,160 @@
+myrouter#sho run
+Building configuration...
+
+Current configuration : 4184 bytes
+!
+! Last configuration change at 16:15:30 PCTime Wed Sep 14 2011 by boreilly
+!
+version 15.0
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname myrouter
+!
+boot-start-marker
+boot-end-marker
+!
+logging buffered 51200 warnings
+!
+aaa new-model
+!
+!
+aaa authentication login default local
+aaa authorization console
+aaa authorization exec default local
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone PCTime -5
+clock summer-time PCTime date Apr 6 2003 2:00 Oct 26 2003 2:00
+!
+no ipv6 cef
+ip source-route
+ip cef
+!
+!
+!
+!
+ip domain name mydomain.com
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+username admin privilege 15 secret 5 $1$xYdm$/vElJUpJp/b8Wx2QHr7Zc/
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ description rack1switch
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ no mop enabled
+!
+interface GigabitEthernet0/1
+ description rack2switches
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ no mop enabled
+!
+interface GigabitEthernet0/2
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ no mop enabled
+!
+interface FastEthernet1/0
+ description 148 network via radio
+ switchport access vlan 148
+ switchport mode trunk
+!
+interface FastEthernet1/1
+ description 160 network via radio
+ switchport access vlan 160
+ switchport mode trunk
+!
+interface FastEthernet1/2
+ description 128 network
+ switchport access vlan 128
+ switchport mode trunk
+!
+interface FastEthernet1/3
+ description 130 network
+ switchport access vlan 130
+ switchport mode trunk
+!
+interface FastEthernet1/4
+!
+interface FastEthernet1/5
+!
+interface FastEthernet1/6
+!
+interface FastEthernet1/7
+!
+interface FastEthernet1/8
+!
+interface FastEthernet1/9
+!
+interface FastEthernet1/10
+!
+interface FastEthernet1/11
+!
+interface FastEthernet1/12
+!
+interface FastEthernet1/13
+!
+interface FastEthernet1/14
+!
+interface FastEthernet1/15
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan128
+ ip address 192.168.128.1 255.255.255.0
+!
+interface Vlan130
+ ip address 192.168.130.1 255.255.255.0
+!
+interface Vlan148
+ ip address 192.168.148.1 255.255.255.0
+!
+interface Vlan160
+ ip address 192.168.160.1 255.255.255.0
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ logging synchronous
+ transport input ssh
+!
+scheduler allocate 20000 1000
+end
+
+

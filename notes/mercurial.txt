@@ -1,0 +1,26 @@
+Use Mercurial hooks to:
+    : Backup to Clearcase
+    : Propogate to the Raytheon FTP server.
+    : See http://hgbook.red-bean.com/read/handling-repository-events-with-hooks.html , hooks of interest:
+        : changegroup: This is run after a group of changesets has been brought into the repository from elsewhere. No comments
+        : commit: This is run after a new changeset has been created in the local repository. No comments
+
+Merge notes:
+    : Personally, I need to see files changed first for both lines of development.  The simplest way I can find to do this is:
+        : Determine most recent command predecessor revision (referred to here as predRev): hg merge -P | grep parent: | head -1
+        : Determine heads you're merging with 'hg heads' (referred to here as dstRev and srcRev).
+            : I find the return from 'hg parents' yields dstRev
+            : I find the return from 'hg log --rev tip' yields srcRev.
+            : 'hg heads -r predRev' can narrow the results, but isn't necessary.
+            : Really just need to look at the heads that are on the same branch, as listed in 'hg heads'.
+        : Get set of files changed:
+            hg status --rev predRev:dstRev
+            hg status --rev predRev:srcRev
+        : To view the intersection of files changed:
+            hg status -n --rev predRev:dstRev | sort > /tmp/dstFiles
+            hg status -n --rev predRev:srcRev | sort > /tmp/srcFiles
+            comm -12 /tmp/dstFiles /tmp/srcFiles
+    : Ways to view file diff between rev A and B of FILE:
+        : hg diff --rev A:B FILE
+        : diffuse -r A -r B FILE
+
