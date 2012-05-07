@@ -17,11 +17,17 @@ set nocompatible
 
 " Indent policy
 set autoindent
-set smartindent
-set tabstop=4
-set shiftwidth=4
+set nosmartindent
+set tabstop=3
+set shiftwidth=3
 set expandtab
-set softtabstop=4
+set softtabstop=3
+set autoread
+
+" When cursor is moved, the timestamp of the file is checked and 
+" if it changed the changes are loaded in.
+"source ~/unihome/rc/WatchForChanges.vimrc
+"WatchForChanges!
 
 set matchpairs +=<:> " % command matches angle brackets now.
 
@@ -107,30 +113,40 @@ map <Space-Enter> k
 map <Shift-Space> k
 map <C-Enter> k
 
+" vimdiff related
+map <C-h> <C-w><Left>
+map <C-l> <C-w><Right>
+
 " More mappings.
-map J j<C-E>
-map K k<C-Y>
 "map q i<Space><Esc>l%a<Space><Esc>h%h " Add spaces inside parens when cursor is on the right paren.
 "map Q hx%lxh%h " Take away spaces inside parens when cursor is on the right paren.
 noremap o :n<Enter>
 noremap O :N<Enter>
+noremap \ :w<Enter>
 map zl zL
 map zh zH
 map zzztr :1,$s/\([0-9]\{10,10\}\)\([0-9]\{3,3\}\)\([0-9]\{3,3\}\)\([0-9]\{3,3\}\)/\1\.\2_\3_\4/g<Enter>
 noremap M M0
 noremap L L0
 noremap H H0
+"noremap n nzz
+"noremap N Nzz
 
 " Buggy Putty only allows customization of F1 through F4.
 imap <F1> // TODO: temporary for debug
 " This displays the syntax group for setting in one's .vimrc file.
 map <F1> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">" . " FG:" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"fg#")<CR>
-map <F2> :set autoindent smartindent<Enter>
+map <F2> :set autoindent<Enter>
 imap <F2> <Esc>:set noautoindent nosmartindent<Enter>a
 "imap <F2> printf( // TODO: temporary for debug<Enter><Tab><Tab><Tab>""<Enter>"\n" );<Esc>ki
 "imap <F3> std::cout << "" << std::endl; // TODO: temporary for debug<Esc>BBBBBBa
-imap <F3> COE_LOG( LM_EMERGENCY, <Enter><Tab><Tab><Tab>""<Enter>"\n" ); // TODO: temporary for debug<Esc>ki
-imap <F4> SORDS_Logger.getInstance().Log( SystemAlertLevel.DEBUG, // TODO: temporary for debug<Enter><Tab><Tab><Tab>"" );<Esc>3hi
+"imap <F3> COE_LOG( LM_EMERGENCY, <Enter><Tab><Tab><Tab>""<Enter>"\n" ); // TODO: temporary for debug<Esc>ki
+imap <F3> org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // TODO: temporary for debug<Enter><Tab><Tab><Tab>"DEBUG: ",<Enter>new Object[]{} );<Esc>khi
+"TODO: This causes cores for some reason.
+"imap <F4> fprintf( stdout, // TODO: temporary for debug<Enter><Tab><Tab><Tab>"%s:%s:%s: "<Enter>"\n", __FILE__, __LINE__, __PRETTY_FUNCTION__ ); fflush(stdout); <Esc>ki
+" This is for use in debugging isis-lanl code.  When in the RTN process, we use stdout and within the readout process stderr.  Annoying: yes.
+imap <F4> fprintf( stderr, // TODO: temporary for debug<Enter><Tab><Tab><Tab>"DEBUG: "<Enter>"\n" ); fflush(stderr); fflush(stdout); <Esc>ki
+"imap <F4> SORDS_Logger.getInstance().Log( SystemAlertLevel.DEBUG, // TODO: temporary for debug<Enter><Tab><Tab><Tab>"" );<Esc>3hi
 "map <F9> :set autoindent smartindent<Enter>
 "imap <F9> :set noautoindent nosmartindent<Enter>
 
@@ -196,6 +212,8 @@ else
   let &t_Sf="\<Esc>[3%dm"
   let &t_Sb="\<Esc>[4%dm"
 endif
+
+runtime macros/matchit.vim
 
 " Colors
 set background=dark

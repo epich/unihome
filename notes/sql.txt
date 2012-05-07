@@ -1,0 +1,9 @@
+# List tables
+   select * from dba_tables; 
+   select * from all_tables;
+   select * from user_tables;
+
+sqlplus:
+   Non interactive:
+      echo exit | sqlplus
+

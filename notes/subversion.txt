@@ -1,0 +1,9 @@
+Sparse checkouts ( http://stackoverflow.com/questions/50945/can-you-do-a-partial-checkout-with-subversion ):
+   svn checkout --depth empty $svnuri proj
+   svn update --set-depth infinity proj/foo
+   svn update --set-depth infinity proj/bar
+   svn update --set-depth infinity proj/baz
+
+Get filelist:
+   svn list -R $svnuri/trunk/
+

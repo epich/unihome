@@ -30,3 +30,62 @@ Used the following to determine directory changes after date.
 Files added after a TimeDate:
     cleartool find <vobtag> -version "{created_since(target-data-time)}" -print
 
+Snapshot view privates:
+    cleartool ls -recurse -view_only | grep -v CHECKEDOUT
+    ct ls -r -vie
+
+Create view:
+    ct mkview -tag path-for-view
+
+
+
+
+
+
+
+
+
+
+Clearcase general discussion:
+   Centralization:
+      Clearcase implements centralized version control, an approach that is fast becoming obsolete in the industry.  Centralization means that there is a server that contains most of the information about version control.  A disconnect from the server means you're holding a raw source tree with little ability to extract version control information.
+   Views:
+      Clearcase offers views of the source code.  A view has a config spec which specifies which versions of files to look at.  
+      
+      You should use a snapshot view.  If you're skeptical about this recommendation, here's a rundown of reasons:
+         Why not to use dynamic view:
+            : If you become disconnected, you're out of action.  Full stop.  At least with snapshot views you can work with the source tree, albeit without versioning capability.
+            : Clearcase serves the source tree over the network, which could affect performance.
+            : When using a timestamp based build system (as we do on GOES-R), Clearcase can undermine the build by changing file timestamps backwards in time.  It may do this when you change your config spec to look at a previous version, or if you undo a checkout.  A build clean is one workaround.
+         Why not to use CCRC:
+            : You cannot use the cleartool command line tool.  However nice the Eclipse integration is, this is fatally restricting.  If you don't use the command line, those who would try to help you might.
+            
+Clearcase workflows:
+   Getting set up to look at code:
+      Create view:
+         ct mkview -snapshot <descriptive_string>
+      If error, try: sudo ccmount
+      Note: view name is <username>_<descriptive_string>
+      Create a config spec.
+         ct edcs
+
+
+
+
+Clearcase workflows:
+   Getting set up to look at code:
+      ct mkview -tag 
+
+
+Clearcase workflows:
+   Merging down (from a baseline to your development branch):
+      You may use your development view.  Undoing all your checkouts may make the merge easier to manage.
+      To show all your checkouts:
+         ct lsco -cvi -a
+      Because we branch directories, findmerge requires that directories merge before you can fully see files to merge.
+         ct findmerge . -nc -fversion ".../pg_element_int/LATEST" -type d -merge
+      The directories are now merged in checkouts.
+      Now get a preview of files to merge.
+         ct findmerge . -nc -fversion ".../pg_element_int/LATEST" -print > /tmp/mergelist
+
+

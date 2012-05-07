@@ -1,0 +1,78 @@
+# etwk-isis-dev Repository
+#
+# Last update 11/29/10 Ken Pratte
+#
+# v1.0- Redhat only
+#
+[etwk-isis-os]
+name=RHEL5 Server OS Base
+baseurl=http://192.168.160.5/mrepo/rhel5server-$basearch/RPMS.os
+enabled=1
+gpgkey=http://192.168.160.5/keys/RPM-GPG-KEY-redhat-release
+gpgcheck=1
+proxy=_none_
+
+[etwk-isis-updates]
+name=RHEL5 Server Updates
+baseurl=http://192.168.160.5/mrepo/rhel5server-$basearch/RPMS.updates
+enabled=1
+gpgkey=http://192.168.160.5/keys/RPM-GPG-KEY-redhat-release
+gpgcheck=1
+proxy=_none_
+
+[etwk-isis-mrg]
+name=MRG CD packages
+baseurl=http://192.168.160.5/mrepo/rhel5server-$basearch/RPMS.mrg
+enabled=1
+gpgkey=http://192.168.160.5/keys/RPM-GPG-KEY-redhat-release
+gpgcheck=1
+proxy=_none_
+
+[etwk-isis-mrg-srpms]
+name=MRG SRPMS CD packages
+baseurl=http://192.168.160.5/mrepo/rhel5server-$basearch/RPMS.mrg-srpms
+enabled=1
+gpgkey=http://192.168.160.5/keys/RPM-GPG-KEY-redhat-release
+gpgcheck=1
+proxy=_none_
+
+
+[etwk-isis-dev-custom]
+name=etwk-isis-dev Samba offical repo $releasever - $basearch
+baseurl=http://192.168.160.5/mrepo/rhel5server-$basearch/RPMS.custom
+enabled=1
+gpgcheck=0
+proxy=_none_
+
+[etwk-isis-epel]
+name=Etwk-repo EPEL repo $basearch
+baseurl=http://192.168.160.5/mrepo/rhel5server-$basearch/RPMS.epel
+enabled=1
+exclude=libdvdread* libdvdnav*
+gpgcheck=0
+priority=10
+proxy=_none_
+
+[etwk-isis-rpmforge]
+name=Etwk-repo EPEL repo $basearch
+baseurl=http://192.168.160.5/mrepo/rhel5server-$basearch/RPMS.rpmforge
+enabled=1
+gpgcheck=0
+priority=10
+proxy=_none_
+
+[etwk-isis-samba]
+name=Etwk-repo Samba repo $basearch
+baseurl=http://192.168.160.5/mrepo/rhel5server-$basearch/RPMS.samba
+enabled=1
+gpgcheck=0
+priority=10
+proxy=_none_
+
+[etwk-isis-ramblings]
+name=Etwk-repo Ramblings repo $basearch
+baseurl=http://192.168.160.5/mrepo/rhel5server-$basearch/RPMS.ramblings
+enabled=1
+gpgcheck=0
+priority=10
+proxy=_none_

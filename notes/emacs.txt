@@ -1,0 +1,251 @@
+Setup on RHEL5
+   wget http://ftp.gnu.org/pub/gnu/emacs/emacs-23.4.tar.gz
+   ./configure --prefix=/nas/home/boreilly/sw/emacs-install --with-gif=no
+
+Notes:
+   : C-z cycles between <N> and <E> evil states.
+   : Buffer menu notes:
+      : To see it:
+         : C-x C-b 
+         : buffer-menu
+      : 1 selects one file in one window.
+      : bs-show is a more barebones menu function.
+   : Windows notes:
+      : Gets rid of all other windows: C-x 1
+      : Change to other window: C-x o
+   : (define-key evil-normal-state-map "o" 'next-buffer)
+   : (define-key evil-normal-state-map "O" 'previous-buffer)
+   : Define a function which can be called with M-x (and therefore evil mappings)
+      (defun myCommand ()
+        "One sentence summary of what this command do.
+
+      More detailed documentation here."
+        (interactive) ; Can have params to allow user inputted arguments
+        (let (localVar1 localVar2 …)
+          ; do something here …
+          ; …
+          ; last expression is returned
+        )
+      )
+   : C-g quits the running/entered command
+   : Help commands:
+      : C-h c which command does this keystroke invoke
+      : C-h k which command does this keystroke invoke and what does it do?
+      : C-h l what were my last 100 typed keys
+      : C-h w what key-combo does this command have?
+      : C-h f what does this function do
+      : C-h v what's this variable and what is it's value
+      : C-h m list active modes
+   : From http://sites.google.com/site/steveyegge2/effective-emacs
+      : M-x describe-bindings
+      : M-x describe-key
+      : M-x apropos <regex>
+      : M-x info
+   : nxml-mode for XML editting.
+   : F keys:
+      (define-key python-mode-map (kbd "<f12>") 'python-switch-to-python)
+   : Eval:
+      M-:
+   : Key chords:
+      See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
+   : Vim mapping plan:
+      : Vim keys that aren't mapped to anything useful:
+         t
+         , mapped to M-x
+         o mapped
+         [
+         ]
+         \
+         s use as prefix key
+         f map to buffer menu
+         ; mapped
+         ' mapped
+         c map as prefix key to various C- keys eg ch map to C-h
+      : Vim shift- keys that aren't mapped to anything useful:
+         O
+         (
+         )
+         {
+         }
+         TODO
+   : If Evil mode isn't enabled in a mode, revisit:
+      http://lists.gnu.org/archive/html/bug-gnu-emacs/2012-01/msg00776.html
+   : Tabs and spaces:
+      http://cscs.umich.edu/~rlr/Misc/emacs_tabs.htm
+
+Issues:
+   : Map F keys to input logger boilerplate.
+      : Use two F keys:
+         : One for portable log statement.
+         : One for whatever logging API is in use on the project.
+      : Do it based on the major mode
+         : C and C++
+         : Java
+         : Python
+         : Elisp
+         : Shell (echo)
+      : Approachs:
+         : ll-debug.el -- doesn't appear useful at first blush.
+   : Tabs
+      : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
+         : Some extensions:
+            : guess-offset.el
+            : guess-style.el
+            : cc-guess.el
+               : Documented as being a part of CC Mode and a part of GNU Emacs.
+               : Had to download newer version to get style guessing feature.
+               : Seems to work (M-x c-guess), but tab stops aren't updated.
+               : Investigate per-buffer initialization which executes c-guess then sets the tab stops based on the c-guess.
+                  : Invoking c-guess guess and installs the style.
+                  : c-basic-offset is updated, likely to use this to set tab stops.
+                  : Need to time initialization of many files
+                     : If necessary, reduce default size of region to search for guessing style.
+      : How about using default behavior with keybindings for circumventing it.
+   : All things C-g does C-c should do.
+      : Try binding C-c to C-g , see:
+         http://www.gnu.org/software/emacs/manual/html_node/elisp/Key-Lookup.html
+   :::
+   : Put timestamps in *Messages* buffer.
+   : Look into using undo-tree extension.
+   : Cursor position is difficult to discern over highlighted areas.
+   : Make Emacs state visually obvious.  Ideas:
+      : Have Emacs state be black fg on white bg
+      : Have the status line be a different color based on evil state.
+         (set-face-background 'modeline "Blue")
+         Use hooks
+      : Could also set color of cursor instead:
+         See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
+   : How to mark search terms with different colors?
+   : Screen flashing:
+      : When finished with a cycle of buffers
+      : When finished with a cycle of search in a file
+   : Get % to match <> such as in C++ or Java.
+   : buffer-menu
+      : Split to the right.
+      : Display full file basename or at least widen column width.
+   : Navigating source code:
+      : See a called function impl.
+      : See who calls the currently viewed function.
+      : Read the "Tags Table" section of the GNU Emacs manual.
+   : Why did C-h f apropos evil.*key fail to find evil-define-key?  It found it as non regex.
+   : How to toggle display of line wrapping?
+   : When using 'r'
+      : C-c doesn't work.  
+      : C-g doesn't work.
+      : ESC works.
+      : C-[ works.
+      : C-h doesn't work.
+      : Find what C-[ invokes and have C-c invoke it too.
+   : Annoying prompts:
+      : When exiting with unsaved changes.
+      : When opening file greater than 14MB.
+   : Ordering of Evil init and customization.
+      : Some of the customizations don't work when work when before, some after the evil init lines:
+         (add-to-list 'load-path "~/.emacs.d/evil")
+         (require 'evil)
+         (evil-mode 1)
+      : Doesn't work if after evil init:
+         '(evil-overriding-maps nil)
+      : Doesn't work if before evil init:
+         '(evil-search-module (quote evil-search))
+      : If there's a best practice for avoiding this gotcha, we should add it to the Wiki.  eg is there a call we can make to reinitialize evil?
+   : Search
+      : Can't C-c to get out of search.  
+         : Use abort-recursive-edit?  
+         : See above about binding C-c to C-g .
+      : Regex issues
+         : See https://bitbucket.org/lyro/evil/issue/140/regex-searching-issues
+            : \t \r \n don't work.
+               : Workarounds: hit tab key, use C-q C-j for line feed.
+            : .* and ^.*$ don't work.
+               : Workaround: .+ works
+            : n doesn't work correctly when searching for $
+            : Search and replace screws up on lines containing upper case but no lower case letters.
+               : Workarounds:
+                  :%s/\C.*/aaa/ 
+                  :%s/.*/aaa/I
+      : See bug report updates:
+         : https://bitbucket.org/lyro/evil/issue/140/regex-searching-issues
+         : https://bitbucket.org/lyro/evil/issue/141/missing-d-in-regexp-search
+   : Figure out what the debris files Emacs leaves behind are about, and whether to change settings to not create them.
+      : Files with ~
+      : Files with #
+   : Make s a prefix key
+      : Define keymap for it.  eg:
+         : this keymap would map f to 'delete-other-windows
+         : s would be point to that keymap so as 'sf' invokes 'delete-other-windows
+      : Figure out what disadvantage there is to mapping "sf" together, if any.
+
+Modifications to Evil source:
+   (none)
+
+Notes about the isearch evil-search-module
+   : Attempted to make lazy highlighting work
+      : Code:
+         (setq lazy-highlight-cleanup nil)
+         (setq lazy-highlight-max-at-a-time nil)
+         (setq lazy-highlight-initial-delay 0)
+      : Problems:
+         : Doesn't highlight outside of visible area.
+   : Attempted to get highlight-regexp to work
+      : Code:
+         (setq search-highlight nil)
+         (setq isearch-lazy-highlight nil)
+         ; ...
+         (defun my-hi-lock-process-phrase(phrase)
+            "My hack of hi-lock-process-phrase function in hi-lock.el . "
+            (setq mod-phrase
+                   (replace-regexp-in-string
+                    "\\<[a-z]" (lambda (m) (format "[%s%s]" (upcase m) m)) phrase))
+         )
+         (defun my-isearch-exit ()
+            (when (boundp 'hi-lock-interactive-patterns)
+               (mapc (lambda (p)
+                       (unhighlight-regexp (car p)))
+                     hi-lock-interactive-patterns)
+            )
+            ( setq search-term (car (if isearch-regexp regexp-search-ring search-ring)) )
+            (if (equal search-term (downcase search-term))
+               ; Case insensitive
+               (progn
+                  ; This is close to interactive highlight-phrase but without the white space rule.
+                  (highlight-regexp (my-hi-lock-process-phrase search-term) 'hi-pink)
+               )
+               ; Case sensitive
+               (progn
+                  (highlight-regexp search-term 'hi-pink)
+               )
+            )
+            (lazy-highlight-cleanup t)
+         )
+         (add-hook 'isearch-mode-end-hook 'my-isearch-exit)
+         ; ...
+         (defadvice isearch-exit (after my-isearch-exit activate)
+            "Go to beginning of match, after isearch, highlight the search term "
+            (when isearch-forward (goto-char isearch-other-end))
+           (highlight-regexp (car (if isearch-regexp
+                                      regexp-search-ring
+                                    search-ring)) (find-face 'hi-pink))
+         )
+      : Problems:
+         : highlight-regexp doesn't case-fold the same way.
+
+Things to mention about evil:
+   : If someone does (lazy-highlight-cleanup nil) in their .emacs to make lazy highlighting persist, it is not honored because of a call to (lazy-highlight-cleanup t).  This is no difference to me since I ended up using the evil-search evil-search-module
+   : Some of the customizations don't work when work when before, some after the evil init lines:
+      (add-to-list 'load-path "~/.emacs.d/evil")
+      (require 'evil)
+      (evil-mode 1)
+   Doesn't work if after evil init:
+      '(evil-overriding-maps nil)
+   Doesn't work if before evil init:
+      '(evil-search-module (quote evil-search))
+   If there's a best practice for avoiding this gotcha, we should add it to the Wiki.  eg is there a call we can make to reinitialize evil?
+
+Writeup
+---
+Another consideration is whether Evil can generalize regexes as Vim understands them in such a way that they can be used with other Emacs functions.  For example, I found highlight-regexp/highlight-phrase useful enough to keymap:
+   (define-key evil-motion-state-map "sh" 'highlight-phrase)
+
+If I could somehow use a regex as discussed here (\t \n \r chars, disabled case-replace) with these or similar highlight functions, that would be very useful.
+

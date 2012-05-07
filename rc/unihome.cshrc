@@ -50,11 +50,19 @@ set hostString=`hostname | sed 's/\..*$//'`
 #  set prompt = "%{\033[33m%}$hostString$ccroot %~ :%{\033[0m%} "
 #endif
 
+# Clearcase view
+#
+if ($CLEARCASE_ROOT == 0 ) then
+   set ccroot = "-"
+else
+   set ccroot = "`basename $CLEARCASE_ROOT`"
+endif
+
 # Set prompt
 #
 # To use cyan color prompt: [36m%}
 # To use yellow color prompt: [33m%}
-alias setprompt 'set prompt="%{\033[33m%}`hostname` `pwd` :%{\033[0m%} "'
+alias setprompt 'set prompt="%{\033[36m%}`hostname` $ccroot `pwd` :%{\033[0m%} "'
 setprompt
 alias cd 'chdir \!* && setprompt'
 alias pushd 'pushd \!* && setprompt'
@@ -62,8 +70,11 @@ alias pushd 'pushd \!* && setprompt'
 
 alias cwdcmd title "$hostString : '`pwd`'"
 
+alias ct cleartool
 alias vim 'vim \!*; echo "Thanks for flying Vim"; cwdcmd'
 alias v 'vim'
+alias e 'emacsl \!* &'
+alias c 'cat'
 alias sa 'source ~/.cshrc'
 alias ip '/sbin/ifconfig -a'
 alias skt 'netstat -anu -f inet'

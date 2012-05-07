@@ -111,9 +111,21 @@ Convert files with spaces (more robust than simpler forms):
     do
         mv -v "$FILE" `echo $FILE | tr ' ' '_' `
     done
+or
+   ls | while read -r FILE ; do mv -v "$FILE" `echo $FILE | tr ' ' '_'` ;done
+or
+   find . -name "* *" | while read -r FILE ; do mv -v "$FILE" `echo $FILE | tr ' ' '_'` ;done
 
 Debug symbol notes:
     Post at 29th July 2009, 03:50 PM of http://nixcraft.com/linux-software/12412-segfault-error-4-a.html looks useful for using objdump and the segfault message in /var/log/messages to narrow down the problem.
+
+Get a man page as file:
+   man ls | col -bx > /tmp/ls.man
+Note that the following seems more natural, but causes weird characters:
+   man ls | cat > /tmp/ls.man
+
+Image viewer:
+    gthumb
 
 Interesting commands (RPMs in parans):
     : cut
@@ -132,4 +144,11 @@ Interesting commands (RPMs in parans):
     : /sbin/ethtool - Display or change ethernet card settings
     : /sbin/ifconfig
     : /sbin/iptables - administration tool for IPv4 packet filtering and NAT
+
+PMP Poor Man's Profiler
+   : Gets stack traces of running threads.
+   : poormansprofiler.org
+
+XPath:
+   Like regex for XML?
 
