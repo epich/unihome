@@ -1,4 +1,2 @@
-unihome contains files that I can version control and synchronize amongst Unix machines I encounter.  This includes user configuration, notes, scripts, etc.  Mercurial is used for version control.  It's ideal that Mercurial be installed, but ordinary copying can suffice.
-
-scripts/uhSetup.sh is run to setup the user account (establishing sym links for to .*rc files for example).  Necessary manual actions are documented in the script.
+Notes, scripts, configuration that I find useful to have on all the machines I work on.
 
