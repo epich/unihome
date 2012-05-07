@@ -72,6 +72,9 @@ Notes:
       http://lists.gnu.org/archive/html/bug-gnu-emacs/2012-01/msg00776.html
    : Tabs and spaces:
       http://cscs.umich.edu/~rlr/Misc/emacs_tabs.htm
+   : Special characters:
+      : Tab: hit tab key
+      : Line feed: C-q C-j
 
 Issues:
    : Map F keys to input logger boilerplate.
@@ -100,10 +103,16 @@ Issues:
                   : c-basic-offset is updated, likely to use this to set tab stops.
                   : Need to time initialization of many files
                      : If necessary, reduce default size of region to search for guessing style.
+                  : Doesn't work: calling c-guess from the c-mode-common-hook
+                  : Does work: M-x c-guess
       : How about using default behavior with keybindings for circumventing it.
    : All things C-g does C-c should do.
       : Try binding C-c to C-g , see:
          http://www.gnu.org/software/emacs/manual/html_node/elisp/Key-Lookup.html
+      : Test cases:
+         : When in the middle of searching with /
+            : abort-recursive-edit
+         : When entering an M-x
    :::
    : Put timestamps in *Messages* buffer.
    : Look into using undo-tree extension.
@@ -139,6 +148,9 @@ Issues:
    : Annoying prompts:
       : When exiting with unsaved changes.
       : When opening file greater than 14MB.
+   : Optimize Emacs startup
+      : When loading several .java files, observed it can half a second for each Java file.
+      : Try advice at: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
    : Ordering of Evil init and customization.
       : Some of the customizations don't work when work when before, some after the evil init lines:
          (add-to-list 'load-path "~/.emacs.d/evil")
@@ -149,24 +161,6 @@ Issues:
       : Doesn't work if before evil init:
          '(evil-search-module (quote evil-search))
       : If there's a best practice for avoiding this gotcha, we should add it to the Wiki.  eg is there a call we can make to reinitialize evil?
-   : Search
-      : Can't C-c to get out of search.  
-         : Use abort-recursive-edit?  
-         : See above about binding C-c to C-g .
-      : Regex issues
-         : See https://bitbucket.org/lyro/evil/issue/140/regex-searching-issues
-            : \t \r \n don't work.
-               : Workarounds: hit tab key, use C-q C-j for line feed.
-            : .* and ^.*$ don't work.
-               : Workaround: .+ works
-            : n doesn't work correctly when searching for $
-            : Search and replace screws up on lines containing upper case but no lower case letters.
-               : Workarounds:
-                  :%s/\C.*/aaa/ 
-                  :%s/.*/aaa/I
-      : See bug report updates:
-         : https://bitbucket.org/lyro/evil/issue/140/regex-searching-issues
-         : https://bitbucket.org/lyro/evil/issue/141/missing-d-in-regexp-search
    : Figure out what the debris files Emacs leaves behind are about, and whether to change settings to not create them.
       : Files with ~
       : Files with #
@@ -231,7 +225,6 @@ Notes about the isearch evil-search-module
          : highlight-regexp doesn't case-fold the same way.
 
 Things to mention about evil:
-   : If someone does (lazy-highlight-cleanup nil) in their .emacs to make lazy highlighting persist, it is not honored because of a call to (lazy-highlight-cleanup t).  This is no difference to me since I ended up using the evil-search evil-search-module
    : Some of the customizations don't work when work when before, some after the evil init lines:
       (add-to-list 'load-path "~/.emacs.d/evil")
       (require 'evil)
@@ -242,10 +235,5 @@ Things to mention about evil:
       '(evil-search-module (quote evil-search))
    If there's a best practice for avoiding this gotcha, we should add it to the Wiki.  eg is there a call we can make to reinitialize evil?
 
-Writeup
----
-Another consideration is whether Evil can generalize regexes as Vim understands them in such a way that they can be used with other Emacs functions.  For example, I found highlight-regexp/highlight-phrase useful enough to keymap:
-   (define-key evil-motion-state-map "sh" 'highlight-phrase)
 
-If I could somehow use a regex as discussed here (\t \n \r chars, disabled case-replace) with these or similar highlight functions, that would be very useful.
 

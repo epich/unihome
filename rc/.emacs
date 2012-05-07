@@ -34,10 +34,40 @@
  '(evil-overriding-maps nil)
 )
 
+;;; Functions to facilitate elisp debug logging.
+(defvar current-date-time-format "%Y-%m-%dT%H:%M:%S"
+  "Format for date string. ")
+(defun get-usec-str (cur-time)
+   "Get the microseconds as string. "
+   (format "%06d"
+      (nth 2 cur-time
+      )
+   )
+)
+(defun get-time-str ()
+   "Get the current time as a string. "
+   (interactive)
+   (let ((cur-time (current-time)))
+      (format "%s.%s" 
+         (format-time-string current-date-time-format)
+         (get-usec-str cur-time)
+      )
+   )
+)
+(defun log-msg (msg)
+   "Log a message, with prepended information.  Used for debugging. "
+   (interactive)
+   (message (format "%s %s"
+      (get-time-str) msg
+   ))
+)
+
 ;; Initialize evil
+(log-msg "Initializing Evil.")
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
+(log-msg "Finished initializing Evil.")
 
 ;; Initialize cc-mode
 ;;
@@ -97,6 +127,7 @@
 (define-key evil-motion-state-map "sf" 'delete-other-windows)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-normal-state-map ";" nil)
+(define-key evil-motion-state-map "se" 'eval-last-sexp)
 (when (fboundp 'undo-tree-undo)
    (define-key evil-normal-state-map "U" 'undo-tree-redo))
 ;; Go down in larger steps
@@ -159,14 +190,14 @@ necessary"
 (defun my-update-style ()
    "Update style for current buffer. " 
    (interactive)
-   ; TODO: Currently false
    (when (boundp 'c-guess)
       (c-guess)
    )
 )
 
 (defun my-c-mode-common-hook ()
-  (my-update-style)
+   (log-msg "Settup up C mode. ")
+   (my-update-style)
 )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
@@ -182,43 +213,9 @@ necessary"
       (define-key evil-motion-state-map "cx" ctl-x-map)
       (delete-other-windows)
       ;(setq search-whitespace-regexp nil)
+      (log-msg "Finished with term-setup-hook. ")
    )
 )
 
-
-
-
-
-(defvar current-date-time-format "%Y-%m-%dT%H:%M:%S"
-  "Format of date to insert with `insert-current-date-time' func
-See help of `format-time-string' for possible replacements")
-
-(defun insert-current-date-time ()
-  "insert the current date and time into current buffer.
-Uses `current-date-time-format' for the formatting the date/time."
-       (interactive)
-;       (insert (let () (comment-start)))
-       (insert (format-time-string current-date-time-format (current-time)))
-       (insert "\n")
-)
-
-;(defun get-usec-str (cur-time)
-;   "Get the microseconds as string. "
-;   (format "%06d"
-;      (nth 2 
-;         (cur-time)
-;      )
-;   )
-;)
-
-(defun get-time-str ()
-   "Get the current time as a string. "
-   (interactive)
-   (let cur-time current-time)
-   (message "01" (get-usec-str 'cur-time))
-   (message "02" (get-usec-str 'cur-time))
-)
-
-(define-key evil-motion-state-map "st" 'insert-current-date-time)
-
+(log-msg "Finished .emacs file. ")
 
