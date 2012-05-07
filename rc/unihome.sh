@@ -2,10 +2,10 @@
 ulimit -c 50000 
 
 alias v='vim'
-alias e='emacsl'
+alias e='emacs'
 alias l='ls -lart'
 alias c='cat'
-alias mp='mplayer -loop 0'
+alias m='mplayer -loop 0'
 alias title='echo -n "]2;\!*"'
 alias cwdcmd='title "$hostString : `pwd`"'
 alias sa='source $unihomeDir/rc/unihome.sh'
