@@ -1,5 +1,5 @@
 SHELL = /bin/bash
-EMACS = ~/bin/emacs
+EMACS = emacs
 FILES = $(filter-out evil-tests.el,$(filter-out evil-pkg.el,$(wildcard evil*.el)))
 VERSION := $(shell sed -n '3s/.*"\(.*\)".*/\1/p' evil-pkg.el)
 ELPAPKG = evil-$(VERSION)
