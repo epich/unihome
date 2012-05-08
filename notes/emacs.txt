@@ -77,21 +77,12 @@ Notes:
       : Line feed: C-q C-j
 
 Issues:
-   : Map F keys to input logger boilerplate.
-      : Use two F keys:
-         : One for portable log statement.
-         : One for whatever logging API is in use on the project.
-      : Do it based on the major mode
-         : C and C++
-         : Java
-         : Python
-         : Elisp
-         : Shell (echo)
-      : Approachs:
-         : ll-debug.el -- doesn't appear useful at first blush.
    :::
-   : Search issues:
-      https://bitbucket.org/lyro/evil/issue/148/searching-with
+   : Pasting
+      : Ctrl-Shift-v doesn't paste.
+      : Ctrl-y does, but if Evil mappings are removed.
+   : Auto indenting:
+      : Need to specify how many tabs to continue code lines with.
    : Put timestamps in *Messages* buffer.
    : Look into using undo-tree extension.
    : Cursor position is difficult to discern over highlighted areas.
@@ -129,6 +120,12 @@ Issues:
    : Optimize Emacs startup
       : When loading several .java files, observed it can half a second for each Java file.
       : Try advice at: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
+   : Debugging through logs
+      : Add log key bindings for:
+         : C and C++
+         : Python
+         : Shell (echo)
+      : ll-debug.el useful (doesn't look like it)?
    : Tabs
       : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
          : Some extensions:
@@ -159,7 +156,9 @@ Issues:
    : Figure out what the debris files Emacs leaves behind are about, and whether to change settings to not create them.
       : Files with ~
       : Files with #
-   : Is there a way to modify the message function (with defadvice or otherwise) to prepend timestamp?
+   : Logging
+      : Is there a way to get the current function's name, in order to put in log-msg prefix.
+      : Is there a way to modify the message function (with defadvice or otherwise) to prepend timestamp?
    : Make s a prefix key
       : Define keymap for it.  eg:
          : this keymap would map f to 'delete-other-windows

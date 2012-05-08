@@ -186,28 +186,45 @@ necessary"
    '((isearch-lazy-highlight-face' :background "yellow" :foreground "black"))
 )
 
-(defun my-update-style ()
-   "Update style for current buffer. " 
+(defun my-elisp-log ()
+   "Insert log statement for elisp. "
    (interactive)
-   ;(when (boundp 'c-guess)
-   ;   (log-msg "Invoking c-guess")
-   ;    TODO: Doesn't actually set c-basic-offset .  When done via M-x, takes too long.
-   ;   (c-guess)
-   ;   (log-msg "Finished invoking c-guess")
-   ;)
+   (insert "(log-msg \"\") ; TODO: temporary for debug")
+   (dotimes (num 30) (backward-char))
+   (log-msg "lisp logging")
 )
-(defun my-c-mode-common-hook ()
-   (log-msg "Settup up C mode. ")
-   (my-update-style)
+(defun my-java-log ()
+   "Insert log statement for Java. "
+   (interactive)
+   ; The vimscript was:
+   ;imap <F3> org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // temporary for debug<Enter><Tab><Tab><Tab>"DEBUG: ",<Enter>new Object[]{} );<Esc>khi
+   (insert "org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // TODO: temporary for debug\n\t\t\t\"DEBUG: \",\n\t\t\tnew Object[]{} );")
+   (previous-line)
+   (dotimes (num 2) (backward-char))
 )
-(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
+(add-hook 'emacs-lisp-mode-hook 
+   (lambda ()
+      (log-msg "Inside emacs-lisp-mode-hook")
+      (define-key evil-insert-state-local-map (quote [f3]) 'my-elisp-log)
+   )
+)
+(add-hook 'java-mode-hook 
+   (lambda ()
+      (log-msg "Inside java-mode-hook")
+      (define-key evil-insert-state-local-map (quote [f3]) 'my-java-log)
+   )
+)
+(add-hook 'c-mode-common-hook 
+   (lambda ()
+      (log-msg "Settup up C mode. ")
+   )
+)
 (add-hook 'after-change-major-mode-hook
    (lambda ()
       ;; Force Evil mode in Fundamental mode.
       (evil-mode 1)
 ))
-
 (add-hook 'term-setup-hook
    (lambda ()
       (define-key evil-motion-state-map "ch" help-map)
