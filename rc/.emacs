@@ -110,12 +110,8 @@
 
 (define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
 (define-key evil-motion-state-map (kbd "C-c") 'evil-normal-state)
-(define-key isearch-mode-map (kbd "C-c") 
-   (lambda ()
-      (interactive)
-      (dotimes (num 2) (isearch-abort))
-   )
-)
+(global-set-key (kbd "C-c") 'keyboard-escape-quit)
+
 ; I don't use RET in motion state, but it is useful in eg buffer mode.
 (global-set-key (kbd "RET") 'evil-ret)
 (define-key evil-motion-state-map (kbd "RET") nil)
@@ -200,7 +196,6 @@ necessary"
    ;   (log-msg "Finished invoking c-guess")
    ;)
 )
-
 (defun my-c-mode-common-hook ()
    (log-msg "Settup up C mode. ")
    (my-update-style)
