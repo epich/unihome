@@ -73,7 +73,8 @@
 ;;
 ;; cc-mode is distributed with Emacs, but using a newer version in order to get 
 ;; style guessing.
-(add-to-list 'load-path "~/.emacs.d/cc-mode")
+; c-guess isn't working out.
+;(add-to-list 'load-path "~/.emacs.d/cc-mode")
 
 ; evil-integration.el attempts to recreate the evil-overriding-maps, set
 ; that code to nil to prevent it from running.
@@ -100,6 +101,8 @@
 (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
 ; Permanently force Emacs to indent with spaces, never with TABs:
 (setq-default indent-tabs-mode nil)
+(setq tab-stop-list (cdr (number-sequence 0 256 3)))
+(setq c-basic-offset 3)
 ;(setq tab-width 4)
 
 ;;; evil mappings
@@ -190,9 +193,12 @@ necessary"
 (defun my-update-style ()
    "Update style for current buffer. " 
    (interactive)
-   (when (boundp 'c-guess)
-      (c-guess)
-   )
+   ;(when (boundp 'c-guess)
+   ;   (log-msg "Invoking c-guess")
+   ;    TODO: Doesn't actually set c-basic-offset .  When done via M-x, takes too long.
+   ;   (c-guess)
+   ;   (log-msg "Finished invoking c-guess")
+   ;)
 )
 
 (defun my-c-mode-common-hook ()

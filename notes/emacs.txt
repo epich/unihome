@@ -89,23 +89,6 @@ Issues:
          : Shell (echo)
       : Approachs:
          : ll-debug.el -- doesn't appear useful at first blush.
-   : Tabs
-      : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
-         : Some extensions:
-            : guess-offset.el
-            : guess-style.el
-            : cc-guess.el
-               : Documented as being a part of CC Mode and a part of GNU Emacs.
-               : Had to download newer version to get style guessing feature.
-               : Seems to work (M-x c-guess), but tab stops aren't updated.
-               : Investigate per-buffer initialization which executes c-guess then sets the tab stops based on the c-guess.
-                  : Invoking c-guess guess and installs the style.
-                  : c-basic-offset is updated, likely to use this to set tab stops.
-                  : Need to time initialization of many files
-                     : If necessary, reduce default size of region to search for guessing style.
-                  : Doesn't work: calling c-guess from the c-mode-common-hook
-                  : Does work: M-x c-guess
-      : How about using default behavior with keybindings for circumventing it.
    : All things C-g does C-c should do.
       : Try binding C-c to C-g , see:
          http://www.gnu.org/software/emacs/manual/html_node/elisp/Key-Lookup.html
@@ -114,6 +97,8 @@ Issues:
             : abort-recursive-edit
          : When entering an M-x
    :::
+   : Search issues:
+      https://bitbucket.org/lyro/evil/issue/148/searching-with
    : Put timestamps in *Messages* buffer.
    : Look into using undo-tree extension.
    : Cursor position is difficult to discern over highlighted areas.
@@ -151,6 +136,23 @@ Issues:
    : Optimize Emacs startup
       : When loading several .java files, observed it can half a second for each Java file.
       : Try advice at: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
+   : Tabs
+      : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
+         : Some extensions:
+            : guess-offset.el
+            : guess-style.el
+            : cc-guess.el
+               : Documented as being a part of CC Mode and a part of GNU Emacs.
+               : Had to download newer version to get style guessing feature.
+               : Seems to work (M-x c-guess), but tab stops aren't updated.
+               : Investigate per-buffer initialization which executes c-guess then sets the tab stops based on the c-guess.
+                  : Invoking c-guess guess and installs the style.
+                  : c-basic-offset is updated, likely to use this to set tab stops.
+                  : Need to time initialization of many files
+                     : If necessary, reduce default size of region to search for guessing style.
+                  : Doesn't work: calling c-guess from the c-mode-common-hook
+                  : Does work: M-x c-guess
+      : How about using default behavior with keybindings for circumventing it.
    : Ordering of Evil init and customization.
       : Some of the customizations don't work when work when before, some after the evil init lines:
          (add-to-list 'load-path "~/.emacs.d/evil")
