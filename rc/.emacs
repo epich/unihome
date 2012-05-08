@@ -22,6 +22,7 @@
 (toggle-fullscreen)
 
 (setq case-replace nil)
+(setq vc-follow-symlinks t)
 
 ;; make file name and computer title
 (setq-default
