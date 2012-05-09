@@ -97,14 +97,15 @@
  )
 
 ;;; Tabs
+(defvar my-offset 3 "My size of indentation.  Would prefer style guessing instead. ")
 ; Make tab less restrictive about where I tab to.
 (global-set-key (kbd "TAB") 'tab-to-tab-stop);
 (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
 ; Permanently force Emacs to indent with spaces, never with TABs:
 (setq-default indent-tabs-mode nil)
-(setq tab-stop-list (cdr (number-sequence 0 256 3)))
-(setq c-basic-offset 3)
-;(setq tab-width 4)
+(setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
+(setq c-basic-offset my-offset)
+;(setq tab-width my-offset)
 
 ;;; evil mappings
 ;;;
@@ -126,8 +127,8 @@
 (define-key evil-normal-state-map "s" nil)
 (define-key evil-motion-state-map "sf" 'delete-other-windows)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
-(define-key evil-normal-state-map ";" nil)
 (define-key evil-motion-state-map "se" 'eval-last-sexp)
+(define-key evil-normal-state-map ";" nil)
 (when (fboundp 'undo-tree-undo)
    (define-key evil-normal-state-map "U" 'undo-tree-redo))
 ;; Go down in larger steps
@@ -157,17 +158,6 @@
       (evil-ex-hl-update-highlights)
    )
 )
-
-(defun scroll-down-keep-cursor ()
-   ;; Scroll the text one line down while keeping the cursor
-   (interactive)
-   (scroll-down 1))
-
-(defun scroll-up-keep-cursor ()
-   ;; Scroll the text one line up while keeping the cursor
-   (interactive)
-   (scroll-up 1)) 
-
 ;; Mappings to Emacs Meta and Ctrl key bindings.
 (define-key evil-normal-state-map "," 'execute-extended-command)
 (define-key evil-normal-state-map "c" nil)
@@ -177,8 +167,8 @@
 ;; Change color of isearch lazy highlighting
 ;;
 ;; Thanks to: http://lists.gnu.org/archive/html/help-gnu-emacs/2003-03/msg00108.html
-(defun configure-faces (fl) "Set face attributes and create faces when 
-necessary"
+(defun configure-faces (fl)
+  "Set face attributes and create faces when necessary"
   (mapc (lambda (f)
           (unless (boundp (car f)) (make-empty-face (car f)))
           (eval `(set-face-attribute (car f) nil ,@(cdr f))))
