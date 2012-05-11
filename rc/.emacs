@@ -115,6 +115,7 @@
 (define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
 (define-key evil-motion-state-map (kbd "C-c") 'evil-normal-state)
 (global-set-key (kbd "C-c") 'keyboard-escape-quit)
+(define-key evil-read-key-map (kbd "C-c") 'keyboard-quit)
 
 ; I don't use RET in motion state, but it is useful in eg buffer mode.
 (global-set-key (kbd "RET") 'evil-ret)

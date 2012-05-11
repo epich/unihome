@@ -79,23 +79,21 @@ Notes:
 Issues:
    : File reloading:
       : Figure out how to make reloading a file from disk less annoying.
-         : Perhaps auto save when leaving buffer (warn if not saved), auto revert when visiting it.
+         : It would be good to have similar abstraction as Vim:
+            : When leaving file that is unsaved, prompt the user.  Allow for an override.
+            : When visiting a file, reload it from disk.
+         : Auto saving and reverting
             : http://stackoverflow.com/questions/1655695/i-dont-need-saving-how-to-keep-emacs-buffers-in-sync-with-files
          : Would be nice if buffer menu displayed the files that would change if reverted, so I could manually handle it.
+      : *Messages* has line: test.py has auto save data; consider M-x recover-this-file
+         : Possible source of startup starting to take a longer time.
+      : A solution to this should also solve Clearcase checkout annoyances.
    : Python indenting:
       : Evil visual mode indenting doesn't work right.
-   : The . command doesn't work sometimes.
-      : Steps:
-        i
-        blah
-        C-c
-        j
-        .
-        repeats j
-      : Can't reproduce
-   : Editting which is backed out of overrides .
-      : Different from vim.
-      : Look at source code a bit more to understand what's going on before filing bug report.
+   : Overwriting of evil-repeat-ring
+      : When backing out of some operations before making an insertion change, Evil overwrites the evil-repeat-ring, while Vim doesn't.
+         : Shift-.
+         : r
    : Searching issues:
       Highlight updating:
          :
@@ -109,15 +107,7 @@ Issues:
             string2
             string2 is highlighted
    : Debugger mode overrules the o keymapping
-   : Minibuffer gets hosed
-      ,load-file
-      Shift-Home Delete
-      Minibuffer is in a bizarre state
    :::
-   : Write a function to:
-      : Checks a file is read permissions (so as I don't accidentally reload a file I'm changing.)
-      : ct co -nc <file>
-      : Reload it with the write permissions.
    : Double click select:
       : Need to be able to double click a file path and have it select all of it.
       : Double clicking a / char selects up to the . (exclusive).
@@ -154,8 +144,6 @@ Issues:
       : Read the "Tags Table" section of the GNU Emacs manual.
    : Why did C-h f apropos evil.*key fail to find evil-define-key?  It found it as non regex.
    : How to toggle display of line wrapping?
-   : When using 'r'
-      : See https://bitbucket.org/lyro/evil/issue/149/escaping-out-of-replace
    : Visual mode
       : Bug:
          : Select text with v
@@ -280,24 +268,4 @@ Retired issues with residual notes:
                (dotimes (num 2) (isearch-abort))
             )
          )
-
-Things to mention about evil:
-   : Some of the customizations don't work when work when before, some after the evil init lines:
-      (add-to-list 'load-path "~/.emacs.d/evil")
-      (require 'evil)
-      (evil-mode 1)
-   Doesn't work if after evil init:
-      '(evil-overriding-maps nil)
-   Doesn't work if before evil init:
-      '(evil-search-module (quote evil-search))
-   If there's a best practice for avoiding this gotcha, we should add it to the Wiki.  eg is there a call we can make to reinitialize evil?
-
-
-
-
-
-
-Conditions under which . is overwritten
----
-The . command repeats the last insert, which means subsequent inserts overwrite the previous ones.  In vim I can backout of some operations before they change the text and the . 
 
