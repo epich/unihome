@@ -7,3 +7,6 @@ Sparse checkouts ( http://stackoverflow.com/questions/50945/can-you-do-a-partial
 Get filelist:
    svn list -R $svnuri/trunk/
 
+TortoiseSVN:
+   : To checkout from a URL, right click anywhere in Windows Explorer.
+   

@@ -85,12 +85,17 @@ Issues:
    : Python indenting:
       : Evil visual mode indenting doesn't work right.
    : The . command doesn't work sometimes.
-      i
-      blah
-      C-c
-      j
-      .
-      repeats j
+      : Steps:
+        i
+        blah
+        C-c
+        j
+        .
+        repeats j
+      : Can't reproduce
+   : Editting which is backed out of overrides .
+      : Different from vim.
+      : Look at source code a bit more to understand what's going on before filing bug report.
    : Searching issues:
       Highlight updating:
          :
@@ -198,6 +203,7 @@ Issues:
    : Figure out what the debris files Emacs leaves behind are about, and whether to change settings to not create them.
       : Files with ~
       : Files with #
+   : Opening through symlinks in an hg repo is slow by a factor of about 5.
    : Logging
       : Is there a way to get the current function's name, in order to put in log-msg prefix.
       : Is there a way to modify the message function (with defadvice or otherwise) to prepend timestamp?
@@ -287,54 +293,11 @@ Things to mention about evil:
    If there's a best practice for avoiding this gotcha, we should add it to the Wiki.  eg is there a call we can make to reinitialize evil?
 
 
-Selecting text in minibuffer causes odd state behavior
+
+
+
+
+Conditions under which . is overwritten
 ---
-I entered the minibuffer by:
-   M-x load-file
-I'm then given a default path which I want to delete.  I decide to give this a shot:
-   Shift-Home
-   Delete
-This put me in an unintuitive state in the minibuffer.  It appears I'm in a non insert mode within the minibuffer.  When using Vim I've never witnessed its minibuffer show bimodal behavior.  In gVim, selecting text in the minibuffer doesn't appear to have any utility.
-
-To see if this was perhaps a feature rather than a bug, I tried the same thing in the editting buffer.
-   A
-   Shift-Home
-   Delete
-Unlike the minibuffer, this sequence left me in the insert state.  This inconsistency leads me to think it's a bug.
-
-
-
-Editting in insert state with text selection
----
-Evil and gVim differ in how they treat text selection while in insert mode.
-
-Test case 1:
-   Enter insert mode in the normal editting buffer.
-   Select some text, say word1.1 .  Selection with the mouse suffices.
-   d
-   Type a word: word1.2.
-   gVim behavior:
-      The selected word1.1 is deleted and the word1.2 is typed in the location.
-   Evil behavior:
-      word1.1 remains, the letter d is inserted, and word1.2 is inserted.
-
-   
-
-I'll mention a third option for consideration, which is similar most editors except these two:
-
-We should also consider how this should be 
-
-I wouldn't mind if Evil implemented a behavior that is different from both of these, but similiar to most editors:
-   word1.1 is deleted, d and word1.2 are inserted.
-
-I mention this for consideration only because it might make it easier to make the bahvior treatment in the minibuffer
-I wouldn't mind too much if Evil treated this case as most editors, where word1.1 is deleted, d and word
-
-Note: I wouldn't mind if Evil strayed from gVim and 
-
-I say 
-
-
-
-A nice enhancement might be to allow text selection to do something usefulj
+The . command repeats the last insert, which means subsequent inserts overwrite the previous ones.  In vim I can backout of some operations before they change the text and the . 
 
