@@ -41,7 +41,7 @@ Notes:
       : M-x describe-key
       : M-x apropos <regex>
       : M-x info
-   : nxml-mode for XML editting.
+   : nxml-mode for XML editing.
    : F keys:
       (define-key python-mode-map (kbd "<f12>") 'python-switch-to-python)
    : Eval:
@@ -76,7 +76,7 @@ Notes:
       : Tab: hit tab key
       : Line feed: C-q C-j
 
-Issues:
+Issues high priority:
    : File reloading:
       : Figure out how to make reloading a file from disk less annoying.
          : It would be good to have similar abstraction as Vim:
@@ -88,8 +88,23 @@ Issues:
       : *Messages* has line: test.py has auto save data; consider M-x recover-this-file
          : Possible source of startup starting to take a longer time.
       : A solution to this should also solve Clearcase checkout annoyances.
-   : Python indenting:
-      : Evil visual mode indenting doesn't work right.
+   : Smart editing:
+      : Need to have backspace delete whitespace to tab stops.
+         : Problematic:
+            : C family
+            : Text
+         : Ok:
+            : Python
+      : Need to specify how many tabs to continue code lines with.
+      : Visual mode indenting doesn't work right.
+         : Text
+         : Python
+      : Text major mode:
+         : Needs to use indentation level of line immediately above.
+   : Debugger mode overrules the o keymapping
+
+Issues low priority:
+   : Explore dired
    : Overwriting of evil-repeat-ring
       : When backing out of some operations before making an insertion change, Evil overwrites the evil-repeat-ring, while Vim doesn't.
          : Shift-.
@@ -106,8 +121,6 @@ Issues:
             i
             string2
             string2 is highlighted
-   : Debugger mode overrules the o keymapping
-   :::
    : Double click select:
       : Need to be able to double click a file path and have it select all of it.
       : Double clicking a / char selects up to the . (exclusive).
@@ -115,9 +128,6 @@ Issues:
    : Pasting
       : Ctrl-Shift-v doesn't paste.
       : Ctrl-y does, but if Evil mappings are removed.
-   : Smart editting:
-      : Need to specify how many tabs to continue code lines with.
-      : Need to have backspace delete whitespace to tab stops.
    : Syntax highlighting:
       : Not keen on (in Python) strings and comments getting a similar color.
    : Look into using undo-tree extension.
