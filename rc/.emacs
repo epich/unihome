@@ -9,7 +9,7 @@
 (column-number-mode 1)
 
 ;; Disable the auto-save because I don't want to be undermined about what and when to save.
-(setq auto-save-default nil)
+;(setq auto-save-default nil)
 
 ;; Maximize window upon startup.
 (defun toggle-fullscreen ()
@@ -23,8 +23,10 @@
 
 (setq case-replace nil)
 (setq vc-follow-symlinks t)
+(setq delete-selection-mode 1)
 
 ;; make file name and computer title
+(defvar my-frame-title "Unset" "Title for the frame. ")
 (setq-default
  frame-title-format
  '(:eval
@@ -128,6 +130,8 @@
 (define-key evil-motion-state-map "sf" 'delete-other-windows)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "se" 'eval-last-sexp)
+(define-key evil-motion-state-map "srb" 'revert-buffer)
+(define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs")))
 (define-key evil-normal-state-map ";" nil)
 (when (fboundp 'undo-tree-undo)
    (define-key evil-normal-state-map "U" 'undo-tree-redo))

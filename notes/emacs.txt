@@ -77,13 +77,54 @@ Notes:
       : Line feed: C-q C-j
 
 Issues:
+   : File reloading:
+      : Figure out how to make reloading a file from disk less annoying.
+         : Perhaps auto save when leaving buffer (warn if not saved), auto revert when visiting it.
+            : http://stackoverflow.com/questions/1655695/i-dont-need-saving-how-to-keep-emacs-buffers-in-sync-with-files
+         : Would be nice if buffer menu displayed the files that would change if reverted, so I could manually handle it.
+   : Python indenting:
+      : Evil visual mode indenting doesn't work right.
+   : The . command doesn't work sometimes.
+      i
+      blah
+      C-c
+      j
+      .
+      repeats j
+   : Searching issues:
+      Highlight updating:
+         :
+            /\${
+            deleted {
+            $ still highlighted
+         :
+            /string1
+            n
+            i
+            string2
+            string2 is highlighted
+   : Debugger mode overrules the o keymapping
+   : Minibuffer gets hosed
+      ,load-file
+      Shift-Home Delete
+      Minibuffer is in a bizarre state
    :::
+   : Write a function to:
+      : Checks a file is read permissions (so as I don't accidentally reload a file I'm changing.)
+      : ct co -nc <file>
+      : Reload it with the write permissions.
+   : Double click select:
+      : Need to be able to double click a file path and have it select all of it.
+      : Double clicking a / char selects up to the . (exclusive).
+      : See: http://lists.gnu.org/archive/html/help-gnu-emacs/2008-12/msg00015.html
    : Pasting
       : Ctrl-Shift-v doesn't paste.
       : Ctrl-y does, but if Evil mappings are removed.
-   : Auto indenting:
+   : Smart editting:
       : Need to specify how many tabs to continue code lines with.
-   : Put timestamps in *Messages* buffer.
+      : Need to have backspace delete whitespace to tab stops.
+   : Syntax highlighting:
+      : Not keen on (in Python) strings and comments getting a similar color.
    : Look into using undo-tree extension.
    : Cursor position is difficult to discern over highlighted areas.
    : Make Emacs state visually obvious.  Ideas:
@@ -101,6 +142,7 @@ Issues:
    : buffer-menu
       : Split to the right.
       : Display full file basename or at least widen column width.
+      : Set the GTK frame title to any of the filenames, be it last visited, top of list, currently selected, whatever.
    : Navigating source code:
       : See a called function impl.
       : See who calls the currently viewed function.
@@ -243,4 +285,56 @@ Things to mention about evil:
    Doesn't work if before evil init:
       '(evil-search-module (quote evil-search))
    If there's a best practice for avoiding this gotcha, we should add it to the Wiki.  eg is there a call we can make to reinitialize evil?
+
+
+Selecting text in minibuffer causes odd state behavior
+---
+I entered the minibuffer by:
+   M-x load-file
+I'm then given a default path which I want to delete.  I decide to give this a shot:
+   Shift-Home
+   Delete
+This put me in an unintuitive state in the minibuffer.  It appears I'm in a non insert mode within the minibuffer.  When using Vim I've never witnessed its minibuffer show bimodal behavior.  In gVim, selecting text in the minibuffer doesn't appear to have any utility.
+
+To see if this was perhaps a feature rather than a bug, I tried the same thing in the editting buffer.
+   A
+   Shift-Home
+   Delete
+Unlike the minibuffer, this sequence left me in the insert state.  This inconsistency leads me to think it's a bug.
+
+
+
+Editting in insert state with text selection
+---
+Evil and gVim differ in how they treat text selection while in insert mode.
+
+Test case 1:
+   Enter insert mode in the normal editting buffer.
+   Select some text, say word1.1 .  Selection with the mouse suffices.
+   d
+   Type a word: word1.2.
+   gVim behavior:
+      The selected word1.1 is deleted and the word1.2 is typed in the location.
+   Evil behavior:
+      word1.1 remains, the letter d is inserted, and word1.2 is inserted.
+
+   
+
+I'll mention a third option for consideration, which is similar most editors except these two:
+
+We should also consider how this should be 
+
+I wouldn't mind if Evil implemented a behavior that is different from both of these, but similiar to most editors:
+   word1.1 is deleted, d and word1.2 are inserted.
+
+I mention this for consideration only because it might make it easier to make the bahvior treatment in the minibuffer
+I wouldn't mind too much if Evil treated this case as most editors, where word1.1 is deleted, d and word
+
+Note: I wouldn't mind if Evil strayed from gVim and 
+
+I say 
+
+
+
+A nice enhancement might be to allow text selection to do something usefulj
 
