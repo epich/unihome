@@ -1,81 +1,3 @@
-Setup on RHEL5
-   wget http://ftp.gnu.org/pub/gnu/emacs/emacs-23.4.tar.gz
-   ./configure --prefix=/nas/home/boreilly/sw/emacs-install --with-gif=no
-
-Notes:
-   : C-z cycles between <N> and <E> evil states.
-   : Buffer menu notes:
-      : To see it:
-         : C-x C-b 
-         : buffer-menu
-      : 1 selects one file in one window.
-      : bs-show is a more barebones menu function.
-   : Windows notes:
-      : Gets rid of all other windows: C-x 1
-      : Change to other window: C-x o
-   : (define-key evil-normal-state-map "o" 'next-buffer)
-   : (define-key evil-normal-state-map "O" 'previous-buffer)
-   : Define a function which can be called with M-x (and therefore evil mappings)
-      (defun myCommand ()
-        "One sentence summary of what this command do.
-
-      More detailed documentation here."
-        (interactive) ; Can have params to allow user inputted arguments
-        (let (localVar1 localVar2 …)
-          ; do something here …
-          ; …
-          ; last expression is returned
-        )
-      )
-   : C-g quits the running/entered command
-   : Help commands:
-      : C-h c which command does this keystroke invoke
-      : C-h k which command does this keystroke invoke and what does it do?
-      : C-h l what were my last 100 typed keys
-      : C-h w what key-combo does this command have?
-      : C-h f what does this function do
-      : C-h v what's this variable and what is it's value
-      : C-h m list active modes
-   : From http://sites.google.com/site/steveyegge2/effective-emacs
-      : M-x describe-bindings
-      : M-x describe-key
-      : M-x apropos <regex>
-      : M-x info
-   : nxml-mode for XML editing.
-   : F keys:
-      (define-key python-mode-map (kbd "<f12>") 'python-switch-to-python)
-   : Eval:
-      M-:
-   : Key chords:
-      See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
-   : Vim mapping plan:
-      : Vim keys that aren't mapped to anything useful:
-         t
-         , mapped to M-x
-         o mapped
-         [
-         ]
-         \
-         s use as prefix key
-         f map to buffer menu
-         ; mapped
-         ' mapped
-         c map as prefix key to various C- keys eg ch map to C-h
-      : Vim shift- keys that aren't mapped to anything useful:
-         O
-         (
-         )
-         {
-         }
-         TODO
-   : If Evil mode isn't enabled in a mode, revisit:
-      http://lists.gnu.org/archive/html/bug-gnu-emacs/2012-01/msg00776.html
-   : Tabs and spaces:
-      http://cscs.umich.edu/~rlr/Misc/emacs_tabs.htm
-   : Special characters:
-      : Tab: hit tab key
-      : Line feed: C-q C-j
-
 Issues high priority:
    : File reloading:
       : Figure out how to make reloading a file from disk less annoying.
@@ -213,6 +135,83 @@ Issues low priority:
 
 Modifications to Evil source:
    (none)
+   
+Notes:
+    : Setup on RHEL5
+       wget http://ftp.gnu.org/pub/gnu/emacs/emacs-23.4.tar.gz
+       ./configure --prefix=/nas/home/boreilly/sw/emacs-install --with-gif=no
+   : C-z cycles between <N> and <E> evil states.
+   : Buffer menu notes:
+      : To see it:
+         : C-x C-b 
+         : buffer-menu
+      : 1 selects one file in one window.
+      : bs-show is a more barebones menu function.
+   : Windows notes:
+      : Gets rid of all other windows: C-x 1
+      : Change to other window: C-x o
+   : (define-key evil-normal-state-map "o" 'next-buffer)
+   : (define-key evil-normal-state-map "O" 'previous-buffer)
+   : Define a function which can be called with M-x (and therefore evil mappings)
+      (defun myCommand ()
+        "One sentence summary of what this command do.
+
+      More detailed documentation here."
+        (interactive) ; Can have params to allow user inputted arguments
+        (let (localVar1 localVar2 …)
+          ; do something here …
+          ; …
+          ; last expression is returned
+        )
+      )
+   : C-g quits the running/entered command
+   : Help commands:
+      : C-h c which command does this keystroke invoke
+      : C-h k which command does this keystroke invoke and what does it do?
+      : C-h l what were my last 100 typed keys
+      : C-h w what key-combo does this command have?
+      : C-h f what does this function do
+      : C-h v what's this variable and what is it's value
+      : C-h m list active modes
+   : From http://sites.google.com/site/steveyegge2/effective-emacs
+      : M-x describe-bindings
+      : M-x describe-key
+      : M-x apropos <regex>
+      : M-x info
+   : nxml-mode for XML editing.
+   : F keys:
+      (define-key python-mode-map (kbd "<f12>") 'python-switch-to-python)
+   : Eval:
+      M-:
+   : Key chords:
+      See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
+   : Vim mapping plan:
+      : Vim keys that aren't mapped to anything useful:
+         t
+         , mapped to M-x
+         o mapped
+         [
+         ]
+         \
+         s use as prefix key
+         f map to buffer menu
+         ; mapped
+         ' mapped
+         c map as prefix key to various C- keys eg ch map to C-h
+      : Vim shift- keys that aren't mapped to anything useful:
+         O
+         (
+         )
+         {
+         }
+         TODO
+   : If Evil mode isn't enabled in a mode, revisit:
+      http://lists.gnu.org/archive/html/bug-gnu-emacs/2012-01/msg00776.html
+   : Tabs and spaces:
+      http://cscs.umich.edu/~rlr/Misc/emacs_tabs.htm
+   : Special characters:
+      : Tab: hit tab key
+      : Line feed: C-q C-j
 
 Retired issues with residual notes:
    : All things C-g does C-c should do.
