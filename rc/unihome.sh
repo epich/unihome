@@ -2,7 +2,7 @@
 ulimit -c 50000 
 
 alias v='vim'
-alias e='emacs &'
+function e() { emacs "$@" & }
 alias l='ls -lart'
 alias c='cat'
 alias m='mplayer -loop 0'
