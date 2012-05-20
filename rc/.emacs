@@ -117,6 +117,9 @@
 (global-set-key (kbd "C-c") 'keyboard-escape-quit)
 (define-key evil-read-key-map (kbd "C-c") 'keyboard-quit)
 
+(define-key evil-motion-state-map "," nil)
+(define-key evil-motion-state-map "," 'execute-extended-command)
+
 ; I don't use RET in motion state, but it is useful in eg buffer mode.
 (global-set-key (kbd "RET") 'evil-ret)
 (define-key evil-motion-state-map (kbd "RET") nil)
@@ -163,8 +166,7 @@
       (evil-ex-hl-update-highlights)
    )
 )
-;; Mappings to Emacs Meta and Ctrl key bindings.
-(define-key evil-normal-state-map "," 'execute-extended-command)
+; Undo c Evil keybinding for use as prefix key to various Ctrl- key sequences.
 (define-key evil-normal-state-map "c" nil)
 
 ;(setq truncate-lines nil)
