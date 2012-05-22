@@ -10,6 +10,14 @@ Issues high priority:
       : *Messages* has line: test.py has auto save data; consider M-x recover-this-file
          : Possible source of startup starting to take a longer time.
       : A solution to this should also solve Clearcase checkout annoyances.
+      : To revert when buffer changes in window.
+         : See http://www.gnu.org/software/emacs/manual/html_node/elisp/Window-Hooks.html
+         : Tried copying Evil's example for using window-scroll-functions, but can't get my-window-scroll invoked.
+      : Enable auto-revert locally in buffer iff it's not showing in a window.
+      : auto-save only prior to a substantive auto-revert.  (Or auto-save and then programmatically determine whether to delete #* file.)
+      : Flash screen when there's a substantive auto-revert.
+      : Try setting hook at the point of revert.  It would check whether the buffer is being viewed and act accordingly.
+      : Try customizing revert-without-query
    : Smart editing:
       : Need to have backspace delete whitespace to tab stops.
          : Problematic:
@@ -19,12 +27,13 @@ Issues high priority:
             : Python
       : Need to specify how many tabs to continue code lines with.
       : Visual mode indenting doesn't work right.
-         : Text
-         : Python
+         : Problematic:
+            : Text
+            : Python
       : Text major mode:
          : Needs to use indentation level of line immediately above.
    : Debugger mode overrules the o keymapping
-
+   
 Issues low priority:
    : Explore dired
    : Overwriting of evil-repeat-ring
@@ -43,6 +52,9 @@ Issues low priority:
             i
             string2
             string2 is highlighted
+         : Undoing.  I'm accustomed to doing using undo to review complex search and replace.  Evil doesn't highlight what was replaced after the undo.
+         : Scrolling with the mouse wheel whilst inputting a search and replace.  Evil shows prior search term instead of what's being searched and replaced.
+         : Pasting text with the search term.
    : Double click select:
       : Need to be able to double click a file path and have it select all of it.
       : Double clicking a / char selects up to the . (exclusive).
@@ -63,9 +75,10 @@ Issues low priority:
          See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
    : How to mark search terms with different colors?
    : Screen flashing:
-      : When finished with a cycle of buffers
+      : When finished with a cycle of buffers.  It may suffice to simply flash when entering the *scratch* buffer, since the sequencing of buffers fluxes.
       : When finished with a cycle of search in a file
    : Get % to match <> such as in C++ or Java.
+   : Set title to include host and directory (after file's basename)
    : buffer-menu
       : Split to the right.
       : Display full file basename or at least widen column width.
@@ -81,6 +94,10 @@ Issues low priority:
          : Select text with v
          : Select different text with mouse
          : Both are highlighted, but y will only yank the second.
+         : Report submitted to project.
+      : Bug:
+         : Select with mouse, char under point is not highlighted, but it is with v selection.
+         : Report submitted to project.
    : Annoying prompts:
       : When exiting with unsaved changes.
       : When opening file greater than 14MB.
@@ -123,6 +140,7 @@ Issues low priority:
    : Figure out what the debris files Emacs leaves behind are about, and whether to change settings to not create them.
       : Files with ~
       : Files with #
+      : Files of the form #*# especially -- they significantly slow opening Emacs on the file.
    : Opening through symlinks in an hg repo is slow by a factor of about 5.
    : Logging
       : Is there a way to get the current function's name, in order to put in log-msg prefix.
@@ -132,6 +150,7 @@ Issues low priority:
          : this keymap would map f to 'delete-other-windows
          : s would be point to that keymap so as 'sf' invokes 'delete-other-windows
       : Figure out what disadvantage there is to mapping "sf" together, if any.
+   : Need to be able to paste from other frames into Emacs more conveniently than hovering over the exact spot to paste.
 
 Modifications to Evil source:
    (none)
@@ -212,6 +231,8 @@ Notes:
    : Special characters:
       : Tab: hit tab key
       : Line feed: C-q C-j
+   : Run emacs without reading .emacs:
+      emacs --no-init-file
 
 Retired issues with residual notes:
    : All things C-g does C-c should do.
