@@ -4,20 +4,18 @@ Issues high priority:
          : It would be good to have similar abstraction as Vim:
             : When leaving file that is unsaved, prompt the user.  Allow for an override.
             : When visiting a file, reload it from disk.
-         : Auto saving and reverting
-            : http://stackoverflow.com/questions/1655695/i-dont-need-saving-how-to-keep-emacs-buffers-in-sync-with-files
-         : Would be nice if buffer menu displayed the files that would change if reverted, so I could manually handle it.
-      : *Messages* has line: test.py has auto save data; consider M-x recover-this-file
-         : Possible source of startup starting to take a longer time.
       : A solution to this should also solve Clearcase checkout annoyances.
-      : To revert when buffer changes in window.
-         : See http://www.gnu.org/software/emacs/manual/html_node/elisp/Window-Hooks.html
-         : Tried copying Evil's example for using window-scroll-functions, but can't get my-window-scroll invoked.
-      : Enable auto-revert locally in buffer iff it's not showing in a window.
-      : auto-save only prior to a substantive auto-revert.  (Or auto-save and then programmatically determine whether to delete #* file.)
-      : Flash screen when there's a substantive auto-revert.
-      : Try setting hook at the point of revert.  It would check whether the buffer is being viewed and act accordingly.
-      : Try customizing revert-without-query
+      : auto-revert
+         : Doesn't revert file permissions, even though revert-buffer does.
+            : Submit bug report to GNU
+         : Has high latency
+            : Might be configurable
+         : Flash screen when auto revert occurs.
+      : revert-buffer invocation
+         : Perhaps when start viewing buffer
+            : Investigate using window-scroll-functions for this.
+               : See http://www.gnu.org/software/emacs/manual/html_node/elisp/Window-Hooks.html
+               : Tried copying Evil's example for using window-scroll-functions, but can't get my-window-scroll invoked.
    : Smart editing:
       : Need to have backspace delete whitespace to tab stops.
          : Problematic:
@@ -134,13 +132,13 @@ Issues low priority:
          (evil-mode 1)
       : Doesn't work if after evil init:
          '(evil-overriding-maps nil)
+         '(revert-without-query (quote (".*")))
       : Doesn't work if before evil init:
          '(evil-search-module (quote evil-search))
       : If there's a best practice for avoiding this gotcha, we should add it to the Wiki.  eg is there a call we can make to reinitialize evil?
    : Figure out what the debris files Emacs leaves behind are about, and whether to change settings to not create them.
       : Files with ~
       : Files with #
-      : Files of the form #*# especially -- they significantly slow opening Emacs on the file.
    : Opening through symlinks in an hg repo is slow by a factor of about 5.
    : Logging
       : Is there a way to get the current function's name, in order to put in log-msg prefix.

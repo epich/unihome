@@ -10,6 +10,7 @@
 
 ;; Disable the auto-save, the #* debris files slow down Emacs startup.
 (setq auto-save-default nil)
+(global-auto-revert-mode 1)
 (defun my-window-scroll
   (log-msg "Inside my-window-scroll")
 )
@@ -40,6 +41,7 @@
 
 (custom-set-variables
  '(evil-overriding-maps nil)
+ '(revert-without-query (quote (".*")))
 )
 
 ;;; Functions to facilitate elisp debug logging.
