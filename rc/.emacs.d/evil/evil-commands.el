@@ -5,6 +5,7 @@
 (require 'evil-search)
 (require 'evil-ex)
 (require 'evil-types)
+(require 'evil-cjk)
 
 ;;; Motions
 
@@ -236,7 +237,7 @@ By default the first line."
 
 (evil-define-union-move evil-move-word (count)
   "Move by words."
-  (evil-move-chars evil-word count)
+  (evil-move-word-cjk count)
   (evil-move-chars (evil-concat-charsets "^ \t\r\n" evil-word) count)
   (evil-move-empty-lines count))
 
@@ -252,6 +253,7 @@ If BIGWORD is non-nil, move by WORDS."
   (let ((move (if bigword #'evil-move-WORD #'evil-move-word))
         (orig (point)))
     (prog1 (if (and evil-want-change-word-to-end
+                    (not (looking-at "[[:space:]]"))
                     (eq evil-this-operator #'evil-change))
                (evil-move-end count move)
              (evil-move-beginning count move))
@@ -477,7 +479,7 @@ and jump to the corresponding one."
   "Move to the next COUNT'th occurrence of CHAR."
   :jump t
   :type inclusive
-  (interactive "<c>c")
+  (interactive "<c><C>")
   (setq count (or count 1))
   (let ((fwd (> count 0)))
     (setq evil-last-find (list #'evil-find-char char fwd))
@@ -497,14 +499,14 @@ and jump to the corresponding one."
   "Move to the previous COUNT'th occurrence of CHAR."
   :jump t
   :type exclusive
-  (interactive "<c>c")
+  (interactive "<c><C>")
   (evil-find-char (- (or count 1)) char))
 
 (evil-define-motion evil-find-char-to (count char)
   "Move before the next COUNT'th occurrence of CHAR."
   :jump t
   :type inclusive
-  (interactive "<c>c")
+  (interactive "<c><C>")
   (unwind-protect
       (progn
         (evil-find-char count char)
@@ -517,7 +519,7 @@ and jump to the corresponding one."
   "Move before the previous COUNT'th occurrence of CHAR."
   :jump t
   :type exclusive
-  (interactive "<c>c")
+  (interactive "<c><C>")
   (evil-find-char-to (- (or count 1)) char))
 
 (evil-define-motion evil-repeat-find-char (count)
@@ -1470,7 +1472,7 @@ The return value is the yanked text."
 (evil-define-command evil-use-register (register)
   "Use REGISTER for the next command."
   :keep-visual t
-  (interactive "c")
+  (interactive "<C>")
   (setq evil-this-register register))
 
 (evil-define-command evil-record-macro (register)
@@ -2377,8 +2379,8 @@ Change to `%s'? "
         wrapped)
     (dotimes (i (or count 1))
       (if (eq evil-ex-search-direction 'backward)
-          (backward-char)
-        (forward-char)
+          (unless (bobp) (backward-char))
+        (unless (eobp) (forward-char))
         ;; maybe skip end-of-line
         (when (and evil-move-cursor-back
                    (eolp) (not (eobp)))
