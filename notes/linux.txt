@@ -1,9 +1,22 @@
 SSH:
-    Enabled SSH HostbasedAuthorization in order to allow all users except root to SSH between hosts on the private network without the need for a user password.  For this to work with root, set up SSH keys for the user.
+    : Enabled SSH HostbasedAuthorization in order to allow all users except root to SSH between hosts on the private network without the need for a user password.  For this to work with root, set up SSH keys for the user.
 
-    Set in /etc/ssh/sshd_config in order to prevent SSH timeouts:
+    : Set in /etc/ssh/sshd_config in order to prevent SSH timeouts:
         TCPKeepAlive yes
         ClientAliveInterval 0
+    : For the user to SSH without password prompting, assuming network shared home directory:
+        RSA:
+            ssh-keygen -t rsa
+                : Use the defaults at the prompts.
+            cat id_rsa.pub >> authorized_keys2
+        DSA (for older SSH):
+            ssh-keygen -t dsa
+                : Use the defaults at the prompts.
+            cat id_dsa.pub >> authorized_keys
+        Authentication can fail because of permissions, either too permissive or too restrictive.
+            : Home dir must be owned by user and can't be set to be group or other writable.
+            : ~/.ssh/ should be drwx------ , found this also works: drwxr-sr-x
+            : ~/.ssh/authorized-keys should be -rw-r--r-- , found this also works: -rw-------
 
 Firewall:
     The iptables firewall on the ccgwrksn and dvswrksn allow only SSH over their Internet-facing NIC.  There are no restrictions between hosts on the private network.
