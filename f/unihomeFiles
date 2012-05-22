@@ -1,0 +1,12 @@
+./notes/boost.txt
+./notes/clearcase.txt
+./notes/linux.txt
+./notes/mercurial.txt
+./notes/sql.txt
+./notes/subversion.txt
+./notes/emacs.txt
+./rc/.emacs
+./rc/.vimrc
+./rc/unihome.cshrc
+./rc/unihome.sh
+
