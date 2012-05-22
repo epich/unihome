@@ -8,8 +8,13 @@
 (tool-bar-mode 0)
 (column-number-mode 1)
 
-;; Disable the auto-save because I don't want to be undermined about what and when to save.
-;(setq auto-save-default nil)
+;; Disable the auto-save, the #* debris files slow down Emacs startup.
+(setq auto-save-default nil)
+(defun my-window-scroll
+  (log-msg "Inside my-window-scroll")
+)
+; TODO
+;(add-hook 'window-scroll-functions 'my-window-scroll nil t)
 
 ;; Maximize window upon startup.
 (defun toggle-fullscreen ()
@@ -132,7 +137,7 @@
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "se" 'eval-last-sexp)
 (define-key evil-motion-state-map "srb" 'revert-buffer)
-(define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs")))
+(define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
 (define-key evil-normal-state-map ";" nil)
 (when (fboundp 'undo-tree-undo)
    (define-key evil-normal-state-map "U" 'undo-tree-redo))
