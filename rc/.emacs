@@ -30,6 +30,7 @@
 (setq case-replace nil)
 (setq vc-follow-symlinks t)
 (delete-selection-mode 1)
+(setq mouse-yank-at-point t)
 
 ;; make file name and computer title
 (defvar my-frame-title "Unset" "Title for the frame. ")
