@@ -39,10 +39,10 @@
    (format "%s"
            (file-name-nondirectory (or (buffer-file-name) default-directory))))) 
 
-(custom-set-variables
- '(evil-overriding-maps nil)
- '(revert-without-query (quote (".*")))
-)
+;; Customizations that have to come before Evil.
+; In custom-set-variables , would be: '(evil-overriding-maps nil)
+(setq evil-overriding-maps nil)
+(setq revert-without-query (quote (".*")))
 
 ;;; Functions to facilitate elisp debug logging.
 (defvar current-date-time-format "%Y-%m-%dT%H:%M:%S"
@@ -72,6 +72,12 @@
    ))
 )
 
+;(add-to-list 'load-path "~/.emacs.d")
+;; Compile .el files if they need to be.
+;;
+;; From: http://stackoverflow.com/questions/1217180/how-do-i-byte-compile-everything-in-my-emacs-d-directory
+;(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
+
 ;; Initialize evil
 (log-msg "Initializing Evil.")
 (add-to-list 'load-path "~/.emacs.d/evil")
@@ -85,6 +91,11 @@
 ;; style guessing.
 ; c-guess isn't working out.
 ;(add-to-list 'load-path "~/.emacs.d/cc-mode")
+
+;; Initialize Clearcase extensions
+; Initializes too slowly for my tastes, even when .elc exists.
+; Specifically, I observed an additional 12 seconds for 17 script files in a snapshot view.
+;(load "clearcase")
 
 ; evil-integration.el attempts to recreate the evil-overriding-maps, set
 ; that code to nil to prevent it from running.
