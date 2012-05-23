@@ -4,10 +4,10 @@ Issues high priority:
          : It would be good to have similar abstraction as Vim:
             : When leaving file that is unsaved, prompt the user.  Allow for an override.
             : When visiting a file, reload it from disk.
-      : A solution to this should also solve Clearcase checkout annoyances.
+      : A solution to this should also solve Clearcase checkout annoyances.  clearcase.el slows down init.
       : auto-revert
          : Doesn't revert file permissions, even though revert-buffer does.
-            : Submit bug report to GNU
+            : Submitted bug report to GNU
          : Has high latency
             : Might be configurable
          : Flash screen when auto revert occurs.
@@ -31,7 +31,8 @@ Issues high priority:
       : Text major mode:
          : Needs to use indentation level of line immediately above.
    : Debugger mode overrules the o keymapping
-   
+   : Repeat . command doesn't work when switching buffers.
+  
 Issues low priority:
    : Explore dired
    : Overwriting of evil-repeat-ring
@@ -148,7 +149,6 @@ Issues low priority:
          : this keymap would map f to 'delete-other-windows
          : s would be point to that keymap so as 'sf' invokes 'delete-other-windows
       : Figure out what disadvantage there is to mapping "sf" together, if any.
-   : Need to be able to paste from other frames into Emacs more conveniently than hovering over the exact spot to paste.
 
 Modifications to Evil source:
    (none)
