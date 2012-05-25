@@ -76,6 +76,9 @@ Issues low priority:
          See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
    : How to mark search terms with different colors?
       : Submit RFE to Evil for a function analogous to highlight-regexp and highlight-phrase .
+      : Need Evil analog to highlight-regexp and highlight-phrase
+      : Look more at evil-ex-make-hl
+      : Need a way to clear them.  evil-ex-delete-hl perhaps.
    : Screen flashing:
       : When finished with a cycle of buffers.  It may suffice to simply flash when entering the *scratch* buffer, since the sequencing of buffers fluxes.
       : When finished with a cycle of search in a file
