@@ -7,7 +7,7 @@ Issues high priority:
       : A solution to this should also solve Clearcase checkout annoyances.  clearcase.el slows down init.
       : auto-revert
          : Doesn't revert file permissions, even though revert-buffer does.
-            : Submitted bug report to GNU
+            : Submitted bug report to GNU, ID 11549, merged with ID 11412.
          : Has high latency
             : Might be configurable
          : Flash screen when auto revert occurs.
@@ -16,6 +16,7 @@ Issues high priority:
             : Investigate using window-scroll-functions for this.
                : See http://www.gnu.org/software/emacs/manual/html_node/elisp/Window-Hooks.html
                : Tried copying Evil's example for using window-scroll-functions, but can't get my-window-scroll invoked.
+         : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
    : Smart editing:
       : Need to have backspace delete whitespace to tab stops.
          : Problematic:
@@ -53,7 +54,8 @@ Issues low priority:
             string2 is highlighted
          : Undoing.  I'm accustomed to doing using undo to review complex search and replace.  Evil doesn't highlight what was replaced after the undo.
          : Scrolling with the mouse wheel whilst inputting a search and replace.  Evil shows prior search term instead of what's being searched and replaced.
-         : Pasting text with the search term.
+         : Pasting text which contains the search term.
+      : When up arrowing through search history, Vim goes to end of line, Evil beginning.
    : Double click select:
       : Need to be able to double click a file path and have it select all of it.
       : Double clicking a / char selects up to the . (exclusive).
@@ -73,6 +75,7 @@ Issues low priority:
       : Could also set color of cursor instead:
          See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
    : How to mark search terms with different colors?
+      : Submit RFE to Evil for a function analogous to highlight-regexp and highlight-phrase .
    : Screen flashing:
       : When finished with a cycle of buffers.  It may suffice to simply flash when entering the *scratch* buffer, since the sequencing of buffers fluxes.
       : When finished with a cycle of search in a file
