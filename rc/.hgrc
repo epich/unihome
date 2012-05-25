@@ -6,7 +6,7 @@ merge = vimdiff
 [extensions]
 hgext.graphlog =
 
-[merge-tools]
-vimdiff.executable = vim
-vimdiff.args = -d $base $local $output $other +close +close
+#[merge-tools]
+#vimdiff.executable = vim
+#vimdiff.args = -d $base $local $output $other +close +close
 
