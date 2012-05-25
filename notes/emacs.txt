@@ -62,6 +62,9 @@ Issues low priority:
       : Could also set color of cursor instead:
          See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
    : How to mark search terms with different colors?
+      : Need Evil analog to highlight-regexp and highlight-phrase
+      : Look more at evil-ex-make-hl
+      : Need a way to clear them.  evil-ex-delete-hl perhaps.
    : Screen flashing:
       : When finished with a cycle of buffers
       : When finished with a cycle of search in a file
