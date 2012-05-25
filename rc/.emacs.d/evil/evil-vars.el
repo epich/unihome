@@ -1,5 +1,34 @@
 ;;;; Settings and variables
 
+;;; Hooks
+
+(defvar evil-after-load-hook nil
+  "Functions to be run when loading of evil is finished.
+This hook can be used the execute some initialization routines
+when evil is completely loaded.")
+
+;;; Initialization
+
+(defvar evil-pending-custom-initialize nil
+  "A list of pending initializations for custom variables.
+Each element is a triple (FUNC VAR VALUE). When evil is
+completely loaded then the functions (funcall FUNC VAR VALUE) is
+called for each element. FUNC should be a function suitable for
+the :initialize property of `defcustom'.")
+
+(defun evil-custom-initialize-pending-reset (var value)
+  "Add a pending customization with `custom-initialize-reset'."
+  (push (list 'custom-initialize-reset var value)
+        evil-pending-custom-initialize))
+
+(defun evil-run-pending-custom-initialize ()
+  "Executes the pending initializations.
+See `evil-pending-custom-initialize'."
+  (dolist (init evil-pending-custom-initialize)
+    (apply (car init) (cdr init)))
+  (remove-hook 'evil-after-load-hook 'evil-run-pending-custom-initialize))
+(add-hook 'evil-after-load-hook 'evil-run-pending-custom-initialize)
+
 ;;; Setters
 
 (defun evil-set-toggle-key (key)
@@ -20,6 +49,63 @@ KEY must be readable by `read-kbd-macro'."
             (when (keymapp map)
               (define-key map key fun)
               (define-key map old-key nil))))))))
+
+(defun evil-set-custom-state-maps (var pending-var key make newlist)
+  "Changes the list of special keymaps.
+VAR         is the variable containing the list of keymaps.
+PENDING-VAR is the variable containing the list of the currently pending
+            keymaps.
+KEY         the special symbol to be stored in the keymaps.
+MAKE        the creation function of the special keymaps.
+NEWLIST     the list of new special keymaps."
+  (set-default pending-var newlist)
+  (when (default-boundp var)
+    (dolist (map (default-value var))
+      (when (and (boundp (car map))
+                 (keymapp (default-value (car map))))
+        (define-key (default-value (car map)) (vector key) nil))))
+  (set-default var newlist)
+  (evil-update-pending-maps))
+
+(defun evil-update-pending-maps (&optional file)
+  "Tries to set pending special keymaps.
+This function should be called from an `after-load-functions'
+hook."
+  (dolist (map '((evil-make-overriding-map . evil-pending-overriding-maps)
+                 (evil-make-intercept-map . evil-pending-intercept-maps)))
+    (let ((make (car map))
+          (pending (cdr map))
+          newlist)
+      (dolist (map (symbol-value pending))
+        (let ((kmap (and (boundp (car map))
+                         (keymapp (symbol-value (car map)))
+                         (symbol-value (car map))))
+              (state (cdr map)))
+          (if kmap
+              (funcall make kmap state)
+            (push map newlist))))
+      (set-default pending newlist))))
+
+(defun evil-set-visual-newline-commands (var value)
+  "Set the value of `evil-visual-newline-commands'.
+Setting this variable changes the properties of the appropriate
+commands."
+  (with-no-warnings
+    (when (default-boundp var)
+      (dolist (cmd (default-value var))
+        (evil-set-command-property cmd :exclude-newline nil)))
+    (set-default var value)
+    (dolist (cmd (default-value var))
+      (evil-set-command-property cmd :exclude-newline t))))
+
+(defun evil-set-custom-motions (var values)
+  "Sets the list of motion commands."
+  (with-no-warnings
+    (when (default-boundp var)
+      (dolist (motion (default-value var))
+        (evil-add-command-properties motion :keep-visual nil :repeat nil)))
+    (set-default var values)
+    (mapc #'evil-declare-motion (default-value var))))
 
 ;;; Customization group
 
@@ -440,6 +526,12 @@ If STATE is nil, Evil is disabled in the buffer."
   :type  '(repeat symbol)
   :group 'evil)
 
+(defvar evil-pending-overriding-maps nil
+  "An alist of pending overriding maps.")
+
+(defvar evil-pending-intercept-maps nil
+  "An alist of pending intercept maps.")
+
 (defcustom evil-overriding-maps
   '((Buffer-menu-mode-map . nil)
     (color-theme-mode-map . nil)
@@ -457,7 +549,16 @@ a keymap variable and STATE is the state whose bindings
 should be overridden. If STATE is nil, all states are
 overridden."
   :type '(alist :key-type symbol :value-type symbol)
-  :group 'evil)
+  :group 'evil
+  :set #'(lambda (var values)
+           (evil-set-custom-state-maps 'evil-overriding-maps
+                                       'evil-pending-overriding-maps
+                                       'override-state
+                                       'evil-make-overriding-map
+                                       values))
+  :initialize 'evil-custom-initialize-pending-reset)
+
+(add-hook 'after-load-functions #'evil-update-pending-maps)
 
 (defcustom evil-intercept-maps
   '((edebug-mode-map . nil))
@@ -467,7 +568,14 @@ a keymap variable and STATE is the state whose bindings
 should be intercepted. If STATE is nil, all states are
 intercepted."
   :type '(alist :key-type symbol :value-type symbol)
-  :group 'evil)
+  :group 'evil
+  :set #'(lambda (var values)
+           (evil-set-custom-state-maps 'evil-intercept-maps
+                                       'evil-pending-intercept-maps
+                                       'intercept-state
+                                       'evil-make-intercept-map
+                                       values))
+  :initialize 'evil-custom-initialize-pending-reset)
 
 (defcustom evil-motions
   '(back-to-indentation
@@ -484,7 +592,6 @@ intercepted."
     beginning-of-visual-line
     c-beginning-of-defun
     c-end-of-defun
-    digit-argument
     down-list
     end-of-buffer
     end-of-defun
@@ -559,14 +666,12 @@ intercepted."
     undo
     undo-tree-redo
     undo-tree-undo
-    universal-argument
-    universal-argument-minus
-    universal-argument-more
-    universal-argument-other-key
     up-list)
   "Non-Evil commands to initialize to motions."
   :type  '(repeat symbol)
-  :group 'evil)
+  :group 'evil
+  :set 'evil-set-custom-motions
+  :initialize 'evil-custom-initialize-pending-reset)
 
 (defcustom evil-visual-newline-commands
   '(LaTeX-section
@@ -574,7 +679,9 @@ intercepted."
   "Commands excluding the trailing newline of a Visual Line selection.
 These commands work better without this newline."
   :type  '(repeat symbol)
-  :group 'evil)
+  :group 'evil
+  :set 'evil-set-visual-newline-commands
+  :initialize 'evil-custom-initialize-pending-reset)
 
 (defcustom evil-want-visual-char-semi-exclusive nil
   "Visual character selection to beginning/end of line is exclusive.

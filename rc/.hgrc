@@ -1,12 +1,12 @@
 [ui]
 # username = firstName lastName <me@here.com>
 username = epich
-merge = vimdiff
+#merge = vimdiff
 
 [extensions]
 hgext.graphlog =
 
-[merge-tools]
-vimdiff.executable = vim
-vimdiff.args = -d $base $local $output $other +close +close
+#[merge-tools]
+#vimdiff.executable = vim
+#vimdiff.args = -d $base $local $output $other +close +close
 

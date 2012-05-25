@@ -110,21 +110,6 @@
 ; that code to nil to prevent it from running.
 (eval-after-load 'ibuffer nil)
 
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(evil-search-module (quote evil-search))
- '(inhibit-startup-screen t))
- '(evil-overriding-maps nil)
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- )
-
 ;;; Tabs
 (defvar my-offset 3 "My size of indentation.  Would prefer style guessing instead. ")
 ; Make tab less restrictive about where I tab to.
@@ -134,7 +119,28 @@
 (setq-default indent-tabs-mode nil)
 (setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
 (setq c-basic-offset my-offset)
+; Doesn't work here, works in custom-set-variables.
+;(setq evil-shift-width my-offset)
+; How to display tabs.
 ;(setq tab-width my-offset)
+; Disable weird auto formatting
+(setq-default c-electric-flag nil)
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(evil-search-module (quote evil-search))
+ '(evil-shift-width my-offset)
+ '(inhibit-startup-screen t))
+ '(evil-overriding-maps nil)
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )
 
 ;;; evil mappings
 ;;;
@@ -149,6 +155,8 @@
 
 ; I don't use RET in motion state, but it is useful in eg buffer mode.
 (global-set-key (kbd "RET") 'evil-ret)
+; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
+(define-key evil-motion-state-map (kbd "C-y") nil)
 (define-key evil-motion-state-map (kbd "RET") nil)
 (define-key evil-normal-state-map "o" nil)
 (define-key evil-normal-state-map "O" nil)
@@ -252,6 +260,9 @@
 ))
 (add-hook 'term-setup-hook
    (lambda ()
+      ;; I tend to put things here that for some reason don't work
+      ;; when executed earlier.
+     
       (define-key evil-motion-state-map "ch" help-map)
       (define-key evil-motion-state-map "cx" ctl-x-map)
       (delete-other-windows)
