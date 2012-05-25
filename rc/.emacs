@@ -121,7 +121,7 @@
 (setq c-basic-offset my-offset)
 ; Doesn't work here, works in custom-set-variables.
 ;(setq evil-shift-width my-offset)
-; How to display tabs.
+; Determines how to display tabs.
 ;(setq tab-width my-offset)
 ; Disable weird auto formatting
 (setq-default c-electric-flag nil)
@@ -142,25 +142,42 @@
   ;; If there is more than one, they won't work right.
  )
 
-;;; evil mappings
+;;; evil key bindings
 ;;;
+;;; Since normal state inherits motion state's key bindings,
+;;; If I want to override a default binding in normal state 
+;;; with one in motion state, I have to expressly set the old
+;;; key binding to nil.
 
-(define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
-(define-key evil-motion-state-map (kbd "C-c") 'evil-normal-state)
-(global-set-key (kbd "C-c") 'keyboard-escape-quit)
-(define-key evil-read-key-map (kbd "C-c") 'keyboard-quit)
+(defun my-esc (prompt)
+  "Functionality for escaping generally.  Includes exiting Evil insert state and C-g binding. "
+  (cond
+   ;; Function expects a key sequence in return, so (kbd "") is for that purpose.
+   ((evil-insert-state-p) (evil-normal-state) (kbd ""))
+   ((evil-motion-state-p) (evil-normal-state) (kbd ""))
+   ; This is the best way I could infer for now to have C-c work during evil-read-key.
+   ((eq overriding-terminal-local-map evil-read-key-map) (keyboard-quit) (kbd ""))
+   (t (kbd "C-g")))
+)
+(define-key key-translation-map (kbd "C-c") 'my-esc)
+;; Before I used my-esc, I used these.  Keeping in case I run into an issue.
+;(define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
+;(define-key evil-motion-state-map (kbd "C-c") 'evil-normal-state)
+;(global-set-key (kbd "C-c") 'keyboard-escape-quit)
+;(define-key evil-read-key-map (kbd "C-c") 'keyboard-quit)
 
-(define-key evil-motion-state-map "," nil)
 (define-key evil-motion-state-map "," 'execute-extended-command)
+; Undo c Evil keybinding for use as prefix key to various Ctrl- key sequences.
+(define-key evil-normal-state-map "c" nil)
 
 ; I don't use RET in motion state, but it is useful in eg buffer mode.
+(define-key evil-motion-state-map (kbd "RET") nil)
 (global-set-key (kbd "RET") 'evil-ret)
 ; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
 (define-key evil-motion-state-map (kbd "C-y") nil)
-(define-key evil-motion-state-map (kbd "RET") nil)
 (define-key evil-normal-state-map "o" nil)
-(define-key evil-normal-state-map "O" nil)
 (define-key evil-motion-state-map "o" 'next-buffer)
+(define-key evil-normal-state-map "O" nil)
 (define-key evil-motion-state-map "O" 'previous-buffer)
 (define-key evil-normal-state-map "f" 'buffer-menu)
 (define-key evil-normal-state-map "-" nil)
@@ -171,9 +188,11 @@
 (define-key evil-motion-state-map "se" 'eval-last-sexp)
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
-(define-key evil-normal-state-map ";" nil)
+; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
 (when (fboundp 'undo-tree-undo)
    (define-key evil-normal-state-map "U" 'undo-tree-redo))
+
+(define-key evil-normal-state-map ";" nil)
 ;; Go down in larger steps
 (define-key evil-motion-state-map ";" 
    (lambda ()
@@ -201,8 +220,6 @@
       (evil-ex-hl-update-highlights)
    )
 )
-; Undo c Evil keybinding for use as prefix key to various Ctrl- key sequences.
-(define-key evil-normal-state-map "c" nil)
 
 ;(setq truncate-lines nil)
 
@@ -216,17 +233,17 @@
           (eval `(set-face-attribute (car f) nil ,@(cdr f))))
         fl))
 (configure-faces
-   '((isearch-lazy-highlight-face' :background "yellow" :foreground "black"))
-)
+ '((isearch-lazy-highlight-face' :background "yellow" :foreground "black"))
+ )
 
-(defun my-elisp-log ()
+(defun my-insert-elisp-log ()
    "Insert log statement for elisp. "
    (interactive)
-   (insert "(log-msg \"\") ; TODO: temporary for debug")
-   (dotimes (num 30) (backward-char))
+   (insert "(log-msg (format \"\")) ; TODO: temporary for debug")
+   (dotimes (num 31) (backward-char))
    (log-msg "lisp logging")
 )
-(defun my-java-log ()
+(defun my-insert-java-log ()
    "Insert log statement for Java. "
    (interactive)
    ; The vimscript was:
@@ -239,18 +256,18 @@
 (add-hook 'emacs-lisp-mode-hook 
    (lambda ()
       (log-msg "Inside emacs-lisp-mode-hook")
-      (define-key evil-insert-state-local-map (quote [f3]) 'my-elisp-log)
+      (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-elisp-log)
    )
 )
 (add-hook 'java-mode-hook 
    (lambda ()
       (log-msg "Inside java-mode-hook")
-      (define-key evil-insert-state-local-map (quote [f3]) 'my-java-log)
+      (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-java-log)
    )
 )
 (add-hook 'c-mode-common-hook 
    (lambda ()
-      (log-msg "Settup up C mode. ")
+      (log-msg "Inside c-mode-common-hook. ")
    )
 )
 (add-hook 'after-change-major-mode-hook
