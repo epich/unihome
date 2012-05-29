@@ -239,9 +239,9 @@
 (defun my-insert-elisp-log ()
    "Insert log statement for elisp. "
    (interactive)
-   (insert "(log-msg (format \"\")) ; TODO: temporary for debug")
-   (dotimes (num 31) (backward-char))
-   (log-msg "lisp logging")
+   (insert "(log-msg (format \"DEBUG: \")) ; TODO: temporary for debug")
+   (search-backward "DEBUG: ")
+   (goto-char (match-end 0))
 )
 (defun my-insert-java-log ()
    "Insert log statement for Java. "
@@ -249,8 +249,8 @@
    ; The vimscript was:
    ;imap <F3> org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // temporary for debug<Enter><Tab><Tab><Tab>"DEBUG: ",<Enter>new Object[]{} );<Esc>khi
    (insert "org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // TODO: temporary for debug\n\t\t\t\"DEBUG: \",\n\t\t\tnew Object[]{} );")
-   (previous-line)
-   (dotimes (num 2) (backward-char))
+   (search-backward "DEBUG: ")
+   (goto-char (match-end 0))
 )
 
 (add-hook 'emacs-lisp-mode-hook 
