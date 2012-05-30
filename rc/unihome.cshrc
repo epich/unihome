@@ -20,6 +20,9 @@ endif
 setenv unihomePackages "vim mercurial"
 setenv EDITOR vim
 
+# Can fail to git clone from GitHub without this
+setenv GIT_SSL_NO_VERIFY true
+
 # Default history buffer always too small
 set history=10000
 # Change how shell keeps command history
