@@ -29,8 +29,6 @@ Issues low priority:
       : Try out Java Auto Complete
          : Prereqs:
             : Auto Complete
-               : Cursor color problem.  Try solution at:
-                  https://github.com/m2ym/auto-complete/issues/95
             : Yasnippet
    : Smart editing:
       : Need to have backspace delete whitespace to tab stops.

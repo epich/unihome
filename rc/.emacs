@@ -1,8 +1,3 @@
-;;to set foreground color to white
-(set-foreground-color "white")
-;;to set background color to black
-(set-background-color "black")
-
 ;; General emacs settings
 (setq visible-bell t) 
 (tool-bar-mode 0)
@@ -100,11 +95,10 @@
 
 ;; Initialize Auto Complete
 ;;
-;; TODO: Doesn't combine well with C-c out of Evil insert.  Also, screws up face of char under point.
-;(add-to-list 'load-path "~/.emacs.d/ac")
-;(require 'auto-complete-config)
-;(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac/ac-dict")
-;(ac-config-default)
+(add-to-list 'load-path "~/.emacs.d/ac")
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac/ac-dict")
+(ac-config-default)
 
 ; evil-integration.el attempts to recreate the evil-overriding-maps, set
 ; that code to nil to prevent it from running.

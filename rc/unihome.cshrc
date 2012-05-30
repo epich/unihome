@@ -73,7 +73,7 @@ alias cwdcmd title "$hostString : '`pwd`'"
 alias ct cleartool
 alias vim 'vim \!*; echo "Thanks for flying Vim"; cwdcmd'
 alias v 'vim'
-alias e 'emacs \!* &'
+alias e 'emacs --reverse-video \!* &'
 alias c 'cat'
 alias sa 'source ~/.cshrc'
 alias ip '/sbin/ifconfig -a'
