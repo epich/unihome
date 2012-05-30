@@ -22,6 +22,9 @@ Issues high priority:
       : Doesn't work when switching buffers.
       : Applies the wrong command under some circumstances I don't quite know.
          : Insert debug statements to find out.
+   : C-c issues:
+      : Need to handle escaping out of other unofficial Evil states, such as =
+      : my-esc screws up the . repeat ring somehow.
 
 Issues low priority:
    : Explore dired
@@ -112,6 +115,9 @@ Issues low priority:
                   </foo>
             : Highlighting a subset of the line, such as </f , shifting doesn't work.
             : Highlighting the entire line does work.
+            : Found this occurs in Java major mode, perhaps all.
+      : Bug:
+         : In Java major mode, v> doesn't work when point is on whitespace at the beginning of the line.  But the same test case works in Vim.
    : Annoying prompts:
       : When exiting with unsaved changes.
       : When opening file greater than 14MB.

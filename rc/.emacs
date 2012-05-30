@@ -155,12 +155,14 @@
    ((eq overriding-terminal-local-map evil-read-key-map) (keyboard-quit) (kbd ""))
    (t (kbd "C-g")))
 )
-(define-key key-translation-map (kbd "C-c") 'my-esc)
-;; Before I used my-esc, I used these.  Keeping in case I run into an issue.
-;(define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
-;(define-key evil-motion-state-map (kbd "C-c") 'evil-normal-state)
-;(global-set-key (kbd "C-c") 'keyboard-escape-quit)
-;(define-key evil-read-key-map (kbd "C-c") 'keyboard-quit)
+; TODO: Screws up the evil-repeat-ring, need to investigate.
+;(define-key key-translation-map (kbd "C-c") 'my-esc)
+
+;; These are an alternative to my-esc.
+(define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
+(define-key evil-motion-state-map (kbd "C-c") 'evil-normal-state)
+(global-set-key (kbd "C-c") 'keyboard-escape-quit)
+(define-key evil-read-key-map (kbd "C-c") 'keyboard-quit)
 
 (define-key evil-motion-state-map "," 'execute-extended-command)
 ; Undo c Evil keybinding for use as prefix key to various Ctrl- key sequences.
