@@ -95,9 +95,10 @@
 
 ;; Initialize Auto Complete
 ;;
-(add-to-list 'load-path "~/.emacs.d/ac")
+(defvar my-ac-build-path "~/.emacs.d/ac/auto-complete-1.3.1/build" "Path to built ac")
+(add-to-list 'load-path my-ac-build-path)
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac/ac-dict")
+(add-to-list 'ac-dictionary-directories (format "%s/ac-dict" my-ac-build-path))
 (ac-config-default)
 
 ; evil-integration.el attempts to recreate the evil-overriding-maps, set
