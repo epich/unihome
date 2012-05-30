@@ -126,11 +126,16 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+
+ ; The default 0.1 ac-delay can cause display update delays when I'm typing.
+ ; If I know what I'm typing, it is inconvenient.  1.0 is sufficiently high
+ ; to imply I'm pausing in my typing.
+ '(ac-delay 1.0)
+ '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
  '(inhibit-startup-screen t)
- '(inverse-video t)
- '(evil-overriding-maps nil))
+ '(inverse-video t))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
