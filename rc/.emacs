@@ -153,25 +153,30 @@
 (defun my-esc (prompt)
   "Functionality for escaping generally.  Includes exiting Evil insert state and C-g binding. "
   (cond
-   ;; Function expects a key sequence in return, so (kbd "") is for that purpose.
-   ((evil-insert-state-p) (evil-normal-state) (kbd ""))
-   ((evil-motion-state-p) (evil-normal-state) (kbd ""))
+   ((or (evil-insert-state-p) (evil-motion-state-p)) [escape])
    ; This is the best way I could infer for now to have C-c work during evil-read-key.
    ((eq overriding-terminal-local-map evil-read-key-map) (keyboard-quit) (kbd ""))
    (t (kbd "C-g")))
 )
-; TODO: Screws up the evil-repeat-ring, need to investigate.
-;(define-key key-translation-map (kbd "C-c") 'my-esc)
+(define-key key-translation-map (kbd "C-c") 'my-esc)
 
 ;; These are an alternative to my-esc.
-(define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
-(define-key evil-motion-state-map (kbd "C-c") 'evil-normal-state)
-(global-set-key (kbd "C-c") 'keyboard-escape-quit)
-(define-key evil-read-key-map (kbd "C-c") 'keyboard-quit)
+;(define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
+;(define-key evil-motion-state-map (kbd "C-c") 'evil-normal-state)
+;(global-set-key (kbd "C-c") 'keyboard-escape-quit)
+;(define-key evil-read-key-map (kbd "C-c") 'keyboard-quit)
 
 (define-key evil-motion-state-map "," 'execute-extended-command)
 ; Undo c Evil keybinding for use as prefix key to various Ctrl- key sequences.
 (define-key evil-normal-state-map "c" nil)
+
+;; Disable C-0 and C-- since I hit them alot.
+(defun my-no-op () "No op, meaning do nothing."
+  )
+(define-key evil-motion-state-map (kbd "C-0") 'my-no-op)
+(define-key evil-normal-state-map (kbd "C-0") 'my-no-op)
+(define-key evil-motion-state-map (kbd "C--") 'my-no-op)
+(define-key evil-normal-state-map (kbd "C--") 'my-no-op)
 
 ; I don't use RET in motion state, but it is useful in eg buffer mode.
 (define-key evil-motion-state-map (kbd "RET") nil)
