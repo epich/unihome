@@ -127,8 +127,9 @@
   ;; If there is more than one, they won't work right.
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
- '(inhibit-startup-screen t))
- '(evil-overriding-maps nil)
+ '(inhibit-startup-screen t)
+ '(inverse-video t)
+ '(evil-overriding-maps nil))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
