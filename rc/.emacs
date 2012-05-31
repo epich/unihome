@@ -68,11 +68,11 @@
    ))
 )
 
-;(add-to-list 'load-path "~/.emacs.d")
+(add-to-list 'load-path "~/.emacs.d")
 ;; Compile .el files if they need to be.
 ;;
 ;; From: http://stackoverflow.com/questions/1217180/how-do-i-byte-compile-everything-in-my-emacs-d-directory
-;(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
+(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
 
 ;; Initialize evil
 (log-msg "Initializing Evil.")
