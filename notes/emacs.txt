@@ -162,11 +162,6 @@ Issues low priority:
    : Logging
       : Is there a way to get the current function's name, in order to put in log-msg prefix.
       : Is there a way to modify the message function (with defadvice or otherwise) to prepend timestamp?
-   : Make s a prefix key
-      : Define keymap for it.  eg:
-         : this keymap would map f to 'delete-other-windows
-         : s would be point to that keymap so as 'sf' invokes 'delete-other-windows
-      : Figure out what disadvantage there is to mapping "sf" together, if any.
    : C-c issues:
       : Need to handle escaping out of other unofficial Evil states, such as =
 
@@ -252,6 +247,11 @@ Notes:
       emacs --no-init-file
 
 Retired issues with residual notes:
+   : Make s a prefix key
+      : Define keymap for it.  eg:
+         : this keymap would map f to 'delete-other-windows
+         : s would be point to that keymap so as 'sf' invokes 'delete-other-windows
+      : Figure out what disadvantage there is to mapping "sf" together, if any.
    : All things C-g does C-c should do.
       : Try binding C-c to C-g , see:
          http://www.gnu.org/software/emacs/manual/html_node/elisp/Key-Lookup.html
