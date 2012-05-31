@@ -72,7 +72,8 @@
 ;; Compile .el files if they need to be.
 ;;
 ;; From: http://stackoverflow.com/questions/1217180/how-do-i-byte-compile-everything-in-my-emacs-d-directory
-(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
+; TODO: When files don't compile, it'll create errors and modest delay everytime Emacs starts.
+;(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
 
 ;; Initialize evil
 (log-msg "Initializing Evil.")
@@ -208,7 +209,7 @@
 (define-key evil-motion-state-map "o" 'next-buffer)
 (define-key evil-normal-state-map "O" nil)
 (define-key evil-motion-state-map "O" 'previous-buffer)
-(define-key evil-normal-state-map "f" 'buffer-menu)
+(define-key evil-motion-state-map "f" 'buffer-menu)
 (define-key evil-normal-state-map "-" nil)
 (define-key evil-motion-state-map "-" 'evil-end-of-line)
 (define-key evil-normal-state-map "s" nil)
