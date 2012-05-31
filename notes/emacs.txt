@@ -1,4 +1,20 @@
 Issues high priority:
+
+Issues low priority:
+   : Repeat . command bugs:
+      : Doesn't work when switching buffers.  Sometimes does.
+      : Applies the wrong command under some circumstances I don't quite know.
+         : Insert debug statements to find out.
+      : Pasting text into Emacs isn't recorded to repeat ring.
+   : Java development
+      : Java Auto Complete
+         : Popup causes several seconds of delay.  What's the cause?
+         : Why is there no popup for ajc-import-class-under-point?
+      : Popup doesn't appear, with or without their patch.  Investigate.
+         : It appears he got the patch accepted upstream:
+            https://github.com/jixiuf/auto-complete/commit/6e1e832d2ee07ef3155dce92181c90bd3ff3d4ef
+         : Investigate whether I'm looking at this.
+      : Keybind ajc-import-class-under-point
    : File reloading:
       : Figure out how to make reloading a file from disk less annoying.
          : It would be good to have similar abstraction as Vim:
@@ -17,29 +33,6 @@ Issues high priority:
                : See http://www.gnu.org/software/emacs/manual/html_node/elisp/Window-Hooks.html
                : Tried copying Evil's example for using window-scroll-functions, but can't get my-window-scroll invoked.
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
-   : Debugger mode overrules the o keymapping
-   : Repeat . command bugs:
-      : Doesn't work when switching buffers.  Sometimes does.
-      : Applies the wrong command under some circumstances I don't quite know.
-         : Insert debug statements to find out.
-      : Pasting text into Emacs isn't recorded to repeat ring.
-   : C-c issues:
-      : Need to handle escaping out of other unofficial Evil states, such as =
-      : my-esc screws up the . repeat ring somehow.
-   : Copy and paste in Emacs often problematic.
-      : Try advice in http://emacswiki.org/emacs/CopyAndPaste
-      : Tried something, wait to see how it works out.
-   : Java development
-      : Java Auto Complete
-         : Popup causes several seconds of delay.  What's the cause?
-         : Why is there no popup for ajc-import-class-under-point?
-      : Popup doesn't appear, with or without their patch.  Investigate.
-         : It appears he got the patch accepted upstream:
-            https://github.com/jixiuf/auto-complete/commit/6e1e832d2ee07ef3155dce92181c90bd3ff3d4ef
-         : Investigate whether I'm looking at this.
-      : Keybind ajc-import-class-under-point
-
-Issues low priority:
    : Explore dired
    : Smart editing:
       : Need to have backspace delete whitespace to tab stops.
@@ -174,6 +167,8 @@ Issues low priority:
          : this keymap would map f to 'delete-other-windows
          : s would be point to that keymap so as 'sf' invokes 'delete-other-windows
       : Figure out what disadvantage there is to mapping "sf" together, if any.
+   : C-c issues:
+      : Need to handle escaping out of other unofficial Evil states, such as =
 
 Modifications to Evil source:
    (none)
