@@ -1,6 +1,7 @@
 Issues high priority:
 
 Issues low priority:
+   : Figure out how to byte compile .el files and add it to buildEmacsD.py for yasnippet and ajc.
    : Repeat . command bugs:
       : Doesn't work when switching buffers.  Sometimes does.
       : Applies the wrong command under some circumstances I don't quite know.
