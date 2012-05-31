@@ -30,6 +30,9 @@ Issues high priority:
       : Try advice in http://emacswiki.org/emacs/CopyAndPaste
       : Tried something, wait to see how it works out.
    : Java development
+      : Java Auto Complete
+         : Popup causes several seconds of delay.  What's the cause?
+         : Why is there no popup for ajc-import-class-under-point?
       : Try out Java Auto Complete
          : Prereqs:
             : Auto Complete
