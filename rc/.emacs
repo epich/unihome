@@ -101,6 +101,22 @@
 (add-to-list 'ac-dictionary-directories (format "%s/ac-dict" my-ac-build-path))
 (ac-config-default)
 
+;; Configure Auto Complete
+; RET can cause auto completion when literal RET is what I want.
+; Auto Complete is perfectly usable via TAB alone, so disable RET key binding.
+(define-key ac-complete-mode-map (kbd "RET") nil)
+
+;; Initialize Yasnippet
+(add-to-list 'load-path "~/.emacs.d/yasnippet")
+(require 'yasnippet)
+(yas/global-mode 1)
+
+;; Initialize Java Auto Complete
+(add-to-list 'load-path "~/.emacs.d/ajc-java-complete/")
+(require 'ajc-java-complete-config)
+(add-hook 'java-mode-hook 'ajc-java-complete-mode)
+(add-hook 'find-file-hook 'ajc-4-jsp-find-file-hook)
+
 ; evil-integration.el attempts to recreate the evil-overriding-maps, set
 ; that code to nil to prevent it from running.
 (eval-after-load 'ibuffer nil)
@@ -126,16 +142,21 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-
+ 
+ '(evil-overriding-maps nil)
  ; The default 0.1 ac-delay can cause display update delays when I'm typing.
  ; If I know what I'm typing, it is inconvenient.  1.0 is sufficiently high
  ; to imply I'm pausing in my typing.
  '(ac-delay 1.0)
- '(evil-overriding-maps nil)
+ '(ajc-tag-file "~/.emacs.d/ajc-java-complete/java_base.tag")
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
  '(inhibit-startup-screen t)
- '(inverse-video t))
+ ; An attempt to get white on black.  For some reason this doesn't work
+ ; but the --reverse-video CLI arg does.
+ '(inverse-video t)
+ ; This is necessary to paste into Windows running on qemu-kvm .
+ '(x-select-enable-clipboard t))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
