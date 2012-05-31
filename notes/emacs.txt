@@ -33,10 +33,6 @@ Issues high priority:
       : Java Auto Complete
          : Popup causes several seconds of delay.  What's the cause?
          : Why is there no popup for ajc-import-class-under-point?
-      : Try out Java Auto Complete
-         : Prereqs:
-            : Auto Complete
-            : Yasnippet
       : Popup doesn't appear, with or without their patch.  Investigate.
          : It appears he got the patch accepted upstream:
             https://github.com/jixiuf/auto-complete/commit/6e1e832d2ee07ef3155dce92181c90bd3ff3d4ef
