@@ -16,6 +16,7 @@ Issues low priority:
             https://github.com/jixiuf/auto-complete/commit/6e1e832d2ee07ef3155dce92181c90bd3ff3d4ef
          : Investigate whether I'm looking at this.
       : Keybind ajc-import-class-under-point
+      : Get rid of prompt for loading Java tags file.
    : File reloading:
       : Figure out how to make reloading a file from disk less annoying.
          : It would be good to have similar abstraction as Vim:
@@ -106,16 +107,6 @@ Issues low priority:
       : Bug:
          : Select with mouse, char under point is not highlighted, but it is with v selection.
          : Report submitted to project.
-      : Bug:
-         : Evil shifting didn't work on XML tags
-            : Code:
-               <foo>
-                  </foo>
-            : Highlighting a subset of the line, such as </f , shifting doesn't work.
-            : Highlighting the entire line does work.
-            : Found this occurs in Java major mode, perhaps all.
-      : Bug:
-         : In Java major mode, v> doesn't work when point is on whitespace at the beginning of the line.  But the same test case works in Vim.
    : Annoying prompts:
       : When exiting with unsaved changes.
       : When opening file greater than 14MB.
