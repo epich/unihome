@@ -138,25 +138,28 @@
 ; Disable weird auto formatting
 (setq-default c-electric-flag nil)
 
+;; ac-delay
+; The default 0.1 ac-delay can cause display update delays when I'm typing.
+; If I know what I'm typing, it is inconvenient.  1.0 is sufficiently high
+; to imply I'm pausing in my typing.
+;; inverse-video
+; An attempt to get white on black.  For some reason this doesn't work
+; but the --reverse-video CLI arg does.
+;; x-select-enable-clipboard
+; This is necessary to paste into Windows running on qemu-kvm .
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- 
- '(evil-overriding-maps nil)
- ; The default 0.1 ac-delay can cause display update delays when I'm typing.
- ; If I know what I'm typing, it is inconvenient.  1.0 is sufficiently high
- ; to imply I'm pausing in my typing.
  '(ac-delay 1.0)
  '(ajc-tag-file "~/.emacs.d/ajc-java-complete/java_base.tag")
+ '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
  '(inhibit-startup-screen t)
- ; An attempt to get white on black.  For some reason this doesn't work
- ; but the --reverse-video CLI arg does.
  '(inverse-video t)
- ; This is necessary to paste into Windows running on qemu-kvm .
+ '(large-file-warning-threshold 100000000)
  '(x-select-enable-clipboard t))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
@@ -181,12 +184,6 @@
    (t (kbd "C-g")))
 )
 (define-key key-translation-map (kbd "C-c") 'my-esc)
-
-;; These are an alternative to my-esc.
-;(define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
-;(define-key evil-motion-state-map (kbd "C-c") 'evil-normal-state)
-;(global-set-key (kbd "C-c") 'keyboard-escape-quit)
-;(define-key evil-read-key-map (kbd "C-c") 'keyboard-quit)
 
 (define-key evil-motion-state-map "," 'execute-extended-command)
 ; Undo c Evil keybinding for use as prefix key to various Ctrl- key sequences.
@@ -218,6 +215,7 @@
 (define-key evil-motion-state-map "se" 'eval-last-sexp)
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
+(define-key evil-motion-state-map "sji" 'ajc-import-class-under-point)
 ; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
 (when (fboundp 'undo-tree-undo)
    (define-key evil-normal-state-map "U" 'undo-tree-redo))
