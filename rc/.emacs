@@ -68,6 +68,20 @@
    ))
 )
 
+; TODO:
+;  : Use advice getters and setters instead of setq
+;  : Set activation flag?
+;  : Byte compile
+;  : Preactivate?
+;  : Use ad-define-subr-args because message is primitive
+;(defadvice message (before message-add-prefix-advice
+;                           (format-string &rest args))
+;  "Add prefix string to message."
+;  (let ((format-string-pos 0) (args-pos 1))
+;    (setq format-string (concat "%s" format-string))
+;    (setq args (cons "===BJO=== " args))
+;    ))
+
 (add-to-list 'load-path "~/.emacs.d")
 ;; Compile .el files if they need to be.
 ;;
@@ -124,6 +138,9 @@
 
 ;;; Tabs
 (defvar my-offset 3 "My size of indentation.  Would prefer style guessing instead. ")
+(defun my-continuation-offset ()
+  "Determine the offset for line continuations."
+  (* 3 my-offset))
 ; Make tab less restrictive about where I tab to.
 (global-set-key (kbd "TAB") 'tab-to-tab-stop);
 (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
@@ -160,6 +177,7 @@
  '(inhibit-startup-screen t)
  '(inverse-video t)
  '(large-file-warning-threshold 100000000)
+ '(python-continuation-offset (my-continuation-offset))
  '(x-select-enable-clipboard t))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
