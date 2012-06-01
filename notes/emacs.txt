@@ -13,11 +13,6 @@ Issues low priority:
       : Java Auto Complete
          : Popup causes several seconds of delay.  What's the cause?
          : Why is there no popup for ajc-import-class-under-point?
-      : Popup doesn't appear, with or without their patch.  Investigate.
-         : It appears he got the patch accepted upstream:
-            https://github.com/jixiuf/auto-complete/commit/6e1e832d2ee07ef3155dce92181c90bd3ff3d4ef
-         : Investigate whether I'm looking at this.
-      : Get rid of prompt for loading Java tags file.
    : File reloading:
       : Figure out how to make reloading a file from disk less annoying.
          : It would be good to have similar abstraction as Vim:
@@ -45,8 +40,9 @@ Issues low priority:
          : Ok:
             : Python
       : Need to specify how many tabs to continue code lines with.
-      : Text major mode:
-         : Needs to use indentation level of line immediately above.
+         : Done for Python (as much as can be)
+         : Do for C like languages
+         : Do for XML
    : Searching issues:
       Highlight updating:
          :
@@ -85,7 +81,6 @@ Issues low priority:
       : Look more at evil-ex-make-hl
       : Need a way to clear them.  evil-ex-delete-hl perhaps.
    : Screen flashing:
-      : When finished with a cycle of buffers.  It may suffice to simply flash when entering the *scratch* buffer, since the sequencing of buffers fluxes.
       : When finished with a cycle of search in a file
    : Get % to match <> such as in C++ or Java.
    : Set title to include host and directory (after file's basename)
@@ -97,7 +92,6 @@ Issues low priority:
       : See a called function impl.
       : See who calls the currently viewed function.
       : Read the "Tags Table" section of the GNU Emacs manual.
-   : Why did C-h f apropos evil.*key fail to find evil-define-key?  It found it as non regex.
    : How to toggle display of line wrapping?
    : Visual mode
       : Bug:
@@ -110,7 +104,6 @@ Issues low priority:
          : Report submitted to project.
    : Annoying prompts:
       : When exiting with unsaved changes.
-      : When opening file greater than 14MB.
    : Optimize Emacs startup
       : When loading several .java files, observed it can half a second for each Java file.
       : Try advice at: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
@@ -119,7 +112,7 @@ Issues low priority:
          : C and C++
          : Python
          : Shell (echo)
-      : ll-debug.el useful (doesn't look like it)?
+      : Is ll-debug.el useful (doesn't look like it)?
    : Tabs
       : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
          : Some extensions:
@@ -136,21 +129,9 @@ Issues low priority:
                      : If necessary, reduce default size of region to search for guessing style.
                   : Doesn't work: calling c-guess from the c-mode-common-hook
                   : Does work: M-x c-guess
-      : How about using default behavior with keybindings for circumventing it.
-   : Ordering of Evil init and customization.
-      : Some of the customizations don't work when work when before, some after the evil init lines:
-         (add-to-list 'load-path "~/.emacs.d/evil")
-         (require 'evil)
-         (evil-mode 1)
-      : Doesn't work if after evil init:
-         '(evil-overriding-maps nil)
-         '(revert-without-query (quote (".*")))
-      : Doesn't work if before evil init:
-         '(evil-search-module (quote evil-search))
-      : If there's a best practice for avoiding this gotcha, we should add it to the Wiki.  eg is there a call we can make to reinitialize evil?
    : Figure out what the debris files Emacs leaves behind are about, and whether to change settings to not create them.
-      : Files with ~
-      : Files with #
+      : Determined what they are.
+      : Decide if I want to place them under a dir in my home.
    : Opening through symlinks in an hg repo is slow by a factor of about 5.
    : Logging
       : Is there a way to get the current function's name, in order to put in log-msg prefix.
