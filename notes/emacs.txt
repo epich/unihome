@@ -1,6 +1,12 @@
 Issues high priority:
 
 Issues low priority:
+   : Figure out how to edit elisp code efficiently.
+      : Consider paredit, described at:
+         http://www.cliki.net/Editing%20Lisp%20Code%20with%20Emacs
+      : Finish Xahlee's advice
+         : URL: http://xahlee.org/emacs/emacs_editing_lisp.html
+         : Use (show-paren-mode 1)
    : Have the p command also do a ==
       : If not too hard, make this conditional on the line pasting to is whitespace only.
    : Figure out how to byte compile .el files and add it to buildEmacsD.py for yasnippet and ajc.
