@@ -26,6 +26,7 @@
 (setq vc-follow-symlinks t)
 (delete-selection-mode 1)
 (setq mouse-yank-at-point t)
+(show-paren-mode 1)
 
 ;; make file name and computer title
 (defvar my-frame-title "Unset" "Title for the frame. ")
@@ -303,6 +304,10 @@
    (lambda ()
       (log-msg "Inside emacs-lisp-mode-hook")
       (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-elisp-log)
+      (define-key evil-motion-state-local-map (quote [left]) 'backward-sexp)
+      (define-key evil-motion-state-local-map (quote [right]) 'forward-sexp)
+      (define-key evil-motion-state-local-map (quote [up]) 'backward-up-list)
+      (define-key evil-motion-state-local-map (quote [down]) 'down-list)
    )
 )
 (add-hook 'java-mode-hook 
