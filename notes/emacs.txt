@@ -2,8 +2,9 @@ Issues high priority:
 
 Issues low priority:
    : Figure out how to edit elisp code efficiently.
-      : Consider paredit, described at:
-         http://www.cliki.net/Editing%20Lisp%20Code%20with%20Emacs
+      : Paredit
+         : Set up enabling
+         : Set up key bindings
       : Ideas:
          : select text, enclose in parens,
             : ... move point to beginning

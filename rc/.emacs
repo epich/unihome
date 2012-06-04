@@ -128,10 +128,16 @@
 (yas/global-mode 1)
 
 ;; Initialize Java Auto Complete
-(add-to-list 'load-path "~/.emacs.d/ajc-java-complete/")
+(add-to-list 'load-path "~/.emacs.d/ajc-java-complete")
 (require 'ajc-java-complete-config)
 (add-hook 'java-mode-hook 'ajc-java-complete-mode)
 (add-hook 'find-file-hook 'ajc-4-jsp-find-file-hook)
+
+;; Initialize paredit
+(add-to-list 'load-path "~/.emacs.d/paredit")
+(autoload 'enable-paredit-mode "paredit"
+  "Turn on pseudo-structural editing of Lisp code."
+  t)
 
 ; evil-integration.el attempts to recreate the evil-overriding-maps, set
 ; that code to nil to prevent it from running.
