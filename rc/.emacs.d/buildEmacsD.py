@@ -31,9 +31,25 @@ def buildYasnippet():
    pass
 
 def buildJavaAutoComplete():
-   os.chdir('ajc-java-complete')
-   os.system('bunzip2 -k java_base.tag.bz2')
-   os.chdir('..')
+   # TODO: java_base.tag is too big to be useful.  Developer's recommendation:
+   """do not use the default tag file (I  included android jar )and the size of it is 11M
+Tags.java maybe need update to exclude classes you don't want .
+building candidate list of completing method need time
+for example:"skippedEntity`~void`784`4012"--->"skippedEntity(String)"
+(ajc-method-to-string (ajc-split-method "skippedEntity`~void`784`4012"))
+
+(ajc-split-method "skippedEntity`~void`784`4012")
+-->
+("skippedEntity" "void" (("String" 25 21737 21825)) (("SAXException" 237 121664 121688)))
+
+(ajc-method-to-string '("skippedEntity" "void" (("String" 25 21737 21825)) (("SAXException" 237 121664 121688))))
+---->
+"skippedEntity(String)"
+"""
+
+   #os.chdir('ajc-java-complete')
+   #os.system('bunzip2 -k java_base.tag.bz2')
+   #os.chdir('..')
 
 def __MAIN__():
    buildEvil()
