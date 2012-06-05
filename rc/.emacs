@@ -71,17 +71,17 @@
 
 ; TODO:
 ;  : Use advice getters and setters instead of setq
-;  : Set activation flag?
+;     : Why is (fboundp 'ad-set-arg) nil at this point?
 ;  : Byte compile
-;  : Preactivate?
 ;  : Use ad-define-subr-args because message is primitive
 ;(defadvice message (before message-add-prefix-advice
 ;                           (format-string &rest args))
 ;  "Add prefix string to message."
 ;  (let ((format-string-pos 0) (args-pos 1))
-;    (setq format-string (concat "%s" format-string))
+;    (ad-set-arg (ad-get-arg format-string-pos) (concat "%s" format-string))
 ;    (setq args (cons "===BJO=== " args))
 ;    ))
+;(ad-activate 'message)
 
 (add-to-list 'load-path "~/.emacs.d")
 ;; Compile .el files if they need to be.
