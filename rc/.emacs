@@ -253,6 +253,9 @@ or just one char if that's not possible"
 (define-key evil-normal-state-map "-" nil)
 (define-key evil-motion-state-map "-" 'evil-end-of-line)
 (define-key evil-normal-state-map "s" nil)
+; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
+(define-key evil-normal-state-map "p" 'evil-paste-before)
+(define-key evil-normal-state-map "P" 'evil-paste-after)
 (define-key evil-motion-state-map "sf" 'delete-other-windows)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
