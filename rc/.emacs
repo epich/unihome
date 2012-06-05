@@ -135,10 +135,10 @@
 
 ;; Initialize paredit
 (add-to-list 'load-path "~/.emacs.d/paredit")
-(autoload 'enable-paredit-mode "paredit"
-  "Turn on pseudo-structural editing of Lisp code."
-  t)
-(enable-paredit-mode)
+(require 'paredit)
+; NB: I don't call enable-paredit-mode because it enables some retarded features such as
+; not placing ) chars at the position I type it, and not allowing insertion of ; at
+; the beginning of the line.  I use a few of its functions in keybindings below.
 
 ; evil-integration.el attempts to recreate the evil-overriding-maps, set
 ; that code to nil to prevent it from running.
@@ -149,9 +149,26 @@
 (defun my-continuation-offset ()
   "Determine the offset for line continuations."
   (* 3 my-offset))
+; For binding to backspace.
+;
+; Taken from: http://stackoverflow.com/questions/1450169/how-do-i-emulate-vims-softtabstop-in-emacs
+(defun backward-delete-whitespace-to-column ()
+  "delete back to the previous column of whitespace, or as much whitespace as possible,
+or just one char if that's not possible"
+  (interactive)
+  (if indent-tabs-mode
+      (call-interactively 'backward-delete-char)
+    (let ((movement (% (current-column) my-offset))
+          (p (point)))
+      (when (= movement 0) (setq movement my-offset))
+      (save-match-data
+        (if (string-match "\\w*\\(\\s-+\\)$" (buffer-substring-no-properties (- p movement) p))
+            (backward-delete-char (- (match-end 1) (match-beginning 1)))
+        (call-interactively 'backward-delete-char))))))
 ; Make tab less restrictive about where I tab to.
 (global-set-key (kbd "TAB") 'tab-to-tab-stop);
 (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+(define-key evil-insert-state-map (kbd "DEL") 'backward-delete-whitespace-to-column)
 ; Permanently force Emacs to indent with spaces, never with TABs:
 (setq-default indent-tabs-mode nil)
 (setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
@@ -309,6 +326,13 @@
    (search-backward "DEBUG: ")
    (goto-char (match-end 0))
 )
+(defun my-insert-python-log ()
+  "Insert log statement for Python. "
+  (interactive)
+  (insert "print( 'DEBUG: '%() ) # TODO: temporary for debug")
+  (search-backward "DEBUG: ")
+  (goto-char (match-end 0))
+  )
 
 (add-hook 'emacs-lisp-mode-hook 
    (lambda ()
@@ -324,6 +348,12 @@
    (lambda ()
       (log-msg "Inside java-mode-hook")
       (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-java-log)
+   )
+)
+(add-hook 'python-mode-hook 
+   (lambda ()
+      (log-msg "Inside python-mode-hook")
+      (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-python-log)
    )
 )
 (add-hook 'c-mode-common-hook 
