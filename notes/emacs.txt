@@ -45,12 +45,6 @@ Issues low priority:
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
    : Explore dired
    : Smart editing:
-      : Need to have backspace delete whitespace to tab stops.
-         : Problematic:
-            : C family
-            : Text
-         : Ok:
-            : Python
       : Need to specify how many tabs to continue code lines with.
          : Done for Python (as much as can be)
          : Do for C like languages
