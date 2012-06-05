@@ -138,6 +138,7 @@
 (autoload 'enable-paredit-mode "paredit"
   "Turn on pseudo-structural editing of Lisp code."
   t)
+(enable-paredit-mode)
 
 ; evil-integration.el attempts to recreate the evil-overriding-maps, set
 ; that code to nil to prevent it from running.
@@ -237,7 +238,10 @@
 (define-key evil-normal-state-map "s" nil)
 (define-key evil-motion-state-map "sf" 'delete-other-windows)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
-(define-key evil-motion-state-map "se" 'eval-last-sexp)
+(define-key evil-motion-state-map "sex" 'eval-last-sexp)
+(define-key evil-motion-state-map "sej" 'paredit-wrap-round)
+(define-key evil-motion-state-map "sek" 'paredit-splice-sexp)
+(define-key evil-motion-state-map "seK" 'paredit-raise-sexp)
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
 (define-key evil-motion-state-map "sji" 'ajc-import-class-under-point)
