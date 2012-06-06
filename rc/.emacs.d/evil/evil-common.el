@@ -2252,7 +2252,7 @@ Returns t if RANGE was successfully adjusted and nil otherwise."
         (evil-set-range range nil (line-end-position 0)))
       (not (evil-subrange-p orig range)))))
 
-(defun evil-inner-object-range (count forward &optional backward type)
+(defun evil-inner-object-range (count beg end type forward &optional backward range-type)
   "Return an inner text object range (BEG END) of COUNT objects.
 If COUNT is positive, return objects following point;
 if COUNT is negative, return objects preceding point.
@@ -2268,37 +2268,117 @@ If one is unspecified, the other is used with a negative argument."
          (backward (or backward
                        #'(lambda (count)
                            (funcall forward-func (- count)))))
-         beg end)
-    (when (< count 0)
+         (current
+          #'(lambda ()
+              (save-excursion
+                (let ((pnt (point))
+                      beg-obj end-obj)
+                  (funcall forward 1)
+                  (setq end-obj (point))
+                  (funcall backward 1)
+                  (setq beg-obj (point))
+                  (cond
+                   ((<= beg-obj pnt)
+                    (cons beg-obj end-obj))
+                   ((zerop (funcall backward 1))
+                    (funcall forward 1)
+                    (cons (if (and (eolp) (not (bolp)))
+                              (1+ (point))
+                            (point))
+                          beg-obj))
+                   (t
+                    (cons (point-min) beg-obj))))))))
+
+    (save-excursion
+      (cond
+       ((> count 0)
+        (let ((obj (funcall current)))
+          (if (or (not beg) (not end)
+                  (> beg (car obj))
+                  (< end (cdr obj)))
+              ;; current object not yet selected
+              (progn
+                (when (or (not beg) (< (car obj) beg))
+                  (setq beg (car obj)))
+                (when (or (not end) (> (cdr obj) end))
+                  (setq end (cdr obj)))
+                (setq count (1- count))
+                (goto-char end))
+            (goto-char (cdr obj))))
+        (dotimes(i count)
+          (let ((obj (funcall current)))
+            (goto-char (cdr obj))))
+        (evil-range beg (point) range-type))
+       (t
+        (setq count (- count))
+        (let ((obj (funcall current)))
+          (if (or (not beg) (not end)
+                  (> beg (car obj))
+                  (< end (cdr obj)))
+              ;; current object not yet selected
+              (progn
+                (when (or (not beg) (< (car obj) beg))
+                  (setq beg (car obj)))
+                (when (or (not end) (> (cdr obj) end))
+                  (setq end (cdr obj)))
+                (setq count (1- count))
+                (goto-char beg))
+            (goto-char (car obj))))
+        (dotimes(i count)
+          (backward-char 1)
+          (let ((obj (funcall current)))
+            (goto-char (car obj))))
+        (evil-range (point) end range-type))))))
+
+(defun evil-an-object-range (count beg end type forward &optional backward range-type newlines)
+  "Return a text object range of COUNT objects with whitespace.
+BEG, END and TYPE specify the range of the current selection that
+should be extended.  The function returns a list (B E) specifying
+the new (extended) text object range.  See
+`evil-inner-object-range' for more details."
+  (let* ((count (or count 1))
+         (forward-func forward)
+         (backward-func backward)
+         (forward  (or forward
+                       #'(lambda (count)
+                           (funcall backward-func (- count)))))
+         (backward (or backward
+                       #'(lambda (count)
+                           (funcall forward-func (- count))))))
+    (if (> count 0)
+        ;; ensure we select the next object
+        (when (and beg end) (forward-char 1))
+      ;; going backward
       (evil-swap forward backward)
       (setq count (abs count)))
-    (setq beg (save-excursion
-                (funcall forward 1)
-                (funcall backward 1)
-                (point))
-          end (save-excursion
-                (funcall forward count)
-                (point)))
-    (evil-range beg end type)))
-
-(defun evil-an-object-range (count forward &optional backward type newlines)
-  "Return a text object range (BEG END) of COUNT objects with whitespace.
-See `evil-inner-object-range' for more details."
-  (let ((range (evil-inner-object-range count forward backward type)))
-    (save-excursion
-      (if newlines
-          (evil-add-whitespace-to-range range count)
-        (evil-with-restriction
+    (let ((range
+           (evil-range (save-excursion
+                         (funcall forward 1)
+                         (funcall backward 1)
+                         (point))
+                       (save-excursion
+                         (funcall forward count)
+                         (point))
+                       range-type)))
+      (setq range
             (save-excursion
-              (goto-char (evil-range-beginning range))
-              (line-beginning-position))
-            (save-excursion
-              (goto-char (evil-range-end range))
-              (line-end-position))
-          (evil-add-whitespace-to-range range count))))))
+              (if newlines
+                  (evil-add-whitespace-to-range range count)
+                (evil-with-restriction
+                    (save-excursion
+                      (goto-char (evil-range-beginning range))
+                      (line-beginning-position))
+                    (save-excursion
+                      (goto-char (evil-range-end range))
+                      (line-end-position))
+                  (evil-add-whitespace-to-range range count)))))
+      (if (and beg end)
+          (evil-range-union range (evil-range beg end))
+        range))))
 
-(defun evil-paren-range (count open close &optional exclusive)
+(defun evil-paren-range (count beg end type open close &optional exclusive)
   "Return a range (BEG END) of COUNT delimited text objects.
+BEG, END and TYPE are the currently selected (visual) range.
 OPEN is an opening character and CLOSE is a closing character.
 If EXCLUSIVE is non-nil, OPEN and CLOSE are excluded from
 the range; otherwise they are included.
@@ -2309,7 +2389,7 @@ use `evil-regexp-range'."
   (let ((open-regexp (regexp-quote (string open)))
         (close-regexp (regexp-quote (string close)))
         (count (or count 1))
-        level beg end range)
+        level range)
     (save-excursion
       (if (or (evil-in-comment-p)
               (and (evil-in-string-p)
@@ -2322,11 +2402,14 @@ use `evil-regexp-range'."
                        (evil-in-string-p (1+ (point))))))
           ;; if in a comment, first look inside the comment only;
           ;; failing that, look outside it
-          (or (evil-regexp-range count open-regexp close-regexp exclusive)
+          (or (evil-regexp-range count
+                                 beg end type
+                                 open-regexp close-regexp
+                                 exclusive)
               (progn
                 (evil-goto-min (evil-string-beginning)
                                (evil-comment-beginning))
-                (evil-paren-range count open close exclusive)))
+                (evil-paren-range count beg end type open close exclusive)))
         (with-syntax-table (copy-syntax-table (syntax-table))
           (cond
            ((= count 0))
@@ -2347,13 +2430,39 @@ use `evil-regexp-range'."
             ;; otherwise handle as open and close parentheses
             (modify-syntax-entry open (format "(%c" close))
             (modify-syntax-entry close (format ")%c" open))
-            ;; Is point next to a parenthesis?
             (if (< count 0)
                 (when (looking-back close-regexp)
                   (backward-char))
               (when (looking-at open-regexp)
-                (forward-char)))
-            ;; find OPEN
+                (forward-char)
+                (when (and beg end (= (1+ beg) end))
+                  (setq beg (1+ beg)))))
+            ;; find OPEN, start at beginning of current range (if any)
+            (when (and beg end)
+              (goto-char (min beg (point)))
+              ;; check if current object matches current selection
+              (condition-case nil
+                  (save-excursion
+                    ;; find OPEN of current object
+                    (while (progn
+                             (backward-up-list 1)
+                             (not (looking-at open-regexp))))
+                    (let ((beg1 (point)))
+                      ;; find CLOSE of current object
+                      (forward-list)
+                      ;; modify current object of inclusive range
+                      (when exclusive
+                        (setq beg1 (1+ beg1))
+                        (backward-char))
+                      (when (and (= beg1 beg)
+                                 (= (point) end))
+                        ;; current object *is* current selection,
+                        ;; select one more
+                        (if (> count 0)
+                            (setq count (1+ count))
+                          (setq count (1- count))))))
+                (error nil)))
+            ;; find OPEN again with correct count
             (evil-motion-loop (nil count level)
               (condition-case nil
                   (while (progn
@@ -2363,7 +2472,7 @@ use `evil-regexp-range'."
             (when (/= level count)
               (setq beg (if exclusive (1+ (point)) (point)))
               ;; find CLOSE
-              (forward-sexp)
+              (forward-list)
               (setq end (if exclusive (1- (point)) (point)))
               (setq range (evil-range beg end))
               (when exclusive
@@ -2371,8 +2480,9 @@ use `evil-regexp-range'."
                  range (not (eq evil-this-operator #'evil-delete)))))))
           range)))))
 
-(defun evil-quote-range (count open close &optional exclusive)
+(defun evil-quote-range (count beg end type open close &optional exclusive)
   "Return a range (BEG END) of COUNT quotes.
+BEG, END and TYPE are the currently selected (visual) range.
 OPEN is the opening quote, CLOSE is the closing quote (often both
 are equal). If EXCLUSIVE is non-nil, OPEN and CLOSE are excluded
 from the range unless COUNT is 2 in which case they are included;
@@ -2380,9 +2490,9 @@ otherwise they are included as well as any succeeding (or
 preceding if no whitespace follows) white space."
   (if exclusive
       (if (and count (= count 2))
-          (evil-paren-range 1 open close nil)
-        (evil-paren-range count open close t))
-    (let ((range (evil-paren-range count open close nil)))
+          (evil-paren-range 1 nil nil nil open close nil)
+        (evil-paren-range count nil nil nil open close t))
+    (let ((range (evil-paren-range count nil nil nil open close nil)))
       (save-excursion
         (if (progn
               (goto-char (evil-range-end range))
@@ -2392,63 +2502,85 @@ preceding if no whitespace follows) white space."
           (skip-chars-backward "[:space:]")
           (evil-range (point) (evil-range-end range)))))))
 
-(defun evil-regexp-range (count open close &optional exclusive)
+(defun evil-regexp-range (count beg end type open close &optional exclusive)
   "Return a range (BEG END) of COUNT delimited text objects.
+BEG END TYPE are the currently selected (visual) range.
 OPEN is a regular expression matching the opening sequence,
 and CLOSE is a regular expression matching the closing sequence.
 If EXCLUSIVE is non-nil, OPEN and CLOSE are excluded from
 the range; otherwise they are included. See also `evil-paren-range'."
-  (evil-with-or-without-comment
-    (let ((either (format "\\(%s\\)\\|\\(%s\\)" open close))
-          (count (or count 1))
-          (level 0)
-          beg end range)
-      (save-excursion
-        (save-match-data
-          ;; Is point inside a delimiter?
-          (when (evil-in-regexp-p either)
-            (if (< count 0)
-                (goto-char (match-end 0))
-              (goto-char (match-beginning 0))))
-          ;; Is point next to a delimiter?
-          (if (< count 0)
-              (when (looking-back close)
-                (goto-char (match-beginning 0)))
-            (when (looking-at open)
-              (goto-char (match-end 0))))
-          ;; find beginning of range
-          (while (and (< level (abs count))
-                      (re-search-backward either nil t))
-            (if (looking-at open)
-                (setq level (1+ level))
-              ;; found a CLOSE, so need to find another OPEN first
-              (setq level (1- level))))
-          ;; find end of range
-          (when (> level 0)
-            (forward-char)
-            (setq level 1
-                  beg (if exclusive
-                          (match-end 0)
-                        (match-beginning 0)))
-            (while (and (> level 0)
-                        (re-search-forward either nil t))
-              (if (looking-back close)
-                  (setq level (1- level))
-                ;; found an OPEN, so need to find another CLOSE first
-                (setq level (1+ level))))
-            (when (= level 0)
-              (setq end (if exclusive
-                            (match-beginning 0)
-                          (match-end 0)))
-              (setq range (evil-range beg end))))
-          range)))))
+  (let ((either (format "\\(%s\\)\\|\\(%s\\)" open close))
+        (count (or count 1))
+        (level 0))
+    (let ((select
+           #'(lambda (count)
+               ;; Is point inside a delimiter?
+               (evil-with-or-without-comment
+                 (save-excursion
+                   (save-match-data
+                     (let ((level 0)
+                           beg-inc end-inc beg-exc end-exc)
+                       (when (evil-in-regexp-p either)
+                         (if (< count 0)
+                             (goto-char (match-end 0))
+                           (goto-char (match-beginning 0))))
+                       ;; Is point next to a delimiter?
+                       (if (< count 0)
+                           (when (looking-back close)
+                             (goto-char (match-beginning 0)))
+                         (when (looking-at open)
+                           (goto-char (match-end 0))))
+                       ;; find beginning of range
+                       (while (and (< level (abs count))
+                                   (re-search-backward either nil t))
+                         (if (looking-at open)
+                             (setq level (1+ level))
+                           ;; found a CLOSE, so need to find another
+                           ;; OPEN first
+                           (setq level (1- level))))
+                       ;; find end of range
+                       (when (> level 0)
+                         (forward-char)
+                         (setq level 1
+                               beg-inc (match-beginning 0)
+                               beg-exc (match-end 0))
+                         (while (and (> level 0)
+                                     (re-search-forward either nil t))
+                           (if (looking-back close)
+                               (setq level (1- level))
+                             ;; found an OPEN, so need to find another
+                             ;; CLOSE first
+                             (setq level (1+ level))))
+                         (when (= level 0)
+                           (setq end-inc (match-end 0)
+                                 end-exc (match-beginning 0))
+                           (cons (evil-range beg-inc end-inc)
+                                 (evil-range beg-exc end-exc)))))))))))
+      (when (and beg end)
+        (let* ((ranges1 (funcall select (if (> count 0) 1 -1)))
+               (rng-inc1 (car ranges1))
+               (rng-exc1 (cdr ranges1)))
+          (cond
+           ((and (= beg (evil-range-beginning rng-inc1))
+                 (= end (evil-range-end rng-inc1)))
+            (setq count (+ count (if (> count 0) 1 -1))))
+           ((and exclusive
+                 (= beg (evil-range-beginning rng-exc1))
+                 (= end (evil-range-end rng-exc1)))
+            (if (= (abs count) 1)
+                (setq exclusive nil)
+              (setq count (+ count (if (> count 0) 1 -1))))))))
+      (let ((ranges (funcall select count)))
+        (if exclusive (cdr ranges) (car ranges))))))
 
-(defun evil-xml-range (&optional count exclusive)
+(defun evil-xml-range (&optional count beg end type exclusive)
   "Return a range (BEG END) of COUNT matching XML tags.
 If EXCLUSIVE is non-nil, the tags themselves are excluded
 from the range."
   (evil-regexp-range
-   count "<\\(?:[^/ ]\\(?:[^>]*?[^/>]\\)?\\)?>" "</[^>]+?>" exclusive))
+   count beg end type
+   "<\\(?:[^/ ]\\(?:[^>]*?[^/>]\\)?\\)?>" "</[^>]+?>"
+   exclusive))
 
 (defun evil-expand-range (range &optional copy)
   "Expand RANGE according to its type.
