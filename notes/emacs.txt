@@ -227,6 +227,9 @@ Notes:
       : Line feed: C-q C-j
    : Run emacs without reading .emacs:
       emacs --no-init-file
+   : Key bindings in minibuffer:
+      : See Frank Fischer's posting at:
+         https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
 
 Retired issues with residual notes:
    : Make s a prefix key

@@ -145,7 +145,9 @@
 (eval-after-load 'ibuffer nil)
 
 ;;; Tabs
-(defvar my-offset 3 "My size of indentation.  Would prefer style guessing instead. ")
+; TODO: I would prefer automatic guessing of my-offset based on the offset in use for the
+; surrounding code.
+(defvar my-offset 3 "My indentation offset. ")
 (defun my-continuation-offset ()
   "Determine the offset for line continuations."
   (* 3 my-offset))
@@ -162,9 +164,9 @@ or just one char if that's not possible"
           (p (point)))
       (when (= movement 0) (setq movement my-offset))
       (save-match-data
-        (if (string-match "\\w*\\(\\s-+\\)$" (buffer-substring-no-properties (- p movement) p))
+        (if (string-match "\\w*\\([\\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
             (backward-delete-char (- (match-end 1) (match-beginning 1)))
-        (call-interactively 'backward-delete-char))))))
+          (call-interactively 'backward-delete-char))))))
 ; Make tab less restrictive about where I tab to.
 (global-set-key (kbd "TAB") 'tab-to-tab-stop);
 (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
