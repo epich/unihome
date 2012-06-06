@@ -1,6 +1,18 @@
 Issues high priority:
 
 Issues low priority:
+   : Set up keybinding to call elisp function to allow input of Unicode number code.
+      : • is U+2022
+      : Using tex mode:
+         : Commands:
+            M-x set-input-method
+            tex
+            \bullet
+         : Perhaps:
+            : Set with evil-insert-state key binding.
+               : Ctrl- sequence?
+               : F key?
+            : Would need for my-esc to set the input method back to normal.
    : Figure out how to edit elisp code efficiently.
       : Paredit
          : Set up enabling
