@@ -1,18 +1,6 @@
 Issues high priority:
 
 Issues low priority:
-   : Set up keybinding to call elisp function to allow input of Unicode number code.
-      : • is U+2022
-      : Using tex mode:
-         : Commands:
-            M-x set-input-method
-            tex
-            \bullet
-         : Perhaps:
-            : Set with evil-insert-state key binding.
-               : Ctrl- sequence?
-               : F key?
-            : Would need for my-esc to set the input method back to normal.
    : Figure out how to edit elisp code efficiently.
       : Paredit
          : Set up enabling
@@ -273,6 +261,16 @@ Retired issues with residual notes:
          ; Declare args for efficiency of primitive function advising.
          (ad-define-subr-args 'message '(format-string &rest args))
          (ad-activate 'message)
+   : Notes about inserting Unicode characters
+      : Codes of interest (hex):
+         : • is U+2022
+      : Can use function ucs-insert which has key binding C-x 8 RET
+      : Can use tex mode:
+         : Commands:
+            M-x set-input-method
+            tex
+            \bullet
+         : Note: doesn't set the input method back.
    : Notes about the isearch evil-search-module
       : Attempted to make lazy highlighting work
          : Code:

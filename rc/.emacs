@@ -215,6 +215,11 @@ or just one char if that's not possible"
 )
 (define-key key-translation-map (kbd "C-c") 'my-esc)
 
+(defun my-insert-bullet ()
+  (interactive)
+  (ucs-insert "2022")
+  )
+(define-key evil-insert-state-map (quote [f4]) 'my-insert-bullet)
 (define-key evil-motion-state-map "," 'execute-extended-command)
 ; Undo c Evil keybinding for use as prefix key to various Ctrl- key sequences.
 (define-key evil-normal-state-map "c" nil)
