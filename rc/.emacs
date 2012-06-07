@@ -64,24 +64,9 @@
 (defun log-msg (msg)
    "Log a message, with prepended information.  Used for debugging. "
    (interactive)
-   (message msg)
    ; Replace with this if advice on message malfunctions.
-   ;(message (format "%s %s" (get-time-str) msg))
+   (message (format "%s %s" (get-time-str) msg))
 )
-
-(defadvice message (before message-add-prefix-advice
-                           (format-string &rest args))
-  "Add prefix string to message."
-  (let ((format-string-pos 0) (args-pos 1))
-    ; Error if I use ad-set-arg.  Maybe because of the documented
-    ; "riskiness" of advising primitive functions.
-    ;(ad-set-arg (ad-get-arg format-string-pos) (concat "%s" format-string))
-    (setq format-string (concat "%s" format-string))
-    (setq args (cons (format "%s " (get-time-str)) args))
-    ))
-; Declare args for efficiency of primitive function advising.
-(ad-define-subr-args 'message '(format-string &rest args))
-(ad-activate 'message)
 
 (add-to-list 'load-path "~/.emacs.d")
 ;; Compile .el files if they need to be.

@@ -256,6 +256,23 @@ Retired issues with residual notes:
       : Mapping to keyboard-escape-quit appears to cover most cases, except for quiting with unsaved mods.
       : Try keyboard-translate or key-translation-map
          : An example is described here: http://emacswiki.org/emacs-en/BackspaceKey
+   : Using function advice to add prefix to message function.
+      : Turns out to not work well in the minibuffer when error messages are written, eg:
+         : Searching with evil-search, upon typing the first char that doesn't yield a match.
+      : For posterity, the code:
+         (defadvice message (before message-add-prefix-advice
+                                    (format-string &rest args))
+           "Add prefix string to message."
+           (let ((format-string-pos 0) (args-pos 1))
+             ; Error if I use ad-set-arg.  Maybe because of the documented
+             ; "riskiness" of advising primitive functions.
+             ;(ad-set-arg (ad-get-arg format-string-pos) (concat "%s" format-string))
+             (setq format-string (concat "%s" format-string))
+             (setq args (cons (format "%s " (get-time-str)) args))
+             ))
+         ; Declare args for efficiency of primitive function advising.
+         (ad-define-subr-args 'message '(format-string &rest args))
+         (ad-activate 'message)
    : Notes about the isearch evil-search-module
       : Attempted to make lazy highlighting work
          : Code:
