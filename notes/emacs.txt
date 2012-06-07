@@ -155,7 +155,6 @@ Issues low priority:
    : Opening through symlinks in an hg repo is slow by a factor of about 5.
    : Logging
       : Is there a way to get the current function's name, in order to put in log-msg prefix.
-      : Is there a way to modify the message function (with defadvice or otherwise) to prepend timestamp?
    : C-c issues:
       : Need to handle escaping out of other unofficial Evil states, such as =
 
