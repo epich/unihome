@@ -11,6 +11,9 @@ Issues low priority:
             : ... move point to end
          : select text, remove enclosing parens.
          : highlight matching parens in different colors, but only those that enclose point.
+         : Highlight text based on its level in the tree, from point to the root.
+            : A website does this with lisp code samples:
+               http://community.schemewiki.org/?call-with-current-continuation
    : Have the p command also do a ==
       : If not too hard, make this conditional on the line pasting to is whitespace only.
       : File bug about pasting with 'p' on lines with no chars.  A space char is effectively created.
@@ -263,7 +266,9 @@ Retired issues with residual notes:
          (ad-activate 'message)
    : Notes about inserting Unicode characters
       : Codes of interest (hex):
-         : • is U+2022
+         : • is 2022
+         : μ is 03bc
+         : σ is 03c3
       : Can use function ucs-insert which has key binding C-x 8 RET
       : Can use tex mode:
          : Commands:
