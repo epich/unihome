@@ -255,6 +255,8 @@ or just one char if that's not possible"
 (define-key evil-motion-state-map "," 'execute-extended-command)
 ; Undo c Evil keybinding for use as prefix key to various Ctrl- key sequences.
 (define-key evil-normal-state-map "c" nil)
+; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
+(define-key evil-insert-state-map (kbd "C-y") nil)
 
 ;; Disable C-0 and C-- since I hit them alot.
 (defun my-no-op () "No op, meaning do nothing."
@@ -267,8 +269,6 @@ or just one char if that's not possible"
 ; I don't use RET in motion state, but it is useful in eg buffer mode.
 (define-key evil-motion-state-map (kbd "RET") nil)
 (global-set-key (kbd "RET") 'evil-ret)
-; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
-(define-key evil-motion-state-map (kbd "C-y") nil)
 (define-key evil-normal-state-map "o" nil)
 (define-key evil-motion-state-map "o" 'next-buffer)
 (define-key evil-normal-state-map "O" nil)
