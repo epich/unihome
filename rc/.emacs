@@ -129,6 +129,35 @@
 ; that code to nil to prevent it from running.
 (eval-after-load 'ibuffer nil)
 
+; This is the patched delete-trailing-whitespace posted to
+;  http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00523.html
+; and accepted into Emacs.  It's not in my version, so just copying it here
+; for use with = key binding.
+(defun patched-delete-trailing-whitespace (&optional start end)
+  "Delete all the trailing whitespace across the current buffer.
+All whitespace after the last non-whitespace character in a line is deleted.
+This respects narrowing, created by \\[narrow-to-region] and friends.
+A formfeed is not considered whitespace by this function.
+If the region is active, only delete whitespace within the region."
+  (interactive (progn
+                 (barf-if-buffer-read-only)
+                 (if (use-region-p)
+                     (list (region-beginning) (region-end))
+                   (list nil nil))))
+  (save-match-data
+    (save-excursion
+      (let ((end-marker (copy-marker (or end (point-max))))
+            (start (or start (point-min))))
+        (goto-char start)
+        (while (re-search-forward "\\s-$" end-marker t)
+          (skip-syntax-backward "-" (save-excursion (forward-line 0) (point)))
+          ;; Don't delete formfeeds, even if they are considered whitespace.
+          (save-match-data
+            (if (looking-at ".*\f")
+                (goto-char (match-end 0))))
+          (delete-region (point) (match-end 0)))
+        (set-marker end-marker nil)))))
+
 ;;; Tabs
 ; TODO: I would prefer automatic guessing of my-offset based on the offset in use for the
 ; surrounding code.
@@ -192,13 +221,14 @@ or just one char if that's not possible"
  '(nxml-attribute-indent (my-continuation-offset))
  '(nxml-child-indent my-offset)
  '(python-continuation-offset (my-continuation-offset))
+ '(show-trailing-whitespace t)
  '(x-select-enable-clipboard t))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- )
+ '(trailing-whitespace ((((class color) (background dark)) (:background "gray25")))))
 
 ;;; evil key bindings
 ;;;
@@ -250,6 +280,8 @@ or just one char if that's not possible"
 ; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
 (define-key evil-normal-state-map "P" 'evil-paste-after)
+; TODO: Not so simple, either takes away the region so the second can't process.
+;(define-key evil-normal-state-map "=" (lambda () (interactive) (patched-delete-trailing-whitespace) (evil-indent)))
 (define-key evil-motion-state-map "sf" 'delete-other-windows)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)

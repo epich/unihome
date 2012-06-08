@@ -14,10 +14,20 @@ Issues low priority:
          : Highlight text based on its level in the tree, from point to the root.
             : A website does this with lisp code samples:
                http://community.schemewiki.org/?call-with-current-continuation
+   : Unwanted whitespace
+      : Have tabs highlight in the same face as the trailing whitespace.  A shade of gray.
    : Have the p command also do a ==
       : If not too hard, make this conditional on the line pasting to is whitespace only.
       : File bug about pasting with 'p' on lines with no chars.  A space char is effectively created.
          : If fixed, undo p and P swapping in evil-normal-state-map .
+      : Call patched-delete-trailing-whitespace with the region pasted.
+   : = key binding
+      : Have = also trim trailing whitespace in the selected region only.
+         : Someone patched delete-trailing-whitespace to delete within region if active:
+            : URL: http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00432.html
+         : I copied the patch as patched-delete-trailing-whitespace
+         : A simple combination in a lambda bound to "=" doesn't work.
+            : Might need to call evil-indent in my copied func.
    : Figure out how to byte compile .el files and add it to buildEmacsD.py for yasnippet and ajc.
    : Repeat . command bugs:
       : Doesn't work when switching buffers.  Sometimes does.
