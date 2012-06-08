@@ -189,6 +189,8 @@ or just one char if that's not possible"
  '(inhibit-startup-screen t)
  '(inverse-video t)
  '(large-file-warning-threshold 100000000)
+ '(nxml-attribute-indent (my-continuation-offset))
+ '(nxml-child-indent my-offset)
  '(python-continuation-offset (my-continuation-offset))
  '(x-select-enable-clipboard t))
 (custom-set-faces
