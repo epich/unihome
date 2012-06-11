@@ -221,6 +221,7 @@ or just one char if that's not possible"
  '(nxml-attribute-indent (my-continuation-offset))
  '(nxml-child-indent my-offset)
  '(python-continuation-offset (my-continuation-offset))
+ '(python-indent my-offset)
  '(show-trailing-whitespace t)
  '(x-select-enable-clipboard t))
 (custom-set-faces
