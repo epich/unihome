@@ -1,0 +1,3 @@
+To install Python modules in a particular location:
+   python setup.py install --prefix <path>
+   
