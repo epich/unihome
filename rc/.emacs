@@ -96,7 +96,7 @@
 
 ;; Initialize Auto Complete
 ;;
-(defvar my-ac-build-path "~/.emacs.d/ac/auto-complete-1.3.1/build" "Path to built ac")
+(defvar my-ac-build-path "~/.emacs.d/auto-complete-1.3.1/build" "Path to built ac")
 (add-to-list 'load-path my-ac-build-path)
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories (format "%s/ac-dict" my-ac-build-path))
@@ -106,17 +106,6 @@
 ; RET can cause auto completion when literal RET is what I want.
 ; Auto Complete is perfectly usable via TAB alone, so disable RET key binding.
 (define-key ac-complete-mode-map (kbd "RET") nil)
-
-;; Initialize Yasnippet
-(add-to-list 'load-path "~/.emacs.d/yasnippet")
-(require 'yasnippet)
-(yas/global-mode 1)
-
-;; Initialize Java Auto Complete
-(add-to-list 'load-path "~/.emacs.d/ajc-java-complete")
-(require 'ajc-java-complete-config)
-(add-hook 'java-mode-hook 'ajc-java-complete-mode)
-(add-hook 'find-file-hook 'ajc-4-jsp-find-file-hook)
 
 ;; Initialize CEDET
 (defvar my-cedet-path "~/sw/cedet-1.1" "Path to CEDET")
