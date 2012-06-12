@@ -118,6 +118,21 @@
 (add-hook 'java-mode-hook 'ajc-java-complete-mode)
 (add-hook 'find-file-hook 'ajc-4-jsp-find-file-hook)
 
+;; Initialize CEDET
+(defvar my-cedet-path "~/sw/cedet-1.1" "Path to CEDET")
+;(add-to-list 'load-path (format "%s/common" my-cedet-path))
+;(load-file (format "%s/common/cedet.el" my-cedet-path))
+
+;; Initialize JDEE
+(defvar my-jdee-path "~/sw/jdee-2.4.0.1" "Path to JDEE")
+;(add-to-list 'load-path (format "%s/lisp" my-jdee-path))
+;(require 'jde)
+
+; Online posting says these might be necessary for JDEE.
+; http://forums.fedoraforum.org/showthread.php?t=280711
+;(defun screen-width nil -1)
+;(define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
+
 ;; Initialize paredit
 (add-to-list 'load-path "~/.emacs.d/paredit")
 (require 'paredit)
@@ -217,6 +232,7 @@ or just one char if that's not possible"
  '(evil-shift-width my-offset)
  '(inhibit-startup-screen t)
  '(inverse-video t)
+ '(jde-jdk-registry (quote (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
  '(large-file-warning-threshold 100000000)
  '(nxml-attribute-indent (my-continuation-offset))
  '(nxml-child-indent my-offset)

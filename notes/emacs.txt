@@ -42,6 +42,10 @@ Issues low priority:
          : Follow recent threads at:
             http://forums.fedoraforum.org/showthread.php?t=280711
             http://lists.gnu.org/archive/html/help-gnu-emacs/2012-06/msg00087.html
+         : Perhaps helpful configuration:
+            http://www.prongs.org/linux/emacs/java.php3
+         : Do I need elib?
+         : Customize jde-sourcepath var.
    : File reloading:
       : Figure out how to make reloading a file from disk less annoying.
          : It would be good to have similar abstraction as Vim:
