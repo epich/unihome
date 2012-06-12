@@ -122,6 +122,14 @@
 ;(defun screen-width nil -1)
 ;(define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
 
+;; Initialize GOESR specific elisp
+(ignore-errors (load-file "~/goesr/goesrDev.el")
+ )
+
+;;; For JDEE
+(defvar my-java-classpath goesr-classpath "Path for my .class or .jar files.")
+(defvar my-java-sourcepath goesr-sourcepath "Path for my .java files.")
+
 ;; Initialize paredit
 (add-to-list 'load-path "~/.emacs.d/paredit")
 (require 'paredit)
@@ -220,6 +228,8 @@ or just one char if that's not possible"
  '(evil-shift-width my-offset)
  '(inhibit-startup-screen t)
  '(inverse-video t)
+ '(jde-global-classpath my-java-classpath)
+ '(jde-sourcepath my-java-sourcepath)
  '(jde-jdk-registry (quote (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
  '(large-file-warning-threshold 100000000)
  '(nxml-attribute-indent (my-continuation-offset))
@@ -288,6 +298,7 @@ or just one char if that's not possible"
 ; TODO: Not so simple, either takes away the region so the second can't process.
 ;(define-key evil-normal-state-map "=" (lambda () (interactive) (patched-delete-trailing-whitespace) (evil-indent)))
 (define-key evil-motion-state-map "sf" 'delete-other-windows)
+(define-key evil-motion-state-map "sg" 'jde-open-class-source)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
 (define-key evil-motion-state-map "sej" 'paredit-wrap-round)
