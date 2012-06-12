@@ -6,7 +6,6 @@ import os
 
 def buildEvil():
    os.chdir('evil')
-   os.system('make clean')
    os.system('make')
    os.chdir('..')
 
@@ -17,9 +16,21 @@ def buildAutoComplete():
    os.system('make install DIR=build')
    os.chdir('..')
 
+def buildCedet():
+   os.chdir('cedet-1.1')
+   os.system('make')
+
+def buildJdee():
+   # Assumes jde.el was patched to change jde-cedet-max-version .
+   patchedFilePath = 'jdee-2.4.0.1/jde.elc'
+   if os.path.isfile(patchedFilePath):
+      os.system('rm %s'%(patchedFilePath,))
+
 def __MAIN__():
    buildEvil()
    buildAutoComplete()
+   buildCedet()
+   buildJdee()
 
 if __name__=='__main__':
    __MAIN__()
