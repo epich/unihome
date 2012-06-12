@@ -40,7 +40,7 @@
 
 (defconst jde-cedet-min-version "1.0beta2"
   "Cedet minimum version")
-(defconst jde-cedet-max-version "1.0"
+(defconst jde-cedet-max-version "1.1"
   "Cedet maximum version")
 
 (defconst jde-xemacsp (string-match "XEmacs" (emacs-version))
