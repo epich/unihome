@@ -109,13 +109,13 @@
 
 ;; Initialize CEDET
 (defvar my-cedet-path "~/sw/cedet-1.1" "Path to CEDET")
-;(add-to-list 'load-path (format "%s/common" my-cedet-path))
-;(load-file (format "%s/common/cedet.el" my-cedet-path))
+(add-to-list 'load-path (format "%s/common" my-cedet-path))
+(load-file (format "%s/common/cedet.el" my-cedet-path))
 
 ;; Initialize JDEE
 (defvar my-jdee-path "~/sw/jdee-2.4.0.1" "Path to JDEE")
-;(add-to-list 'load-path (format "%s/lisp" my-jdee-path))
-;(require 'jde)
+(add-to-list 'load-path (format "%s/lisp" my-jdee-path))
+(require 'jde)
 
 ; Online posting says these might be necessary for JDEE.
 ; http://forums.fedoraforum.org/showthread.php?t=280711
@@ -215,7 +215,6 @@ or just one char if that's not possible"
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(ac-delay 1.0)
- '(ajc-tag-file "~/.emacs.d/ajc-java-complete/java_base.tag")
  '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
@@ -296,7 +295,7 @@ or just one char if that's not possible"
 (define-key evil-motion-state-map "seK" 'paredit-raise-sexp)
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
-(define-key evil-motion-state-map "sji" 'ajc-import-class-under-point)
+(define-key evil-motion-state-map "sji" 'jde-import-find-and-import)
 ; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
 (when (fboundp 'undo-tree-undo)
    (define-key evil-normal-state-map "U" 'undo-tree-redo))
