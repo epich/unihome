@@ -62,9 +62,12 @@
    )
 )
 (defun log-msg (msg)
-   "Log a message, with prepended information.  Used for debugging. "
+   "Log a message, with prepended information.  Used for debugging.
+
+I attempted to use defadvice on the message function, but the minibuffer
+misbehaves under some conditions.  The message function is a C primitive
+anyway, which doesn't always combine with defadvice. "
    (interactive)
-   ; Replace with this if advice on message malfunctions.
    (message (format "%s %s" (get-time-str) msg))
 )
 
@@ -80,7 +83,9 @@
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
-(log-msg "Finished initializing Evil.")
+; evil-integration.el attempts to recreate the evil-overriding-maps, set
+; that code to nil to prevent it from running.
+(eval-after-load 'ibuffer nil)
 
 ;; Initialize cc-mode
 ;;
@@ -96,6 +101,7 @@
 
 ;; Initialize Auto Complete
 ;;
+(log-msg "Initializing Auto Complete.")
 (defvar my-ac-build-path "~/.emacs.d/auto-complete-1.3.1/build" "Path to built ac")
 (add-to-list 'load-path my-ac-build-path)
 (require 'auto-complete-config)
@@ -108,38 +114,35 @@
 (define-key ac-complete-mode-map (kbd "RET") nil)
 
 ;; Initialize CEDET
+(log-msg "Initializing CEDET.")
 (defvar my-cedet-path "~/sw/cedet-1.1" "Path to CEDET")
 (add-to-list 'load-path (format "%s/common" my-cedet-path))
 (load-file (format "%s/common/cedet.el" my-cedet-path))
 
 ;; Initialize JDEE
+(log-msg "Initializing JDEE.")
 (defvar my-jdee-path "~/sw/jdee-2.4.0.1" "Path to JDEE")
 (add-to-list 'load-path (format "%s/lisp" my-jdee-path))
 (require 'jde)
-
 ; Online posting says these might be necessary for JDEE.
 ; http://forums.fedoraforum.org/showthread.php?t=280711
 ;(defun screen-width nil -1)
 ;(define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
 
-;; Initialize GOESR specific elisp
-(ignore-errors (load-file "~/goesr/goesrDev.el")
- )
-
-;;; For JDEE
-(ignore-errors (defvar my-java-classpath goesr-classpath "Path for my .class or .jar files.")
-   (defvar my-java-sourcepath goesr-sourcepath "Path for my .java files."))
-
 ;; Initialize paredit
+(log-msg "Initializing Paredit.")
 (add-to-list 'load-path "~/.emacs.d/paredit")
 (require 'paredit)
 ; NB: I don't call enable-paredit-mode because it enables some retarded features such as
 ; not placing ) chars at the position I type it, and not allowing insertion of ; at
 ; the beginning of the line.  I use a few of its functions in keybindings below.
 
-; evil-integration.el attempts to recreate the evil-overriding-maps, set
-; that code to nil to prevent it from running.
-(eval-after-load 'ibuffer nil)
+;; Initialize GOESR specific elisp
+(log-msg "Initializing project-specific elisp.")
+(ignore-errors (load-file "~/goesr/goesrDev.el"))
+;;; For JDEE
+(ignore-errors (defvar my-java-classpath goesr-classpath "Path for my .class or .jar files.")
+   (defvar my-java-sourcepath goesr-sourcepath "Path for my .java files."))
 
 ; This is the patched delete-trailing-whitespace posted to
 ;  http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00523.html
@@ -208,6 +211,10 @@ or just one char if that's not possible"
 ; Disable weird auto formatting
 (setq-default c-electric-flag nil)
 
+;;; Customizations
+;;;
+;;; Specific customizations are documented outside the sexp, because
+;;; Emacs deletes all comments within.
 ;; ac-delay
 ; The default 0.1 ac-delay can cause display update delays when I'm typing.
 ; If I know what I'm typing, it is inconvenient.  1.0 is sufficiently high
@@ -231,7 +238,7 @@ or just one char if that's not possible"
  '(jde-global-classpath my-java-classpath)
  '(jde-sourcepath my-java-sourcepath)
  '(jde-jdk-registry (quote (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
- '(large-file-warning-threshold 100000000)
+ '(large-file-warning-threshold 1e9)
  '(nxml-attribute-indent (my-continuation-offset))
  '(nxml-child-indent my-offset)
  '(python-continuation-offset (my-continuation-offset))
@@ -273,7 +280,7 @@ or just one char if that's not possible"
 ; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
 (define-key evil-insert-state-map (kbd "C-y") nil)
 
-;; Disable C-0 and C-- since I hit them alot.
+;; Disable C-0 and C-- since I hit them alot unintentionally.
 (defun my-no-op () "No op, meaning do nothing."
   )
 (define-key evil-motion-state-map (kbd "C-0") 'my-no-op)

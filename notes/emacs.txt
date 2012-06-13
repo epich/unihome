@@ -14,6 +14,7 @@ Issues low priority:
          : Highlight text based on its level in the tree, from point to the root.
             : A website does this with lisp code samples:
                http://community.schemewiki.org/?call-with-current-continuation
+   : Figure out how to do merges with a relevant VCS.
    : Unwanted whitespace
       : Have tabs highlight in the same face as the trailing whitespace.  A shade of gray.
    : Have the p command also do a ==
@@ -129,15 +130,9 @@ Issues low priority:
       : Bug:
          : Select with mouse, char under point is not highlighted, but it is with v selection.
          : Report submitted to project.
-   : Annoying prompts:
-      : When exiting with unsaved changes.
-   : Optimize Emacs startup
-      : When loading several .java files, observed it can half a second for each Java file.
-      : Try advice at: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
    : Debugging through logs
       : Add log key bindings for:
          : C and C++
-         : Python
          : Shell (echo)
       : Is ll-debug.el useful (doesn't look like it)?
    : Tabs
@@ -163,13 +158,15 @@ Issues low priority:
    : Logging
       : Is there a way to get the current function's name, in order to put in log-msg prefix.
    : C-c issues:
-      : Need to handle escaping out of other unofficial Evil states, such as =
+      : Need to handle escaping out of other unofficial Evil states, such as = and d
 
 Modifications to Evil source:
    (none)
    
 Notes:
-    : Setup on RHEL5
+   : Optimize Emacs startup
+      : Try advice at: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
+   : Setup on RHEL5
        wget http://ftp.gnu.org/pub/gnu/emacs/emacs-23.4.tar.gz
        ./configure --prefix=/nas/home/boreilly/sw/emacs-install --with-gif=no
    : C-z cycles between <N> and <E> evil states.
