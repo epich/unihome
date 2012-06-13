@@ -27,6 +27,9 @@
 (delete-selection-mode 1)
 (setq mouse-yank-at-point t)
 (show-paren-mode 1)
+; Emacs stupidly formats curly braces in neither of the two most common ways.
+; This fixes that.
+(setq c-default-style "linux")
 
 ;; make file name and computer title
 (defvar my-frame-title "Unset" "Title for the frame. ")
@@ -314,6 +317,7 @@ or just one char if that's not possible"
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
 (define-key evil-motion-state-map "sji" 'jde-import-find-and-import)
+(define-key evil-motion-state-map "sja" 'jde-import-all)
 ; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
 (when (fboundp 'undo-tree-undo)
    (define-key evil-normal-state-map "U" 'undo-tree-redo))
