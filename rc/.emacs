@@ -127,8 +127,8 @@
  )
 
 ;;; For JDEE
-(defvar my-java-classpath goesr-classpath "Path for my .class or .jar files.")
-(defvar my-java-sourcepath goesr-sourcepath "Path for my .java files.")
+(ignore-errors (defvar my-java-classpath goesr-classpath "Path for my .class or .jar files.")
+   (defvar my-java-sourcepath goesr-sourcepath "Path for my .java files."))
 
 ;; Initialize paredit
 (add-to-list 'load-path "~/.emacs.d/paredit")
