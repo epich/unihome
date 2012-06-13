@@ -18,6 +18,9 @@ def buildAutoComplete():
 
 def buildCedet():
    os.chdir('cedet-1.1')
+   # There was a case where cedet*/semantic/Makefile needed a tender touch.
+   # Might as well touch 'em all.
+   os.system('touch `find . -maxdepth 2 -name Makefile`')
    os.system('make')
 
 def buildJdee():
