@@ -1,3 +1,9 @@
 To install Python modules in a particular location:
    python setup.py install --prefix <path>
-   
+
+Get script name:
+   os.path.basename( sys.argv[0] )
+
+Get script path:
+   sys.path[0]
+
