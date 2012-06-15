@@ -94,6 +94,7 @@ Issues low priority:
       : Need to be able to double click a file path and have it select all of it.
       : Double clicking a / char selects up to the . (exclusive).
       : See: http://lists.gnu.org/archive/html/help-gnu-emacs/2008-12/msg00015.html
+      : Helpful?: http://stackoverflow.com/questions/9595277/emacs-xterm-mouse-mode-double-click-to-highlight-word
    : Syntax highlighting:
       : Not keen on (in Python) strings and comments getting a similar color.
    : Look into using undo-tree extension.
@@ -164,6 +165,13 @@ Issues low priority:
    : Optimize Emacs startup
       : Try advice at: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
       : Try advice at: http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster/779145#779145
+      : Write code which automates benchmarking a bit better.
+         : Elisp:
+            : Have the elisp measure the time elapsed from start of .emacs to end of term-setup-hook.
+            : Maybe output result to stdout to facilitate analyzing multiple runs of Emacs.
+         : Maybe need a higher Python script to
+            : start up Emacs multiple times
+            : discard the first run in case there's any caching or byte compiling that occurs.
 
 Modifications to Evil source:
    (none)

@@ -102,19 +102,23 @@ anyway, which doesn't always combine with defadvice. "
 ; Specifically, I observed an additional 12 seconds for 17 script files in a snapshot view.
 ;(load "clearcase")
 
-;; Initialize Auto Complete
-;;
-(log-msg "Initializing Auto Complete.")
 (defvar my-ac-build-path "~/.emacs.d/auto-complete-1.3.1/build" "Path to built ac")
-(add-to-list 'load-path my-ac-build-path)
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories (format "%s/ac-dict" my-ac-build-path))
-(ac-config-default)
+(defun setup-auto-complete ()
+  "Set up Auto Complete"
+   ;; Initialize 
+   (log-msg "Initializing Auto Complete.")
+   (add-to-list 'load-path my-ac-build-path)
+   (require 'auto-complete-config)
+   (add-to-list 'ac-dictionary-directories (format "%s/ac-dict" my-ac-build-path))
+   (ac-config-default)
 
-;; Configure Auto Complete
-; RET can cause auto completion when literal RET is what I want.
-; Auto Complete is perfectly usable via TAB alone, so disable RET key binding.
-(define-key ac-complete-mode-map (kbd "RET") nil)
+   ;; Configure 
+   ; RET can cause auto completion when literal RET is what I want.
+   ; Auto Complete is perfectly usable via TAB alone, so disable RET key binding.
+   (define-key ac-complete-mode-map (kbd "RET") nil)
+   )
+; I'm not finding Auto Complete useful at the moment.
+;(init-auto-complete)
 
 ;; Initialize CEDET
 (log-msg "Initializing CEDET.")
@@ -122,15 +126,21 @@ anyway, which doesn't always combine with defadvice. "
 (add-to-list 'load-path (format "%s/common" my-cedet-path))
 (load-file (format "%s/common/cedet.el" my-cedet-path))
 
-;; Initialize JDEE
-(log-msg "Initializing JDEE.")
 (defvar my-jdee-path "~/sw/jdee-2.4.0.1" "Path to JDEE")
-(add-to-list 'load-path (format "%s/lisp" my-jdee-path))
-(require 'jde)
-; Online posting says these might be necessary for JDEE.
-; http://forums.fedoraforum.org/showthread.php?t=280711
-;(defun screen-width nil -1)
-;(define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
+(defun setup-jdee ()
+  "Set up JDEE"
+   (log-msg "Initializing JDEE.")
+   (add-to-list 'load-path (format "%s/lisp" my-jdee-path))
+   ; NB: (require 'jde) in Java mode hook, so as startup is more
+   ; efficient when not editing Java.
+   ;(require 'jde)
+   
+   ; Online posting says these might be necessary for JDEE.
+   ; http://forums.fedoraforum.org/showthread.php?t=280711
+   ;(defun screen-width nil -1)
+   ;(define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
+   )
+(setup-jdee)
 
 ;; Initialize paredit
 (log-msg "Initializing Paredit.")
@@ -196,7 +206,7 @@ or just one char if that's not possible"
           (p (point)))
       (when (= movement 0) (setq movement my-offset))
       (save-match-data
-        (if (string-match "\\w*\\([\\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
+        (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
             (backward-delete-char (- (match-end 1) (match-beginning 1)))
           (call-interactively 'backward-delete-char))))))
 ; Make tab less restrictive about where I tab to.
@@ -218,6 +228,10 @@ or just one char if that's not possible"
 ;;;
 ;;; Specific customizations are documented outside the sexp, because
 ;;; Emacs deletes all comments within.
+;;;
+;;; Also slightly annoying is that when changing this sexp, Emacs will
+;;; change numbers in eg 1e9 notation, even though 1e9 is more readable
+;;; than 1000000000.  Lame.
 ;; ac-delay
 ; The default 0.1 ac-delay can cause display update delays when I'm typing.
 ; If I know what I'm typing, it is inconvenient.  1.0 is sufficiently high
@@ -239,9 +253,10 @@ or just one char if that's not possible"
  '(inhibit-startup-screen t)
  '(inverse-video t)
  '(jde-global-classpath my-java-classpath)
- '(jde-sourcepath my-java-sourcepath)
  '(jde-jdk-registry (quote (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
- '(large-file-warning-threshold 1e9)
+ '(jde-sourcepath my-java-sourcepath)
+ '(large-file-warning-threshold 1000000000.0)
+ '(message-log-max 100000)
  '(nxml-attribute-indent (my-continuation-offset))
  '(nxml-child-indent my-offset)
  '(python-continuation-offset (my-continuation-offset))
@@ -403,6 +418,7 @@ or just one char if that's not possible"
 (add-hook 'java-mode-hook 
    (lambda ()
       (log-msg "Inside java-mode-hook")
+      (require 'jde)
       (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-java-log)
    )
 )
