@@ -65,6 +65,8 @@ Issues low priority:
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
    : Explore dired
    : Explore org-mode
+   : Being prompted about running Python process is annoying.
+      : CEDET starts it for sake of auto completion.
    : Smart editing:
       : Need to specify how many tabs to continue code lines with.
          : Done for Python (as much as can be)
