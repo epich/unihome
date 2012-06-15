@@ -1,6 +1,37 @@
 Issues high priority:
+   : Searching issues:
+      Highlight updating:
+         :
+            /\${
+            deleted {
+            $ still highlighted
+         :
+            /string1
+            n
+            i
+            string2
+            string2 is highlighted
+         : Undoing.  I'm accustomed to doing using undo to review complex search and replace.  Evil doesn't highlight what was replaced after the undo.
+         : Scrolling with the mouse wheel whilst inputting a search and replace.  Evil shows prior search term instead of what's being searched and replaced.
+         : Pasting text which contains the search term.
+         : Scrolling very fast (see highlight updating in ; and ; key bindings)
+      : When up arrowing through search history, Vim goes to end of line, Evil beginning.
+         : This is consistent with Emacs minibuffer in general.  Investigate
+         : Can I use an Evil ex hook for this?  See:
+            https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
 
 Issues low priority:
+   : Escaping out of informal Evil states, such as 'd' and '='.
+      : Ask on mailing list why C-g doesn't get out of these.
+      : How to allow C-c to work on these.
+   : C-c bug:
+      : Occasionally I get to a state which looks like insert, but has a C-c mapping for keyboard-quit.
+   : How to mark search terms with different colors?
+      : Submit RFE to Evil for a function analogous to highlight-regexp and highlight-phrase .
+      : Need Evil analog to highlight-regexp and highlight-phrase
+      : Look more at evil-ex-make-hl
+      : Need a way to clear them.  evil-ex-delete-hl perhaps.
+   : Look into using undo-tree extension.
    : Figure out how to edit elisp code efficiently.
       : Paredit
          : Set up enabling
@@ -30,16 +61,10 @@ Issues low priority:
          : I copied the patch as patched-delete-trailing-whitespace
          : A simple combination in a lambda bound to "=" doesn't work.
             : Might need to call evil-indent in my copied func.
-   : Figure out how to byte compile .el files and add it to buildEmacsD.py for yasnippet and ajc.
    : Repeat . command bugs:
       : Pasting text into Emacs isn't recorded to repeat ring.
          : Bug report submitted to Evil project.
    : Java development
-      : Java Auto Complete
-         : Popup causes several seconds of delay.  What's the cause?
-            : Try advice in dev's email, generate own smaller set of Java tags.
-         : Why is there no popup for ajc-import-class-under-point?
-             : auto-complete places text under point.  See mailing list.
       : JDEE
          : Follow recent threads at:
             http://forums.fedoraforum.org/showthread.php?t=280711
@@ -72,26 +97,6 @@ Issues low priority:
          : Done for Python (as much as can be)
          : Do for C like languages
          : Do for XML
-   : Searching issues:
-      Highlight updating:
-         :
-            /\${
-            deleted {
-            $ still highlighted
-         :
-            /string1
-            n
-            i
-            string2
-            string2 is highlighted
-         : Undoing.  I'm accustomed to doing using undo to review complex search and replace.  Evil doesn't highlight what was replaced after the undo.
-         : Scrolling with the mouse wheel whilst inputting a search and replace.  Evil shows prior search term instead of what's being searched and replaced.
-         : Pasting text which contains the search term.
-         : Scrolling very fast (see highlight updating in ; and ; key bindings)
-      : When up arrowing through search history, Vim goes to end of line, Evil beginning.
-         : This is consistent with Emacs minibuffer in general.  Investigate
-         : Can I use an Evil ex hook for this?  See:
-            https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
    : Double click select:
       : Need to be able to double click a file path and have it select all of it.
       : Double clicking a / char selects up to the . (exclusive).
@@ -99,7 +104,6 @@ Issues low priority:
       : Helpful?: http://stackoverflow.com/questions/9595277/emacs-xterm-mouse-mode-double-click-to-highlight-word
    : Syntax highlighting:
       : Not keen on (in Python) strings and comments getting a similar color.
-   : Look into using undo-tree extension.
    : Cursor position is difficult to discern over highlighted areas.
    : Make Emacs state visually obvious.  Ideas:
       : Have Emacs state be black fg on white bg
@@ -108,11 +112,6 @@ Issues low priority:
          Use hooks
       : Could also set color of cursor instead:
          See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
-   : How to mark search terms with different colors?
-      : Submit RFE to Evil for a function analogous to highlight-regexp and highlight-phrase .
-      : Need Evil analog to highlight-regexp and highlight-phrase
-      : Look more at evil-ex-make-hl
-      : Need a way to clear them.  evil-ex-delete-hl perhaps.
    : Screen flashing:
       : When finished with a cycle of search in a file
    : Get % to match <> such as in C++ or Java.
@@ -162,8 +161,6 @@ Issues low priority:
    : Opening through symlinks in an hg repo is slow by a factor of about 5.
    : Logging
       : Is there a way to get the current function's name, in order to put in log-msg prefix.
-   : C-c issues:
-      : Need to handle escaping out of other unofficial Evil states, such as = and d
    : Optimize Emacs startup
       : Try advice at: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
       : Try advice at: http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster/779145#779145
@@ -176,9 +173,6 @@ Issues low priority:
             : start up Emacs multiple times
             : discard the first run in case there's any caching or byte compiling that occurs.
 
-Modifications to Evil source:
-   (none)
-   
 Notes:
    : Setup on RHEL5
        wget http://ftp.gnu.org/pub/gnu/emacs/emacs-23.4.tar.gz
@@ -375,4 +369,9 @@ Retired issues with residual notes:
                (dotimes (num 2) (isearch-abort))
             )
          )
+   : Java Auto Complete
+      : Popup causes several seconds of delay.  What's the cause?
+         : Try advice in dev's email, generate own smaller set of Java tags.
+      : Why is there no popup for ajc-import-class-under-point?
+          : auto-complete places text under point.  See mailing list.
 
