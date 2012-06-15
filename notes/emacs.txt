@@ -17,7 +17,7 @@ Issues low priority:
    : Figure out how to do merges with a relevant VCS.
       : Ediff
    : Unwanted whitespace
-      : Have tabs highlight in the same face as the trailing whitespace.  A shade of gray.
+      : Highlight tabs.  Maybe use a different shade of gray than the trailing line whitespace, one with greater contrast to background.
    : Have the p command also do a ==
       : If not too hard, make this conditional on the line pasting to is whitespace only.
       : File bug about pasting with 'p' on lines with no chars.  A space char is effectively created.
@@ -165,6 +165,7 @@ Issues low priority:
    : Optimize Emacs startup
       : Try advice at: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
       : Try advice at: http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster/779145#779145
+      : Move most of .emacs to a .el file and build it with the others.
       : Write code which automates benchmarking a bit better.
          : Elisp:
             : Have the elisp measure the time elapsed from start of .emacs to end of term-setup-hook.
