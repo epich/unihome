@@ -169,6 +169,8 @@ Issues low priority:
          : Elisp:
             : Have the elisp measure the time elapsed from start of .emacs to end of term-setup-hook.
             : Maybe output result to stdout to facilitate analyzing multiple runs of Emacs.
+               : For printing to stdout, might be helpful:
+                  http://www.gnu.org/software/emacs/manual/html_node/elisp/Output-Functions.html
          : Maybe need a higher Python script to
             : start up Emacs multiple times
             : discard the first run in case there's any caching or byte compiling that occurs.
