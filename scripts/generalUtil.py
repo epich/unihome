@@ -107,6 +107,8 @@ def cmd(cmdStr, shellStr='sh', background=False, printStdout=False, printStderr=
    if printDebug:
       print('Completed in %f seconds.' % (time.time()-startTime))
 
+   # If we don't wait, returncode may not be up to date yet.
+   childSh.wait()
    if childSh.returncode!=None and childSh.returncode!=0:
       raise ShellCmdError('Shell command failed with errno:%s cmd:%s stderr:%s' % (childSh.returncode,cmdStr,err))
 
