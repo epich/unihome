@@ -2,4 +2,7 @@ To resolve light bulbs:
    Go to previous warning or error: Ctrl-,
    Go to next warning or error: Ctrl-.
    Open menu of corrections to warning or error: Ctrl-1
+
+To open file by name:
+   Ctrl-Shift-R
    
