@@ -47,8 +47,6 @@ Issues low priority:
                http://community.schemewiki.org/?call-with-current-continuation
    : Figure out how to do merges with a relevant VCS.
       : Ediff
-   : Unwanted whitespace
-      : Highlight tabs.  Maybe use a different shade of gray than the trailing line whitespace, one with greater contrast to background.
    : Have the p command also do a ==
       : If not too hard, make this conditional on the line pasting to is whitespace only.
       : File bug about pasting with 'p' on lines with no chars.  A space char is effectively created.

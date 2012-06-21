@@ -157,6 +157,7 @@ anyway, which doesn't always combine with defadvice. "
 (ignore-errors (defvar my-java-classpath goesr-classpath "Path for my .class or .jar files.")
    (defvar my-java-sourcepath goesr-sourcepath "Path for my .java files."))
 
+; TODO: Use the more generalized whitespace elisp functions instead.
 ; This is the patched delete-trailing-whitespace posted to
 ;  http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00523.html
 ; and accepted into Emacs.  It's not in my version, so just copying it here
@@ -250,6 +251,7 @@ or just one char if that's not possible"
  '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
+ '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(inverse-video t)
  '(jde-global-classpath my-java-classpath)
@@ -261,14 +263,15 @@ or just one char if that's not possible"
  '(nxml-child-indent my-offset)
  '(python-continuation-offset (my-continuation-offset))
  '(python-indent my-offset)
- '(show-trailing-whitespace t)
+ '(whitespace-style (quote (face tabs trailing)))
  '(x-select-enable-clipboard t))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(trailing-whitespace ((((class color) (background dark)) (:background "gray25")))))
+ '(whitespace-tab ((((class color) (background dark)) (:background "grey50" :foreground "darkgray"))))
+ '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
 ;;; evil key bindings
 ;;;
