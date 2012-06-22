@@ -30,6 +30,7 @@
 ; Emacs stupidly formats curly braces in neither of the two most common ways.
 ; This fixes that.
 (setq c-default-style "linux")
+(set-face-attribute 'default nil :height 80)
 
 ;; make file name and computer title
 (defvar my-frame-title "Unset" "Title for the frame. ")
@@ -197,8 +198,8 @@ If the region is active, only delete whitespace within the region."
 ; For binding to backspace.
 ;
 ; Taken from: http://stackoverflow.com/questions/1450169/how-do-i-emulate-vims-softtabstop-in-emacs
-(defun backward-delete-whitespace-to-column ()
-  "delete back to the previous column of whitespace, or as much whitespace as possible,
+(defun backward-delete-whitespace-to-tab-stop ()
+  "delete back to the previous tab-stop of whitespace, or as much whitespace as possible,
 or just one char if that's not possible"
   (interactive)
   (if indent-tabs-mode
@@ -213,7 +214,7 @@ or just one char if that's not possible"
 ; Make tab less restrictive about where I tab to.
 (global-set-key (kbd "TAB") 'tab-to-tab-stop);
 (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
-(define-key evil-insert-state-map (kbd "DEL") 'backward-delete-whitespace-to-column)
+(define-key evil-insert-state-map (kbd "DEL") 'backward-delete-whitespace-to-tab-stop)
 ; Permanently force Emacs to indent with spaces, never with TABs:
 (setq-default indent-tabs-mode nil)
 (setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
@@ -331,7 +332,6 @@ or just one char if that's not possible"
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
 (define-key evil-motion-state-map "sej" 'paredit-wrap-round)
 (define-key evil-motion-state-map "sek" 'paredit-splice-sexp)
-(define-key evil-motion-state-map "seK" 'paredit-raise-sexp)
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
 (define-key evil-motion-state-map "sji" 'jde-import-find-and-import)
