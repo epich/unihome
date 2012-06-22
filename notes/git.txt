@@ -1,0 +1,3 @@
+Linus describes Git workflows:
+   http://lkml.indiana.edu/hypermail/linux/kernel/0805.2/0539.html
+   
