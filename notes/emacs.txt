@@ -36,17 +36,21 @@ Issues low priority:
    : Look into using undo-tree extension.
    : Figure out how to edit elisp code efficiently.
       : Paredit
-         : Set up enabling
-         : Set up key bindings
+         : Issues:
+            : paredit-wrap-around (bound to sej) doesn't do as expected when there's active region.
+            : paredit-splice-sexp (bound to sek) doesn't do as expected when there's active region.
+         : TODO:
+            : Define a binding for 'sed' to delete sexp.
+            : Try paredit-beta to see if it resolves undesired behaviors.
       : Ideas:
          : select text, enclose in parens,
-            : ... move point to beginning
-            : ... move point to end
+            : Paredit accomplishes this.
          : select text, remove enclosing parens.
-         : highlight matching parens in different colors, but only those that enclose point.
-         : Highlight text based on its level in the tree, from point to the root.
-            : A website does this with lisp code samples:
-               http://community.schemewiki.org/?call-with-current-continuation
+            : Paredit accomplishes this.
+         : Highlight text based on its level in the sexp tree, from point to the root.
+            : pairs of parens in different colors.
+            : pairs of parens, including within them, in different colors.
+               See code samples at: http://community.schemewiki.org/?scheme-faq-language
    : Figure out how to do merges with a relevant VCS.
       : Ediff
    : Have the p command also do a ==
@@ -100,8 +104,13 @@ Issues low priority:
    : Double click select:
       : Need to be able to double click a file path and have it select all of it.
       : Double clicking a / char selects up to the . (exclusive).
-      : See: http://lists.gnu.org/archive/html/help-gnu-emacs/2008-12/msg00015.html
-      : Helpful?: http://stackoverflow.com/questions/9595277/emacs-xterm-mouse-mode-double-click-to-highlight-word
+      : Hacking syntax tables looks like the canonical and most generalized solution:
+         http://emacswiki.org/emacs/EmacsSyntaxTable
+      : A targetted way to hack this just for mouse clicking:
+         : http://lists.gnu.org/archive/html/help-gnu-emacs/2008-12/msg00015.html
+         : Would be good to pursue if hacking the syntax table is more generalized than I find I want.
+      : Relevant, but not particularly helpful:
+         http://stackoverflow.com/questions/9595277/emacs-xterm-mouse-mode-double-click-to-highlight-word
    : Syntax highlighting:
       : Not keen on (in Python) strings and comments getting a similar color.
    : Cursor position is difficult to discern over highlighted areas.
@@ -114,6 +123,8 @@ Issues low priority:
          See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
    : Screen flashing:
       : When finished with a cycle of search in a file
+   : Backspace to tab stop
+      : Doesn't work correctly when there's an active region.
    : Get % to match <> such as in C++ or Java.
    : Set title to include host and directory (after file's basename)
    : buffer-menu
@@ -134,11 +145,6 @@ Issues low priority:
       : Bug:
          : Select with mouse, char under point is not highlighted, but it is with v selection.
          : Report submitted to project.
-   : Debugging through logs
-      : Add log key bindings for:
-         : C and C++
-         : Shell (echo)
-      : Is ll-debug.el useful (doesn't look like it)?
    : Tabs
       : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
          : Some extensions:
@@ -160,6 +166,10 @@ Issues low priority:
       : Decide if I want to place them under a dir in my home.
    : Opening through symlinks in an hg repo is slow by a factor of about 5.
    : Logging
+      : In the my-insert-java-log function, \t is inserting literal tabs.  Fix to insert (my-continuation-offset) spaces instead.
+      : Add log key bindings for:
+         : C and C++
+         : Shell (echo)
       : Is there a way to get the current function's name, in order to put in log-msg prefix.
    : Optimize Emacs startup
       : Try advice at: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
@@ -201,6 +211,7 @@ Notes:
    : Windows notes:
       : Gets rid of all other windows: C-x 1
       : Change to other window: C-x o
+      : Split the same window side by side: C-x 3
    : (define-key evil-normal-state-map "o" 'next-buffer)
    : (define-key evil-normal-state-map "O" 'previous-buffer)
    : Define a function which can be called with M-x (and therefore evil mappings)
