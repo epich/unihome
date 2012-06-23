@@ -171,6 +171,10 @@ Issues low priority:
          : C and C++
          : Shell (echo)
       : Is there a way to get the current function's name, in order to put in log-msg prefix.
+   : Scrolling
+      : These don't work as advertized:
+         '(scroll-conservatively 1)
+         '(scroll-step 1)
    : Optimize Emacs startup
       : Try advice at: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
       : Try advice at: http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster/779145#779145
