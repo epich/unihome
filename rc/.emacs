@@ -264,6 +264,8 @@ or just one char if that's not possible"
  '(nxml-child-indent my-offset)
  '(python-continuation-offset (my-continuation-offset))
  '(python-indent my-offset)
+ '(scroll-conservatively 1)
+ '(scroll-step 1)
  '(whitespace-style (quote (face tabs trailing)))
  '(x-select-enable-clipboard t))
 (custom-set-faces
