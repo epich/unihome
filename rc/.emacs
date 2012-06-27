@@ -123,11 +123,11 @@ anyway, which doesn't always combine with defadvice. "
 
 ;; Initialize CEDET
 (log-msg "Initializing CEDET.")
-(defvar my-cedet-path "~/sw/cedet-1.1" "Path to CEDET")
+(defvar my-cedet-path "~/.emacs.d/cedet-1.1" "Path to CEDET")
 (add-to-list 'load-path (format "%s/common" my-cedet-path))
 (load-file (format "%s/common/cedet.el" my-cedet-path))
 
-(defvar my-jdee-path "~/sw/jdee-2.4.0.1" "Path to JDEE")
+(defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
 (defun setup-jdee ()
   "Set up JDEE"
    (log-msg "Initializing JDEE.")
