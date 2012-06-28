@@ -15,6 +15,7 @@
 ;; This fixes that.
 (setq c-default-style "linux")
 (set-face-attribute 'default nil :height 80)
+;;(setq truncate-lines nil)
 
 ;; Maximize window upon startup.  A non toggling way to do this would be nice.
 (defun toggle-fullscreen ()
@@ -22,14 +23,15 @@
   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
                          '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-                         '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0))
-)
+                         '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
 (toggle-fullscreen)
 
 ;; Set the frame title to the current filename.
 (setq-default frame-title-format
               '(:eval (format "%s"
-                              (file-name-nondirectory (or (buffer-file-name) default-directory))))) 
+                              (file-name-nondirectory (or (buffer-file-name) default-directory)))))
+
+(defun my-no-op () "No op, meaning do nothing.")
 
 ;;; Functions to facilitate elisp debug logging.
 (defvar current-date-time-format "%Y-%m-%dT%H:%M:%S"
@@ -37,20 +39,14 @@
 (defun get-usec-str (cur-time)
    "Get the microseconds as string. "
    (format "%06d"
-      (nth 2 cur-time
-      )
-   )
-)
+      (nth 2 cur-time)))
 (defun get-time-str ()
    "Get the current time as a string. "
    (interactive)
    (let ((cur-time (current-time)))
       (format "%s.%s" 
          (format-time-string current-date-time-format)
-         (get-usec-str cur-time)
-      )
-   )
-)
+         (get-usec-str cur-time))))
 (defun log-msg (msg)
    "Log a message, with prepended information.  Used for debugging.
 
@@ -58,15 +54,14 @@ I attempted to use defadvice on the message function, but the minibuffer
 misbehaves under some conditions.  The message function is a C primitive
 anyway, which doesn't always combine with defadvice. "
    (interactive)
-   (message (format "%s %s" (get-time-str) msg))
-)
+   (message (format "%s %s" (get-time-str) msg)))
 
-(add-to-list 'load-path "~/.emacs.d")
+;; (add-to-list 'load-path "~/.emacs.d")
 ;; Compile .el files if they need to be.
 ;;
 ;; From: http://stackoverflow.com/questions/1217180/how-do-i-byte-compile-everything-in-my-emacs-d-directory
-; TODO: When files don't compile, it'll create errors and modest delay everytime Emacs starts.
-;(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
+;; TODO: When files don't compile, it'll create errors and modest delay everytime Emacs starts.
+;; (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
 
 ;;; Initialize evil
 (log-msg "Initializing Evil.")
@@ -79,18 +74,15 @@ anyway, which doesn't always combine with defadvice. "
 ;; that code to nil to prevent it from running.
 (eval-after-load 'ibuffer nil)
 
-;; Initialize cc-mode
+;;; Initialize Clearcase extensions
 ;;
-;; cc-mode is distributed with Emacs, but using a newer version in order to get 
-;; style guessing.
-; c-guess isn't working out.
-;(add-to-list 'load-path "~/.emacs.d/cc-mode")
+;; Initializes too slowly for my tastes, even when .elc exists.
+;; Specifically, I observed an additional 12 seconds for 17 script files in a snapshot view.
+;;
+;; Might still be useful for merging. Investigate.
+;; (load "clearcase")
 
-;; Initialize Clearcase extensions
-; Initializes too slowly for my tastes, even when .elc exists.
-; Specifically, I observed an additional 12 seconds for 17 script files in a snapshot view.
-;(load "clearcase")
-
+;;; Initialize Auto Complete
 (defvar my-ac-build-path "~/.emacs.d/auto-complete-1.3.1/build" "Path to built ac")
 (defun setup-auto-complete ()
   "Set up Auto Complete"
@@ -101,58 +93,59 @@ anyway, which doesn't always combine with defadvice. "
    (add-to-list 'ac-dictionary-directories (format "%s/ac-dict" my-ac-build-path))
    (ac-config-default)
 
-   ;; Configure 
-   ; RET can cause auto completion when literal RET is what I want.
-   ; Auto Complete is perfectly usable via TAB alone, so disable RET key binding.
-   (define-key ac-complete-mode-map (kbd "RET") nil)
-   )
-; I'm not finding Auto Complete useful at the moment.
-;(init-auto-complete)
+   ;; Configure
+   ;;
+   ;; RET can cause auto completion when literal RET is what I want.
+   ;; Auto Complete is perfectly usable via TAB alone, so disable RET key binding.
+   (define-key ac-complete-mode-map (kbd "RET") nil))
+;; I'm not finding Auto Complete useful at the moment.
+;; (init-auto-complete)
 
-;; Initialize CEDET
+;;; Initialize CEDET
 (log-msg "Initializing CEDET.")
 (defvar my-cedet-path "~/.emacs.d/cedet-1.1" "Path to CEDET")
 (add-to-list 'load-path (format "%s/common" my-cedet-path))
-; CEDET retardedly raises fatal error when reloading an already reloaded file.
+;; CEDET retardedly raises fatal error when reloading an already reloaded file.
 (ignore-errors (load-file (format "%s/common/cedet.el" my-cedet-path)))
 
+;;; Initialize JDEE
 (defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
 (defun setup-jdee ()
   "Set up JDEE"
    (log-msg "Initializing JDEE.")
    (add-to-list 'load-path (format "%s/lisp" my-jdee-path))
-   ; NB: (require 'jde) in Java mode hook, so as startup is more
-   ; efficient when not editing Java.
-   ;(require 'jde)
+   ;; NB: (require 'jde) in Java mode hook, so as startup is more
+   ;; efficient when not editing Java.
+   ;;(require 'jde)
    
-   ; Online posting says these might be necessary for JDEE.
-   ; http://forums.fedoraforum.org/showthread.php?t=280711
-   ;(defun screen-width nil -1)
-   ;(define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
+   ;; Online posting says these might be necessary for JDEE.
+   ;; http://forums.fedoraforum.org/showthread.php?t=280711
+   ;; (defun screen-width nil -1)
+   ;; (define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
    )
 (setup-jdee)
 
-;; Initialize paredit
+;;; Initialize ParEdit
 (log-msg "Initializing Paredit.")
 (add-to-list 'load-path "~/.emacs.d/paredit")
 (require 'paredit)
-; NB: I don't call enable-paredit-mode because it enables some retarded features such as
-; not placing ) chars at the position I type it, and not allowing insertion of ; at
-; the beginning of the line.  I use a few of its functions in keybindings below.
+;; NB: I don't call enable-paredit-mode because it enables some retarded features such as
+;; not placing ) chars at the position I type it, and not allowing insertion of ; at
+;; the beginning of the line.  I use a few of its functions in keybindings below.
 
-;; Initialize GOESR specific elisp
+;; Initialize project-specific elisp
 (log-msg "Initializing project-specific elisp.")
-; Not present on all computers I work on, so ignore errors.
+;; GOESR isn't relevant to all computers I work on, so ignore errors.
 (ignore-errors (load-file "~/goesr/goesrDev.el"))
-;;; For JDEE
+;; Classpaths for JDEE
 (ignore-errors (defvar my-java-classpath goesr-classpath "Path for my .class or .jar files.")
    (defvar my-java-sourcepath goesr-sourcepath "Path for my .java files."))
 
-; TODO: Use the more generalized whitespace elisp functions instead.
-; This is the patched delete-trailing-whitespace posted to
-;  http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00523.html
-; and accepted into Emacs.  It's not in my version, so just copying it here
-; for use with = key binding.
+;; TODO: Use the more generalized whitespace elisp functions instead.
+;; This is the patched delete-trailing-whitespace posted to
+;;  http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00523.html
+;; and accepted into Emacs.  It's not in my version, so just copying it here
+;; for use with = key binding.
 (defun patched-delete-trailing-whitespace (&optional start end)
   "Delete all the trailing whitespace across the current buffer.
 All whitespace after the last non-whitespace character in a line is deleted.
@@ -178,18 +171,20 @@ If the region is active, only delete whitespace within the region."
           (delete-region (point) (match-end 0)))
         (set-marker end-marker nil)))))
 
-;;; Tabs
-; TODO: I would prefer automatic guessing of my-offset based on the offset in use for the
-; surrounding code.
+;;; Relating to tabs
+;; I would prefer automatic guessing of my-offset based on the offset in use for the
+;; surrounding code.
 (defvar my-offset 3 "My indentation offset. ")
 (defun my-continuation-offset ()
   "Determine the offset for line continuations."
   (* 3 my-offset))
-; For binding to backspace.
-;
-; Taken from: http://stackoverflow.com/questions/1450169/how-do-i-emulate-vims-softtabstop-in-emacs
+;; For binding to backspace.
+;;
+;; Taken from: http://stackoverflow.com/questions/1450169/how-do-i-emulate-vims-softtabstop-in-emacs
+;;
+;; Doesn't correctly handle backspace when there's a selection.
 (defun backward-delete-whitespace-to-tab-stop ()
-  "delete back to the previous tab-stop of whitespace, or as much whitespace as possible,
+  "Delete back to the previous tab-stop of whitespace, or as much whitespace as possible,
 or just one char if that's not possible"
   (interactive)
   (if indent-tabs-mode
@@ -201,38 +196,41 @@ or just one char if that's not possible"
         (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
             (backward-delete-char (- (match-end 1) (match-beginning 1)))
           (call-interactively 'backward-delete-char))))))
-; Make tab less restrictive about where I tab to.
-(global-set-key (kbd "TAB") 'tab-to-tab-stop);
+;; Make tab less restrictive about where I tab to.
+(global-set-key (kbd "TAB") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-whitespace-to-tab-stop)
-; Permanently force Emacs to indent with spaces, never with TABs:
+;; Permanently force Emacs to indent with spaces, never with TABs:
 (setq-default indent-tabs-mode nil)
 (setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
 (setq c-basic-offset my-offset)
-; Doesn't work here, works in custom-set-variables.
-;(setq evil-shift-width my-offset)
-; Determines how to display tabs.
-;(setq tab-width my-offset)
-; Disable weird auto formatting
+;; Doesn't work here, works in custom-set-variables.
+;;(setq evil-shift-width my-offset)
+;; Determines how to display tabs.
+;;
+;; It's best to use the default, for Python editing and because some Emacs elisp code is formatted on that assumption.
+;;(setq tab-width my-offset)
+;; Disable weird auto formatting
 (setq-default c-electric-flag nil)
 
 ;;; Customizations
-;;;
-;;; Specific customizations are documented outside the sexp, because
-;;; Emacs deletes all comments within.
-;;;
-;;; Also slightly annoying is that when changing this sexp, Emacs will
-;;; change numbers in eg 1e9 notation, even though 1e9 is more readable
-;;; than 1000000000.  Lame.
+;;
+;; Specific customizations are documented outside the sexp, because
+;; Emacs deletes all comments within.
+;;
+;; Also slightly annoying is that when changing this sexp, Emacs will
+;; change numbers in eg 1e9 notation, even though 1e9 is more readable
+;; than 1000000000.  Lame.
+;;
 ;; ac-delay
-; The default 0.1 ac-delay can cause display update delays when I'm typing.
-; If I know what I'm typing, it is inconvenient.  1.0 is sufficiently high
-; to imply I'm pausing in my typing.
+;;    The default 0.1 ac-delay can cause display update delays when I'm typing.
+;;    If I know what I'm typing, it is inconvenient.  1.0 is sufficiently high
+;;    to imply I'm pausing in my typing.
 ;; inverse-video
-; An attempt to get white on black.  For some reason this doesn't work
-; but the --reverse-video CLI arg does.
+;;    An attempt to get white on black.  For some reason this doesn't work
+;;    but the --reverse-video CLI arg does.
 ;; x-select-enable-clipboard
-; This is necessary to paste into Windows running on qemu-kvm .
+;;    This is necessary to paste into Windows running on qemu-kvm .
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -266,43 +264,39 @@ or just one char if that's not possible"
  '(whitespace-tab ((((class color) (background dark)) (:background "grey50" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
-;;; evil key bindings
-;;;
-;;; Since normal state inherits motion state's key bindings,
-;;; If I want to override a default binding in normal state 
-;;; with one in motion state, I have to expressly set the old
-;;; key binding to nil.
+;;; Evil key bindings
+;;
+;; Since normal state inherits motion state's key bindings,
+;; If I want to override a default binding in normal state 
+;; with one in motion state, I have to expressly set the old
+;; key binding to nil.
 
 (defun my-esc (prompt)
   "Functionality for escaping generally.  Includes exiting Evil insert state and C-g binding. "
   (cond
    ((or (evil-insert-state-p) (evil-motion-state-p)) [escape])
-   ; This is the best way I could infer for now to have C-c work during evil-read-key.
+   ;; This is the best way I could infer for now to have C-c work during evil-read-key.
    ((eq overriding-terminal-local-map evil-read-key-map) (keyboard-quit) (kbd ""))
-   (t (kbd "C-g")))
-)
+   (t (kbd "C-g"))))
 (define-key key-translation-map (kbd "C-c") 'my-esc)
 
 (defun my-insert-bullet ()
   (interactive)
-  (ucs-insert "2022")
-  )
+  (ucs-insert "2022"))
 (define-key evil-insert-state-map (quote [f4]) 'my-insert-bullet)
 (define-key evil-motion-state-map "," 'execute-extended-command)
-; Undo c Evil keybinding for use as prefix key to various Ctrl- key sequences.
+;; Undo c Evil keybinding for use as prefix key to various Ctrl- key sequences.
 (define-key evil-normal-state-map "c" nil)
-; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
+;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
 (define-key evil-insert-state-map (kbd "C-y") nil)
 
 ;; Disable C-0 and C-- since I hit them alot unintentionally.
-(defun my-no-op () "No op, meaning do nothing."
-  )
 (define-key evil-motion-state-map (kbd "C-0") 'my-no-op)
 (define-key evil-normal-state-map (kbd "C-0") 'my-no-op)
 (define-key evil-motion-state-map (kbd "C--") 'my-no-op)
 (define-key evil-normal-state-map (kbd "C--") 'my-no-op)
 
-; I don't use RET in motion state, but it is useful in eg buffer mode.
+;; I don't use RET in motion state, but it is useful in eg buffer mode.
 (define-key evil-motion-state-map (kbd "RET") nil)
 (global-set-key (kbd "RET") 'evil-ret)
 (define-key evil-normal-state-map "o" nil)
@@ -313,11 +307,11 @@ or just one char if that's not possible"
 (define-key evil-normal-state-map "-" nil)
 (define-key evil-motion-state-map "-" 'evil-end-of-line)
 (define-key evil-normal-state-map "s" nil)
-; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
+;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
 (define-key evil-normal-state-map "P" 'evil-paste-after)
-; TODO: Not so simple, either takes away the region so the second can't process.
-;(define-key evil-normal-state-map "=" (lambda () (interactive) (patched-delete-trailing-whitespace) (evil-indent)))
+;; TODO: Not so simple, either takes away the region so the second can't process.
+;;(define-key evil-normal-state-map "=" (lambda () (interactive) (patched-delete-trailing-whitespace) (evil-indent)))
 (define-key evil-motion-state-map "sf" 'delete-other-windows)
 (define-key evil-motion-state-map "sg" 'jde-open-class-source)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
@@ -328,7 +322,7 @@ or just one char if that's not possible"
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
 (define-key evil-motion-state-map "sji" 'jde-import-find-and-import)
 (define-key evil-motion-state-map "sja" (lambda () (interactive) (jde-import-all) (jde-import-kill-extra-imports) (jde-import-organize)))
-; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
+;; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
 (when (fboundp 'undo-tree-undo)
    (define-key evil-normal-state-map "U" 'undo-tree-redo))
 
@@ -339,13 +333,10 @@ or just one char if that's not possible"
       (interactive)
       (dotimes (num 8)
          (scroll-up 1)
-         (evil-next-line)
-      )
-      ; Update highlights.  Without this, I've observed it 
-      ; scrolls fast enough to miss highlighting search terms.
-      (evil-ex-hl-update-highlights)
-   )
-)
+         (evil-next-line))
+      ;; Update highlights.  Without this, I've observed it 
+      ;; scrolls fast enough to miss highlighting search terms.
+      (evil-ex-hl-update-highlights)))
 (define-key evil-normal-state-map "'" nil)
 ;; Go up in larger steps
 (define-key evil-motion-state-map "'" 
@@ -353,15 +344,10 @@ or just one char if that's not possible"
       (interactive)
       (dotimes (num 8) 
          (scroll-down 1)
-         (evil-previous-line)
-      )
-      ; Update highlights.  Without this, I've observed it 
-      ; scrolls fast enough to miss highlighting search terms.
-      (evil-ex-hl-update-highlights)
-   )
-)
-
-;(setq truncate-lines nil)
+         (evil-previous-line))
+      ;; Update highlights.  Without this, I've observed it 
+      ;; scrolls fast enough to miss highlighting search terms.
+      (evil-ex-hl-update-highlights)))
 
 ;; Change color of isearch lazy highlighting
 ;;
@@ -373,9 +359,9 @@ or just one char if that's not possible"
           (eval `(set-face-attribute (car f) nil ,@(cdr f))))
         fl))
 (configure-faces
- '((isearch-lazy-highlight-face' :background "yellow" :foreground "black"))
- )
+ '((isearch-lazy-highlight-face' :background "yellow" :foreground "black")))
 
+;;; Debug logging
 (defun my-insert-ant-log ()
   "Insert log statement for Ant build files. "
   (interactive)
@@ -387,24 +373,21 @@ or just one char if that's not possible"
    (interactive)
    (insert "(log-msg (format \"DEBUG: \")) ; TODO: temporary for debug")
    (search-backward "DEBUG: ")
-   (goto-char (match-end 0))
-)
+   (goto-char (match-end 0)))
 (defun my-insert-java-log ()
    "Insert log statement for Java. "
    (interactive)
-   ; The vimscript was:
-   ;imap <F3> org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // temporary for debug<Enter><Tab><Tab><Tab>"DEBUG: ",<Enter>new Object[]{} );<Esc>khi
+   ;; The vimscript was:
+   ;;imap <F3> org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // temporary for debug<Enter><Tab><Tab><Tab>"DEBUG: ",<Enter>new Object[]{} );<Esc>khi
    (insert "org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // TODO: temporary for debug\n\t\t\t\"DEBUG: \",\n\t\t\tnew Object[]{} );")
    (search-backward "DEBUG: ")
-   (goto-char (match-end 0))
-)
+   (goto-char (match-end 0)))
 (defun my-insert-python-log ()
   "Insert log statement for Python. "
   (interactive)
   (insert "print( 'DEBUG: '%() ) # TODO: temporary for debug")
   (search-backward "DEBUG: ")
-  (goto-char (match-end 0))
-  )
+  (goto-char (match-end 0)))
 
 (add-hook 'emacs-lisp-mode-hook 
    (lambda ()
@@ -413,16 +396,12 @@ or just one char if that's not possible"
       (define-key evil-motion-state-local-map (quote [left]) 'backward-sexp)
       (define-key evil-motion-state-local-map (quote [right]) 'forward-sexp)
       (define-key evil-motion-state-local-map (quote [up]) 'backward-up-list)
-      (define-key evil-motion-state-local-map (quote [down]) 'down-list)
-   )
-)
+      (define-key evil-motion-state-local-map (quote [down]) 'down-list)))
 (add-hook 'java-mode-hook 
    (lambda ()
       (log-msg "Inside java-mode-hook")
       (require 'jde)
-      (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-java-log)
-   )
-)
+      (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-java-log)))
 (add-hook 'nxml-mode-hook
           (lambda ()
             (log-msg "Inside nxml-mode-hook")
@@ -430,19 +409,16 @@ or just one char if that's not possible"
 (add-hook 'python-mode-hook 
    (lambda ()
       (log-msg "Inside python-mode-hook")
-      (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-python-log)
-   )
-)
+      (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-python-log)))
 (add-hook 'c-mode-common-hook 
    (lambda ()
-      (log-msg "Inside c-mode-common-hook. ")
-   )
-)
+      (log-msg "Inside c-mode-common-hook. ")))
 (add-hook 'after-change-major-mode-hook
    (lambda ()
       ;; Force Evil mode in Fundamental mode.
-      (evil-mode 1)
-))
+      (evil-mode 1)))
+
+;;; Finalizing initialization
 (add-hook 'term-setup-hook
    (lambda ()
       ;; I tend to put things here that for some reason don't work
@@ -451,10 +427,8 @@ or just one char if that's not possible"
       (define-key evil-motion-state-map "ch" help-map)
       (define-key evil-motion-state-map "cx" ctl-x-map)
       (delete-other-windows)
-      ;(setq search-whitespace-regexp nil)
-      (log-msg "Finished with term-setup-hook. ")
-   )
-)
+      ;;(setq search-whitespace-regexp nil)
+      (log-msg "Finished with term-setup-hook. ")))
 
 (log-msg "Finished .emacs file. ")
 
