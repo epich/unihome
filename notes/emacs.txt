@@ -38,6 +38,13 @@ Issues low priority:
       : Paredit
          : Issues:
             : paredit-wrap-around (bound to sej) doesn't do as expected when there's active region.
+               Example:
+                  (list 'quote (cons nil nil ))
+                  ; Select: (co
+                  ; Execute function, code becomes: (list 'quote (co () ns nil nil ))
+                  ; Expected: (list 'quote ((cons nil nil )))
+                     : Same as if just the ( was selected, but you have more of the sexp selected.
+                  ; Less ideal, but better: (list 'quote ((co)ns nil nil ))
             : paredit-splice-sexp (bound to sek) doesn't do as expected when there's active region.
          : TODO:
             : Define a binding for 'sed' to delete sexp.
@@ -45,6 +52,7 @@ Issues low priority:
          : Developer
             : campbell@mumble.net
             : Blog: http://mumble.net/~campbell/blag.txt
+         : Automatically balance space between parens.
       : Ideas:
          : select text, enclose in parens,
             : Paredit accomplishes this.
@@ -179,19 +187,29 @@ Issues low priority:
       : These don't work as advertized:
          '(scroll-conservatively 1)
          '(scroll-step 1)
-   : Optimize Emacs startup
-      : Try advice at: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
-      : Try advice at: http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster/779145#779145
-      : Move most of .emacs to a .el file and build it with the others.
+   : Organize and optimize Emacs lisp init code.
+      : Move most of .emacs code to .el files and build it with the others.
+      : Links:
+         : Optimization: http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Compilation-Tips
+         : Optimization: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
+         : Optimization: http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster/779145#779145
+      : Create error handling such that a single failure doesn't abort my init.
+         : See http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Errors
       : Write code which automates benchmarking a bit better.
-         : Elisp:
-            : Have the elisp measure the time elapsed from start of .emacs to end of term-setup-hook.
-            : Maybe output result to stdout to facilitate analyzing multiple runs of Emacs.
-               : For printing to stdout, might be helpful:
-                  http://www.gnu.org/software/emacs/manual/html_node/elisp/Output-Functions.html
-         : Maybe need a higher Python script to
-            : start up Emacs multiple times
-            : discard the first run in case there's any caching or byte compiling that occurs.
+         : If the elisp manual link above is insufficient:
+            : Elisp:
+               : Have the elisp measure the time elapsed from start of .emacs to end of term-setup-hook.
+               : Maybe output result to stdout to facilitate analyzing multiple runs of Emacs.
+                  : For printing to stdout, might be helpful:
+                     http://www.gnu.org/software/emacs/manual/html_node/elisp/Output-Functions.html
+            : Maybe need a higher Python script to
+               : start up Emacs multiple times
+               : discard the first run in case there's any caching or byte compiling that occurs.
+   : Read the Elisp manual:
+      : Command loop
+      : Marks
+      : Tips
+      : Internals
 
 Notes:
    : Setup on RHEL5
