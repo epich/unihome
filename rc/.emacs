@@ -1,18 +1,22 @@
-;; General emacs settings
+;;; General emacs settings
 (setq visible-bell t) 
 (tool-bar-mode 0)
 (column-number-mode 1)
-
 ;; Disable the auto-save, the #* debris files slow down Emacs startup.
 (setq auto-save-default nil)
 (global-auto-revert-mode 1)
-(defun my-window-scroll
-  (log-msg "Inside my-window-scroll")
-)
-; TODO
-;(add-hook 'window-scroll-functions 'my-window-scroll nil t)
+(setq revert-without-query (quote (".*")))
+(setq case-replace nil)
+(setq vc-follow-symlinks t)
+(delete-selection-mode 1)
+(setq mouse-yank-at-point t)
+(show-paren-mode 1)
+;; Emacs stupidly formats curly braces in neither of the two most common ways.
+;; This fixes that.
+(setq c-default-style "linux")
+(set-face-attribute 'default nil :height 80)
 
-;; Maximize window upon startup.
+;; Maximize window upon startup.  A non toggling way to do this would be nice.
 (defun toggle-fullscreen ()
   (interactive)
   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
@@ -22,28 +26,10 @@
 )
 (toggle-fullscreen)
 
-(setq case-replace nil)
-(setq vc-follow-symlinks t)
-(delete-selection-mode 1)
-(setq mouse-yank-at-point t)
-(show-paren-mode 1)
-; Emacs stupidly formats curly braces in neither of the two most common ways.
-; This fixes that.
-(setq c-default-style "linux")
-(set-face-attribute 'default nil :height 80)
-
-;; make file name and computer title
-(defvar my-frame-title "Unset" "Title for the frame. ")
-(setq-default
- frame-title-format
- '(:eval
-   (format "%s"
-           (file-name-nondirectory (or (buffer-file-name) default-directory))))) 
-
-;; Customizations that have to come before Evil.
-; In custom-set-variables , would be: '(evil-overriding-maps nil)
-(setq evil-overriding-maps nil)
-(setq revert-without-query (quote (".*")))
+;; Set the frame title to the current filename.
+(setq-default frame-title-format
+              '(:eval (format "%s"
+                              (file-name-nondirectory (or (buffer-file-name) default-directory))))) 
 
 ;;; Functions to facilitate elisp debug logging.
 (defvar current-date-time-format "%Y-%m-%dT%H:%M:%S"
@@ -82,13 +68,15 @@ anyway, which doesn't always combine with defadvice. "
 ; TODO: When files don't compile, it'll create errors and modest delay everytime Emacs starts.
 ;(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
 
-;; Initialize evil
+;;; Initialize evil
 (log-msg "Initializing Evil.")
+;; Before initializing Evil.  In custom-set-variables , would be: '(evil-overriding-maps nil)
+(setq evil-overriding-maps nil)
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
-; evil-integration.el attempts to recreate the evil-overriding-maps, set
-; that code to nil to prevent it from running.
+;; evil-integration.el attempts to recreate the evil-overriding-maps, set
+;; that code to nil to prevent it from running.
 (eval-after-load 'ibuffer nil)
 
 ;; Initialize cc-mode
