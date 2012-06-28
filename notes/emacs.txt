@@ -35,6 +35,8 @@ Issues low priority:
       : Need a way to clear them.  evil-ex-delete-hl perhaps.
    : Look into using undo-tree extension.
    : Figure out how to edit elisp code efficiently.
+      : Give a read:
+         http://www.cliki.net/Editing%20Lisp%20Code%20with%20Emacs
       : Paredit
          : Issues:
             : paredit-wrap-around (bound to sej) doesn't do as expected when there's active region.
@@ -116,6 +118,8 @@ Issues low priority:
          : Done for Python (as much as can be)
          : Do for C like languages
          : Do for XML
+   : Editing functions
+      : What key binding will format code of a selection?
    : Double click select:
       : Need to be able to double click a file path and have it select all of it.
       : Double clicking a / char selects up to the . (exclusive).
