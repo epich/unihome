@@ -25,7 +25,7 @@ def buildCedet():
 
 def buildJdee():
    # Assumes jde.el was patched to change jde-cedet-max-version .
-   patchedFilePath = 'jdee-2.4.0.1/jde.elc'
+   patchedFilePath = 'jdee-2.4.0.1/lisp/jde.elc'
    if os.path.isfile(patchedFilePath):
       os.system('rm %s'%(patchedFilePath,))
 
