@@ -180,6 +180,13 @@ Issues low priority:
                      : If necessary, reduce default size of region to search for guessing style.
                   : Doesn't work: calling c-guess from the c-mode-common-hook
                   : Does work: M-x c-guess
+                  : c-guess does a lot of other things I think, which makes it run long.
+               : elisp initialization:
+                  ;;; Initialize cc-mode
+                  ;;
+                  ;; cc-mode is distributed with Emacs, but using a newer version in order to get 
+                  ;; style guessing.
+                  (add-to-list 'load-path "~/.emacs.d/cc-mode")
    : Figure out what the debris files Emacs leaves behind are about, and whether to change settings to not create them.
       : Determined what they are.
       : Decide if I want to place them under a dir in my home.
