@@ -376,6 +376,12 @@ or just one char if that's not possible"
  '((isearch-lazy-highlight-face' :background "yellow" :foreground "black"))
  )
 
+(defun my-insert-ant-log ()
+  "Insert log statement for Ant build files. "
+  (interactive)
+  (insert "<echo message=\"DEBUG: \"/> <!-- TODO: temporary for debug -->")
+  (search-backward "DEBUG: ")
+  (goto-char (match-end 0)))
 (defun my-insert-elisp-log ()
    "Insert log statement for elisp. "
    (interactive)
@@ -417,6 +423,10 @@ or just one char if that's not possible"
       (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-java-log)
    )
 )
+(add-hook 'nxml-mode-hook
+          (lambda ()
+            (log-msg "Inside nxml-mode-hook")
+            (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-ant-log)))
 (add-hook 'python-mode-hook 
    (lambda ()
       (log-msg "Inside python-mode-hook")
