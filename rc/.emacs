@@ -125,7 +125,8 @@ anyway, which doesn't always combine with defadvice. "
 (log-msg "Initializing CEDET.")
 (defvar my-cedet-path "~/.emacs.d/cedet-1.1" "Path to CEDET")
 (add-to-list 'load-path (format "%s/common" my-cedet-path))
-(load-file (format "%s/common/cedet.el" my-cedet-path))
+; CEDET retardedly raises fatal error when reloading an already reloaded file.
+(ignore-errors (load-file (format "%s/common/cedet.el" my-cedet-path)))
 
 (defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
 (defun setup-jdee ()
@@ -153,6 +154,7 @@ anyway, which doesn't always combine with defadvice. "
 
 ;; Initialize GOESR specific elisp
 (log-msg "Initializing project-specific elisp.")
+; Not present on all computers I work on, so ignore errors.
 (ignore-errors (load-file "~/goesr/goesrDev.el"))
 ;;; For JDEE
 (ignore-errors (defvar my-java-classpath goesr-classpath "Path for my .class or .jar files.")
@@ -337,7 +339,7 @@ or just one char if that's not possible"
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
 (define-key evil-motion-state-map "sji" 'jde-import-find-and-import)
-(define-key evil-motion-state-map "sja" 'jde-import-all)
+(define-key evil-motion-state-map "sja" (lambda () (interactive) (jde-import-all) (jde-import-kill-extra-imports) (jde-import-organize)))
 ; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
 (when (fboundp 'undo-tree-undo)
    (define-key evil-normal-state-map "U" 'undo-tree-redo))
