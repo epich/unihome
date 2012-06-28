@@ -312,12 +312,15 @@ or just one char if that's not possible"
 (define-key evil-normal-state-map "P" 'evil-paste-after)
 ;; TODO: Not so simple, either takes away the region so the second can't process.
 ;;(define-key evil-normal-state-map "=" (lambda () (interactive) (patched-delete-trailing-whitespace) (evil-indent)))
-(define-key evil-motion-state-map "sf" 'delete-other-windows)
 (define-key evil-motion-state-map "sg" 'jde-open-class-source)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
 (define-key evil-motion-state-map "sej" 'paredit-wrap-round)
 (define-key evil-motion-state-map "sek" 'paredit-splice-sexp)
+(define-key evil-motion-state-map "seh" (lambda () (interactive) (transpose-sexps -1)))
+(define-key evil-motion-state-map "sel" (lambda () (interactive) (transpose-sexps 1)))
+(define-key evil-motion-state-map "sem" 'mark-sexp)
+;; Note: Instead of key binding to kill-sexp, equivalent to 'sem' and then 'd'
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
 (define-key evil-motion-state-map "sji" 'jde-import-find-and-import)
