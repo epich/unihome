@@ -21,6 +21,11 @@ Issues high priority:
             https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
 
 Issues low priority:
+   : Scrolling:
+      : When scrolling down in evil-commands.el , I can miss the large "Text objects" comment block entirely.  Investigate.
+      : These don't work as advertized when j and k at the bottom and top of the visible portion of the buffer:
+         '(scroll-conservatively 1)
+         '(scroll-step 1)
    : Escaping out of informal Evil states, such as 'd' and '='.
       : Ask on mailing list why C-g doesn't get out of these.
       : How to allow C-c to work on these.
@@ -34,9 +39,12 @@ Issues low priority:
       : Look more at evil-ex-make-hl
       : Need a way to clear them.  evil-ex-delete-hl perhaps.
    : Look into using undo-tree extension.
+   : Disconnect between Emacs and Evil abstraction about point being on or between chars.
+      : See comment block in evil-commands.el "Text objects"
+      : evil-define-motion type inclusive/exclusive looks relevant.
+      : Ask Evil mailing list about approaches for dealing with this.
    : Figure out how to edit elisp code efficiently.
-      : Give a read:
-         http://www.cliki.net/Editing%20Lisp%20Code%20with%20Emacs
+      : Both Emacs' commands and ParEdit commands use the wrongful notion of where point is.
       : Paredit
          : Issues:
             : paredit-wrap-around (bound to sej) doesn't do as expected when there's active region.
@@ -49,21 +57,20 @@ Issues low priority:
                   ; Less ideal, but better: (list 'quote ((co)ns nil nil ))
             : paredit-splice-sexp (bound to sek) doesn't do as expected when there's active region.
          : TODO:
-            : Define a binding for 'sed' to delete sexp.
             : Try paredit-beta to see if it resolves undesired behaviors.
+            : Email developer:
+               : Ask about whether he is maintaining, referring to comment in blag.txt
+               : Ask why not on GitHub.
+               : Point out bugs described above (not location of point issue).
+               : Ask about syntax highlighting.
          : Developer
             : campbell@mumble.net
             : Blog: http://mumble.net/~campbell/blag.txt
-         : Automatically balance space between parens.
-      : Ideas:
-         : select text, enclose in parens,
-            : Paredit accomplishes this.
-         : select text, remove enclosing parens.
-            : Paredit accomplishes this.
-         : Highlight text based on its level in the sexp tree, from point to the root.
-            : pairs of parens in different colors.
-            : pairs of parens, including within them, in different colors.
-               See code samples at: http://community.schemewiki.org/?scheme-faq-language
+      : Automatically balance space between parens.
+      : Highlight text based on its level in the sexp tree, from point to the root.
+         : pairs of parens in different colors.
+         : pairs of parens, including within them, in different colors.
+            See code samples at: http://community.schemewiki.org/?scheme-faq-language
    : Figure out how to do merges with a relevant VCS.
       : Ediff
    : Have the p command also do a ==
@@ -197,10 +204,6 @@ Issues low priority:
          : C and C++
          : Shell (echo)
       : Is there a way to get the current function's name, in order to put in log-msg prefix.
-   : Scrolling
-      : These don't work as advertized:
-         '(scroll-conservatively 1)
-         '(scroll-step 1)
    : Organize and optimize Emacs lisp init code.
       : Move most of .emacs code to .el files and build it with the others.
       : Links:
@@ -322,6 +325,11 @@ Notes:
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
+   : Editing lisp:
+      : CL Wiki: http://www.cliki.net/Editing%20Lisp%20Code%20with%20Emacs
+      : There are experimental ParEdit patches.
+         : http://mumble.net/~campbell/tmp/paredit/
+         : None look compelling given their experimental nature.
 
 Retired issues with residual notes:
    : Make s a prefix key
