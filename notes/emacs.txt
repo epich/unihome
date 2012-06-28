@@ -103,6 +103,9 @@ Issues low priority:
             : Investigate using window-scroll-functions for this.
                : See http://www.gnu.org/software/emacs/manual/html_node/elisp/Window-Hooks.html
                : Tried copying Evil's example for using window-scroll-functions, but can't get my-window-scroll invoked.
+                  (defun my-window-scroll
+                    (log-msg "Inside my-window-scroll"))
+                  (add-hook 'window-scroll-functions 'my-window-scroll nil t)
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
    : Explore dired
    : Explore org-mode
@@ -238,6 +241,7 @@ Notes:
       : Gets rid of all other windows: C-x 1
       : Change to other window: C-x o
       : Split the same window side by side: C-x 3
+   : Use M-; on a selection to comment it out.
    : (define-key evil-normal-state-map "o" 'next-buffer)
    : (define-key evil-normal-state-map "O" 'previous-buffer)
    : Define a function which can be called with M-x (and therefore evil mappings)
