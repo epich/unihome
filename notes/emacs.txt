@@ -40,6 +40,7 @@ Issues low priority:
       : Need a way to clear them.  evil-ex-delete-hl perhaps.
    : Look into using undo-tree extension.
    : Disconnect between Emacs and Evil abstraction about point being on or between chars.
+      : show-paren-mode appears to be an exception for Emacs' notion.
       : See comment block in evil-commands.el "Text objects"
       : evil-define-motion type inclusive/exclusive looks relevant.
       : Ask Evil mailing list about approaches for dealing with this.
@@ -60,15 +61,18 @@ Issues low priority:
             : Try paredit-beta to see if it resolves undesired behaviors.
             : Email developer:
                : Ask about whether he is maintaining, referring to comment in blag.txt
-               : Ask why not on GitHub.
+               : Ask why it's not on GitHub.
                : Point out bugs described above (not location of point issue).
                : Ask about syntax highlighting.
          : Developer
             : campbell@mumble.net
             : Blog: http://mumble.net/~campbell/blag.txt
       : Automatically balance space between parens.
+      : Consider electric-pair-mode.  Perhaps for elisp only if annoying in other major modes.
+         : Emacs 24 reportedly supports an electric-pair-mode global minor mode.
       : Highlight text based on its level in the sexp tree, from point to the root.
          : pairs of parens in different colors.
+            : Perhaps extending paren (which provides show-paren-mode) is doable.  paren.el looks fairly simple.
          : pairs of parens, including within them, in different colors.
             See code samples at: http://community.schemewiki.org/?scheme-faq-language
    : Figure out how to do merges with a relevant VCS.
@@ -90,6 +94,8 @@ Issues low priority:
          : Bug report submitted to Evil project.
    : Java development
       : JDEE
+         : Fix auto formatting when: /**<RET>
+            : It appears to work ok when there's a */ .  So perhaps upgrading to Emacs 24 to get electric-pair-mode is the solution.
          : Follow recent threads at:
             http://forums.fedoraforum.org/showthread.php?t=280711
             http://lists.gnu.org/archive/html/help-gnu-emacs/2012-06/msg00087.html
