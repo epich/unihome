@@ -14,6 +14,7 @@
 ;; Emacs stupidly formats curly braces in neither of the two most common ways.
 ;; This fixes that.
 (setq c-default-style "linux")
+;; Font size (multiplied by 10)
 (set-face-attribute 'default nil :height 80)
 ;;(setq truncate-lines nil)
 
@@ -105,7 +106,8 @@ anyway, which doesn't always combine with defadvice. "
 (log-msg "Initializing CEDET.")
 (defvar my-cedet-path "~/.emacs.d/cedet-1.1" "Path to CEDET")
 (add-to-list 'load-path (format "%s/common" my-cedet-path))
-;; CEDET retardedly raises fatal error when reloading an already reloaded file.
+;; CEDET retardedly raises fatal error when reloading an already reloaded file,
+;; undermining reloading of my .emacs file.  This hacks that fix.
 (ignore-errors (load-file (format "%s/common/cedet.el" my-cedet-path)))
 
 ;;; Initialize JDEE
