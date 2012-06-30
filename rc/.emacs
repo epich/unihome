@@ -11,6 +11,7 @@
 (delete-selection-mode 1)
 (setq mouse-yank-at-point t)
 (show-paren-mode 1)
+(setq show-paren-delay 0)
 ;; Emacs stupidly formats curly braces in neither of the two most common ways.
 ;; This fixes that.
 (setq c-default-style "linux")

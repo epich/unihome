@@ -73,6 +73,8 @@ Issues low priority:
       : Highlight text based on its level in the sexp tree, from point to the root.
          : pairs of parens in different colors.
             : Perhaps extending paren (which provides show-paren-mode) is doable.  paren.el looks fairly simple.
+               : Clone the bzr repo
+               : Checkout its history of revision, how frequent, who edits it?
          : pairs of parens, including within them, in different colors.
             See code samples at: http://community.schemewiki.org/?scheme-faq-language
    : Figure out how to do merges with a relevant VCS.
