@@ -21,11 +21,6 @@ Issues high priority:
             https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
 
 Issues low priority:
-   : Scrolling:
-      : When scrolling down in evil-commands.el , I can miss the large "Text objects" comment block entirely.  Investigate.
-      : These don't work as advertized when j and k at the bottom and top of the visible portion of the buffer:
-         '(scroll-conservatively 1)
-         '(scroll-step 1)
    : Escaping out of informal Evil states, such as 'd' and '='.
       : Ask on mailing list why C-g doesn't get out of these.
       : How to allow C-c to work on these.
@@ -68,8 +63,6 @@ Issues low priority:
             : campbell@mumble.net
             : Blog: http://mumble.net/~campbell/blag.txt
       : Automatically balance space between parens.
-      : Consider electric-pair-mode.  Perhaps for elisp only if annoying in other major modes.
-         : Emacs 24 reportedly supports an electric-pair-mode global minor mode.
       : Highlight text based on its level in the sexp tree, from point to the root.
          : pairs of parens in different colors.
             : Perhaps extending paren (which provides show-paren-mode) is doable.  paren.el looks fairly simple.
@@ -77,8 +70,6 @@ Issues low priority:
                : Checkout its history of revision, how frequent, who edits it?
          : pairs of parens, including within them, in different colors.
             See code samples at: http://community.schemewiki.org/?scheme-faq-language
-   : Figure out how to do merges with a relevant VCS.
-      : Ediff
    : Have the p command also do a ==
       : If not too hard, make this conditional on the line pasting to is whitespace only.
       : File bug about pasting with 'p' on lines with no chars.  A space char is effectively created.
@@ -94,15 +85,6 @@ Issues low priority:
    : Repeat . command bugs:
       : Pasting text into Emacs isn't recorded to repeat ring.
          : Bug report submitted to Evil project.
-   : Java development
-      : JDEE
-         : Fix auto formatting when: /**<RET>
-            : It appears to work ok when there's a */ .  So perhaps upgrading to Emacs 24 to get electric-pair-mode is the solution.
-         : Follow recent threads at:
-            http://forums.fedoraforum.org/showthread.php?t=280711
-            http://lists.gnu.org/archive/html/help-gnu-emacs/2012-06/msg00087.html
-         : Do I need elib?
-         : Create a key binding for imports.  Specifically, to organize, kill extra, import missing.
    : File reloading:
       : Figure out how to make reloading a file from disk less annoying.
          : It would be good to have similar abstraction as Vim:
@@ -126,6 +108,9 @@ Issues low priority:
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
    : Explore dired
    : Explore org-mode
+   : Explore etags
+   : Figure out how to do merges with a relevant VCS.
+      : Ediff
    : Being prompted about running Python process is annoying.
       : CEDET starts it for sake of auto completion.
    : Smart editing:
@@ -135,6 +120,8 @@ Issues low priority:
          : Do for XML
    : Editing functions
       : What key binding will format code of a selection?
+   : electric-pair minor mode
+      : Put /** */ in pair list.
    : Double click select:
       : Need to be able to double click a file path and have it select all of it.
       : Double clicking a / char selects up to the . (exclusive).
