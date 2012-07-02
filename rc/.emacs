@@ -19,6 +19,11 @@
 (set-face-attribute 'default nil :height 80)
 ;;(setq truncate-lines nil)
 
+;;; Version specific elisp
+;; electric-pair-mode introduced in version 24.
+(cond ((<= 24 emacs-major-version)
+       (electric-pair-mode 1)))
+
 ;; Maximize window upon startup.  A non toggling way to do this would be nice.
 (defun toggle-fullscreen ()
   (interactive)
@@ -125,6 +130,9 @@ anyway, which doesn't always combine with defadvice. "
    ;; http://forums.fedoraforum.org/showthread.php?t=280711
    ;; (defun screen-width nil -1)
    ;; (define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
+
+   ;; Docs indicate elib is a dependency.  However, I haven't witnessed
+   ;; a problem yet.
    )
 (setup-jdee)
 
@@ -388,11 +396,19 @@ or just one char if that's not possible"
    (insert "org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // TODO: temporary for debug\n\t\t\t\"DEBUG: \",\n\t\t\tnew Object[]{} );")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
+;; For the GOESR program, redefine logger.
+;; (fset 'my-insert-java-log 'goesr-insert-java-log)
 (defun my-insert-python-log ()
   "Insert log statement for Python. "
   (interactive)
   (insert "print( 'DEBUG: '%() ) # TODO: temporary for debug")
   (search-backward "DEBUG: ")
+  (goto-char (match-end 0)))
+(defun my-insert-doc-comment ()
+  "Insert doc comment /** */ . "
+  (interactive)
+  (insert "/***/")
+  (search-backward "/**")
   (goto-char (match-end 0)))
 
 (add-hook 'emacs-lisp-mode-hook 
@@ -418,7 +434,8 @@ or just one char if that's not possible"
       (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-python-log)))
 (add-hook 'c-mode-common-hook 
    (lambda ()
-      (log-msg "Inside c-mode-common-hook. ")))
+      (log-msg "Inside c-mode-common-hook. ")
+      (define-key evil-insert-state-local-map (quote [f4]) 'my-insert-doc-comment)))
 (add-hook 'after-change-major-mode-hook
    (lambda ()
       ;; Force Evil mode in Fundamental mode.
