@@ -1,29 +1,21 @@
 Issues high priority:
-   : Searching issues:
-      Highlight updating:
-         :
-            /\${
-            deleted {
-            $ still highlighted
-         :
-            /string1
-            n
-            i
-            string2
-            string2 is highlighted
-         : Undoing.  I'm accustomed to doing using undo to review complex search and replace.  Evil doesn't highlight what was replaced after the undo.
-         : Scrolling with the mouse wheel whilst inputting a search and replace.  Evil shows prior search term instead of what's being searched and replaced.
-         : Pasting text which contains the search term.
-         : Scrolling very fast (see highlight updating in ; and ; key bindings)
-      : When up arrowing through search history, Vim goes to end of line, Evil beginning.
-         : This is consistent with Emacs minibuffer in general.  Investigate
-         : Can I use an Evil ex hook for this?  See:
-            https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
+   : Updating of highlighted search
+      : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
+         : Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
+         : Search for foo: {{{/foo}}}.  Put point over "f", {{{x}}} to delete it.  oo remains highlighted.  Moving around with {{{j}}}, {{{k}}} doesn't update the highlighting.
+         : Similarly, inserting text before "foo" creates incorrect highlighting.  {{{i}}}, type "baz", now "bazfoo" is highlighted.
+         : In Vim, if I search and replace (with {{{:1,$s/old/new/g}}}), then undo, the "old" string is highlighted.  Evil doesn't do that.  In Vim I liked this for verifying complex search and replace operations.
+         : Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
+      : Bug submitted to Evil project.
 
 Issues low priority:
    : Escaping out of informal Evil states, such as 'd' and '='.
       : Ask on mailing list why C-g doesn't get out of these.
       : How to allow C-c to work on these.
+   : When up arrowing through search history, Vim goes to end of line, Evil beginning.
+      : This is consistent with Emacs minibuffer in general.  Investigate
+      : Can I use an Evil ex hook for this?  See:
+         https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
    : Major modes to change default Evil state:
       : Customization starts in Emacs state.  Change to normal.
    : C-c bug:
@@ -144,8 +136,9 @@ Issues low priority:
          See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
    : Screen flashing:
       : When finished with a cycle of search in a file
-   : Backspace to tab stop
-      : Doesn't work correctly when there's an active region.
+   : Backspace to tab stop backward-delete-whitespace-to-tab-stop
+      : Doesn't correctly handle backspace when there's a selection.
+      : Doesn't correctly handle edge case near beginning of buffer.
    : Get % to match <> such as in C++ or Java.
    : Set title to include host and directory (after file's basename)
    : buffer-menu
