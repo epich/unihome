@@ -194,6 +194,7 @@ If the region is active, only delete whitespace within the region."
 ;; Taken from: http://stackoverflow.com/questions/1450169/how-do-i-emulate-vims-softtabstop-in-emacs
 ;;
 ;; Doesn't correctly handle backspace when there's a selection.
+;; Doesn't correctly handle edge case near beginning of buffer.
 (defun backward-delete-whitespace-to-tab-stop ()
   "Delete back to the previous tab-stop of whitespace, or as much whitespace as possible,
 or just one char if that's not possible"
@@ -350,7 +351,8 @@ or just one char if that's not possible"
          (evil-next-line))
       ;; Update highlights.  Without this, I've observed it 
       ;; scrolls fast enough to miss highlighting search terms.
-      (evil-ex-hl-update-highlights)))
+      (evil-ex-hl-update-highlights)
+      ))
 (define-key evil-normal-state-map "'" nil)
 ;; Go up in larger steps
 (define-key evil-motion-state-map "'" 
@@ -361,7 +363,8 @@ or just one char if that's not possible"
          (evil-previous-line))
       ;; Update highlights.  Without this, I've observed it 
       ;; scrolls fast enough to miss highlighting search terms.
-      (evil-ex-hl-update-highlights)))
+      (evil-ex-hl-update-highlights)
+      ))
 
 ;; Change color of isearch lazy highlighting
 ;;
