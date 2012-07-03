@@ -58,13 +58,11 @@ High priority issues:
                      : Same as if just the ( was selected, but you have more of the sexp selected.
                   ; Less ideal, but better: (list 'quote ((co)ns nil nil ))
             : paredit-splice-sexp (bound to sek) doesn't do as expected when there's active region.
-         : TODO:
-            : Try paredit-beta to see if it resolves undesired behaviors.
-            : Email developer:
-               : Ask about whether he is maintaining, referring to comment in blag.txt
-               : Ask why it's not on GitHub.
-               : Point out bugs described above (not location of point issue).
-               : Ask about syntax highlighting.
+         : Email developer:
+            : Ask about whether he is maintaining, referring to comment in blag.txt
+            : Ask why it's not on GitHub.
+            : Point out bugs described above (not location of point issue).
+            : Ask about syntax highlighting.
          : Developer
             : campbell@mumble.net
             : Blog: http://mumble.net/~campbell/blag.txt
