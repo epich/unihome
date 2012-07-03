@@ -152,7 +152,6 @@ anyway, which doesn't always combine with defadvice. "
 (ignore-errors (defvar my-java-classpath goesr-classpath "Path for my .class or .jar files.")
    (defvar my-java-sourcepath goesr-sourcepath "Path for my .java files."))
 
-;; TODO: Use the more generalized whitespace elisp functions instead.
 ;; This is the patched delete-trailing-whitespace posted to
 ;;  http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00523.html
 ;; and accepted into Emacs.  It's not in my version, so just copying it here
@@ -322,8 +321,6 @@ or just one char if that's not possible"
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
 (define-key evil-normal-state-map "P" 'evil-paste-after)
-;; TODO: Not so simple, either takes away the region so the second can't process.
-;;(define-key evil-normal-state-map "=" (lambda () (interactive) (patched-delete-trailing-whitespace) (evil-indent)))
 (define-key evil-motion-state-map "sg" 'jde-open-class-source)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)

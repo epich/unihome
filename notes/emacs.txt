@@ -1,39 +1,53 @@
-Issues high priority:
-   : Updating of highlighted search
-      : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
-         : Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
-         : Search for foo: {{{/foo}}}.  Put point over "f", {{{x}}} to delete it.  oo remains highlighted.  Moving around with {{{j}}}, {{{k}}} doesn't update the highlighting.
-         : Similarly, inserting text before "foo" creates incorrect highlighting.  {{{i}}}, type "baz", now "bazfoo" is highlighted.
-         : In Vim, if I search and replace (with {{{:1,$s/old/new/g}}}), then undo, the "old" string is highlighted.  Evil doesn't do that.  In Vim I liked this for verifying complex search and replace operations.
-         : Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
-      : Bug submitted to Evil project.
-
-Issues low priority:
-   : Escaping out of informal Evil states, such as 'd' and '='.
-      : Ask on mailing list why C-g doesn't get out of these.
-      : How to allow C-c to work on these.
-   : When up arrowing through search history, Vim goes to end of line, Evil beginning.
-      : This is consistent with Emacs minibuffer in general.  Investigate
-      : Can I use an Evil ex hook for this?  See:
-         https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
-   : Major modes to change default Evil state:
-      : Customization starts in Emacs state.  Change to normal.
-   : C-c bug:
-      : Occasionally I get to a state which looks like insert, but has a C-c mapping for keyboard-quit.
-   : How to mark search terms with different colors?
-      : Submit RFE to Evil for a function analogous to highlight-regexp and highlight-phrase .
-      : Need Evil analog to highlight-regexp and highlight-phrase
-      : Look more at evil-ex-make-hl
-      : Need a way to clear them.  evil-ex-delete-hl perhaps.
-   : Look into using undo-tree extension.
-   : Disconnect between Emacs and Evil abstraction about point being on or between chars.
-      : show-paren-mode appears to be an exception for Emacs' notion.
-      : See comment block in evil-commands.el "Text objects"
-      : evil-define-motion type inclusive/exclusive looks relevant.
-      : Ask Evil mailing list about approaches for dealing with this.
+High priority issues:
+   : = key binding
+      : Have = trim trailing whitespace in the selected region.
+         : Use the whitespace-* elisp functions.
+         : Someone patched delete-trailing-whitespace to delete within region if active:
+            : URL: http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00432.html
+            : I copied the patch as patched-delete-trailing-whitespace
+            : Should prefer the whitespace elisp functions unless they don't work out.
+         : A simple combination in a lambda bound to "=" doesn't work.
+            : Code: (define-key evil-normal-state-map "=" (lambda () (interactive) (patched-delete-trailing-whitespace) (evil-indent)))
+            : Might need to call evil-indent in my copied func.
+            : Crucially: figure out how interactive elisp uses active regions.
+   : Have the p command paste and do a ==
+      : Make this conditional on the line pasting to is whitespace only.
+      : Perhaps file bug about pasting with 'p' on lines with no chars.  A space char is effectively created.
+      : Either way, when fixed, undo p and P swapping in evil-normal-state-map .
+   : Backspace to tab stop backward-delete-whitespace-to-tab-stop
+      : Doesn't correctly handle backspace when there's a selection.
+      : Doesn't correctly handle edge case near beginning of buffer.
+   : Screen flashing:
+      : When finished with a cycle of search in a file
+   : Disconnect about Emacs' notion of where point is:
+      : Official definition of point is between chars, cursor displayed over the next char.
+         : Uses this definition:
+            : ParEdit commands of interest
+            : Emacs commands for navigating sexp
+      : There's an over-char abstraction, more intuitive based on display of cursor.
+         : Uses this abstraction:
+            : Evil
+            : show-paren-mode
+      : Ask on Emacs mailing list about this topic.
+         : Is there reason to have a defcustom for those that wish the alternate abstraction?
+      : Study how Evil copes with this.
+         : See comment block in evil-commands.el "Text objects"
+         : evil-define-motion type inclusive/exclusive looks relevant.
+         : Ask on Evil mailing list about approaches for dealing with this.
    : Figure out how to edit elisp code efficiently.
-      : Both Emacs' commands and ParEdit commands use the wrongful notion of where point is.
-      : Paredit
+      : Cope with official definition of where point is.
+         : Extend, wrap, advise, or replace functions for which I want the over-char abstraction.
+            : ParEdit commands of interest
+            : Emacs sexp commands
+      : Have editing functions operate on an sexp when point is within it.
+      : Syntax highlighting:
+         : Highlight text based on its level in the sexp tree, from point to the root.
+            : pairs of parens in different colors.
+               : Perhaps extending paren (which provides show-paren-mode) is doable.  paren.el looks fairly simple.
+                  : Checkout the bzr revision history, how frequent, who edits it?
+            : pairs of parens, including within them, in different colors.
+               See code samples at: http://community.schemewiki.org/?scheme-faq-language
+      : ParEdit
          : Issues:
             : paredit-wrap-around (bound to sej) doesn't do as expected when there's active region.
                Example:
@@ -55,26 +69,33 @@ Issues low priority:
             : campbell@mumble.net
             : Blog: http://mumble.net/~campbell/blag.txt
       : Automatically balance space between parens.
-      : Highlight text based on its level in the sexp tree, from point to the root.
-         : pairs of parens in different colors.
-            : Perhaps extending paren (which provides show-paren-mode) is doable.  paren.el looks fairly simple.
-               : Clone the bzr repo
-               : Checkout its history of revision, how frequent, who edits it?
-         : pairs of parens, including within them, in different colors.
-            See code samples at: http://community.schemewiki.org/?scheme-faq-language
-   : Have the p command also do a ==
-      : If not too hard, make this conditional on the line pasting to is whitespace only.
-      : File bug about pasting with 'p' on lines with no chars.  A space char is effectively created.
-         : If fixed, undo p and P swapping in evil-normal-state-map .
-      : Call patched-delete-trailing-whitespace with the region pasted.
-   : = key binding
-      : Have = also trim trailing whitespace in the selected region only.
-         : Someone patched delete-trailing-whitespace to delete within region if active:
-            : URL: http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00432.html
-         : I copied the patch as patched-delete-trailing-whitespace
-         : A simple combination in a lambda bound to "=" doesn't work.
-            : Might need to call evil-indent in my copied func.
-   : Repeat . command bugs:
+
+Low priority issues:
+   : Updating of highlighted search
+      : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
+         : Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
+         : Search for foo: {{{/foo}}}.  Put point over "f", {{{x}}} to delete it.  oo remains highlighted.  Moving around with {{{j}}}, {{{k}}} doesn't update the highlighting.
+         : Similarly, inserting text before "foo" creates incorrect highlighting.  {{{i}}}, type "baz", now "bazfoo" is highlighted.
+         : In Vim, if I search and replace (with {{{:1,$s/old/new/g}}}), then undo, the "old" string is highlighted.  Evil doesn't do that.  In Vim I liked this for verifying complex search and replace operations.
+         : Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
+      : Bug submitted to Evil project.
+   : Escaping out of informal Evil states, such as 'd' and '='.
+      : Ask on mailing list why C-g doesn't get out of these.
+      : How to allow C-c to work on these.
+   : When up arrowing through search history, Vim goes to end of line, Evil beginning.
+      : This is consistent with Emacs minibuffer in general.  Investigate
+      : Can I use an Evil ex hook for this?  See:
+         https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
+   : Major modes to change default Evil state:
+      : Customization starts in Emacs state.  Change to normal.
+   : C-c bug:
+      : Occasionally I get to a state which looks like insert, but has a C-c mapping for keyboard-quit.
+   : How to mark search terms with different colors?
+      : Submit RFE to Evil for a function analogous to highlight-regexp and highlight-phrase .
+      : Need Evil analog to highlight-regexp and highlight-phrase
+      : Look more at evil-ex-make-hl
+      : Need a way to clear them.  evil-ex-delete-hl perhaps.
+   : Repeat . command issues:
       : Pasting text into Emacs isn't recorded to repeat ring.
          : Bug report submitted to Evil project.
    : File reloading:
@@ -98,11 +119,16 @@ Issues low priority:
                     (log-msg "Inside my-window-scroll"))
                   (add-hook 'window-scroll-functions 'my-window-scroll nil t)
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
+   : Look into using undo-tree extension.
    : Explore dired
    : Explore org-mode
-   : Explore etags
+   : Navigating source code:
+      : See a called function impl.
+      : See who calls the currently viewed function.
+      : Read the "Tags Table" section of the GNU Emacs manual.
+      : Learn about etags.
    : Figure out how to do merges with a relevant VCS.
-      : Ediff
+      : Learn Ediff first.
    : Being prompted about running Python process is annoying.
       : CEDET starts it for sake of auto completion.
    : Smart editing:
@@ -110,8 +136,6 @@ Issues low priority:
          : Done for Python (as much as can be)
          : Do for C like languages
          : Do for XML
-   : Editing functions
-      : What key binding will format code of a selection?
    : electric-pair minor mode
       : Put /** */ in pair list.
    : Double click select:
@@ -134,21 +158,12 @@ Issues low priority:
          Use hooks
       : Could also set color of cursor instead:
          See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
-   : Screen flashing:
-      : When finished with a cycle of search in a file
-   : Backspace to tab stop backward-delete-whitespace-to-tab-stop
-      : Doesn't correctly handle backspace when there's a selection.
-      : Doesn't correctly handle edge case near beginning of buffer.
    : Get % to match <> such as in C++ or Java.
    : Set title to include host and directory (after file's basename)
    : buffer-menu
       : Split to the right.
       : Display full file basename or at least widen column width.
       : Set the GTK frame title to any of the filenames, be it last visited, top of list, currently selected, whatever.
-   : Navigating source code:
-      : See a called function impl.
-      : See who calls the currently viewed function.
-      : Read the "Tags Table" section of the GNU Emacs manual.
    : How to toggle display of line wrapping?
    : Visual mode
       : Bug:
@@ -187,7 +202,9 @@ Issues low priority:
       : Decide if I want to place them under a dir in my home.
    : Opening through symlinks in an hg repo is slow by a factor of about 5.
    : Logging
-      : In the my-insert-java-log function, \t is inserting literal tabs.  Fix to insert (my-continuation-offset) spaces instead.
+      : In the my-insert-java-log function, \t is inserting literal tabs.
+         : Figure out how to use major mode's indenting feature in these kind of editing functions.
+         : Fix to insert (my-continuation-offset) spaces instead.
       : Add log key bindings for:
          : C and C++
          : Shell (echo)
