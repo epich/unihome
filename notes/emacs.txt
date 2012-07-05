@@ -105,6 +105,13 @@ Low priority issues:
       : auto-revert
          : Doesn't revert file permissions, even though revert-buffer does.
             : Submitted bug report to GNU, ID 11549, merged with ID 11412.
+            : Notes on the code:
+               : revert-buffer is in files.el
+               : auto-revert-handler is in autorevert.el
+               : Not sure which part of the revert-buffer function updates the permissions (file-modes)
+                  : Might be useful to try out the elisp debugger to determine this.
+               : insert-file-contents appears to be the substantive function that does the reverting.
+                  : auto-revert-tail-handler calls this, but when I tried using auto-revert-tail it did not cause an update of file permissions.
          : Has high latency
             : Might be configurable
          : Flash screen when auto revert occurs.
@@ -226,10 +233,13 @@ Low priority issues:
                : start up Emacs multiple times
                : discard the first run in case there's any caching or byte compiling that occurs.
    : Read the Elisp manual:
+      : Debugging
       : Command loop
       : Marks
-      : Tips
-      : Internals
+   : Read the Emacs manual:
+      : Intro
+      : Keyboard macros
+      : Amusements
 
 Notes:
    : Setup on RHEL5
