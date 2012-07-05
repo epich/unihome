@@ -140,9 +140,14 @@ anyway, which doesn't always combine with defadvice. "
 (log-msg "Initializing Paredit.")
 (add-to-list 'load-path "~/.emacs.d/paredit")
 (require 'paredit)
-;; NB: I don't call enable-paredit-mode because it enables some retarded features such as
-;; not placing ) chars at the position I type it, and not allowing insertion of ; at
-;; the beginning of the line.  I use a few of its functions in keybindings below.
+;; NB: I don't enable-paredit-mode because it is not designed to support non wholistic
+;; editing.  It intends the user to add and remove parens always in pairs.  Inserting
+;; only a closing paren in a valid place doesn't work well, I would need to use C-q to
+;; do so.  Another example is commenting out code.  ParEdit expects you would use the
+;; wholistic M-; and will misbehave if you add ';' characters line by line.
+;;
+;; Since I like occasional non wholistic editing, I use ParEdit functions without
+;; the minor mode enabled.
 
 ;; Initialize project-specific elisp
 (log-msg "Initializing project-specific elisp.")
@@ -243,10 +248,10 @@ or just one char if that's not possible"
 ;; x-select-enable-clipboard
 ;;    This is necessary to paste into Windows running on qemu-kvm .
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(ac-delay 1.0)
  '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
@@ -268,10 +273,10 @@ or just one char if that's not possible"
  '(whitespace-style (quote (face tabs trailing)))
  '(x-select-enable-clipboard t))
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(whitespace-tab ((((class color) (background dark)) (:background "grey50" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
