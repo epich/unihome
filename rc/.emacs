@@ -329,6 +329,7 @@ or just one char if that's not possible"
 (define-key evil-normal-state-map "P" 'evil-paste-after)
 (define-key evil-motion-state-map "sg" 'jde-open-class-source)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
+(define-key evil-motion-state-map "sc" 'kmacro-end-and-call-macro)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
 (define-key evil-motion-state-map "sej" 'paredit-wrap-round)
 (define-key evil-motion-state-map "sek" 'paredit-splice-sexp)
