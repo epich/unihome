@@ -17,6 +17,7 @@
 (setq c-default-style "linux")
 ;; Font size (multiplied by 10)
 (set-face-attribute 'default nil :height 80)
+(fset 'yes-or-no-p 'y-or-n-p)
 ;;(setq truncate-lines nil)
 
 ;;; Version specific elisp
