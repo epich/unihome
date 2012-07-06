@@ -71,12 +71,13 @@ High priority issues:
 Low priority issues:
    : Updating of highlighted search
       : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
-         : Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
-         : Search for foo: {{{/foo}}}.  Put point over "f", {{{x}}} to delete it.  oo remains highlighted.  Moving around with {{{j}}}, {{{k}}} doesn't update the highlighting.
-         : Similarly, inserting text before "foo" creates incorrect highlighting.  {{{i}}}, type "baz", now "bazfoo" is highlighted.
-         : In Vim, if I search and replace (with {{{:1,$s/old/new/g}}}), then undo, the "old" string is highlighted.  Evil doesn't do that.  In Vim I liked this for verifying complex search and replace operations.
-         : Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
+         1: Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
+         2: Search for foo: {{{/foo}}}.  Put point over "f", {{{x}}} to delete it.  oo remains highlighted.  Moving around with {{{j}}}, {{{k}}} doesn't update the highlighting.
+         3: Similarly, inserting text before "foo" creates incorrect highlighting.  {{{i}}}, type "baz", now "bazfoo" is highlighted.
+         4: In Vim, if I search and replace (with {{{:1,$s/old/new/g}}}), then undo, the "old" string is highlighted.  Evil doesn't do that.  In Vim I liked this for verifying complex search and replace operations.
+         5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
       : Bug submitted to Evil project.
+         : Issue 1 is resolved by changing evil-ex-hl-idle-update function's call to run-at-time, using 0.01 instead of 0.1.
    : Escaping out of informal Evil states, such as 'd' and '='.
       : Ask on mailing list why C-g doesn't get out of these.
       : How to allow C-c to work on these.
