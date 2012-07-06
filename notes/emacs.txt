@@ -237,7 +237,6 @@ Low priority issues:
       : Command loop
       : Marks
    : Read the Emacs manual:
-      : Intro
       : Keyboard macros
       : Amusements
 
