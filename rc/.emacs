@@ -351,9 +351,6 @@ or just one char if that's not possible"
       (dotimes (num 8)
          (scroll-up 1)
          (evil-next-line))
-      ;; Update highlights.  Without this, I've observed it 
-      ;; scrolls fast enough to miss highlighting search terms.
-      (evil-ex-hl-update-highlights)
       ))
 (define-key evil-normal-state-map "'" nil)
 ;; Go up in larger steps
@@ -363,9 +360,6 @@ or just one char if that's not possible"
       (dotimes (num 8) 
          (scroll-down 1)
          (evil-previous-line))
-      ;; Update highlights.  Without this, I've observed it 
-      ;; scrolls fast enough to miss highlighting search terms.
-      (evil-ex-hl-update-highlights)
       ))
 
 ;; Change color of isearch lazy highlighting
