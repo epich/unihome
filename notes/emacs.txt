@@ -16,7 +16,16 @@ High priority issues:
       : Either way, when fixed, undo p and P swapping in evil-normal-state-map .
    : Backspace to tab stop backward-delete-whitespace-to-tab-stop
       : Doesn't correctly handle backspace when there's a selection.
-      : Doesn't correctly handle edge case near beginning of buffer.
+         : Snag with solution:
+            : Go into insert mode
+            : Shift select text
+            : C-h k verifies backspace calls backward-delete-char-untabify
+            : Works:
+               : Hit Backspace key when .emacs bound it to backward-delete-char-untabify
+            : Does not work:
+               : M-x backward-delete-char-untabify
+            : Does not work:
+               : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
    : Screen flashing:
       : When finished with a cycle of search in a file
    : Disconnect about Emacs' notion of where point is:
