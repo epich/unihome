@@ -199,24 +199,30 @@ If the region is active, only delete whitespace within the region."
 ;; Taken from: http://stackoverflow.com/questions/1450169/how-do-i-emulate-vims-softtabstop-in-emacs
 ;;
 ;; Doesn't correctly handle backspace when there's a selection.
-;; Doesn't correctly handle edge case near beginning of buffer.
-(defun backward-delete-whitespace-to-tab-stop ()
-  "Delete back to the previous tab-stop of whitespace, or as much whitespace as possible,
-or just one char if that's not possible"
+(defun backspace-whitespace-to-tab-stop ()
+  "Delete whitespace backwards to the next tab-stop, otherwise delete one character."
   (interactive)
-  (if indent-tabs-mode
-      (call-interactively 'backward-delete-char)
-    (let ((movement (% (current-column) my-offset))
-          (p (point)))
-      (when (= movement 0) (setq movement my-offset))
-      (save-match-data
-        (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
-            (backward-delete-char (- (match-end 1) (match-beginning 1)))
-          (call-interactively 'backward-delete-char))))))
+  (cond
+    (indent-tabs-mode
+      (call-interactively 'backward-delete-char-untabify))
+    ((region-active-p)
+      (call-interactively 'backward-delete-char-untabify))
+    (t
+       (let ((movement (% (current-column) my-offset))
+            (p (point)))
+        (when (= movement 0) (setq movement my-offset))
+        ;; Account for edge case near beginning of buffer
+        (setq movement (min (- p 1) movement))
+        (log-msg (format "DEBUG: p:%d movement:%d" p movement)) ; TODO: temporary for debug
+        (save-match-data
+          (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
+              (backward-delete-char (- (match-end 1) (match-beginning 1)))
+            (call-interactively 'backward-delete-char)))))))
 ;; Make tab less restrictive about where I tab to.
 (global-set-key (kbd "TAB") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
-(define-key evil-insert-state-map (kbd "DEL") 'backward-delete-whitespace-to-tab-stop)
+;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
+(define-key evil-insert-state-map (kbd "DEL") 'backspace-whitespace-to-tab-stop)
 ;; Permanently force Emacs to indent with spaces, never with TABs:
 (setq-default indent-tabs-mode nil)
 (setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
@@ -301,12 +307,13 @@ or just one char if that's not possible"
   (interactive)
   (ucs-insert "2022"))
 (define-key evil-insert-state-map (quote [f4]) 'my-insert-bullet)
-(define-key evil-motion-state-map "," 'execute-extended-command)
-;; Undo c Evil keybinding for use as prefix key to various Ctrl- key sequences.
+;; Undo c Evil keybinding for use with keybindings beginning with "c".
+;; The Emacs Ctrl- prefix keybindings are assigned to Evil c keybindings later.
+;; The Emacs Ctrl- keybindings to commands are assigned here.
 (define-key evil-normal-state-map "c" nil)
+(define-key evil-motion-state-map "cu" 'universal-argument)
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
 (define-key evil-insert-state-map (kbd "C-y") nil)
-
 ;; Disable C-0 and C-- since I hit them alot unintentionally.
 (define-key evil-motion-state-map (kbd "C-0") 'my-no-op)
 (define-key evil-normal-state-map (kbd "C-0") 'my-no-op)
@@ -327,9 +334,10 @@ or just one char if that's not possible"
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
 (define-key evil-normal-state-map "P" 'evil-paste-after)
+(define-key evil-motion-state-map "," 'kmacro-end-and-call-macro)
+(define-key evil-motion-state-map "s," 'execute-extended-command)
 (define-key evil-motion-state-map "sg" 'jde-open-class-source)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
-(define-key evil-motion-state-map "sc" 'kmacro-end-and-call-macro)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
 (define-key evil-motion-state-map "sej" 'paredit-wrap-round)
 (define-key evil-motion-state-map "sek" 'paredit-splice-sexp)
