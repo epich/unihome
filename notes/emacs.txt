@@ -90,6 +90,9 @@ Low priority issues:
    : Escaping out of informal Evil states, such as 'd' and '='.
       : Ask on mailing list why C-g doesn't get out of these.
       : How to allow C-c to work on these.
+      : Appears C-c is a prefix key, need to undefine it.
+         : Some unsuccessful attempts are commented out.
+         : Emacs manual says prefix keys can be removed, references the Elisp manual's Key Bindings section.
    : When up arrowing through search history, Vim goes to end of line, Evil beginning.
       : This is consistent with Emacs minibuffer in general.  Investigate
       : Can I use an Evil ex hook for this?  See:
