@@ -302,6 +302,11 @@ If the region is active, only delete whitespace within the region."
    ((eq overriding-terminal-local-map evil-read-key-map) (keyboard-quit) (kbd ""))
    (t (kbd "C-g"))))
 (define-key key-translation-map (kbd "C-c") 'my-esc)
+(set-quit-char "C-c")
+;; TODO: Various attempts to eliminate C-c as a prefix key to the d key.
+;; (define-key evil-window-map (kbd "C-c") nil)
+;; (local-set-key (kbd "C-c") nil)
+;; (define-key evil-operator-shortcut-map (kbd "C-c") nil)
 
 (defun my-insert-bullet ()
   (interactive)
