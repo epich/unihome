@@ -88,8 +88,6 @@ Low priority issues:
       : Bug submitted to Evil project.
          : Issue 1 is resolved by changing evil-ex-hl-idle-update function's call to run-at-time, using 0.01 instead of 0.1.
    : Escaping out of informal Evil states, such as 'd' and '='.
-      : Ask on mailing list why C-g doesn't get out of these.
-      : How to allow C-c to work on these.
       : Appears C-c is a prefix key, need to undefine it.
          : Some unsuccessful attempts are commented out.
          : Emacs manual says prefix keys can be removed, references the Elisp manual's Key Bindings section.
@@ -97,8 +95,6 @@ Low priority issues:
       : This is consistent with Emacs minibuffer in general.  Investigate
       : Can I use an Evil ex hook for this?  See:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
-   : Major modes to change default Evil state:
-      : Customization starts in Emacs state.  Change to normal.
    : C-c bug:
       : Occasionally I get to a state which looks like insert, but has a C-c mapping for keyboard-quit.
    : How to mark search terms with different colors?
@@ -137,6 +133,8 @@ Low priority issues:
                     (log-msg "Inside my-window-scroll"))
                   (add-hook 'window-scroll-functions 'my-window-scroll nil t)
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
+   : Debugger
+      : Evil bug when exiting debugger, submitted bug report.
    : Look into using undo-tree extension.
    : Explore dired
    : Explore org-mode
@@ -320,8 +318,8 @@ Notes:
       See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
    : Vim mapping plan:
       : Vim keys that aren't mapped to anything useful:
-         t
-         , mapped to M-x
+         t available
+         , mapped Emacs execution of keyboard macro
          o mapped
          [
          ]
