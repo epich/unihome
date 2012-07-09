@@ -302,6 +302,9 @@ If the region is active, only delete whitespace within the region."
    ((eq overriding-terminal-local-map evil-read-key-map) (keyboard-quit) (kbd ""))
    (t (kbd "C-g"))))
 (define-key key-translation-map (kbd "C-c") 'my-esc)
+;; C-M-x is major mode dependant, but generally binds to the elisp function that
+;; instruments a function for the debugger.
+(define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
 (set-quit-char "C-c")
 ;; TODO: Various attempts to eliminate C-c as a prefix key to the d key.
 ;; (define-key evil-window-map (kbd "C-c") nil)
@@ -381,7 +384,7 @@ If the region is active, only delete whitespace within the region."
 (define-key evil-motion-state-map "'" 
    (lambda ()
       (interactive)
-      (dotimes (num 8) 
+      (dotimes (num 8)
          (scroll-down 1)
          (evil-previous-line))
       ))
@@ -427,11 +430,24 @@ If the region is active, only delete whitespace within the region."
   (insert "print( 'DEBUG: '%() ) # TODO: temporary for debug")
   (search-backward "DEBUG: ")
   (goto-char (match-end 0)))
-(defun my-insert-doc-comment ()
-  "Insert doc comment /** */ . "
+(defun my-insert-cc-doc ()
+  "Insert doc comment for C like languages in the form of /** */"
   (interactive)
   (insert "/***/")
   (search-backward "/**")
+  (goto-char (match-end 0)))
+(defun my-insert-python-doc ()
+  "Insert docstring for Python."
+  (interactive)
+  (insert "\"\"\"")
+  (evil-ret)
+  (evil-ret)
+  (insert "Keyword arguments:")
+  (evil-ret)
+  (insert "\"\"\"")
+  (evil-ret)
+  (search-backward "\"\"\"")
+  (search-backward "\"\"\"")
   (goto-char (match-end 0)))
 
 (add-hook 'emacs-lisp-mode-hook 
@@ -454,11 +470,12 @@ If the region is active, only delete whitespace within the region."
 (add-hook 'python-mode-hook 
    (lambda ()
       (log-msg "Inside python-mode-hook")
-      (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-python-log)))
+      (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-python-log)
+      (define-key evil-insert-state-local-map (quote [f4]) 'my-insert-python-doc)))
 (add-hook 'c-mode-common-hook 
    (lambda ()
       (log-msg "Inside c-mode-common-hook. ")
-      (define-key evil-insert-state-local-map (quote [f4]) 'my-insert-doc-comment)))
+      (define-key evil-insert-state-local-map (quote [f4]) 'my-insert-cc-doc)))
 (add-hook 'after-change-major-mode-hook
    (lambda ()
       ;; Force Evil mode in Fundamental mode.
