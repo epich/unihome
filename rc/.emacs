@@ -308,6 +308,15 @@ If the region is active, only delete whitespace within the region."
 ;; (local-set-key (kbd "C-c") nil)
 ;; (define-key evil-operator-shortcut-map (kbd "C-c") nil)
 
+;; Configure default Evil states for chosen major modes.
+;;
+;; For now removing all, and can add back in as needed or until
+;; I understand the philosophy of the feature better.
+(setq evil-emacs-state-modes nil)
+(setq evil-insert-state-modes nil)
+;; Remove a major mode
+;; (delete 'debugger-mode evil-emacs-state-modes)
+
 (defun my-insert-bullet ()
   (interactive)
   (ucs-insert "2022"))
