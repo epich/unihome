@@ -78,6 +78,22 @@ High priority issues:
       : Automatically balance space between parens.
 
 Low priority issues:
+   : Keyboard macros
+      : Weird bug:
+         : In scratch buffer, in one insertion, create, left justified:
+            a
+            b
+            c
+            a
+            b
+            c
+            a
+            b
+            c
+         : Use the Emacs style kbdmacro to consolidate into three lines of "a b c".
+         : Hit 'u' for undo.
+         : Entire contents of scratch disappear, including the top default comments.
+      : Does Evil's keyboard macro ('q') integrate better with the undo system?
    : Updating of highlighted search
       : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
          1: Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
@@ -135,6 +151,9 @@ Low priority issues:
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
    : Debugger
       : Evil bug when exiting debugger, submitted bug report.
+   : buffer-menu
+      : Display full file basename or at least widen column width.
+      : Learn more about it
    : Look into using undo-tree extension.
    : Explore dired
    : Explore org-mode
@@ -175,11 +194,9 @@ Low priority issues:
       : Could also set color of cursor instead:
          See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
    : Get % to match <> such as in C++ or Java.
-   : Set title to include host and directory (after file's basename)
-   : buffer-menu
-      : Split to the right.
-      : Display full file basename or at least widen column width.
-      : Set the GTK frame title to any of the filenames, be it last visited, top of list, currently selected, whatever.
+   : Frame's title
+      : Set title to include host and directory (after file's basename)
+      : Set title for Untitled buffers.
    : How to toggle display of line wrapping?
    : Visual mode
       : Bug:
@@ -249,6 +266,8 @@ Low priority issues:
       : Marks
    : Read the Emacs manual:
       : Keyboard macros
+      : Killing and Moving Text
+         : Learn about the kill ring and registers
       : Amusements
 
 Notes:
@@ -348,6 +367,7 @@ Notes:
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
+      : Is there a way to disable electric-pair-mode in the minibuffer?
    : Editing lisp:
       : CL Wiki: http://www.cliki.net/Editing%20Lisp%20Code%20with%20Emacs
       : There are experimental ParEdit patches.
