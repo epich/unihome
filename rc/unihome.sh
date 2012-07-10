@@ -12,5 +12,6 @@ alias sa='source $unihomeDir/rc/unihome.sh'
 alias 0='cat $unihomeDir/misc/clearScreen.txt'
 alias fdate="date '+%Y%m%d_%H%M%S'"
 alias h=history
+PATH=~/bin:$PATH
 export EDITOR=vim
 
