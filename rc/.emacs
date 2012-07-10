@@ -305,6 +305,7 @@ If the region is active, only delete whitespace within the region."
 ;; C-M-x is major mode dependant, but generally binds to the elisp function that
 ;; instruments a function for the debugger.
 (define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
+(define-key key-translation-map (kbd "cu") (kbd "C-u"))
 (set-quit-char "C-c")
 ;; TODO: Various attempts to eliminate C-c as a prefix key to the d key.
 ;; (define-key evil-window-map (kbd "C-c") nil)
