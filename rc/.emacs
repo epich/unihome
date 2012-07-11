@@ -220,9 +220,7 @@ If the region is active, only delete whitespace within the region."
           (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
               (backward-delete-char (- (match-end 1) (match-beginning 1)))
             (call-interactively 'backward-delete-char)))))))
-;; Make tab less restrictive about where I tab to.
-(global-set-key (kbd "TAB") 'tab-to-tab-stop)
-(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+;; (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
 ;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
 (define-key evil-insert-state-map (kbd "DEL") 'backspace-whitespace-to-tab-stop)
 ;; Permanently force Emacs to indent with spaces, never with TABs:
@@ -262,6 +260,7 @@ If the region is active, only delete whitespace within the region."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ac-delay 1.0)
+ '(c-syntactic-indentation nil)
  '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
@@ -378,18 +377,18 @@ If the region is active, only delete whitespace within the region."
 (define-key evil-motion-state-map ";" 
    (lambda ()
       (interactive)
-      (dotimes (num 8)
-         (scroll-up 1)
-         (evil-next-line))
+      (let ((num-times 8))
+        (scroll-up num-times)
+        (evil-next-line num-times))
       ))
 (define-key evil-normal-state-map "'" nil)
 ;; Go up in larger steps
 (define-key evil-motion-state-map "'" 
    (lambda ()
       (interactive)
-      (dotimes (num 8)
-         (scroll-down 1)
-         (evil-previous-line))
+      (let ((num-times 8))
+        (scroll-down num-times)
+        (evil-previous-line num-times))
       ))
 
 ;; Change color of isearch lazy highlighting
