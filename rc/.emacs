@@ -489,7 +489,8 @@ If the region is active, only delete whitespace within the region."
    (lambda ()
       ;; I tend to put things here that for some reason don't work
       ;; when executed earlier.
-     
+
+      (define-key evil-motion-state-map "cc" mode-specific-map)
       (define-key evil-motion-state-map "ch" help-map)
       (define-key evil-motion-state-map "cx" ctl-x-map)
       (delete-other-windows)
