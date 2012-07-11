@@ -22,8 +22,10 @@
 
 ;;; Version specific elisp
 ;; electric-pair-mode introduced in version 24.
+;;
+;; Disabling, see my emacs.txt notes for some of the things to address first.
 (cond ((<= 24 emacs-major-version)
-       (electric-pair-mode 1)))
+       (electric-pair-mode 0)))
 
 ;; Maximize window upon startup.  A non toggling way to do this would be nice.
 (defun toggle-fullscreen ()
