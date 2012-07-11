@@ -326,7 +326,7 @@ If the region is active, only delete whitespace within the region."
 (defun my-insert-bullet ()
   (interactive)
   (ucs-insert "2022"))
-(define-key evil-insert-state-map (quote [f4]) 'my-insert-bullet)
+(define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
 ;; Undo c Evil keybinding for use with keybindings beginning with "c".
 ;; The Emacs Ctrl- prefix keybindings are assigned to Evil c keybindings later.
 ;; The Emacs Ctrl- keybindings to commands are assigned here.
@@ -456,29 +456,29 @@ If the region is active, only delete whitespace within the region."
 (add-hook 'emacs-lisp-mode-hook 
    (lambda ()
       (log-msg "Inside emacs-lisp-mode-hook")
-      (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-elisp-log)
-      (define-key evil-motion-state-local-map (quote [left]) 'backward-sexp)
-      (define-key evil-motion-state-local-map (quote [right]) 'forward-sexp)
-      (define-key evil-motion-state-local-map (quote [up]) 'backward-up-list)
-      (define-key evil-motion-state-local-map (quote [down]) 'down-list)))
+      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-elisp-log)
+      (define-key evil-motion-state-local-map (kbd "<left>") 'backward-sexp)
+      (define-key evil-motion-state-local-map (kbd "<right>") 'forward-sexp)
+      (define-key evil-motion-state-local-map (kbd "<up>") 'backward-up-list)
+      (define-key evil-motion-state-local-map (kbd "<down>") 'down-list)))
 (add-hook 'java-mode-hook 
    (lambda ()
       (log-msg "Inside java-mode-hook")
       (require 'jde)
-      (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-java-log)))
+      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-java-log)))
 (add-hook 'nxml-mode-hook
           (lambda ()
             (log-msg "Inside nxml-mode-hook")
-            (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-ant-log)))
+            (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-ant-log)))
 (add-hook 'python-mode-hook 
    (lambda ()
       (log-msg "Inside python-mode-hook")
-      (define-key evil-insert-state-local-map (quote [f3]) 'my-insert-python-log)
-      (define-key evil-insert-state-local-map (quote [f4]) 'my-insert-python-doc)))
+      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-python-log)
+      (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-python-doc)))
 (add-hook 'c-mode-common-hook 
    (lambda ()
       (log-msg "Inside c-mode-common-hook. ")
-      (define-key evil-insert-state-local-map (quote [f4]) 'my-insert-cc-doc)))
+      (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)))
 (add-hook 'after-change-major-mode-hook
    (lambda ()
       ;; Force Evil mode in Fundamental mode.
