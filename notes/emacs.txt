@@ -173,6 +173,9 @@ Low priority issues:
          : Do for XML
    : electric-pair minor mode
       : Put /** */ in pair list.
+      : Remove ' from pair list.  It's annoying in comments with English contractions.
+      : There are circumstances when it is annoying when inserting into existing code.
+         : Perhaps: insert the closing pair only when there is only whitespace to the end of line.
    : Double click select:
       : Need to be able to double click a file path and have it select all of it.
       : Double clicking a / char selects up to the . (exclusive).
