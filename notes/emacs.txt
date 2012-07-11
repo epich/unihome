@@ -264,6 +264,7 @@ Low priority issues:
                : start up Emacs multiple times
                : discard the first run in case there's any caching or byte compiling that occurs.
    : Read the Elisp manual:
+      : Keymaps
       : Debugging
       : Command loop
       : Marks
@@ -272,6 +273,9 @@ Low priority issues:
       : Killing and Moving Text
          : Learn about the kill ring and registers
       : Amusements
+   : Mailing list:
+      : Read the email thread founding Evil:
+         http://thread.gmane.org/gmane.emacs.vim-emulation/692
 
 Notes:
    : Setup on RHEL5
