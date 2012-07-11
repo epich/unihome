@@ -119,13 +119,7 @@ Zip files:
     7za e filename.zip
 
 Convert files with spaces (more robust than simpler forms):
-    #!/bin/bash
-    ls | while read -r FILE
-    do
-        mv -v "$FILE" `echo $FILE | tr ' ' '_' `
-    done
-or
-   ls | while read -r FILE ; do mv -v "$FILE" `echo $FILE | tr ' ' '_'` ;done
+   ls | while read -r FILE ;do mv -v "$FILE" `echo $FILE | tr ' ' '_'` ;done
 or
    find . -name "* *" | while read -r FILE ; do mv -v "$FILE" `echo $FILE | tr ' ' '_'` ;done
 
