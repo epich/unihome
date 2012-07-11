@@ -220,7 +220,6 @@ If the region is active, only delete whitespace within the region."
           (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
               (backward-delete-char (- (match-end 1) (match-beginning 1)))
             (call-interactively 'backward-delete-char)))))))
-;; (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
 ;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
 (define-key evil-insert-state-map (kbd "DEL") 'backspace-whitespace-to-tab-stop)
 ;; Permanently force Emacs to indent with spaces, never with TABs:
@@ -295,6 +294,15 @@ If the region is active, only delete whitespace within the region."
 ;; with one in motion state, I have to expressly set the old
 ;; key binding to nil.
 
+;;; Set up C-c keymappings
+;; TODO: Various attempts to eliminate C-c as a prefix key to the d key.
+;; (define-key evil-window-map (kbd "C-c") nil)
+;; (global-set-key (kbd "C-c") nil)
+;; (local-set-key (kbd "C-c") nil)
+;; (define-key evil-operator-shortcut-map (kbd "C-c") nil)
+;; (fset 'mode-specific-command-prefix nil)
+;; (local-unset-key (kbd "C-c"))
+;; (global-unset-key (kbd "C-c"))
 (defun my-esc (prompt)
   "Functionality for escaping generally.  Includes exiting Evil insert state and C-g binding. "
   (cond
@@ -303,15 +311,12 @@ If the region is active, only delete whitespace within the region."
    ((eq overriding-terminal-local-map evil-read-key-map) (keyboard-quit) (kbd ""))
    (t (kbd "C-g"))))
 (define-key key-translation-map (kbd "C-c") 'my-esc)
+(set-quit-char "C-c")
+
 ;; C-M-x is major mode dependant, but generally binds to the elisp function that
 ;; instruments a function for the debugger.
 (define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
 (define-key key-translation-map (kbd "cu") (kbd "C-u"))
-(set-quit-char "C-c")
-;; TODO: Various attempts to eliminate C-c as a prefix key to the d key.
-;; (define-key evil-window-map (kbd "C-c") nil)
-;; (local-set-key (kbd "C-c") nil)
-;; (define-key evil-operator-shortcut-map (kbd "C-c") nil)
 
 ;; Configure default Evil states for chosen major modes.
 ;;
@@ -472,6 +477,11 @@ If the region is active, only delete whitespace within the region."
 (add-hook 'python-mode-hook 
    (lambda ()
       (log-msg "Inside python-mode-hook")
+      ;; I'm not sure I like tab behavior in Python, so redefine tab.
+      ;;
+      ;; Emacs' bzr trunk has significant changes to the Python major mode, so I'll
+      ;; reevaluate what to do about tabbing in Python once I've tried it out.
+      (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop)
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-python-log)
       (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-python-doc)))
 (add-hook 'c-mode-common-hook 
