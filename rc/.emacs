@@ -306,10 +306,16 @@ If the region is active, only delete whitespace within the region."
 (define-key evil-operator-state-map (kbd "C-c") 'keyboard-quit)
 (set-quit-char "C-c")
 
+;;; Other key translations
+;;;
+;;; Use key translation when I want a key sequence to do whatever it is another key sequence does.
+;;
 ;; C-M-x is major mode dependant, but generally binds to the elisp function that
 ;; instruments a function for the debugger.
 (define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
 (define-key key-translation-map (kbd "cu") (kbd "C-u"))
+(define-key key-translation-map (kbd "smx") (kbd "M-x"))
+(define-key key-translation-map (kbd "sm.") (kbd "M-."))
 
 ;; Configure default Evil states for chosen major modes.
 ;;
@@ -352,7 +358,6 @@ If the region is active, only delete whitespace within the region."
 (define-key evil-normal-state-map "p" 'evil-paste-before)
 (define-key evil-normal-state-map "P" 'evil-paste-after)
 (define-key evil-motion-state-map "," 'kmacro-end-and-call-macro)
-(define-key evil-motion-state-map "s," 'execute-extended-command)
 (define-key evil-motion-state-map "sg" 'jde-open-class-source)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
@@ -489,15 +494,25 @@ If the region is active, only delete whitespace within the region."
 ;;; Finalizing initialization
 (add-hook 'term-setup-hook
    (lambda ()
-      ;; I tend to put things here that for some reason don't work
-      ;; when executed earlier.
+     ;; I tend to put things here that for some reason don't work
+     ;; when executed earlier.
 
-      (define-key evil-motion-state-map "cc" mode-specific-map)
-      (define-key evil-motion-state-map "ch" help-map)
-      (define-key evil-motion-state-map "cx" ctl-x-map)
-      (delete-other-windows)
-      ;;(setq search-whitespace-regexp nil)
-      (log-msg "Finished with term-setup-hook. ")))
+     ;; Using the Emacs builtin keymaps, I find I have to do them in this hook in order to work.
+     ;;
+     ;; In particular, these don't work when placed above:
+     ;;
+     ;; (define-key evil-motion-state-map "cc" (lambda () (interactive) mode-specific-map))
+     ;;        ; Reason: "cc" does nothing, probably returns variable but doesn't know to use it as a keymap.
+     ;; (define-key evil-motion-state-map "cc" mode-specific-map)
+     ;;        ; Reason: Looks in function cell of mode-specific-map, but it's a variable.
+     ;; (define-key evil-motion-state-map "cc" 'mode-specific-map)
+     ;;        ; Reason: Looks in function cell of mode-specific-map, but it's a variable.
+     (define-key evil-motion-state-map "cc" mode-specific-map)
+     (define-key evil-motion-state-map "ch" help-map)
+     (define-key evil-motion-state-map "cx" ctl-x-map)
+     (delete-other-windows)
+     ;;(setq search-whitespace-regexp nil)
+     (log-msg "Finished with term-setup-hook. ")))
 
 (log-msg "Finished .emacs file. ")
 
