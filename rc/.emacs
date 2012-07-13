@@ -215,7 +215,6 @@ If the region is active, only delete whitespace within the region."
         (when (= movement 0) (setq movement my-offset))
         ;; Account for edge case near beginning of buffer
         (setq movement (min (- p 1) movement))
-        (log-msg (format "DEBUG: p:%d movement:%d" p movement)) ; TODO: temporary for debug
         (save-match-data
           (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
               (backward-delete-char (- (match-end 1) (match-beginning 1)))
@@ -419,12 +418,24 @@ If the region is active, only delete whitespace within the region."
    (insert "(log-msg (format \"DEBUG: \")) ; TODO: temporary for debug")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
+(defun my-insert-c-log ()
+   "Insert log statement for C and C++. "
+   (interactive)
+   (insert "printf( \"%s:%d:DEBUG: \\n\", // TODO: temporary for debug")
+   (evil-ret)
+   (insert "\t\t\t__FILE__, __LINE__ );")
+   (search-backward "DEBUG: ")
+   (goto-char (match-end 0)))
 (defun my-insert-java-log ()
    "Insert log statement for Java. "
    (interactive)
    ;; The vimscript was:
    ;;imap <F3> org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // temporary for debug<Enter><Tab><Tab><Tab>"DEBUG: ",<Enter>new Object[]{} );<Esc>khi
-   (insert "org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // TODO: temporary for debug\n\t\t\t\"DEBUG: \",\n\t\t\tnew Object[]{} );")
+   (insert "org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // TODO: temporary for debug")
+   (evil-ret)
+   (insert "\t\t\t\"DEBUG: \",")
+   (evil-ret)
+   (insert "\t\t\tnew Object[]{} );")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
 ;; For the GOESR program, redefine logger.
@@ -433,6 +444,14 @@ If the region is active, only delete whitespace within the region."
   "Insert log statement for Python. "
   (interactive)
   (insert "print( 'DEBUG: '%() ) # TODO: temporary for debug")
+  (search-backward "DEBUG: ")
+  (goto-char (match-end 0)))
+(defun my-insert-sh-log ()
+  "Insert log statement for shell. "
+  (interactive)
+  (insert "# TODO: temporary for debug")
+  (evil-ret)
+  (insert "echo \"DEBUG: \"")
   (search-backward "DEBUG: ")
   (goto-char (match-end 0)))
 (defun my-insert-cc-doc ()
@@ -485,7 +504,13 @@ If the region is active, only delete whitespace within the region."
 (add-hook 'c-mode-common-hook 
    (lambda ()
       (log-msg "Inside c-mode-common-hook. ")
-      (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)))
+      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
+      (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
+      ))
+(add-hook 'sh-mode-hook 
+   (lambda ()
+      (log-msg "Inside sh-mode-hook")
+      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-sh-log)))
 (add-hook 'after-change-major-mode-hook
    (lambda ()
       ;; Force Evil mode in Fundamental mode.
