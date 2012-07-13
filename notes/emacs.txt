@@ -104,11 +104,7 @@ Low priority issues:
       : Bug submitted to Evil project.
          : Issue 1 is resolved by changing evil-ex-hl-idle-update function's call to run-at-time, using 0.01 instead of 0.1.
    : Keymapping
-      : Escaping out of informal Evil states, such as 'd' and '='.
-         : Appears C-c is a prefix key, need to undefine it.
-            : Some unsuccessful attempts are commented out.
-            : Emacs manual says prefix keys can be removed, references the Elisp manual's Key Bindings section.
-         : Perhaps use same approach to eliminate [ and ] as Evil prefix keys.  I wish to bind them to C-x ( and C-x )
+      : Eliminate [ and ] as Evil prefix keys.  I wish to bind them to C-x ( and C-x )
    : When up arrowing through search history, Vim goes to end of line, Evil beginning.
       : This is consistent with Emacs minibuffer in general.  Investigate
       : Can I use an Evil ex hook for this?  See:

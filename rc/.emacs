@@ -295,14 +295,6 @@ If the region is active, only delete whitespace within the region."
 ;; key binding to nil.
 
 ;;; Set up C-c keymappings
-;; TODO: Various attempts to eliminate C-c as a prefix key to the d key.
-;; (define-key evil-window-map (kbd "C-c") nil)
-;; (global-set-key (kbd "C-c") nil)
-;; (local-set-key (kbd "C-c") nil)
-;; (define-key evil-operator-shortcut-map (kbd "C-c") nil)
-;; (fset 'mode-specific-command-prefix nil)
-;; (local-unset-key (kbd "C-c"))
-;; (global-unset-key (kbd "C-c"))
 (defun my-esc (prompt)
   "Functionality for escaping generally.  Includes exiting Evil insert state and C-g binding. "
   (cond
@@ -311,6 +303,7 @@ If the region is active, only delete whitespace within the region."
    ((eq overriding-terminal-local-map evil-read-key-map) (keyboard-quit) (kbd ""))
    (t (kbd "C-g"))))
 (define-key key-translation-map (kbd "C-c") 'my-esc)
+(define-key evil-operator-state-map (kbd "C-c") 'keyboard-quit)
 (set-quit-char "C-c")
 
 ;; C-M-x is major mode dependant, but generally binds to the elisp function that
