@@ -1,3 +1,4 @@
+./f/unihomeFiles
 ./notes/boost.txt
 ./notes/clearcase.txt
 ./notes/linux.txt
@@ -9,4 +10,6 @@
 ./rc/.vimrc
 ./rc/unihome.cshrc
 ./rc/unihome.sh
+./rc/.emacs.d/emacsUtil.py
+./build.py
 
