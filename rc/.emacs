@@ -85,12 +85,25 @@ anyway, which doesn't always combine with defadvice. "
 (eval-after-load 'ibuffer nil)
 
 ;;; Initialize CEDET
+;;;
+;;; CEDET documents this must occur before other packages load any part of CEDET.
 (log-msg "Initializing CEDET.")
 (defvar my-cedet-path "~/.emacs.d/cedet-1.1" "Path to CEDET")
 (add-to-list 'load-path (format "%s/common" my-cedet-path))
 ;; CEDET retardedly raises fatal error when reloading an already reloaded file,
 ;; undermining reloading of my .emacs file.  This hacks that fix.
 (ignore-errors (load-file (format "%s/common/cedet.el" my-cedet-path)))
+;;; Enabling Semantic (code-parsing, smart completion) features
+;;; Select one of the following:
+;; * This enables the database and idle reparse engines
+;; (semantic-load-enable-minimum-features)
+;; * This enables some tools useful for coding, such as summary mode,
+;;   imenu support, and the semantic navigator
+(semantic-load-enable-code-helpers)
+;; * This enables even more coding tools such as intellisense mode,
+;;   decoration mode, and stickyfunc mode (plus regular code helpers)
+;; (semantic-load-enable-gaudy-code-helpers)
+
 
 ;;; Initialize JDEE
 (defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
