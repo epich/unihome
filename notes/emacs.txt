@@ -255,6 +255,10 @@ Low priority issues:
             : Maybe need a higher Python script to
                : start up Emacs multiple times
                : discard the first run in case there's any caching or byte compiling that occurs.
+   : Key bindings in minibuffer:
+      : See Frank Fischer's posting at:
+         https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
+      : Is there a way to disable electric-pair-mode in the minibuffer?
    : Read the Elisp manual:
       : Keymaps
       : Debugging
@@ -296,6 +300,10 @@ Notes:
       : Gets rid of all other windows: C-x 1
       : Change to other window: C-x o
       : Split the same window side by side: C-x 3
+   : Keymap notes:
+      : An entry in a keymap can redirect to the key in a specified alternate keymap.
+      : To determine the code for a key (C-c for example):
+         (progn ?\C-c)
    : Use M-; on a selection to comment it out.
    : (define-key evil-normal-state-map "o" 'next-buffer)
    : (define-key evil-normal-state-map "O" 'previous-buffer)
@@ -363,10 +371,6 @@ Notes:
       : Line feed: C-q C-j
    : Run emacs without reading .emacs:
       emacs --no-init-file
-   : Key bindings in minibuffer:
-      : See Frank Fischer's posting at:
-         https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
-      : Is there a way to disable electric-pair-mode in the minibuffer?
    : Editing lisp:
       : CL Wiki: http://www.cliki.net/Editing%20Lisp%20Code%20with%20Emacs
       : There are experimental ParEdit patches.
@@ -374,16 +378,7 @@ Notes:
          : None look compelling given their experimental nature.
 
 Retired issues with residual notes:
-   : Make s a prefix key
-      : Define keymap for it.  eg:
-         : this keymap would map f to 'delete-other-windows
-         : s would be point to that keymap so as 'sf' invokes 'delete-other-windows
-      : Figure out what disadvantage there is to mapping "sf" together, if any.
    : All things C-g does C-c should do.
-      : Try binding C-c to C-g , see:
-         http://www.gnu.org/software/emacs/manual/html_node/elisp/Key-Lookup.html
-         http://www.gnu.org/software/emacs/manual/html_node/elisp/Quitting.html
-         http://www.gnu.org/software/emacs/manual/html_node/elisp/Input-Modes.html
       : Mapping to keyboard-escape-quit appears to cover most cases, except for quiting with unsaved mods.
       : Try keyboard-translate or key-translation-map
          : An example is described here: http://emacswiki.org/emacs-en/BackspaceKey
