@@ -84,33 +84,6 @@ anyway, which doesn't always combine with defadvice. "
 ;; that code to nil to prevent it from running.
 (eval-after-load 'ibuffer nil)
 
-;;; Initialize Clearcase extensions
-;;
-;; Initializes too slowly for my tastes, even when .elc exists.
-;; Specifically, I observed an additional 12 seconds for 17 script files in a snapshot view.
-;;
-;; Might still be useful for merging. Investigate.
-;; (load "clearcase")
-
-;;; Initialize Auto Complete
-(defvar my-ac-build-path "~/.emacs.d/auto-complete-1.3.1/build" "Path to built ac")
-(defun setup-auto-complete ()
-  "Set up Auto Complete"
-   ;; Initialize 
-   (log-msg "Initializing Auto Complete.")
-   (add-to-list 'load-path my-ac-build-path)
-   (require 'auto-complete-config)
-   (add-to-list 'ac-dictionary-directories (format "%s/ac-dict" my-ac-build-path))
-   (ac-config-default)
-
-   ;; Configure
-   ;;
-   ;; RET can cause auto completion when literal RET is what I want.
-   ;; Auto Complete is perfectly usable via TAB alone, so disable RET key binding.
-   (define-key ac-complete-mode-map (kbd "RET") nil))
-;; I'm not finding Auto Complete useful at the moment.
-;; (init-auto-complete)
-
 ;;; Initialize CEDET
 (log-msg "Initializing CEDET.")
 (defvar my-cedet-path "~/.emacs.d/cedet-1.1" "Path to CEDET")
@@ -128,7 +101,7 @@ anyway, which doesn't always combine with defadvice. "
    ;; NB: (require 'jde) in Java mode hook, so as startup is more
    ;; efficient when not editing Java.
    ;;(require 'jde)
-   
+
    ;; Online posting says these might be necessary for JDEE.
    ;; http://forums.fedoraforum.org/showthread.php?t=280711
    ;; (defun screen-width nil -1)
