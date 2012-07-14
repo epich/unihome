@@ -9,13 +9,6 @@ def buildEvil():
    os.system('make')
    os.chdir('..')
 
-def buildAutoComplete():
-   os.chdir('auto-complete-1.3.1/')
-   os.system('mkdir -p build')
-   os.system('make clean')
-   os.system('make install DIR=build')
-   os.chdir('..')
-
 def buildCedet():
    os.chdir('cedet-1.1')
    # There was a case where cedet*/semantic/Makefile needed a tender touch.
@@ -29,11 +22,13 @@ def buildJdee():
    if os.path.isfile(patchedFilePath):
       os.system('rm %s'%(patchedFilePath,))
 
-def __MAIN__():
+def buildEmacsD():
    buildEvil()
-   buildAutoComplete()
    buildCedet()
    buildJdee()
+
+def __MAIN__():
+   buildEmacsD()
 
 if __name__=='__main__':
    __MAIN__()
