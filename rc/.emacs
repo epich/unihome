@@ -93,6 +93,10 @@ anyway, which doesn't always combine with defadvice. "
 ;; CEDET retardedly raises fatal error when reloading an already reloaded file,
 ;; undermining reloading of my .emacs file.  This hacks that fix.
 (ignore-errors (load-file (format "%s/common/cedet.el" my-cedet-path)))
+;;; Enable EDE (Project Management) features
+(global-ede-mode 1)
+;; Enable EDE for a pre-existing C++ project
+;; (ede-cpp-root-project "NAME" :file "~/myproject/Makefile")
 ;;; Enabling Semantic (code-parsing, smart completion) features
 ;;; Select one of the following:
 ;; * This enables the database and idle reparse engines

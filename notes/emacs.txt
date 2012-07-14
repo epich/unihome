@@ -157,10 +157,15 @@ Low priority issues:
    : Explore org-mode
    : Options for navigating source code:
       : etags
-      : CEDET Semantic
-         : Smart Help/Jump (show info and jump to definition)
-         : Symbol References (where is a symbol referenced)
-         : UML diagrams (Cogre)
+      : CEDET
+         : To read manual: C-u C-h i common/cedet.info
+         : Read "gentle introduction": http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+         : EDE:
+         : Semantic
+            : Smart Help/Jump (show info and jump to definition)
+            : Symbol References (where is a symbol referenced)
+         : COGRE
+            : UML diagrams (Cogre)
       : Ebrowse for C++
    : Figure out how to do merges with a relevant VCS.
       : Learn Ediff first.
@@ -332,6 +337,7 @@ Notes:
       : C-h v what's this variable and what is it's value
       : C-h m describe-mode describes major mode and lists minor modes
       : C-h i See Elisp manual among other things
+      : C-u C-h i then path to .info file.
    : From http://sites.google.com/site/steveyegge2/effective-emacs
       : M-x describe-bindings
       : M-x describe-key
