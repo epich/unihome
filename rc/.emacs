@@ -511,6 +511,12 @@ If the region is active, only delete whitespace within the region."
    (lambda ()
       (log-msg "Inside sh-mode-hook")
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-sh-log)))
+(add-hook 'text-mode-hook 
+   (lambda ()
+      (log-msg "Inside text-mode-hook")
+      ;; Tabs in text mode go to offsets based on previous line.  That's not what I want for .txt notes.
+      (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop)
+      ))
 (add-hook 'after-change-major-mode-hook
    (lambda ()
       ;; Force Evil mode in Fundamental mode.
