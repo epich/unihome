@@ -3,6 +3,7 @@
 ./notes/clearcase.txt
 ./notes/linux.txt
 ./notes/mercurial.txt
+./notes/python.txt
 ./notes/sql.txt
 ./notes/subversion.txt
 ./notes/emacs.txt
@@ -11,5 +12,6 @@
 ./rc/unihome.cshrc
 ./rc/unihome.sh
 ./rc/.emacs.d/emacsUtil.py
+./py/generalUtil.py
 ./build.py
 

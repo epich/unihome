@@ -7,3 +7,7 @@ Get script name:
 Get script path:
    sys.path[0]
 
+Module location:
+   moduleName.__file__
+   __file__ for current module.  Not defined when run as script.
+

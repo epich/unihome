@@ -3,6 +3,7 @@
 # Something quick and dirty to make the third party Emacs code I use.
 
 import os
+import sys
 
 def buildEvil():
    os.chdir('evil')
