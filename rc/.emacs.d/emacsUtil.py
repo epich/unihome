@@ -16,7 +16,6 @@ def buildCedet():
    # Might as well touch 'em all.
    os.system('touch `find . -maxdepth 2 -name Makefile`')
    os.system('make')
-   os.system('make ebuild')
 
 def buildJdee():
    # Assumes jde.el was patched to change jde-cedet-max-version .
