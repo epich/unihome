@@ -96,7 +96,7 @@ anyway, which doesn't always combine with defadvice. "
 ;;; Enable EDE (Project Management) features
 (global-ede-mode 1)
 ;; Enable EDE for a pre-existing C++ project
-(ede-cpp-root-project "makeChange" :file "~/proj/makeChange/Makefile")
+;; (ede-cpp-root-project "NAME" :file "~/proj/name/Makefile")
 ;;; Enabling Semantic (code-parsing, smart completion) features
 ;;; Select one of the following:
 ;; * This enables the database and idle reparse engines
@@ -109,7 +109,7 @@ anyway, which doesn't always combine with defadvice. "
 ;; (semantic-load-enable-gaudy-code-helpers)
 ;;; Based on advice at http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
 ;; For smart completion
-(require 'semantic-ia)
+;; (require 'semantic-ia)
 ;; Solves error when semantic-complete-jump:
 ;;    Symbol's function definition is void: eieio-build-class-alist
 (require 'eieio-opt)
@@ -307,6 +307,10 @@ If the region is active, only delete whitespace within the region."
 ;;;
 ;;; Use key translation when I want a key sequence to do whatever it is another key sequence does.
 ;;
+;; Originally tried binding directly to the mode-specific-map, which is the global C-c prefix key,
+;; but then "cc" doesn't translate to the C-c prefix key of minor modes such as CEDET Senator's.
+;; Key translation works instead.
+(define-key key-translation-map (kbd "cc") (kbd "C-c"))
 ;; C-M-x is major mode dependant, but generally binds to the elisp function that
 ;; instruments a function for the debugger.
 (define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
@@ -536,7 +540,10 @@ If the region is active, only delete whitespace within the region."
      ;;        ; Reason: Looks in function cell of mode-specific-map, but it's a variable.
      ;; (define-key evil-motion-state-map "cc" 'mode-specific-map)
      ;;        ; Reason: Looks in function cell of mode-specific-map, but it's a variable.
-     (define-key evil-motion-state-map "cc" mode-specific-map)
+     ;;
+     ;; I am commenting out this binding approach, because it conflicts with
+     ;; CEDET Senator minor mode's C-c prefix key.
+     ;; (define-key evil-motion-state-map "cc" mode-specific-map)
      (define-key evil-motion-state-map "ch" help-map)
      (define-key evil-motion-state-map "cx" ctl-x-map)
      (delete-other-windows)
