@@ -96,7 +96,7 @@ anyway, which doesn't always combine with defadvice. "
 ;;; Enable EDE (Project Management) features
 (global-ede-mode 1)
 ;; Enable EDE for a pre-existing C++ project
-;; (ede-cpp-root-project "NAME" :file "~/myproject/Makefile")
+(ede-cpp-root-project "makeChange" :file "~/proj/makeChange/Makefile")
 ;;; Enabling Semantic (code-parsing, smart completion) features
 ;;; Select one of the following:
 ;; * This enables the database and idle reparse engines
@@ -107,7 +107,12 @@ anyway, which doesn't always combine with defadvice. "
 ;; * This enables even more coding tools such as intellisense mode,
 ;;   decoration mode, and stickyfunc mode (plus regular code helpers)
 ;; (semantic-load-enable-gaudy-code-helpers)
-
+;;; Based on advice at http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+;; For smart completion
+(require 'semantic-ia)
+;; Solves error when semantic-complete-jump:
+;;    Symbol's function definition is void: eieio-build-class-alist
+(require 'eieio-opt)
 
 ;;; Initialize JDEE
 (defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
@@ -211,6 +216,9 @@ If the region is active, only delete whitespace within the region."
             (call-interactively 'backward-delete-char)))))))
 ;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
 (define-key evil-insert-state-map (kbd "DEL") 'backspace-whitespace-to-tab-stop)
+;; Tab behavior is too retarded in several major modes.  Either it is unncessarily
+;; restrictive about allowing tabbing, or it aligns with the line above in the wrong cases.
+(define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop)
 ;; Permanently force Emacs to indent with spaces, never with TABs:
 (setq-default indent-tabs-mode nil)
 (setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
@@ -302,8 +310,10 @@ If the region is active, only delete whitespace within the region."
 ;; C-M-x is major mode dependant, but generally binds to the elisp function that
 ;; instruments a function for the debugger.
 (define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
+;; (define-key key-translation-map (kbd "cs") (kbd "C-s"))
 (define-key key-translation-map (kbd "cu") (kbd "C-u"))
 (define-key key-translation-map (kbd "smx") (kbd "M-x"))
+;; (define-key evil-normal-state-map (kbd "M-.") nil)
 (define-key key-translation-map (kbd "sm.") (kbd "M-."))
 
 ;; Configure default Evil states for chosen major modes.
@@ -488,7 +498,7 @@ If the region is active, only delete whitespace within the region."
       ;;
       ;; Emacs' bzr trunk has significant changes to the Python major mode, so I'll
       ;; reevaluate what to do about tabbing in Python once I've tried it out.
-      (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop)
+      ;; (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop)
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-python-log)
       (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-python-doc)))
 (add-hook 'c-mode-common-hook 
@@ -504,8 +514,6 @@ If the region is active, only delete whitespace within the region."
 (add-hook 'text-mode-hook 
    (lambda ()
       (log-msg "Inside text-mode-hook")
-      ;; Tabs in text mode go to offsets based on previous line.  That's not what I want for .txt notes.
-      (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop)
       ))
 (add-hook 'after-change-major-mode-hook
    (lambda ()
