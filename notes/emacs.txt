@@ -160,6 +160,9 @@ Low priority issues:
       : CEDET
          : To read manual: C-u C-h i common/cedet.info
          : Read "gentle introduction": http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+            : Smart completion: (require 'semantic-ia)
+            : Know about system headers: (require 'semantic-gcc)
+               : Also: (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
          : EDE:
          : Semantic
             : Smart Help/Jump (show info and jump to definition)
