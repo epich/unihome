@@ -86,11 +86,14 @@ anyway, which doesn't always combine with defadvice. "
 
 ;;; Initialize CEDET
 ;;;
-;;; CEDET documents this must occur before other packages load any part of CEDET.
 (log-msg "Initializing CEDET.")
 (defvar my-cedet-path "~/.emacs.d/cedet-1.1" "Path to CEDET")
 (add-to-list 'load-path (format "%s/common" my-cedet-path))
-;; CEDET retardedly raises fatal error when reloading an already reloaded file,
+;; CEDET documents loading must occur before other packages load any part of CEDET.
+;; Especially important since Emacs has a different version builtin, which I can't
+;; use because of JDEE.
+;;
+;; CEDET raises fatal error when reloading an already reloaded file,
 ;; undermining reloading of my .emacs file.  This hacks that fix.
 (ignore-errors (load-file (format "%s/common/cedet.el" my-cedet-path)))
 ;;; Enable EDE (Project Management) features
@@ -130,7 +133,7 @@ anyway, which doesn't always combine with defadvice. "
    ;; (define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
 
    ;; Docs indicate elib is a dependency.  However, I haven't witnessed
-   ;; a problem yet.
+   ;; a problem yet.  Emacs documents Elib is a part of Emacs.
    )
 (setup-jdee)
 
