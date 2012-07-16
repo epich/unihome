@@ -299,6 +299,9 @@ Low priority issues:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
       : Is there a way to disable electric-pair-mode in the minibuffer?
+   : Pick through the elisp of others:
+      : Michael Markert's:
+         https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-evil.el
    : Read the Elisp manual:
       : Keymaps
       : Debugging
