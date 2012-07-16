@@ -154,14 +154,15 @@ anyway, which doesn't always combine with defadvice. "
   )
 (defun my-load-clearcase ()
    (log-msg "Initializing ClearCase.")
-   (add-to-list 'load-path "~/emacs.d/clearcase")
+   (add-to-list 'load-path "~/.emacs.d/clearcase")
    ;; clearcase.el uses obsolete variable.  This works around it.
    (defvar directory-sep-char ?/)
-   (load "clearcase")
+   (require 'clearcase)
    (clearcase-mode 1)
-   ;; Key bindings.
+   ;; Key bindings.  Little rhyme or reason except to choose unclaimed keys.
    (define-key clearcase-prefix-map "n" 'clearcase-checkin-current-buffer)
    (define-key clearcase-prefix-map "o" 'my-clearcase-checkout)
+   (log-msg "Finished initializing ClearCase.")
    )
 
 ;; Initialize project-specific elisp
