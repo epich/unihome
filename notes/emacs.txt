@@ -131,8 +131,7 @@ Low priority issues:
             : Notes on the code:
                : revert-buffer is in files.el
                : auto-revert-handler is in autorevert.el
-               : Not sure which part of the revert-buffer function updates the permissions (file-modes)
-                  : Might be useful to try out the elisp debugger to determine this.
+               : revert-buffer calls (after-find-file nil nil t nil preserve-modes) which appears to set the perms.
                : insert-file-contents appears to be the substantive function that does the reverting.
                   : auto-revert-tail-handler calls this, but when I tried using auto-revert-tail it did not cause an update of file permissions.
          : Has high latency
@@ -149,6 +148,11 @@ Low priority issues:
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
    : Learn the debugger
       : Evil bug when exiting debugger, submitted bug report.
+      : Keybindings are undermined in Evil normal state.
+         : edebug-mode-map variable
+         : They are both minor modes.  Figure out how to make one minor mode have priority.
+            : http://stackoverflow.com/questions/9648218/conflicting-keyboard-shortcuts-in-two-emacs-minor-modes
+            : http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs/5340797#5340797
    : Look into using undo-tree extension.
    : Learn about dired
    : Learn about CEDET
