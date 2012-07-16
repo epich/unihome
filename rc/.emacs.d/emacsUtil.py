@@ -11,6 +11,9 @@ def buildEvil():
    os.chdir('..')
 
 def buildCedet():
+   # CEDET contributes to annoying interrogations at Emacs closing time.
+   # Create the .semanticdb dir to avoid one interrogation question.
+   os.system('mkdir -p ~/.semanticdb')
    os.chdir('cedet-1.1')
    # There was a case where cedet*/semantic/Makefile needed a tender touch.
    # Might as well touch 'em all.
