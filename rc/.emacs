@@ -75,14 +75,9 @@ anyway, which doesn't always combine with defadvice. "
 
 ;;; Initialize evil
 (log-msg "Initializing Evil.")
-;; Before initializing Evil.  In custom-set-variables , would be: '(evil-overriding-maps nil)
-(setq evil-overriding-maps nil)
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
-;; evil-integration.el attempts to recreate the evil-overriding-maps, set
-;; that code to nil to prevent it from running.
-(eval-after-load 'ibuffer nil)
 
 ;;; Initialize CEDET
 ;;;
@@ -149,6 +144,25 @@ anyway, which doesn't always combine with defadvice. "
 ;;
 ;; Since I like occasional non wholistic editing, I use ParEdit functions without
 ;; the minor mode enabled.
+
+;;; Initialize Clearcase extensions
+;;
+;; Initializes slowly (byte compiled).  I observed 12 seconds for 17 script files in a snapshot view.
+(defun my-clearcase-checkout ()
+  (interactive)
+  (clearcase-commented-checkout buffer-file-name "Checked out through Emacs. ")
+  )
+(defun my-load-clearcase ()
+   (log-msg "Initializing ClearCase.")
+   (add-to-list 'load-path "~/emacs.d/clearcase")
+   ;; clearcase.el uses obsolete variable.  This works around it.
+   (defvar directory-sep-char ?/)
+   (load "clearcase")
+   (clearcase-mode 1)
+   ;; Key bindings.
+   (define-key clearcase-prefix-map "n" 'clearcase-checkin-current-buffer)
+   (define-key clearcase-prefix-map "o" 'my-clearcase-checkout)
+   )
 
 ;; Initialize project-specific elisp
 (log-msg "Initializing project-specific elisp.")
@@ -261,6 +275,7 @@ If the region is active, only delete whitespace within the region."
  '(ac-delay 1.0)
  '(c-syntactic-indentation nil)
  '(evil-overriding-maps nil)
+ '(evil-intercept-maps nil)
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
  '(global-whitespace-mode t)
@@ -377,6 +392,7 @@ If the region is active, only delete whitespace within the region."
 ;; Note: Instead of key binding to kill-sexp, equivalent to 'sem' and then 'd'
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
+(define-key evil-motion-state-map "slc" (lambda () (interactive) (my-load-clearcase)))
 (define-key evil-motion-state-map "sji" 'jde-import-find-and-import)
 (define-key evil-motion-state-map "sja" (lambda () (interactive) (jde-import-all) (jde-import-kill-extra-imports) (jde-import-organize)))
 ;; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
