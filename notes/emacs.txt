@@ -105,6 +105,12 @@ Low priority issues:
          : Issue 1 is resolved by changing evil-ex-hl-idle-update function's call to run-at-time, using 0.01 instead of 0.1.
    : Keymapping
       : Eliminate [ and ] as Evil prefix keys.  I wish to bind them to C-x ( and C-x )
+   : Sort out evil-overriding-maps
+      : Evil creates evil-overriding-maps undermining key bindings, such as in buffer-menu.
+      : Fix the fix that was too hacky:
+         ;; evil-integration.el attempts to recreate the evil-overriding-maps, set
+         ;; that code to nil to prevent it from running.
+         (eval-after-load 'ibuffer nil)
    : When up arrowing through search history, Vim goes to end of line, Evil beginning.
       : This is consistent with Emacs minibuffer in general.  Investigate
       : Can I use an Evil ex hook for this?  See:
