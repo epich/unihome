@@ -103,14 +103,11 @@ Low priority issues:
          5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
       : Bug submitted to Evil project.
          : Issue 1 is resolved by changing evil-ex-hl-idle-update function's call to run-at-time, using 0.01 instead of 0.1.
+   : Evil prevents quitting Emacs from recursive edit when . repeating with repeat-ring under certain conditions:
+      : See my email to the mailing list: Confused by what command is "dot repeatable"
+      : Submit bug report.
    : Keymapping
       : Eliminate [ and ] as Evil prefix keys.  I wish to bind them to C-x ( and C-x )
-   : Sort out evil-overriding-maps
-      : Evil creates evil-overriding-maps undermining key bindings, such as in buffer-menu.
-      : Fix the fix that was too hacky:
-         ;; evil-integration.el attempts to recreate the evil-overriding-maps, set
-         ;; that code to nil to prevent it from running.
-         (eval-after-load 'ibuffer nil)
    : When up arrowing through search history, Vim goes to end of line, Evil beginning.
       : This is consistent with Emacs minibuffer in general.  Investigate
       : Can I use an Evil ex hook for this?  See:
@@ -135,11 +132,14 @@ Low priority issues:
          : Doesn't revert file permissions, even though revert-buffer does.
             : Submitted bug report to GNU, ID 11549, merged with ID 11412.
             : Notes on the code:
-               : revert-buffer is in files.el
-               : auto-revert-handler is in autorevert.el
-               : revert-buffer calls (after-find-file nil nil t nil preserve-modes) which appears to set the perms.
-               : insert-file-contents appears to be the substantive function that does the reverting.
-                  : auto-revert-tail-handler calls this, but when I tried using auto-revert-tail it did not cause an update of file permissions.
+               : Manual revert:
+                  : revert-buffer is in files.el
+                  : auto-revert-handler is in autorevert.el
+                  : revert-buffer calls (after-find-file nil nil t nil preserve-modes) which appears to set the perms.
+                  : Emacs shows the updated perms when after-find-file executes: (setq buffer-read-only (not (file-writable-p buffer-file-name)))
+               : Auto revert:
+                  : insert-file-contents appears to be the substantive function that does the reverting.
+                     : auto-revert-tail-handler calls this, but when I tried using auto-revert-tail it did not cause an update of file permissions.
          : Has high latency
             : Might be configurable
          : Flash screen when auto revert occurs.
@@ -154,31 +154,47 @@ Low priority issues:
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
    : Learn the debugger
       : Evil bug when exiting debugger, submitted bug report.
-      : Keybindings are undermined in Evil normal state.
-         : edebug-mode-map variable
-         : They are both minor modes.  Figure out how to make one minor mode have priority.
-            : http://stackoverflow.com/questions/9648218/conflicting-keyboard-shortcuts-in-two-emacs-minor-modes
-            : http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs/5340797#5340797
+      : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.
    : Look into using undo-tree extension.
-   : Learn about dired
+   : Learn about Dired
+      : Is there a notion of finding a set of files based on a criteria (search term, use of symbol), then iteratively visiting just those?
    : Learn about CEDET
-      : EDE:
-         : Sets up project.
-         : Can be used to restrict search space for Semantic.
-      : Semantic
-         : Smart Help/Jump (show info and jump to definition)
-         : Symbol References (where is a symbol referenced)
-         : Smart completion: (require 'semantic-ia)
-         : Know about system headers: (require 'semantic-gcc)
-            : Also: (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
-      : COGRE
-         : UML diagrams (Cogre)
-      : Switch between .h and .cpp
-         : Investigate eassist
-         : semantic-analyze-proto-impl-toggle
-      : How to manage includes?
-      : How to have function prototype and docs display, whether as tooltip or in other buffer.
-      : Reference "gentle introduction": http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+      : Notes:
+         : EDE:
+            : Sets up project.
+            : Can be used to restrict search space for Semantic.
+         : Semantic
+            : Smart Help/Jump (show info and jump to definition)
+            : Symbol References (where is a symbol referenced)
+            : Smart completion: (require 'semantic-ia)
+            : Know about system headers: (require 'semantic-gcc)
+               : Also: (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
+         : COGRE
+            : UML diagrams (Cogre)
+         : Reference "gentle introduction": http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+      Issues:
+         : Display in minibuffer undermines promptings and my ability to read them.
+      Needs:
+         : Symbol reference -- where is a symbol used or called?
+         : Jumping to definition
+            : Type 
+            : Symbol
+            : Function
+         : Backtrack from jumping
+            : Ideally my place would be saved automatically
+            : If not, Emacs and Evil likely offer a manual way to set my location to return to later.
+         : Highlight symbol where point is, and stay highlighted as I move around.
+         : Manage includes
+         : Switch between .h and .cpp
+            : Investigate eassist
+            : semantic-analyze-proto-impl-toggle
+            : Split display the two?
+         : Have function prototype and docs display, whether as tooltip or in other buffer.
+         : UML diagrams
+            : From a set of files, how do I generate:
+               : Dependancy graph
+               : Composition graph
+               : Inheritance graph
    : Learn about VCS use
       : Ediff
       : How to do merges
@@ -360,6 +376,14 @@ Notes:
       : M-x describe-key
       : M-x apropos <regex>
       : M-x info
+   : Customization notes:
+      : These two do the same thing:
+         ;; Set manually
+         (setq evil-overriding-maps nil)
+         ;; Set via the Emacs customization
+         (custom-set-variables
+          '(evil-overriding-maps nil)
+          )
    : nxml-mode for XML editing.
    : F keys:
       (define-key python-mode-map (kbd "<f12>") 'python-switch-to-python)
@@ -401,7 +425,13 @@ Notes:
       : There are experimental ParEdit patches.
          : http://mumble.net/~campbell/tmp/paredit/
          : None look compelling given their experimental nature.
-
+   : ClearCase
+      : Key bindings:
+         C-x v =        diff prev version
+         C-x v o        checkout
+         C-x v n        checkin
+         C-x v u        uncheckout
+         C-c C-c        finish comment
 Retired issues with residual notes:
    : All things C-g does C-c should do.
       : Mapping to keyboard-escape-quit appears to cover most cases, except for quiting with unsaved mods.
@@ -512,17 +542,24 @@ Retired issues with residual notes:
          (define-key ac-complete-mode-map (kbd "RET") nil))
       ;; I'm not finding Auto Complete useful at the moment.
       ;; (init-auto-complete)
-   : ClearCase
-      ;;; Initialize Clearcase extensions
-      ;;
-      ;; Initializes too slowly for my tastes, even when .elc exists.
-      ;; Specifically, I observed an additional 12 seconds for 17 script files in a snapshot view.
-      ;;
-      ;; Might still be useful for merging. Investigate.
-      ;; (load "clearcase")
    : Java Auto Complete
       : Popup causes several seconds of delay.  What's the cause?
          : Try advice in dev's email, generate own smaller set of Java tags.
       : Why is there no popup for ajc-import-class-under-point?
           : auto-complete places text under point.  See mailing list.
+   : Sort out evil-overriding-maps
+      : Evil creates evil-overriding-maps undermining key bindings, such as in buffer-menu.
+      : Fix the fix that was too hacky:
+         ;; evil-integration.el attempts to recreate the evil-overriding-maps, set
+         ;; that code to nil to prevent it from running.
+         (eval-after-load 'ibuffer nil)
+      : ibuffer brings Dired-like functionality to the buffer-menu
+         : Learn Dired to get some philosophical perspective for a solution
+      : Removed the hack and 'o' in buffer-menu behaves.
+   : Keybindings are undermined in Evil normal state.
+      : edebug-mode-map variable
+      : They are both minor modes.  Figure out how to make one minor mode have priority.
+         : http://stackoverflow.com/questions/9648218/conflicting-keyboard-shortcuts-in-two-emacs-minor-modes
+         : http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs/5340797#5340797
+      : Setting evil-overriding-maps and evil-intercept-maps to nil was the solution.
 
