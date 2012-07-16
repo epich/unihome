@@ -4,9 +4,9 @@
 
 import os
 import sys
-sys.path.append('py')
+sys.path.append(sys.path[0]+'/py')
 import generalUtil
-sys.path.append('rc/.emacs.d')
+sys.path.append(sys.path[0]+'/rc/.emacs.d')
 import emacsUtil
 
 def __MAIN__():
