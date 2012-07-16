@@ -147,31 +147,35 @@ Low priority issues:
                     (log-msg "Inside my-window-scroll"))
                   (add-hook 'window-scroll-functions 'my-window-scroll nil t)
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
-   : Debugger
+   : Learn the debugger
       : Evil bug when exiting debugger, submitted bug report.
+   : Look into using undo-tree extension.
+   : Learn about dired
+   : Learn about CEDET
+      : EDE:
+         : Sets up project.
+         : Can be used to restrict search space for Semantic.
+      : Semantic
+         : Smart Help/Jump (show info and jump to definition)
+         : Symbol References (where is a symbol referenced)
+         : Smart completion: (require 'semantic-ia)
+         : Know about system headers: (require 'semantic-gcc)
+            : Also: (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
+      : COGRE
+         : UML diagrams (Cogre)
+      : Switch between .h and .cpp
+         : Investigate eassist
+         : semantic-analyze-proto-impl-toggle
+      : How to manage includes?
+      : How to have function prototype and docs display, whether as tooltip or in other buffer.
+      : Reference "gentle introduction": http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+   : Learn about VCS use
+      : Ediff
+      : How to do merges
+   : Learn about org-mode
    : buffer-menu
       : Display full file basename or at least widen column width.
       : Learn more about it
-   : Look into using undo-tree extension.
-   : Explore dired
-   : Explore org-mode
-   : Options for navigating source code:
-      : etags
-      : CEDET
-         : To read manual: C-u C-h i common/cedet.info
-         : Read "gentle introduction": http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
-            : Smart completion: (require 'semantic-ia)
-            : Know about system headers: (require 'semantic-gcc)
-               : Also: (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
-         : EDE:
-         : Semantic
-            : Smart Help/Jump (show info and jump to definition)
-            : Symbol References (where is a symbol referenced)
-         : COGRE
-            : UML diagrams (Cogre)
-      : Ebrowse for C++
-   : Figure out how to do merges with a relevant VCS.
-      : Learn Ediff first.
    : Being prompted about running Python process is annoying.
       : CEDET starts it for sake of auto completion.
    : Smart editing:
