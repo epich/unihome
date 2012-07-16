@@ -311,6 +311,8 @@ If the region is active, only delete whitespace within the region."
 ;; but then "cc" doesn't translate to the C-c prefix key of minor modes such as CEDET Senator's.
 ;; Key translation works instead.
 (define-key key-translation-map (kbd "cc") (kbd "C-c"))
+(define-key key-translation-map (kbd "ch") (kbd "C-h"))
+(define-key key-translation-map (kbd "cx") (kbd "C-x"))
 ;; C-M-x is major mode dependant, but generally binds to the elisp function that
 ;; instruments a function for the debugger.
 (define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
@@ -542,10 +544,10 @@ If the region is active, only delete whitespace within the region."
      ;;        ; Reason: Looks in function cell of mode-specific-map, but it's a variable.
      ;;
      ;; I am commenting out this binding approach, because it conflicts with
-     ;; CEDET Senator minor mode's C-c prefix key.
+     ;; other minor modes somewhat often.
      ;; (define-key evil-motion-state-map "cc" mode-specific-map)
-     (define-key evil-motion-state-map "ch" help-map)
-     (define-key evil-motion-state-map "cx" ctl-x-map)
+     ;; (define-key evil-motion-state-map "ch" help-map)
+     ;; (define-key evil-motion-state-map "cx" ctl-x-map)
      (delete-other-windows)
      ;;(setq search-whitespace-regexp nil)
      (log-msg "Finished with term-setup-hook. ")))
