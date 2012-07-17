@@ -173,35 +173,6 @@ anyway, which doesn't always combine with defadvice. "
 (ignore-errors (defvar my-java-classpath goesr-classpath "Path for my .class or .jar files.")
    (defvar my-java-sourcepath goesr-sourcepath "Path for my .java files."))
 
-;; This is the patched delete-trailing-whitespace posted to
-;;  http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00523.html
-;; and accepted into Emacs.  It's not in my version, so just copying it here
-;; for use with = key binding.
-(defun patched-delete-trailing-whitespace (&optional start end)
-  "Delete all the trailing whitespace across the current buffer.
-All whitespace after the last non-whitespace character in a line is deleted.
-This respects narrowing, created by \\[narrow-to-region] and friends.
-A formfeed is not considered whitespace by this function.
-If the region is active, only delete whitespace within the region."
-  (interactive (progn
-                 (barf-if-buffer-read-only)
-                 (if (use-region-p)
-                     (list (region-beginning) (region-end))
-                   (list nil nil))))
-  (save-match-data
-    (save-excursion
-      (let ((end-marker (copy-marker (or end (point-max))))
-            (start (or start (point-min))))
-        (goto-char start)
-        (while (re-search-forward "\\s-$" end-marker t)
-          (skip-syntax-backward "-" (save-excursion (forward-line 0) (point)))
-          ;; Don't delete formfeeds, even if they are considered whitespace.
-          (save-match-data
-            (if (looking-at ".*\f")
-                (goto-char (match-end 0))))
-          (delete-region (point) (match-end 0)))
-        (set-marker end-marker nil)))))
-
 ;;; Relating to tabs
 ;; I would prefer automatic guessing of my-offset based on the offset in use for the
 ;; surrounding code.
@@ -330,8 +301,10 @@ If the region is active, only delete whitespace within the region."
 ;; but then "cc" doesn't translate to the C-c prefix key of minor modes such as CEDET Senator's.
 ;; Key translation works instead.
 (define-key key-translation-map (kbd "cc") (kbd "C-c"))
+(define-key key-translation-map (kbd "ce") (kbd "C-e"))
 (define-key key-translation-map (kbd "ch") (kbd "C-h"))
 (define-key key-translation-map (kbd "cx") (kbd "C-x"))
+(define-key key-translation-map (kbd "cy") (kbd "C-y"))
 ;; C-M-x is major mode dependant, but generally binds to the elisp function that
 ;; instruments a function for the debugger.
 (define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
@@ -358,6 +331,13 @@ If the region is active, only delete whitespace within the region."
 ;; The Emacs Ctrl- prefix keybindings are assigned to Evil c keybindings later.
 ;; The Emacs Ctrl- keybindings to commands are assigned here.
 (define-key evil-normal-state-map "c" nil)
+;; Something like this allows the key-translation-map approach to work.
+;; When this keymap is not active and c is either undefined or bound to
+;; a command (as opposed to a prefix key), then the key-translation-map
+;; effectively has no effect.  I haven't investigated what happens if
+;; this keymap is inactive but another keymap is active and defines "c"
+;; as a prefix key.
+(define-key evil-motion-state-map "cu" 'universal-argument)
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
 (define-key evil-insert-state-map (kbd "C-y") nil)
 ;; Disable C-0 and C-- since I hit them alot unintentionally.
