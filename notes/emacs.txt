@@ -138,8 +138,9 @@ Low priority issues:
                   : revert-buffer calls (after-find-file nil nil t nil preserve-modes) which appears to set the perms.
                   : Emacs shows the updated perms when after-find-file executes: (setq buffer-read-only (not (file-writable-p buffer-file-name)))
                : Auto revert:
-                  : insert-file-contents appears to be the substantive function that does the reverting.
-                     : auto-revert-tail-handler calls this, but when I tried using auto-revert-tail it did not cause an update of file permissions.
+                  : auto-revert-handler has letted revert var for whether to revert.
+                  : Calls revert-buffer to revert.
+                     : Why don't permissions update when file is touched even?
          : Has high latency
             : Might be configurable
          : Flash screen when auto revert occurs.
