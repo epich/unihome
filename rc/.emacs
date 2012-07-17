@@ -148,12 +148,9 @@ anyway, which doesn't always combine with defadvice. "
 ;;; Initialize Clearcase extensions
 ;;
 ;; Initializes slowly (byte compiled).  I observed 12 seconds for 17 script files in a snapshot view.
-(defun my-clearcase-checkout ()
-  (interactive)
-  (clearcase-commented-checkout buffer-file-name "Checked out through Emacs. ")
-  )
+;; For that reason, I don't load ClearCase until I need it.
 (defun my-load-clearcase ()
-   (log-msg "Initializing ClearCase.")
+   (log-msg "Loading ClearCase.")
    (add-to-list 'load-path "~/.emacs.d/clearcase")
    ;; clearcase.el uses obsolete variable.  This works around it.
    (defvar directory-sep-char ?/)
@@ -162,8 +159,13 @@ anyway, which doesn't always combine with defadvice. "
    ;; Key bindings.  Little rhyme or reason except to choose unclaimed keys.
    (define-key clearcase-prefix-map "n" 'clearcase-checkin-current-buffer)
    (define-key clearcase-prefix-map "o" 'my-clearcase-checkout)
-   (log-msg "Finished initializing ClearCase.")
+   (log-msg "Loaded ClearCase.")
    )
+(defun my-clearcase-checkout ()
+  (interactive)
+  (my-load-clearcase)
+  (clearcase-commented-checkout buffer-file-name "Checked out through Emacs. ")
+  )
 
 ;; Initialize project-specific elisp
 (log-msg "Initializing project-specific elisp.")
@@ -220,6 +222,11 @@ anyway, which doesn't always combine with defadvice. "
 ;;(setq tab-width my-offset)
 ;; Disable weird auto formatting
 (setq-default c-electric-flag nil)
+
+(defun my-insert-bullet ()
+  "Insert a Unicode bullet character."
+  (interactive)
+  (ucs-insert "2022"))
 
 ;;; Customizations
 ;;
@@ -281,7 +288,32 @@ anyway, which doesn't always combine with defadvice. "
 ;; with one in motion state, I have to expressly set the old
 ;; key binding to nil.
 
-;;; Set up C-c keymappings
+;;; Set up C- key bindings
+;;;
+;;; Use Key Translation to create more ergonomic alternatives
+;;; to the C- key bindings.  eg "cx" instead of "C-x".
+;;;
+;;; I originally tried binding directly to the global prefix keymaps, such as
+;;;   (define-key evil-motion-state-map "cx" ctl-x-map)
+;;; but then "cc" doesn't translate to the C-c prefix key of minor modes such
+;;; as CEDET Senator's.
+;;;
+;; First unset Evil's "c" key binding.
+(define-key evil-normal-state-map "c" nil)
+;; We need to define "c" as a prefix in the evil-motion-state-map
+;; in order for our key translations to kick in.  Otherwise the
+;; Key Lookup completes on simply "c", whether undefined or bound
+;; to self-insert-command.
+;;
+;; When not in motion state, "c" behaves normally because evil-motion-state-map
+;; is inactive.
+;;
+;; TODO: Determine behavior when a different keymap defines "c" as a prefix key.
+;;
+;; This is hacky, for now.  I could have used anything that is 'c' then another key.
+(define-key evil-motion-state-map "cu" 'universal-argument)
+;;; C-c has its own set up as general purpose escape key sequence.
+;;;
 (defun my-esc (prompt)
   "Functionality for escaping generally.  Includes exiting Evil insert state and C-g binding. "
   (cond
@@ -290,16 +322,14 @@ anyway, which doesn't always combine with defadvice. "
    ((eq overriding-terminal-local-map evil-read-key-map) (keyboard-quit) (kbd ""))
    (t (kbd "C-g"))))
 (define-key key-translation-map (kbd "C-c") 'my-esc)
+;; Works around the fact that Evil uses read-event directly when in operator state, which
+;; doesn't use the key-translation-map.
 (define-key evil-operator-state-map (kbd "C-c") 'keyboard-quit)
+;; Not sure what behavior this changes, but might as well set it, seeing the Elisp manual's
+;; documentation of it.
 (set-quit-char "C-c")
-
-;;; Other key translations
+;;; Other C-c key translations
 ;;;
-;;; Use key translation when I want a key sequence to do whatever it is another key sequence does.
-;;
-;; Originally tried binding directly to the mode-specific-map, which is the global C-c prefix key,
-;; but then "cc" doesn't translate to the C-c prefix key of minor modes such as CEDET Senator's.
-;; Key translation works instead.
 (define-key key-translation-map (kbd "cc") (kbd "C-c"))
 (define-key key-translation-map (kbd "ce") (kbd "C-e"))
 (define-key key-translation-map (kbd "ch") (kbd "C-h"))
@@ -323,21 +353,7 @@ anyway, which doesn't always combine with defadvice. "
 ;; Remove a major mode
 ;; (delete 'debugger-mode evil-emacs-state-modes)
 
-(defun my-insert-bullet ()
-  (interactive)
-  (ucs-insert "2022"))
 (define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
-;; Undo c Evil keybinding for use with keybindings beginning with "c".
-;; The Emacs Ctrl- prefix keybindings are assigned to Evil c keybindings later.
-;; The Emacs Ctrl- keybindings to commands are assigned here.
-(define-key evil-normal-state-map "c" nil)
-;; Something like this allows the key-translation-map approach to work.
-;; When this keymap is not active and c is either undefined or bound to
-;; a command (as opposed to a prefix key), then the key-translation-map
-;; effectively has no effect.  I haven't investigated what happens if
-;; this keymap is inactive but another keymap is active and defines "c"
-;; as a prefix key.
-(define-key evil-motion-state-map "cu" 'universal-argument)
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
 (define-key evil-insert-state-map (kbd "C-y") nil)
 ;; Disable C-0 and C-- since I hit them alot unintentionally.
@@ -372,6 +388,7 @@ anyway, which doesn't always combine with defadvice. "
 (define-key evil-normal-state-map "P" 'evil-paste-after)
 (define-key evil-motion-state-map "," nil)
 (define-key evil-motion-state-map "," 'kmacro-end-and-call-macro)
+(define-key evil-motion-state-map "sco" 'my-clearcase-checkout)
 (define-key evil-motion-state-map "sg" 'jde-open-class-source)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
