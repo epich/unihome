@@ -236,7 +236,7 @@ If the region is active, only delete whitespace within the region."
 (define-key evil-insert-state-map (kbd "DEL") 'backspace-whitespace-to-tab-stop)
 ;; Tab behavior is too retarded in several major modes.  Either it is unncessarily
 ;; restrictive about allowing tabbing, or it aligns with the line above in the wrong cases.
-(define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop)
+(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
 ;; Permanently force Emacs to indent with spaces, never with TABs:
 (setq-default indent-tabs-mode nil)
 (setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
