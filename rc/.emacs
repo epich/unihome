@@ -358,7 +358,6 @@ If the region is active, only delete whitespace within the region."
 ;; The Emacs Ctrl- prefix keybindings are assigned to Evil c keybindings later.
 ;; The Emacs Ctrl- keybindings to commands are assigned here.
 (define-key evil-normal-state-map "c" nil)
-(define-key evil-motion-state-map "cu" 'universal-argument)
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
 (define-key evil-insert-state-map (kbd "C-y") nil)
 ;; Disable C-0 and C-- since I hit them alot unintentionally.
@@ -367,9 +366,19 @@ If the region is active, only delete whitespace within the region."
 (define-key evil-motion-state-map (kbd "C--") 'my-no-op)
 (define-key evil-normal-state-map (kbd "C--") 'my-no-op)
 
-;; I don't use RET in motion state, but it is useful in eg buffer mode.
-(define-key evil-motion-state-map (kbd "RET") nil)
-(global-set-key (kbd "RET") 'evil-ret)
+;; Move RET and SPC from the motion to normal keymaps.  Do so primarily
+;; so as the major modes that come up in motion state don't have these
+;; defined and will use their own key bindings.  For example, in Buffer
+;; Menu, I want RET to use the Buffer Menu's RET key binding instead of
+;; evil-ret.  SPC in Edebug mode is another example.
+(defun my-move-key (keymap-from keymap-to key)
+  "Moves key binding from one keymap to another, deleting from the old location. "
+  (define-key keymap-to key (lookup-key keymap-from key))
+  (define-key keymap-from key nil)
+  )
+(my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
+(my-move-key evil-motion-state-map evil-normal-state-map " ")
+
 (define-key evil-normal-state-map "o" nil)
 (define-key evil-motion-state-map "o" 'next-buffer)
 (define-key evil-normal-state-map "O" nil)
@@ -381,21 +390,22 @@ If the region is active, only delete whitespace within the region."
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
 (define-key evil-normal-state-map "P" 'evil-paste-after)
+(define-key evil-motion-state-map "," nil)
 (define-key evil-motion-state-map "," 'kmacro-end-and-call-macro)
 (define-key evil-motion-state-map "sg" 'jde-open-class-source)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
-(define-key evil-motion-state-map "sej" 'paredit-wrap-round)
-(define-key evil-motion-state-map "sek" 'paredit-splice-sexp)
-(define-key evil-motion-state-map "seh" (lambda () (interactive) (transpose-sexps -1)))
-(define-key evil-motion-state-map "sel" (lambda () (interactive) (transpose-sexps 1)))
+(define-key evil-normal-state-map "sej" 'paredit-wrap-round)
+(define-key evil-normal-state-map "sek" 'paredit-splice-sexp)
+(define-key evil-normal-state-map "seh" (lambda () (interactive) (transpose-sexps -1)))
+(define-key evil-normal-state-map "sel" (lambda () (interactive) (transpose-sexps 1)))
 (define-key evil-motion-state-map "sem" 'mark-sexp)
 ;; Note: Instead of key binding to kill-sexp, equivalent to 'sem' and then 'd'
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
 (define-key evil-motion-state-map "slc" (lambda () (interactive) (my-load-clearcase)))
-(define-key evil-motion-state-map "sji" 'jde-import-find-and-import)
-(define-key evil-motion-state-map "sja" (lambda () (interactive) (jde-import-all) (jde-import-kill-extra-imports) (jde-import-organize)))
+(define-key evil-normal-state-map "sji" 'jde-import-find-and-import)
+(define-key evil-normal-state-map "sja" (lambda () (interactive) (jde-import-all) (jde-import-kill-extra-imports) (jde-import-organize)))
 ;; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
 (when (fboundp 'undo-tree-undo)
    (define-key evil-normal-state-map "U" 'undo-tree-redo))

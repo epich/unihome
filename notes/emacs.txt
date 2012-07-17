@@ -1,4 +1,4 @@
-High priority issues:
+Issues:
    : = key binding
       : Have = trim trailing whitespace in the selected region.
          : Use the whitespace-* elisp functions.
@@ -76,8 +76,6 @@ High priority issues:
             : campbell@mumble.net
             : Blog: http://mumble.net/~campbell/blag.txt
       : Automatically balance space between parens.
-
-Low priority issues:
    : Keyboard macros
       : Weird bug:
          : In scratch buffer, in one insertion, create, left justified:
@@ -94,6 +92,7 @@ Low priority issues:
          : Hit 'u' for undo.
          : Entire contents of scratch disappear, including the top default comments.
       : Does Evil's keyboard macro ('q') integrate better with the undo system?
+      : Eliminate [ and ] as Evil prefix keys.  I wish to bind them to C-x ( and C-x )
    : Updating of highlighted search
       : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
          1: Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
@@ -107,7 +106,11 @@ Low priority issues:
       : See my email to the mailing list: Confused by what command is "dot repeatable"
       : Submit bug report.
    : Keymapping
-      : Eliminate [ and ] as Evil prefix keys.  I wish to bind them to C-x ( and C-x )
+      : Copy evil-emacs-state-modes to evil-motion-state-modes so as I can use SPC in Edebug mode.
+   : Key bindings in minibuffer:
+      : See Frank Fischer's posting at:
+         https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
+      : Is there a way to disable electric-pair-mode in the minibuffer?
    : When up arrowing through search history, Vim goes to end of line, Evil beginning.
       : This is consistent with Emacs minibuffer in general.  Investigate
       : Can I use an Evil ex hook for this?  See:
@@ -155,7 +158,7 @@ Low priority issues:
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
    : Learn the debugger
       : Evil bug when exiting debugger, submitted bug report.
-      : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.
+      : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
    : Look into using undo-tree extension.
    : Learn about Dired
       : Is there a notion of finding a set of files based on a criteria (search term, use of symbol), then iteratively visiting just those?
@@ -296,20 +299,13 @@ Low priority issues:
             : Maybe need a higher Python script to
                : start up Emacs multiple times
                : discard the first run in case there's any caching or byte compiling that occurs.
-   : Key bindings in minibuffer:
-      : See Frank Fischer's posting at:
-         https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
-      : Is there a way to disable electric-pair-mode in the minibuffer?
    : Pick through the elisp of others:
       : Michael Markert's:
          https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-evil.el
    : Read the Elisp manual:
-      : Keymaps
       : Debugging
-      : Command loop
       : Marks
    : Read the Emacs manual:
-      : Keyboard macros
       : Killing and Moving Text
          : Learn about the kill ring and registers
       : Amusements
