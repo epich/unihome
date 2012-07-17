@@ -4,12 +4,8 @@ Issues:
          : Use the whitespace-* elisp functions.
          : Someone patched delete-trailing-whitespace to delete within region if active:
             : URL: http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00432.html
-            : I copied the patch as patched-delete-trailing-whitespace
+            : Available in Emacs 24.1
             : Should prefer the whitespace elisp functions unless they don't work out.
-         : A simple combination in a lambda bound to "=" doesn't work.
-            : Code: (define-key evil-normal-state-map "=" (lambda () (interactive) (patched-delete-trailing-whitespace) (evil-indent)))
-            : Might need to call evil-indent in my copied func.
-            : Crucially: figure out how interactive elisp uses active regions.
    : Have the p command paste and do a ==
       : Make this conditional on the line pasting to is whitespace only.
       : Perhaps file bug about pasting with 'p' on lines with no chars.  A space char is effectively created.
@@ -102,11 +98,19 @@ Issues:
          5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
       : Bug submitted to Evil project.
          : Issue 1 is resolved by changing evil-ex-hl-idle-update function's call to run-at-time, using 0.01 instead of 0.1.
+         : If it's not incorporated into Evil, look into putting the git repo under unihome and use a local patch.
+            : See Linus' description of this kind of git workflow.
    : Evil prevents quitting Emacs from recursive edit when . repeating with repeat-ring under certain conditions:
       : See my email to the mailing list: Confused by what command is "dot repeatable"
       : Submit bug report.
    : Keymapping
       : Copy evil-emacs-state-modes to evil-motion-state-modes so as I can use SPC in Edebug mode.
+      : Create function that generates all of the key-translation-map additions for C- keys.
+      : Reorg .emacs to put Ctrl- keymapping scheme together.
+      : Investigate what happens if a minor mode defines "c" as a prefix key?  Would I have a way to access it?  What would "cx" do?
+         : If the prefix key can't be accessed due to the key-translation-map
+            : is there a way to use read-event function, which is known to not reference key-translation-map?
+            : is there an ideal way to circumvent the key-translation-map?
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
