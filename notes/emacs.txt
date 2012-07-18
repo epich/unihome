@@ -112,6 +112,19 @@ Issues:
          : Control whether additions to key-translation-map are active.
             : Are there supported ways in Emacs?
             : Use the Evil state hooks.
+               : Problematic -- switching between buffers in different states doesn't run the hooks.
+         : Have key-translation-map map to function which:
+            : Returns translation if in normal, motion, visual states
+            : Else returns the same key.
+               : How does the bound function determine the original key?
+               : Perhaps use a macro or function to generate the function to bind to.
+                  : Call it make-evil-key-translation
+                  : Have it take in the key-from, key-to, and a predicate function.
+                  : The result is:
+                     : if predicate is true, adds key translation key-from to key-to .
+                     : else, adds key translation key-from to key-from
+         : Xah Lee reports bug with universal argument and key-translation-map
+            https://groups.google.com/forum/?fromgroups#!topic/comp.emacs/p7PLJgWzNkY
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
@@ -317,6 +330,43 @@ Issues:
    : Mailing list:
       : Read the email thread founding Evil:
          http://thread.gmane.org/gmane.emacs.vim-emulation/692
+   : EmacsWiki contributions:
+      : Write a section in the EmacsWiki for managing keymappings with Evil
+         : Prereqs:
+            : Write code to copy from evil-emacs-state-modes to evil-motion-state-maps
+            : Write Evil state hooks to set and unset key translation mappings
+            : Does the \ command run the Evil state hooks?
+               : Looks like the answer is yes in code
+               : Verify through manual testing
+            : Try it all out to be sure
+         : Outline:
+            : Basics:
+               : Setting
+               : Unsetting
+               : Conflicts between motion and normal
+               : Unset a key before making it a prefix key
+            : Key Translation approach
+               : Set and unset in Evil state hooks
+               : Conflicts with key bindings of other modes
+            : Buffers with no raw text editing
+            : Motion vs normal states
+            : Moving evil-emacs-state-modes to evil-motion-state-modes
+            : Setting evil-overriding-maps and evil-intercept-maps to nil
+            : Moving key bindings from motion to normal state keymaps
+            : Operator pending state
+               : Reference bug report
+               : Provide workaround
+            : Setting key bindings by (non Evil) mode
+            : Defining escape key
+               : C-c
+               : Mention keychords.el in passing
+            : Deadends:
+               : Mapping prefix key to keymap -- other modes may define the same prefix key in their own keymaps
+               : Using Evil state hooks to turn key translations on and off
+         : Draft:
+            Managing key bindings with Evil
+               If you want to use the full power of Emacs in Vim-like ways (ie using short key sequences near home row instead of Control-Shift-Nonsense), this section provides some guidance.  This guide assumes you've read the Evil manual section "Modes and states".
+               Basic key bindings
 
 Notes:
    : Setup on RHEL5
