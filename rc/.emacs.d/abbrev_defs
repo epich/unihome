@@ -38,9 +38,9 @@
 (define-abbrev-table 'jde-mode-abbrev-table
   '(
     ("catch" "catch" c-electric-continued-statement 0)
-    ("else" "else" c-electric-continued-statement 0)
-    ("finally" "finally" c-electric-continued-statement 0)
-    ("while" "while" c-electric-continued-statement 0)
+    ("else" "else" c-electric-continued-statement 2)
+    ("finally" "finally" c-electric-continued-statement 1)
+    ("while" "while" c-electric-continued-statement 4)
    ))
 
 (define-abbrev-table 'jde-run-mode-abbrev-table '())
