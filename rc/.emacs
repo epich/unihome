@@ -349,7 +349,6 @@ anyway, which doesn't always combine with defadvice. "
 ;;; Other C-c key translations
 ;;;
 (define-key key-translation-map (kbd "cc") (kbd "C-c"))
-(define-key key-translation-map (kbd "ce") (kbd "C-e"))
 (define-key key-translation-map (kbd "ch") (kbd "C-h"))
 (define-key key-translation-map (kbd "cx") (kbd "C-x"))
 (define-key key-translation-map (kbd "cy") (kbd "C-y"))
@@ -361,6 +360,21 @@ anyway, which doesn't always combine with defadvice. "
 (define-key key-translation-map (kbd "smx") (kbd "M-x"))
 ;; (define-key evil-normal-state-map (kbd "M-.") nil)
 (define-key key-translation-map (kbd "sm.") (kbd "M-."))
+
+(defun make-conditional-key-translation (key-from key-to translate-keys-p)
+  "Make a Key Translation such that if the translate-keys-p function returns true,
+key-from translates to key-to, else key-from translates to itself.  translate-keys-p
+takes no args. "
+  (define-key key-translation-map key-from
+              (lambda (prompt)
+                      (if (funcall translate-keys-p) key-to key-from)))
+  )
+(defun my-translate-keys-p ()
+  "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
+  (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))
+  )
+;; TODO: Doesn't work yet.
+(make-conditional-key-translation (kbd "ce") (kbd "C-e") 'my-translate-keys-p)
 
 ;; Configure default Evil states for chosen major modes.
 ;;
