@@ -293,7 +293,8 @@ anyway, which doesn't always combine with defadvice. "
 ;;; Use Key Translation to create more ergonomic alternatives
 ;;; to the C- key bindings.  eg "cx" instead of "C-x".
 ;;;
-;;; I originally tried binding directly to the global prefix keymaps, such as
+;;; I originally tried binding directly to the global prefix keymaps (in
+;;; term-setup-hook):
 ;;;   (define-key evil-motion-state-map "cx" ctl-x-map)
 ;;; but then "cc" doesn't translate to the C-c prefix key of minor modes such
 ;;; as CEDET Senator's.
@@ -570,25 +571,8 @@ anyway, which doesn't always combine with defadvice. "
 ;;; Finalizing initialization
 (add-hook 'term-setup-hook
    (lambda ()
-     ;; I tend to put things here that for some reason don't work
-     ;; when executed earlier.
+     ;; Apparently some elisp needs to be placed here to work.
 
-     ;; Using the Emacs builtin keymaps, I find I have to do them in this hook in order to work.
-     ;;
-     ;; In particular, these don't work when placed above:
-     ;;
-     ;; (define-key evil-motion-state-map "cc" (lambda () (interactive) mode-specific-map))
-     ;;        ; Reason: "cc" does nothing, probably returns variable but doesn't know to use it as a keymap.
-     ;; (define-key evil-motion-state-map "cc" mode-specific-map)
-     ;;        ; Reason: Looks in function cell of mode-specific-map, but it's a variable.
-     ;; (define-key evil-motion-state-map "cc" 'mode-specific-map)
-     ;;        ; Reason: Looks in function cell of mode-specific-map, but it's a variable.
-     ;;
-     ;; I am commenting out this binding approach, because it conflicts with
-     ;; other minor modes somewhat often.
-     ;; (define-key evil-motion-state-map "cc" mode-specific-map)
-     ;; (define-key evil-motion-state-map "ch" help-map)
-     ;; (define-key evil-motion-state-map "cx" ctl-x-map)
      (delete-other-windows)
      ;;(setq search-whitespace-regexp nil)
      (log-msg "Finished with term-setup-hook. ")))

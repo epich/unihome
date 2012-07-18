@@ -567,4 +567,16 @@ Retired issues with residual notes:
          : http://stackoverflow.com/questions/9648218/conflicting-keyboard-shortcuts-in-two-emacs-minor-modes
          : http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs/5340797#5340797
       : Setting evil-overriding-maps and evil-intercept-maps to nil was the solution.
+      : Mapping key sequence to global prefix keymap.
+         : Don't work:
+            ;; (define-key evil-motion-state-map "cc" (lambda () (interactive) mode-specific-map))
+            ;;        ; Reason: "cc" does nothing, probably returns variable but doesn't know to use it as a keymap.
+            ;; (define-key evil-motion-state-map "cc" mode-specific-map)
+            ;;        ; Reason: Looks in function cell of mode-specific-map, but it's a variable.
+            ;; (define-key evil-motion-state-map "cc" 'mode-specific-map)
+            ;;        ; Reason: Looks in function cell of mode-specific-map, but it's a variable.
+         : Works partially:
+            ;; (define-key evil-motion-state-map "cc" mode-specific-map)
+            ;; (define-key evil-motion-state-map "ch" help-map)
+            ;; (define-key evil-motion-state-map "cx" ctl-x-map)
 
