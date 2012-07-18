@@ -301,16 +301,30 @@ anyway, which doesn't always combine with defadvice. "
 ;; First unset Evil's "c" key binding.
 (define-key evil-normal-state-map "c" nil)
 ;; We need to define "c" as a prefix in the evil-motion-state-map
-;; in order for our key translations to kick in.  Otherwise the
+;; in order for our Key Translations to kick in.  Otherwise the
 ;; Key Lookup completes on simply "c", whether undefined or bound
 ;; to self-insert-command.
 ;;
 ;; When not in motion state, "c" behaves normally because evil-motion-state-map
 ;; is inactive.
 ;;
-;; TODO: Determine behavior when a different keymap defines "c" as a prefix key.
+;; If a different keymap defines "c" as a Key Sequence, I can do \c to access it,
+;; if the evil-motion-state-map overrides it.
 ;;
-;; This is hacky, for now.  I could have used anything that is 'c' then another key.
+;; If a different keymap defines "c" as a prefix key, the Key Lookup will only
+;; use the prefix key's keymap if the next key is not translated.  For example,
+;; if I define:
+;;    (define-key key-translation-map (kbd "ce") (kbd "C-e"))
+;;    (define-key other-mode-map (kbd "cd") (lambda () (interactive) (log-msg "cd command")))
+;;    (define-key other-mode-map (kbd "ce") (lambda () (interactive) (log-msg "ce command")))
+;; I can use the cd command but not the ce command via the key binding.  I cannot use
+;; Evil's \ command because the other-mode-map would still be active in Emacs state.
+;; I've never ran into this issue, since prefix keys are usually C- or M- keys.  If I did,
+;; I'd probably try defining and undefining my key-translation-map bindings in the Evil state
+;; hooks.
+;;
+;; This defines the "c" prefix key in motion state.  The choice of the second key in the
+;; sequence and its command binding is somewhat arbitrary.
 (define-key evil-motion-state-map "cu" 'universal-argument)
 ;;; C-c has its own set up as general purpose escape key sequence.
 ;;;

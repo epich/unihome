@@ -106,13 +106,12 @@ Issues:
    : Keymapping
       : Copy evil-emacs-state-modes to evil-motion-state-modes so as I can use SPC in Edebug mode.
       : Create function that generates all of the key-translation-map additions for C- keys.
-      : Investigate what happens if a minor mode defines "c" as a prefix key?  Would I have a way to access it?  What would "cx" do?
-         : If the prefix key can't be accessed due to the key-translation-map
-            : is there a way to use read-event function, which is known to not reference key-translation-map?
-            : is there an ideal way to circumvent the key-translation-map?
-      : Control whether additions to key-translation-map are active.
-         : Are there supported ways in Emacs?
-         : Use the Evil state hooks.
+      : The key translation approach can make some key sequences inaccessible if defined in other keymaps.
+         : Is there a way to use read-event function, which is known to not reference key-translation-map?
+         : Is there an ideal way to circumvent the key-translation-map?
+         : Control whether additions to key-translation-map are active.
+            : Are there supported ways in Emacs?
+            : Use the Evil state hooks.
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
