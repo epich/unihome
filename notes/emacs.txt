@@ -181,7 +181,10 @@ Issues:
                : Auto revert:
                   : auto-revert-handler has letted revert var for whether to revert.
                   : Calls revert-buffer to revert.
-                     : Why don't permissions update when file is touched even?
+                     : Calls after-find-file
+                        : In debugger, the permissions change!
+                        : But running the same test not in the debugger, permissions don't change.
+                  : Try copying code, then placing log-msg statements.
          : Has high latency
             : Might be configurable
          : Flash screen when auto revert occurs.
