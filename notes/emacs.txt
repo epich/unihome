@@ -118,13 +118,10 @@ Issues:
             : Else returns the same key.
                : How does the bound function determine the original key?
                : Perhaps use a macro or function to generate the function to bind to.
-                  : Call it make-evil-key-translation
-                  : Have it take in the key-from, key-to, and a predicate function.
-                  : The result is:
-                     : if predicate is true, adds key translation key-from to key-to .
-                     : else, adds key translation key-from to key-from
-            : Problem, submitted to help-gnu-emacs
-               http://lists.gnu.org/archive/html/help-gnu-emacs/2012-07/msg00345.html
+               : Wrote a function that attempts to do this, doesn't work yet.
+                  : Problem, submitted to help-gnu-emacs
+                     http://lists.gnu.org/archive/html/help-gnu-emacs/2012-07/msg00345.html
+                  : Might need to (setq lexical-binding t) in my .emacs in order to generate the closure that the code relies on.
          : Xah Lee reports bug with universal argument and key-translation-map
             https://groups.google.com/forum/?fromgroups#!topic/comp.emacs/p7PLJgWzNkY
    : Key bindings in minibuffer:
