@@ -124,25 +124,7 @@ Issues:
                      : if predicate is true, adds key translation key-from to key-to .
                      : else, adds key translation key-from to key-from
             : Problem, submitted to help-gnu-emacs
-               Trouble using a lambda in the key-translation-map
-               ---
-               As the Elisp manual describes, one can bind a key to a function in the key-translation-map, and use that function to programmatically determine what to translate the key to.
-                 http://www.gnu.org/software/emacs/manual/html_node/elisp/Translation-Keymaps.html
-
-               I got this to work for functions defined with defun, but can't get it to work with a lambda.  In an 'emacs -q' session, I put this in the scratch buffer:
-                 (defun my-translate-key (prompt) (interactive) (kbd "C-c"))
-                 (define-key key-translation-map (kbd "C-e") (lambda (prompt) (interactive) (kbd "C-c"))) ; Doesn't work
-                 (define-key key-translation-map (kbd "C-e") 'my-translate-key) ; Works
-
-               I evaluate the first and second sexp, and find C-e still goes to the end of the line.  When I next execute the third sexp, C-e now translates to C-c.  Why doesn't the second sexp enable the translation from C-e to C-c?
-
-               For background, what I'm really trying to do is write a function that creates a key translation which only translates if an inputted predicate function evaluates to true.
-                  (defun make-conditional-key-translation (key-from key-to translate-keys-p)
-                    "Make a Key Translation such that if the translate-keys-p function returns true,
-                  key-from translates to key-to, else key-from translates to itself.  translate-keys-p
-                  takes no args. "
-                    (define-key key-translation-map key-from (lambda (prompt) (if (funcall translate-keys-p) key-to key-from)))
-                    )
+               http://lists.gnu.org/archive/html/help-gnu-emacs/2012-07/msg00345.html
          : Xah Lee reports bug with universal argument and key-translation-map
             https://groups.google.com/forum/?fromgroups#!topic/comp.emacs/p7PLJgWzNkY
    : Key bindings in minibuffer:
