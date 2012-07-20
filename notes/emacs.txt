@@ -401,6 +401,15 @@ Notes:
       : An entry in a keymap can redirect to the key in a specified alternate keymap.
       : To determine the code for a key (C-c for example):
          (progn ?\C-c)
+   : Ediff:
+      : Multi-file patches:
+         : Requires context or unified diffs (-c or -u).
+         : Doesn't appear to work on directory structures
+            : Workaround: Copy files to a directory to structure is flat
+         : Steps:
+            : Open emacs on the diff file
+            : M-x ediff-patch-file
+            : Follow prompts
    : Use M-; on a selection to comment it out.
    : (define-key evil-normal-state-map "o" 'next-buffer)
    : (define-key evil-normal-state-map "O" 'previous-buffer)
