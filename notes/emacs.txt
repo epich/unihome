@@ -104,7 +104,9 @@ Issues:
       : See my email to the mailing list: Confused by what command is "dot repeatable"
       : Submit bug report.
    : Keymapping
-      : Copy evil-emacs-state-modes to evil-motion-state-modes so as I can use SPC in Edebug mode.
+      : Edebug comes up in normal state.
+         : Learn why
+         : Give Edebug keymap priority for SPC over Evil.
       : Create function that generates all of the key-translation-map additions for C- keys.
       : The key translation approach can make some key sequences inaccessible if defined in other keymaps.
          : Is there a way to use read-event function, which is known to not reference key-translation-map?
@@ -121,6 +123,7 @@ Issues:
                : Wrote a function that attempts to do this, doesn't work yet.
                   : Problem, submitted to help-gnu-emacs
                      http://lists.gnu.org/archive/html/help-gnu-emacs/2012-07/msg00345.html
+                  : Submitted to bug-gnu-emacs
                   : Might need to (setq lexical-binding t) in my .emacs in order to generate the closure that the code relies on.
          : Xah Lee reports bug with universal argument and key-translation-map
             https://groups.google.com/forum/?fromgroups#!topic/comp.emacs/p7PLJgWzNkY
@@ -613,21 +616,15 @@ Retired issues with residual notes:
          : Try advice in dev's email, generate own smaller set of Java tags.
       : Why is there no popup for ajc-import-class-under-point?
           : auto-complete places text under point.  See mailing list.
-   : Sort out evil-overriding-maps
-      : Evil creates evil-overriding-maps undermining key bindings, such as in buffer-menu.
-      : Fix the fix that was too hacky:
-         ;; evil-integration.el attempts to recreate the evil-overriding-maps, set
-         ;; that code to nil to prevent it from running.
-         (eval-after-load 'ibuffer nil)
-      : ibuffer brings Dired-like functionality to the buffer-menu
-         : Learn Dired to get some philosophical perspective for a solution
-      : Removed the hack and 'o' in buffer-menu behaves.
-   : Keybindings are undermined in Evil normal state.
-      : edebug-mode-map variable
-      : They are both minor modes.  Figure out how to make one minor mode have priority.
+   : Keymapping
+      : Edebug keymapping
+         : How to have Edebug go to motion state?
+            ;;(evil-set-initial-state 'debugger-mode 'motion) ; Doesn't work for Edebug
+            ;; (delete 'debugger-mode evil-emacs-state-modes) ; How to delete from state-modes
+         : Setting evil-overriding-maps and evil-intercept-maps to nil allowed Evil keybindings
+      : How to change minor mode keymap priorities:
          : http://stackoverflow.com/questions/9648218/conflicting-keyboard-shortcuts-in-two-emacs-minor-modes
          : http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs/5340797#5340797
-      : Setting evil-overriding-maps and evil-intercept-maps to nil was the solution.
       : Mapping key sequence to global prefix keymap.
          : Don't work:
             ;; (define-key evil-motion-state-map "cc" (lambda () (interactive) mode-specific-map))
