@@ -102,7 +102,7 @@ Issues:
             : See Linus' description of this kind of git workflow.
    : Evil prevents quitting Emacs from recursive edit when . repeating with repeat-ring under certain conditions:
       : See my email to the mailing list: Confused by what command is "dot repeatable"
-      : Submit bug report.
+      : Submitted bug report to Evil project.
    : Keymapping
       : Edebug comes up in normal state.
          : Learn why
@@ -637,4 +637,4 @@ Retired issues with residual notes:
             ;; (define-key evil-motion-state-map "cc" mode-specific-map)
             ;; (define-key evil-motion-state-map "ch" help-map)
             ;; (define-key evil-motion-state-map "cx" ctl-x-map)
-
+            
