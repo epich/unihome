@@ -253,8 +253,8 @@ anyway, which doesn't always combine with defadvice. "
  ;; If there is more than one, they won't work right.
  '(ac-delay 1.0)
  '(c-syntactic-indentation nil)
- '(evil-overriding-maps nil)
  '(evil-intercept-maps nil)
+ '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
  '(global-whitespace-mode t)
@@ -280,6 +280,12 @@ anyway, which doesn't always combine with defadvice. "
  ;; If there is more than one, they won't work right.
  '(whitespace-tab ((((class color) (background dark)) (:background "grey50" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
+
+;;; Configure default Evil states for chosen major modes.
+;;
+;; Change modes that come up in Emacs state to come up in motion state instead.
+(setq evil-motion-state-modes (append evil-emacs-state-modes evil-motion-state-modes))
+(setq evil-emacs-state-modes nil)
 
 ;;; Evil key bindings
 ;;
@@ -375,15 +381,6 @@ takes no args. "
   )
 ;; TODO: Doesn't work yet.
 (make-conditional-key-translation (kbd "ce") (kbd "C-e") 'my-translate-keys-p)
-
-;; Configure default Evil states for chosen major modes.
-;;
-;; For now removing all, and can add back in as needed or until
-;; I understand the philosophy of the feature better.
-(setq evil-emacs-state-modes nil)
-(setq evil-insert-state-modes nil)
-;; Remove a major mode
-;; (delete 'debugger-mode evil-emacs-state-modes)
 
 (define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
