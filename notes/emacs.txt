@@ -235,6 +235,7 @@ Issues:
             : Set custom value, but doesn't work
          : \| doesn't work sometimes at first when entering an Ediff session.
             : Seems doing C-z puts me back in motion state after this happens.
+            : Submitted bug report.
          : ediff-patch-file applies the patch and saves the file, even if file is read only (and owned by me)
             : How to not have it apply patch until I save (this would seem to be most sensible)?
       : How to do merges
