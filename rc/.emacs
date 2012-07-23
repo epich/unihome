@@ -367,7 +367,8 @@ anyway, which doesn't always combine with defadvice. "
 ;; (define-key key-translation-map (kbd "cs") (kbd "C-s"))
 (define-key key-translation-map (kbd "cu") (kbd "C-u"))
 (define-key key-translation-map (kbd "smx") (kbd "M-x"))
-;; (define-key evil-normal-state-map (kbd "M-.") nil)
+;; evil-repeat-pop-next isn't particularly useful to me.
+(define-key evil-normal-state-map (kbd "M-.") nil)
 (define-key key-translation-map (kbd "sm.") (kbd "M-."))
 
 (defun make-conditional-key-translation (key-from key-to translate-keys-p)
@@ -382,7 +383,7 @@ takes no args. "
   "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
   (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))
   )
-;; TODO: Doesn't work yet.
+;; TODO: Doesn't work yet, bug submitted to bugs-gnu-emacs
 (make-conditional-key-translation (kbd "ce") (kbd "C-e") 'my-translate-keys-p)
 
 (define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
@@ -423,7 +424,6 @@ takes no args. "
 (define-key evil-motion-state-map "," nil)
 (define-key evil-motion-state-map "," 'kmacro-end-and-call-macro)
 (define-key evil-motion-state-map "sco" 'my-clearcase-checkout)
-(define-key evil-motion-state-map "sg" 'jde-open-class-source)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
 (define-key evil-normal-state-map "sej" 'paredit-wrap-round)
@@ -435,8 +435,44 @@ takes no args. "
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
 (define-key evil-motion-state-map "slc" (lambda () (interactive) (my-load-clearcase)))
-(define-key evil-normal-state-map "sji" 'jde-import-find-and-import)
+
+;;; Java bindings
+;;;
+;; Based on jde-key-bindings from jde.el, which are not in any keymap by default:
+(define-key evil-normal-state-map "sjca" 'jde-run-menu-run-applet)
+(define-key evil-normal-state-map "sjcb" 'jde-build)
+(define-key evil-normal-state-map "sjcc" 'jde-compile)
+(define-key evil-normal-state-map "sjcd" 'jde-debug)
+(define-key evil-normal-state-map "sjcf" 'jde-find)
+(define-key evil-normal-state-map "sjcg" 'jde-open-class-at-point)
+(define-key evil-normal-state-map "sjck" 'jde-bsh-run)
+(define-key evil-normal-state-map "sjcl" 'jde-gen-println)
+(define-key evil-normal-state-map "sjcn" 'jde-help-browse-jdk-doc)
+(define-key evil-normal-state-map "sjcp" 'jde-save-project)
+(define-key evil-normal-state-map "sjcq" 'jde-wiz-update-class-list)
+(define-key evil-normal-state-map "sjcr" 'jde-run)
+(define-key evil-normal-state-map "sjcs" 'speedbar-frame-mode)
+(define-key evil-normal-state-map "sjct" 'jde-jdb-menu-debug-applet)
+(define-key evil-normal-state-map "sjcw" 'jde-help-symbol)
+(define-key evil-normal-state-map "sjcx" 'jde-show-superclass-source)
+(define-key evil-normal-state-map "sjcy" 'jde-open-class-at-point)
+(define-key evil-normal-state-map "sjcz" 'jde-import-find-and-import)
+(define-key evil-normal-state-map "sje"    'jde-wiz-extend-abstract-class)
+(define-key evil-normal-state-map "sjf"    'jde-gen-try-finally-wrapper)
+(define-key evil-normal-state-map "sji"    'jde-wiz-implement-interface)
+(define-key evil-normal-state-map "sjj"    'jde-javadoc-autodoc-at-line)
+(define-key evil-normal-state-map "sjo"    'jde-wiz-override-method)
+(define-key evil-normal-state-map "sjt"    'jde-gen-try-catch-wrapper)
+(define-key evil-normal-state-map "sjz"    'jde-import-all)
+(define-key evil-normal-state-map "sjc[" 'jde-run-etrace-prev)
+(define-key evil-normal-state-map "sjc]" 'jde-run-etrace-next)
+(define-key evil-normal-state-map "sjc." 'jde-complete)
+(define-key evil-normal-state-map "sj." 'jde-complete-in-line)
+;; My own
 (define-key evil-normal-state-map "sja" (lambda () (interactive) (jde-import-all) (jde-import-kill-extra-imports) (jde-import-organize)))
+
+;;; More Evil key bindings
+
 ;; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
 (when (fboundp 'undo-tree-undo)
    (define-key evil-normal-state-map "U" 'undo-tree-redo))
@@ -553,7 +589,8 @@ takes no args. "
    (lambda ()
       (log-msg "Inside java-mode-hook")
       (require 'jde)
-      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-java-log)))
+      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-java-log)
+      ))
 (add-hook 'nxml-mode-hook
           (lambda ()
             (log-msg "Inside nxml-mode-hook")
