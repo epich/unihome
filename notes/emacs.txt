@@ -39,6 +39,8 @@ Notes:
             : Open emacs on the diff file
             : M-x ediff-patch-file
             : Follow prompts
+   : Etags
+      : Call visit-tag-table function to load TAGS file.
    : Use M-; on a selection to comment it out.
    : (define-key evil-normal-state-map "o" 'next-buffer)
    : (define-key evil-normal-state-map "O" 'previous-buffer)
