@@ -253,6 +253,7 @@ anyway, which doesn't always combine with defadvice. "
  ;; If there is more than one, they won't work right.
  '(ac-delay 1.0)
  '(c-syntactic-indentation nil)
+ '(ediff-merge-split-window-function (quote split-window-vertically))
  '(evil-intercept-maps nil)
  '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
@@ -286,6 +287,8 @@ anyway, which doesn't always combine with defadvice. "
 ;; Change modes that come up in Emacs state to come up in motion state instead.
 (setq evil-motion-state-modes (append evil-emacs-state-modes evil-motion-state-modes))
 (setq evil-emacs-state-modes nil)
+;; Need ediff-meta-mode to come up in motion state.
+(setq evil-motion-state-modes (cons 'ediff-meta-mode evil-motion-state-modes))
 
 ;;; Evil key bindings
 ;;
@@ -391,18 +394,20 @@ takes no args. "
 (define-key evil-motion-state-map (kbd "C--") 'my-no-op)
 (define-key evil-normal-state-map (kbd "C--") 'my-no-op)
 
-;; Move RET and SPC from the motion to normal keymaps.  Do so primarily
-;; so as the major modes that come up in motion state don't have these
-;; defined and will use their own key bindings.  For example, in Buffer
-;; Menu, I want RET to use the Buffer Menu's RET key binding instead of
-;; evil-ret.  SPC in Edebug mode is another example.
+;; Move keybindings between keymaps.
+;;
+;; In some cases I want key sequences looked up using keymaps other than
+;; Evil's, such as RET and SPC in modes that don't involve editing.
 (defun my-move-key (keymap-from keymap-to key)
   "Moves key binding from one keymap to another, deleting from the old location. "
   (define-key keymap-to key (lookup-key keymap-from key))
   (define-key keymap-from key nil)
   )
+;; Want RET to use other keymaps' binding sometimes.  Buffer Menu's for example.
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
+;; Want \ command to be available in the modes that come up in motion state by default.
+(my-move-key evil-normal-state-map evil-motion-state-map "\\")
 
 (define-key evil-normal-state-map "o" nil)
 (define-key evil-motion-state-map "o" 'next-buffer)
