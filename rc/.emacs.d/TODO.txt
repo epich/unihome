@@ -124,6 +124,8 @@ Issues:
                   : Problem, submitted to help-gnu-emacs
                      http://lists.gnu.org/archive/html/help-gnu-emacs/2012-07/msg00345.html
                   : Submitted to bug-gnu-emacs
+                     : Looked at the subr for define-key.  It doesn't look like the def arg is used at all when it is a lambda.
+                        : Use debugger to figure out how it works when using define-key for the lambda commands that do work.
                   : Might need to (setq lexical-binding t) in my .emacs in order to generate the closure that the code relies on.
          : Xah Lee reports bug with universal argument and key-translation-map
             https://groups.google.com/forum/?fromgroups#!topic/comp.emacs/p7PLJgWzNkY
