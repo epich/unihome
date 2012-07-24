@@ -289,6 +289,7 @@ anyway, which doesn't always combine with defadvice. "
 (setq evil-emacs-state-modes nil)
 ;; Need ediff-meta-mode to come up in motion state.
 (setq evil-motion-state-modes (cons 'ediff-meta-mode evil-motion-state-modes))
+(setq evil-motion-state-modes (cons 'dired-mode evil-motion-state-modes))
 
 ;;; Evil key bindings
 ;;
@@ -417,6 +418,8 @@ takes no args. "
 (define-key evil-motion-state-map "f" 'buffer-menu)
 (define-key evil-normal-state-map "-" nil)
 (define-key evil-motion-state-map "-" 'evil-end-of-line)
+(define-key evil-motion-state-map "t" nil)
+(define-key evil-motion-state-map "t" 'find-tag)
 (define-key evil-normal-state-map "s" nil)
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
