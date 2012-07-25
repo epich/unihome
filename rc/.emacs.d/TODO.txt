@@ -24,6 +24,7 @@ Issues:
                : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
    : Screen flashing:
       : When finished with a cycle of search in a file
+      : When auto reverting
    : Disconnect about Emacs' notion of where point is:
       : Official definition of point is between chars, cursor displayed over the next char.
          : Uses this definition:
@@ -89,20 +90,6 @@ Issues:
          : Entire contents of scratch disappear, including the top default comments.
       : Does Evil's keyboard macro ('q') integrate better with the undo system?
       : Eliminate [ and ] as Evil prefix keys.  I wish to bind them to C-x ( and C-x )
-   : Updating of highlighted search
-      : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
-         1: Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
-         2: Search for foo: {{{/foo}}}.  Put point over "f", {{{x}}} to delete it.  oo remains highlighted.  Moving around with {{{j}}}, {{{k}}} doesn't update the highlighting.
-         3: Similarly, inserting text before "foo" creates incorrect highlighting.  {{{i}}}, type "baz", now "bazfoo" is highlighted.
-         4: In Vim, if I search and replace (with {{{:1,$s/old/new/g}}}), then undo, the "old" string is highlighted.  Evil doesn't do that.  In Vim I liked this for verifying complex search and replace operations.
-         5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
-      : Bug submitted to Evil project.
-         : Issue 1 is resolved by changing evil-ex-hl-idle-update function's call to run-at-time, using 0.01 instead of 0.1.
-         : If it's not incorporated into Evil, look into putting the git repo under unihome and use a local patch.
-            : See Linus' description of this kind of git workflow.
-   : Evil prevents quitting Emacs from recursive edit when . repeating with repeat-ring under certain conditions:
-      : See my email to the mailing list: Confused by what command is "dot repeatable"
-      : Submitted bug report to Evil project.
    : Keymapping
       : Edebug comes up in normal state.
          : Learn why
@@ -147,40 +134,6 @@ Issues:
    : Repeat . command issues:
       : Pasting text into Emacs isn't recorded to repeat ring.
          : Bug report submitted to Evil project.
-   : File reloading:
-      : Figure out how to make reloading a file from disk less annoying.
-         : It would be good to have similar abstraction as Vim:
-            : When leaving file that is unsaved, prompt the user.  Allow for an override.
-            : When visiting a file, reload it from disk.
-      : A solution to this should also solve Clearcase checkout annoyances.  clearcase.el slows down init.
-      : auto-revert
-         : Doesn't revert file permissions, even though revert-buffer does.
-            : Submitted bug report to GNU, ID 11549, merged with ID 11412.
-            : Notes on the code:
-               : Manual revert:
-                  : revert-buffer is in files.el
-                  : auto-revert-handler is in autorevert.el
-                  : revert-buffer calls (after-find-file nil nil t nil preserve-modes) which appears to set the perms.
-                  : Emacs shows the updated perms when after-find-file executes: (setq buffer-read-only (not (file-writable-p buffer-file-name)))
-               : Auto revert:
-                  : auto-revert-handler has letted revert var for whether to revert.
-                  : Calls revert-buffer to revert.
-                     : Calls after-find-file
-                        : In debugger, the permissions change!
-                        : But running the same test not in the debugger, permissions don't change.
-                  : Try copying code, then placing log-msg statements.
-         : Has high latency
-            : Might be configurable
-         : Flash screen when auto revert occurs.
-      : revert-buffer invocation
-         : Perhaps when start viewing buffer
-            : Investigate using window-scroll-functions for this.
-               : See http://www.gnu.org/software/emacs/manual/html_node/elisp/Window-Hooks.html
-               : Tried copying Evil's example for using window-scroll-functions, but can't get my-window-scroll invoked.
-                  (defun my-window-scroll
-                    (log-msg "Inside my-window-scroll"))
-                  (add-hook 'window-scroll-functions 'my-window-scroll nil t)
-         : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
    : Learn the debugger
       : Evil bug when exiting debugger, submitted bug report.
       : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
@@ -282,15 +235,6 @@ Issues:
       : Set title to include host and directory (after file's basename)
       : Set title for Untitled buffers.
    : How to toggle display of line wrapping?
-   : Visual mode
-      : Bug:
-         : Select text with v
-         : Select different text with mouse
-         : Both are highlighted, but y will only yank the second.
-         : Report submitted to project.
-      : Bug:
-         : Select with mouse, char under point is not highlighted, but it is with v selection.
-         : Report submitted to project.
    : Tabs
       : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
          : Some extensions:
@@ -388,4 +332,27 @@ Issues:
             Managing key bindings with Evil
                If you want to use the full power of Emacs in Vim-like ways (ie using short key sequences near home row instead of Control-Shift-Nonsense), this section provides some guidance.  This guide assumes you've read the Evil manual section "Modes and states".
                Basic key bindings
+
+Bug reports filed:
+   : Updating of highlighted search
+      : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
+         1: Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
+         2: Search for foo: {{{/foo}}}.  Put point over "f", {{{x}}} to delete it.  oo remains highlighted.  Moving around with {{{j}}}, {{{k}}} doesn't update the highlighting.
+         3: Similarly, inserting text before "foo" creates incorrect highlighting.  {{{i}}}, type "baz", now "bazfoo" is highlighted.
+         4: In Vim, if I search and replace (with {{{:1,$s/old/new/g}}}), then undo, the "old" string is highlighted.  Evil doesn't do that.  In Vim I liked this for verifying complex search and replace operations.
+         5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
+      : Bug submitted to Evil project.
+         : Issue 1 was solved with a defcustom.
+   : Evil prevents quitting Emacs from recursive edit when . repeating with repeat-ring under certain conditions:
+      : See my email to the mailing list: Confused by what command is "dot repeatable"
+      : Submitted bug report to Evil project.
+   : Visual mode
+      : Bug:
+         : Select text with v
+         : Select different text with mouse
+         : Both are highlighted, but y will only yank the second.
+         : Report submitted to project.
+      : Bug:
+         : Select with mouse, char under point is not highlighted, but it is with v selection.
+         : Report submitted to project.
 
