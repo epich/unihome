@@ -140,6 +140,7 @@ Issues:
    : Look into using undo-tree extension.
    : Learn about Dired
       : Is there a notion of finding a set of files based on a criteria (search term, use of symbol), then iteratively visiting just those?
+      : Dired doesn't update when a directory is created separately.  Including when Auto Revert is enabled.
    : Learn about CEDET
       : Notes:
          : EDE:
@@ -177,6 +178,8 @@ Issues:
                : Dependancy graph
                : Composition graph
                : Inheritance graph
+   : Tagging
+      : Have .emacs find the TAGS file by looking upwards in directories until found.
    : Learn about VCS use
       : Ediff
          : Submit patch to Evil to include 'ediff-meta-mode in evil-motion-state-maps.
