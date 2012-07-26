@@ -98,10 +98,12 @@ anyway, which doesn't always combine with defadvice. "
 ;;; Enabling Semantic (code-parsing, smart completion) features
 ;;; Select one of the following:
 ;; * This enables the database and idle reparse engines
-;; (semantic-load-enable-minimum-features)
+;;(semantic-load-enable-minimum-features)
 ;; * This enables some tools useful for coding, such as summary mode,
 ;;   imenu support, and the semantic navigator
 (semantic-load-enable-code-helpers)
+;; Disable Minibuffer info which overwrites other information displaying.
+(global-semantic-idle-summary-mode 0)
 ;; * This enables even more coding tools such as intellisense mode,
 ;;   decoration mode, and stickyfunc mode (plus regular code helpers)
 ;; (semantic-load-enable-gaudy-code-helpers)
@@ -125,7 +127,7 @@ anyway, which doesn't always combine with defadvice. "
    ;; Online posting says these might be necessary for JDEE.
    ;; http://forums.fedoraforum.org/showthread.php?t=280711
    ;; (defun screen-width nil -1)
-   ;; (define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
+   (define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
 
    ;; Docs indicate elib is a dependency.  However, I haven't witnessed
    ;; a problem yet.  Emacs documents Elib is a part of Emacs.
@@ -365,7 +367,7 @@ anyway, which doesn't always combine with defadvice. "
 ;; C-M-x is major mode dependant, but generally binds to the elisp function that
 ;; instruments a function for the debugger.
 (define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
-;; (define-key key-translation-map (kbd "cs") (kbd "C-s"))
+(define-key key-translation-map (kbd "cs") (kbd "C-s"))
 (define-key key-translation-map (kbd "cu") (kbd "C-u"))
 (define-key key-translation-map (kbd "smx") (kbd "M-x"))
 ;; evil-repeat-pop-next isn't particularly useful to me.
@@ -420,6 +422,8 @@ takes no args. "
 (define-key evil-motion-state-map "-" 'evil-end-of-line)
 (define-key evil-motion-state-map "t" nil)
 (define-key evil-motion-state-map "t" 'find-tag)
+(define-key evil-motion-state-map "T" nil)
+(define-key evil-motion-state-map "T" 'visit-tags-table)
 (define-key evil-normal-state-map "s" nil)
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
@@ -442,24 +446,24 @@ takes no args. "
 ;;; Java bindings
 ;;;
 ;; Based on jde-key-bindings from jde.el, which are not in any keymap by default:
-(define-key evil-normal-state-map "sjca" 'jde-run-menu-run-applet)
-(define-key evil-normal-state-map "sjcb" 'jde-build)
-(define-key evil-normal-state-map "sjcc" 'jde-compile)
-(define-key evil-normal-state-map "sjcd" 'jde-debug)
-(define-key evil-normal-state-map "sjcf" 'jde-find)
-(define-key evil-normal-state-map "sjcg" 'jde-open-class-at-point)
-(define-key evil-normal-state-map "sjck" 'jde-bsh-run)
-(define-key evil-normal-state-map "sjcl" 'jde-gen-println)
-(define-key evil-normal-state-map "sjcn" 'jde-help-browse-jdk-doc)
-(define-key evil-normal-state-map "sjcp" 'jde-save-project)
-(define-key evil-normal-state-map "sjcq" 'jde-wiz-update-class-list)
-(define-key evil-normal-state-map "sjcr" 'jde-run)
-(define-key evil-normal-state-map "sjcs" 'speedbar-frame-mode)
-(define-key evil-normal-state-map "sjct" 'jde-jdb-menu-debug-applet)
-(define-key evil-normal-state-map "sjcw" 'jde-help-symbol)
-(define-key evil-normal-state-map "sjcx" 'jde-show-superclass-source)
-(define-key evil-normal-state-map "sjcy" 'jde-open-class-at-point)
-(define-key evil-normal-state-map "sjcz" 'jde-import-find-and-import)
+(define-key evil-normal-state-map "sjCa" 'jde-run-menu-run-applet)
+(define-key evil-normal-state-map "sjCb" 'jde-build)
+(define-key evil-normal-state-map "sjCc" 'jde-compile)
+(define-key evil-normal-state-map "sjCd" 'jde-debug)
+(define-key evil-normal-state-map "sjCf" 'jde-find)
+(define-key evil-normal-state-map "sjCg" 'jde-open-class-at-point)
+(define-key evil-normal-state-map "sjCk" 'jde-bsh-run)
+(define-key evil-normal-state-map "sjCl" 'jde-gen-println)
+(define-key evil-normal-state-map "sjCn" 'jde-help-browse-jdk-doc)
+(define-key evil-normal-state-map "sjCp" 'jde-save-project)
+(define-key evil-normal-state-map "sjCq" 'jde-wiz-update-class-list)
+(define-key evil-normal-state-map "sjCr" 'jde-run)
+(define-key evil-normal-state-map "sjCs" 'speedbar-frame-mode)
+(define-key evil-normal-state-map "sjCt" 'jde-jdb-menu-debug-applet)
+(define-key evil-normal-state-map "sjCw" 'jde-help-symbol)
+(define-key evil-normal-state-map "sjCx" 'jde-show-superclass-source)
+(define-key evil-normal-state-map "sjCy" 'jde-open-class-at-point)
+(define-key evil-normal-state-map "sjCz" 'jde-import-find-and-import)
 (define-key evil-normal-state-map "sje"    'jde-wiz-extend-abstract-class)
 (define-key evil-normal-state-map "sjf"    'jde-gen-try-finally-wrapper)
 (define-key evil-normal-state-map "sji"    'jde-wiz-implement-interface)
