@@ -45,6 +45,7 @@ Issues:
          : Extend, wrap, advise, or replace functions for which I want the over-char abstraction.
             : ParEdit commands of interest
             : Emacs sexp commands
+         : Concern applies equally to XML elements as sexp
       : Have editing functions operate on an sexp when point is within it.
       : Syntax highlighting:
          : Highlight text based on its level in the sexp tree, from point to the root.
