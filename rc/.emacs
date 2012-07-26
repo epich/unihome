@@ -270,6 +270,7 @@ anyway, which doesn't always combine with defadvice. "
  '(message-log-max 100000)
  '(nxml-attribute-indent (my-continuation-offset))
  '(nxml-child-indent my-offset)
+ '(nxml-sexp-element-flag t)
  '(python-continuation-offset (my-continuation-offset))
  '(python-indent my-offset)
  '(scroll-conservatively 1)
@@ -364,6 +365,11 @@ anyway, which doesn't always combine with defadvice. "
 (define-key key-translation-map (kbd "ch") (kbd "C-h"))
 (define-key key-translation-map (kbd "cx") (kbd "C-x"))
 (define-key key-translation-map (kbd "cy") (kbd "C-y"))
+;; Four NXML navigation key bindings
+(define-key key-translation-map (kbd "cmd") (kbd "C-M-d"))
+(define-key key-translation-map (kbd "cmn") (kbd "C-M-n"))
+(define-key key-translation-map (kbd "cmp") (kbd "C-M-p"))
+(define-key key-translation-map (kbd "cmu") (kbd "C-M-u"))
 ;; C-M-x is major mode dependant, but generally binds to the elisp function that
 ;; instruments a function for the debugger.
 (define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
@@ -584,14 +590,20 @@ takes no args. "
   (search-backward "\"\"\"")
   (goto-char (match-end 0)))
 
+(defun bind-arrow-keys-for-sexp ()
+  "Bind the arrow keys to commands for navigating S expressions. "
+      (define-key evil-motion-state-local-map (kbd "<left>") 'backward-sexp)
+      (define-key evil-motion-state-local-map (kbd "<right>") 'forward-sexp)
+      (define-key evil-motion-state-local-map (kbd "<up>") 'backward-up-list)
+      (define-key evil-motion-state-local-map (kbd "<down>") 'down-list)
+   )
+
 (add-hook 'emacs-lisp-mode-hook 
    (lambda ()
       (log-msg "Inside emacs-lisp-mode-hook")
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-elisp-log)
-      (define-key evil-motion-state-local-map (kbd "<left>") 'backward-sexp)
-      (define-key evil-motion-state-local-map (kbd "<right>") 'forward-sexp)
-      (define-key evil-motion-state-local-map (kbd "<up>") 'backward-up-list)
-      (define-key evil-motion-state-local-map (kbd "<down>") 'down-list)))
+      (bind-arrow-keys-for-sexp)
+      ))
 (add-hook 'java-mode-hook 
    (lambda ()
       (log-msg "Inside java-mode-hook")
@@ -601,7 +613,8 @@ takes no args. "
 (add-hook 'nxml-mode-hook
           (lambda ()
             (log-msg "Inside nxml-mode-hook")
-            (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-ant-log)))
+            (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-ant-log)
+            (bind-arrow-keys-for-sexp)))
 (add-hook 'python-mode-hook 
    (lambda ()
       (log-msg "Inside python-mode-hook")
