@@ -102,7 +102,7 @@ Use the alternate LALR(1) parser.
 
 ;;;### (autoloads nil nil ("cedet-contrib-load.el" "cedet-contrib.el"
 ;;;;;;  "semantic-ectag-scala.el" "wisent-csharp-wy.el" "wisent-php-wy.el"
-;;;;;;  "wisent-ruby-wy.el" "wisent-ruby.el") (20481 58875 997331))
+;;;;;;  "wisent-ruby-wy.el" "wisent-ruby.el") (20493 64525 728193))
 
 ;;;***
 

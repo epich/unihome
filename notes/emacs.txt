@@ -90,12 +90,12 @@ Notes:
       See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
    : Vim mapping plan:
       : Vim keys that aren't mapped to anything useful:
-         t available
+         t mapped
          , mapped Emacs execution of keyboard macro
          o mapped
          [
          ]
-         \
+         \ mapped
          s use as prefix key
          f map to buffer menu
          ; mapped
