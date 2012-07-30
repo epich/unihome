@@ -379,6 +379,7 @@ anyway, which doesn't always combine with defadvice. "
 ;; evil-repeat-pop-next isn't particularly useful to me.
 (define-key evil-normal-state-map (kbd "M-.") nil)
 (define-key key-translation-map (kbd "sm.") (kbd "M-."))
+(define-key key-translation-map (kbd "sm;") (kbd "M-;"))
 
 (defun make-conditional-key-translation (key-from key-to translate-keys-p)
   "Make a Key Translation such that if the translate-keys-p function returns true,
