@@ -25,6 +25,8 @@ Issues:
    : Screen flashing:
       : When finished with a cycle of search in a file
       : When auto reverting
+   : Evil bug when auto reverting non existent file:
+      : Open files A, B, C.  Delete C, then try to use Evil to copy and paste text from B to A.  Errors are issued and the paste cannot proceed.
    : Disconnect about Emacs' notion of where point is:
       : Official definition of point is between chars, cursor displayed over the next char.
          : Uses this definition:
