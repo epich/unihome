@@ -108,8 +108,7 @@ with `M-x evil-tests-run'"))
 The following optional keywords specify the buffer's properties:
 
 :state STATE            The initial state, defaults to `normal'.
-:visual TYPE            The Visual type, defaults to
-                        `evil-visual-char'.
+:visual SELECTION       The Visual selection, defaults to `char'.
 :point-start STRING     String for matching beginning of point,
                         defaults to \"[\".
 :point-end STRING       String for matching end of point,
@@ -6400,7 +6399,12 @@ if no previous selection")
       (evil-test-buffer
         "[A]bcAbcAbc\naBcaBcaBc\nABCABCABC\nabcabcabc"
         (":%s/bc/xy/g" (kbd "RET"))
-        "AxyAxyAxy\naXyaXyaXy\nAXYAXYAXY\n[a]xyaxyaxy"))))
+        "AxyAxyAxy\naXyaXyaXy\nAXYAXYAXY\n[a]xyaxyaxy"))
+    (ert-info ("Substitute zero range on whole line")
+      (evil-test-buffer
+        "no 1\nno 2\nno 3\n[y]es 4\nno 5\nno 6\nno 7\n"
+        (":s/^/# /g")
+        "no 1\nno 2\nno 3\n[#] yes 4\nno 5\nno 6\nno 7\n"))))
 
 (ert-deftest evil-test-ex-substitute-replacement ()
   "Test `evil-ex-substitute' with special replacements."
@@ -6815,6 +6819,19 @@ maybe we need one line more with some text\n"
           "[l]line 1\nline 2"
           (":read!echo -n cmd line 1" [return])
           "line 1\n[c]md line 1\nline 2")))))
+
+(ert-deftest evil-test-global ()
+  "Test `evil-ex-global'."
+  (ert-info ("global delete")
+    (evil-test-buffer
+      "[n]o 1\nno 2\nno 3\nyes 4\nno 5\nno 6\nno 7\n"
+      (":g/yes/d" [return])
+      "no 1\nno 2\nno 3\n[n]o 5\nno 6\nno 7\n"))
+  (ert-info ("global substitute")
+    (evil-test-buffer
+      "[n]o 1\nno 2\nno 3\nyes 4\nno 5\nno 6\nno 7\n"
+      (":g/no/s/[3-6]/x" [return])
+      "no 1\nno 2\nno x\nyes 4\nno x\nno x\n[n]o 7\n")))
 
 ;;; Utilities
 

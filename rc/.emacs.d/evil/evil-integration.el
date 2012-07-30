@@ -38,6 +38,10 @@
 (dolist (cmd '(keyboard-quit keyboard-escape-quit))
   (evil-set-command-property cmd :suppress-operator t))
 
+;;; Mouse
+(evil-declare-insert-at-point-repeat 'mouse-yank-primary)
+(evil-declare-insert-at-point-repeat 'mouse-yank-secondary)
+
 ;;; key-binding
 
 ;; disable evil-esc-mode during a call to key-binding

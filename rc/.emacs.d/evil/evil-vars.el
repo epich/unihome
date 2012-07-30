@@ -342,7 +342,7 @@ before point."
   :type 'function
   :group 'evil)
 
-(defcustom evil-lookup-func 'woman
+(defcustom evil-lookup-func #'woman
   "Lookup function used by \
 \"\\<evil-motion-state-map>\\[evil-lookup]\"."
   :type 'function
@@ -911,7 +911,7 @@ having higher priority.")
 (defvar evil-command-properties nil
   "Specifications made by `evil-define-command'.")
 
-(defvar evil-transient-vars '(cua-mode transient-mark-mode)
+(defvar evil-transient-vars '(cua-mode transient-mark-mode select-active-regions)
   "List of variables pertaining to Transient Mark mode.")
 
 (defvar evil-transient-vals nil
@@ -1017,6 +1017,7 @@ character argument for some commands, e.g. `evil-replace'.")
   '((t . evil-repeat-keystrokes)
     (change . evil-repeat-changes)
     (motion . evil-repeat-motion)
+    (insert-at-point . evil-repeat-insert-at-point)
     (ignore . nil))
   "An alist of defined repeat-types.")
 
