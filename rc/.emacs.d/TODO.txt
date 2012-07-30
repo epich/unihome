@@ -97,6 +97,14 @@ Issues:
       : Edebug comes up in normal state.
          : Learn why
          : Give Edebug keymap priority for SPC over Evil.
+      : Define GDB key bindings
+         : Compare with Edebug bindings
+         : Options:
+            : Make like Edebug
+            : Define Key Translation from "sg<key>" to "C-x C-a C-<key>"
+               : Does the hyperify example in the Elisp manual's documentation of key-translation-map help?
+               : Bind a function to "sg", read-event, use event-modifiers function to check if control is applied, ...
+         : Bind SPC to step when debugger is active.
       : Create function that generates all of the key-translation-map additions for C- keys.
       : The key translation approach can make some key sequences inaccessible if defined in other keymaps.
          : Is there a way to use read-event function, which is known to not reference key-translation-map?
