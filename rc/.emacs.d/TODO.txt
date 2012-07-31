@@ -346,6 +346,7 @@ Issues:
             Managing key bindings with Evil
                If you want to use the full power of Emacs in Vim-like ways (ie using short key sequences near home row instead of Control-Shift-Nonsense), this section provides some guidance.  This guide assumes you've read the Evil manual section "Modes and states".
                Basic key bindings
+   : In Evil motion state, can't mouse click buttons.  RET works however.
 
 Bug reports filed:
    : Updating of highlighted search
