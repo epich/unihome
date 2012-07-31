@@ -485,6 +485,22 @@ takes no args. "
 ;; My own
 (define-key evil-normal-state-map "sja" (lambda () (interactive) (jde-import-all) (jde-import-kill-extra-imports) (jde-import-organize)))
 
+;; Key bindings for GDB
+(define-key evil-normal-state-map "sgb" 'gud-break)
+(define-key evil-normal-state-map "sgl" 'gud-refresh)
+(define-key evil-normal-state-map "sgl" 'gud-step)
+(define-key evil-normal-state-map "sgn" 'gud-next)
+(define-key evil-normal-state-map "sgi" 'gud-stepi)
+(define-key evil-normal-state-map "sgp" 'gud-print)
+(define-key evil-normal-state-map "sgr" 'gud-cont)
+(define-key evil-normal-state-map "sgd" 'gud-remove)
+(define-key evil-normal-state-map "sgt" 'gud-tbreak)
+(define-key evil-normal-state-map "sg<" 'gud-up)
+(define-key evil-normal-state-map "sg>" 'gud-down)
+(define-key evil-normal-state-map "sgu" 'gud-until)
+(define-key evil-normal-state-map "sgf" 'gud-finish)
+(define-key evil-normal-state-map "sgj" 'gud-jump)
+
 ;;; More Evil key bindings
 
 ;; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
