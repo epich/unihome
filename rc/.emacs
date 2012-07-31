@@ -44,7 +44,7 @@
 (defun my-no-op () "No op, meaning do nothing.")
 
 ;;; Functions to facilitate elisp debug logging.
-(defvar current-date-time-format "%Y-%m-%dT%H:%M:%S"
+(defvar my-date-time-format "%Y-%m-%dT%H:%M:%S"
   "Format for date string. ")
 (defun get-usec-str (cur-time)
    "Get the microseconds as string. "
@@ -55,7 +55,7 @@
    (interactive)
    (let ((cur-time (current-time)))
       (format "%s.%s" 
-         (format-time-string current-date-time-format)
+         (format-time-string my-date-time-format)
          (get-usec-str cur-time))))
 (defun log-msg (msg)
    "Log a message, with prepended information.  Used for debugging.
@@ -573,6 +573,12 @@ takes no args. "
    (goto-char (match-end 0)))
 ;; For the GOESR program, redefine logger.
 ;; (fset 'my-insert-java-log 'goesr-insert-java-log)
+(defun my-insert-makefile-log ()
+  "Insert log statement for make files. "
+  (interactive)
+  (insert "$(warning DEBUG: ) # TODO: temporary for debug")
+  (search-backward "DEBUG: ")
+  (goto-char (match-end 0)))
 (defun my-insert-python-log ()
   "Insert log statement for Python. "
   (interactive)
@@ -626,6 +632,11 @@ takes no args. "
       (log-msg "Inside java-mode-hook")
       (require 'jde)
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-java-log)
+      ))
+(add-hook 'makefile-mode-hook 
+   (lambda ()
+      (log-msg "Inside makefile-mode-hook")
+      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-makefile-log)
       ))
 (add-hook 'nxml-mode-hook
           (lambda ()
