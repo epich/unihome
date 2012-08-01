@@ -102,8 +102,6 @@ anyway, which doesn't always combine with defadvice. "
 ;; * This enables some tools useful for coding, such as summary mode,
 ;;   imenu support, and the semantic navigator
 (semantic-load-enable-code-helpers)
-;; Disable Minibuffer info which overwrites other information displaying.
-(global-semantic-idle-summary-mode 0)
 ;; * This enables even more coding tools such as intellisense mode,
 ;;   decoration mode, and stickyfunc mode (plus regular code helpers)
 ;; (semantic-load-enable-gaudy-code-helpers)
@@ -243,6 +241,8 @@ anyway, which doesn't always combine with defadvice. "
 ;;    The default 0.1 ac-delay can cause display update delays when I'm typing.
 ;;    If I know what I'm typing, it is inconvenient.  1.0 is sufficiently high
 ;;    to imply I'm pausing in my typing.
+;; global-semantic-idle-summary-mode
+;;    Disable Minibuffer info which overwrites other information displaying.
 ;; inverse-video
 ;;    An attempt to get white on black.  For some reason this doesn't work
 ;;    but the --reverse-video CLI arg does.
@@ -260,6 +260,7 @@ anyway, which doesn't always combine with defadvice. "
  '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
+ '(global-semantic-idle-summary-mode nil nil (semantic-idle))
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(inverse-video t)
@@ -636,6 +637,12 @@ takes no args. "
 (add-hook 'makefile-mode-hook 
    (lambda ()
       (log-msg "Inside makefile-mode-hook")
+      ;; Tabs are important in makefiles
+      ;;
+      ;; Set tab to nil, to get the builtin tab behavior.
+      (define-key evil-insert-state-map (kbd "TAB") nil)
+      (setq indent-tabs-mode t)
+      
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-makefile-log)
       ))
 (add-hook 'nxml-mode-hook
