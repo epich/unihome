@@ -1,6 +1,30 @@
-;;;; States
+;;; evil-states.el --- States
+
+;; Author: Vegard Øye <vegard_oye at hotmail.com>
+;; Maintainer: Vegard Øye <vegard_oye at hotmail.com>
+;;
+;; This file is NOT part of GNU Emacs.
+
+;;; License:
+
+;; This file is part of Evil.
+;;
+;; Evil is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; Evil is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with Evil.  If not, see <http://www.gnu.org/licenses/>.
 
 (require 'evil-core)
+
+;;; Code:
 
 ;;; Normal state
 
@@ -249,32 +273,27 @@ If COMMAND is a motion, refresh the selection;
 otherwise exit Visual state."
   (when (evil-visual-state-p)
     (setq command (or command this-command))
-    (cond
-     ((or quit-flag
-          (eq command #'keyboard-quit)
-          ;; Is `mark-active' nil for an unexpanded region?
-          deactivate-mark
-          (and (not evil-visual-region-expanded)
-               (not (region-active-p))
-               (not (eq evil-visual-selection 'block))))
-      (evil-exit-visual-state)
-      (evil-adjust-cursor))
-     (evil-visual-region-expanded
-      (evil-visual-contract-region)
+    (if (or quit-flag
+            (eq command #'keyboard-quit)
+            ;; Is `mark-active' nil for an unexpanded region?
+            deactivate-mark
+            (and (not evil-visual-region-expanded)
+                 (not (region-active-p))
+                 (not (eq evil-visual-selection 'block))))
+        (progn
+          (evil-exit-visual-state)
+          (evil-adjust-cursor))
+      (if evil-visual-region-expanded
+          (evil-visual-contract-region)
+        (evil-visual-refresh))
       (when (and (fboundp 'x-select-text)
+                 (or (not (boundp 'ns-initialized))
+                     ns-initialized)
                  (not (eq evil-visual-selection 'block)))
         (x-select-text (buffer-substring-no-properties
                         evil-visual-beginning
                         evil-visual-end)))
-      (evil-visual-highlight))
-     (t
-      (evil-visual-refresh)
-      (when (and (fboundp 'x-select-text)
-                 (not (eq evil-visual-selection 'block)))
-        (x-select-text (buffer-substring-no-properties
-                        evil-visual-beginning
-                        evil-visual-end)))
-      (evil-visual-highlight)))))
+      (evil-visual-highlight))))
 (put 'evil-visual-post-command 'permanent-local-hook t)
 
 (defun evil-visual-activate-hook (&optional command)
