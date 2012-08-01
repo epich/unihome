@@ -309,6 +309,8 @@ Issues:
    : Mailing list:
       : Read the email thread founding Evil:
          http://thread.gmane.org/gmane.emacs.vim-emulation/692
+   : Other reading:
+      Thorough GDB guide: http://www.dirac.org/linux/gdb/
    : EmacsWiki contributions:
       : Write a section in the EmacsWiki for managing keymappings with Evil
          : Prereqs:
