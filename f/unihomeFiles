@@ -11,7 +11,7 @@
 ~/unihome/notes/emacs.txt
 ~/unihome/rc/.emacs.d/TODO.txt
 ~/unihome/rc/.emacs.d/play/play.el
-~/unihome/rc/.emacs
+~/unihome/rc/.emacs.d/init.el
 ~/unihome/rc/.vimrc
 ~/unihome/rc/unihome.cshrc
 ~/unihome/rc/unihome.sh
