@@ -89,7 +89,7 @@ anyway, which doesn't always combine with defadvice. "
 ;; use because of JDEE.
 ;;
 ;; CEDET raises fatal error when reloading an already reloaded file,
-;; undermining reloading of my .emacs file.  This hacks that fix.
+;; undermining reloading of my init.el file.  This hacks that fix.
 (ignore-errors (load-file (format "%s/common/cedet.el" my-cedet-path)))
 ;;; Enable EDE (Project Management) features
 (global-ede-mode 1)
@@ -277,6 +277,7 @@ anyway, which doesn't always combine with defadvice. "
  '(scroll-conservatively 1)
  '(scroll-step 1)
  '(whitespace-style (quote (face tabs trailing)))
+ '(x-select-enable-primary t) 
  '(x-select-enable-clipboard t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -448,8 +449,10 @@ takes no args. "
 (define-key evil-motion-state-map "sem" 'mark-sexp)
 ;; Note: Instead of key binding to kill-sexp, equivalent to 'sem' and then 'd'
 (define-key evil-motion-state-map "srb" 'revert-buffer)
-(define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs") (toggle-fullscreen)))
+(define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (toggle-fullscreen)))
 (define-key evil-motion-state-map "slc" (lambda () (interactive) (my-load-clearcase)))
+(define-key evil-normal-state-map "S" nil)
+(define-key evil-motion-state-map "S" 'save-buffer)
 
 ;;; Java bindings
 ;;;
@@ -688,5 +691,5 @@ takes no args. "
      ;;(setq search-whitespace-regexp nil)
      (log-msg "Finished with term-setup-hook. ")))
 
-(log-msg "Finished .emacs file. ")
+(log-msg "Finished init file. ")
 
