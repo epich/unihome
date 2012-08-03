@@ -427,6 +427,8 @@ takes no args. "
 (define-key evil-normal-state-map "O" nil)
 (define-key evil-motion-state-map "O" 'previous-buffer)
 (define-key evil-motion-state-map "f" 'buffer-menu)
+(define-key evil-motion-state-map "F" nil)
+(define-key evil-motion-state-map "F" 'other-window)
 (define-key evil-normal-state-map "-" nil)
 (define-key evil-motion-state-map "-" 'evil-end-of-line)
 (define-key evil-motion-state-map "t" nil)
