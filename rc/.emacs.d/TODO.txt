@@ -76,6 +76,7 @@ Issues:
             : campbell@mumble.net
             : Blog: http://mumble.net/~campbell/blag.txt
       : Automatically balance space between parens.
+      : Command to delete all of sexp except what's marked.
    : Keyboard macros
       : Weird bug:
          : In scratch buffer, in one insertion, create, left justified:
