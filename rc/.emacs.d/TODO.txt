@@ -189,8 +189,6 @@ Issues:
                : Dependancy graph
                : Composition graph
                : Inheritance graph
-   : Tagging
-      : Have .emacs find the TAGS file by looking upwards in directories until found.
    : Learn about VCS use
       : Ediff
          : Submit patch to Evil to include 'ediff-meta-mode in evil-motion-state-maps.
