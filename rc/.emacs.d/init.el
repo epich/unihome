@@ -554,7 +554,7 @@ takes no args. "
 (defun my-insert-elisp-log ()
    "Insert log statement for elisp. "
    (interactive)
-   (insert "(log-msg (format \"DEBUG: \")) ; TODO: temporary for debug")
+   (insert "(log-msg (format \"DEBUG: \")) ")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
 (defun my-insert-c-log ()
@@ -695,10 +695,13 @@ or nil if not found."
                            (possible-file (concat parent file-to-find)))
                       (cond
                        ((file-exists-p possible-file) possible-file) ; Found
-                       ((string= (concat "/" file-to-find) possible-file) nil) ; Not found
+                       ((null parent) nil) ; Not found
                        (t (find-file-r (directory-file-name parent))))))) ; Continue
     (find-file-r default-directory)))
-(visit-tags-table (find-file-upwards "TAGS"))
+(let ((my-tags-file (find-file-upwards "TAGS")))
+  (when my-tags-file
+    (message "Loading tags file: %s" my-tags-file)
+    (visit-tags-table my-tags-file)))
 
 ;;; Finalizing initialization
 (add-hook 'term-setup-hook
