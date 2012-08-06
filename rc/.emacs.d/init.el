@@ -574,7 +574,7 @@ takes no args. "
    (evil-ret)
    (insert "\t\t\t\"DEBUG: \",")
    (evil-ret)
-   (insert "\t\t\tnew Object[]{} );")
+   (insert "new Object[]{} );")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
 ;; For the GOESR program, redefine logger.
