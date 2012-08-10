@@ -124,11 +124,14 @@ Issues:
                      http://lists.gnu.org/archive/html/help-gnu-emacs/2012-07/msg00345.html
                   : Submitted to bug-gnu-emacs
                      : Looked at the subr for define-key.  It doesn't look like the def arg is used at all when it is a lambda.
-                        : Use debugger to figure out how it works when using define-key for the lambda commands that do work.
-                           : Figure out how to determine whether a symbol has a definition from the C code.
-                              : Try what Qinhibit_quit does in eval.c .
-                           : Define the symbol in init.el
-                           : Set conditional breakpoint 'cond <b#> predicate'
+                     : Followed it to its insertion in the keymap.
+                     : Might be good to verify functionp on the entry in the keymap.
+                     : In the meantime, need to look more at keyboard.c for where key-translation-map is read.
+                        : read_key_sequence function
+                        : keyremap type
+                        : keyremap_step function
+                     : I changed the if check in access_keymap_keyremap and it works:
+                        if (do_funcall && (SYMBOLP (next) && !NILP (Ffboundp (next)) || FUNCTIONP(next)))
                   : Might need to (setq lexical-binding t) in my .emacs in order to generate the closure that the code relies on.
          : Xah Lee reports bug with universal argument and key-translation-map
             https://groups.google.com/forum/?fromgroups#!topic/comp.emacs/p7PLJgWzNkY
