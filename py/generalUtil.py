@@ -18,6 +18,12 @@ class GeneralError(Exception):
    """
 
    def __init__(self, supplementalMsg):
+      """Initialize data.
+
+      Keyword arguments:
+      supplementalMsg -- the message to add to the propogating exception
+      """
+      
       self.supplementalMsg = supplementalMsg
       Exception.__init__( self, supplementalMsg )
 
@@ -42,16 +48,33 @@ class GeneralError(Exception):
       raise self.__class__, self, caughtTb
 
 class ShellCmdError(GeneralError):
+   """The cmd function throws this exception for failed shell commands."""
+   
    pass
 
 class FdReader(threading.Thread):
+   """Reads the readFd file descriptor in a thread and prints it to stdout if specified.
+
+   Reading the same stdout which printLines==True would write to is not supported usage.
+   Reading a child process's stdout creates no issue however.
+   """
+   
    def __init__(s, readFd, printLines):
+      """Initialize data and initialize the thread super class.
+      
+      Keyword arguments:
+      readFd -- integer file descriptor which this thread should read.
+      printLines -- a boolean for whether to print the lines to stdout.
+      """
+      
       threading.Thread.__init__(s)
       s.readFd = readFd
       s.printLines = printLines
       s.outBuf = ''
-
+   
    def run(s):
+      """Run the thread, which exits when the FD closes."""
+      
       while True:
          readLine = s.readFd.readline()
          if not readLine: break
@@ -107,27 +130,32 @@ def cmd(cmdStr, shellStr='sh', background=False, printStdout=False, printStderr=
    if printDebug:
       print('Completed in %f seconds.' % (time.time()-startTime))
 
-   # If we don't wait, returncode may not be up to date yet.
+   # If we don't wait, returncode may not be up to date.
    childSh.wait()
+      
    if childSh.returncode!=None and childSh.returncode!=0:
       raise ShellCmdError('Shell command failed with errno:%s cmd:%s stderr:%s' % (childSh.returncode,cmdStr,err))
-
+      
    return out
 
 def setupSite():
-   # Add packages which we need but which sysadmin hasn't installed as system-wide package.
-   site.addsitedir('/proj/user/boreilly/ots/lib/python2.6/site-packages')
+   """Add Python packages which are not yet installed system-wide."""
+   site.addsitedir(getOtsRoot()+'/python/cx_Oracle')
 
 def printSshAdvisory():
+   """Print an advisory to the user about SSH."""
    print ( "If prompted for a password, you may cease the prompting by generating SSH keys.  "
             +"Web search 'setup ssh keys' or 'ssh without password' or similar. " )
 
-def getProjRoot():
-   return re.sub(r'(.*vobs\/proj).*', r'\1', sys.path[0])
+def getScriptName():
+   """Get the name of the current script."""
+   return os.path.basename( sys.argv[0] )
 
 def getRhelVersion():
    """Get the version of RHEL in dotted number format.  eg 5.2"""
 
+   # Looks at the /etc/redhat-release file which contains the version number, processing it through sed to
+   # extract just the version number.
    (rhelRelease, err) = subprocess.Popen( r"cat /etc/redhat-release | sed 's/.*release \([0-9\.]*\) .*/\1/'",
             stdout=subprocess.PIPE, shell=True).communicate()
    if err!=None:
@@ -135,8 +163,9 @@ def getRhelVersion():
    return rhelRelease.rstrip()
 
 def userTmpDir():
+   """Get a temporary directory under the user's home, possibly creating it if it doesn't exist."""
    homeDir = os.path.expanduser("~")
-   tmpDir = homeDir+'/proj-tmp'
+   tmpDir = homeDir+'/py-tmp'
    cmd( 'mkdir -p %s' % (tmpDir,) )
    return tmpDir
 
@@ -153,7 +182,7 @@ def truncateString(inStr, strMaxLen, suffix=''):
    """
    if strMaxLen<len(suffix):
       raise Exception('Unexpected comparison: %s<%s'%(len(suffix),strMaxLen))
-
+      
    tStr = inStr[:(strMaxLen-len(suffix))]+suffix
    return tStr
 
@@ -164,4 +193,5 @@ def datetime2time(dt):
    """
 
    return time.mktime( dt.timetuple() ) + 1e-6*dt.microsecond
+
 
