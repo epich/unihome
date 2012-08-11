@@ -31,7 +31,7 @@ def buildCedet():
    generalUtil.cmd('mkdir -p ~/.semanticdb')
    # There was a case where cedet*/semantic/Makefile needed a tender touch.
    # Might as well touch 'em all.
-   generalUtil.cmd('touch `find %s -maxdepth 2 -name Makefile`'%(cedetDir_g,))
+   generalUtil.cmd('touch `find %s -name Makefile`'%(cedetDir_g,))
    generalUtil.cmd('make -C %s'%(cedetDir_g,), printStdout=True)
 
 def buildJdee():
