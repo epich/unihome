@@ -4,11 +4,6 @@
 ;;
   (progn (fset 'foo (lambda (prompt) (kbd "C-c")))
          (define-key key-translation-map (kbd "C-e") 'foo)
-         (functionp (lambda () nil))
-         (consp (lambda () nil))
-         (fboundp (lambda () nil))
-         (defun foofunc () nil)
-         (functionp foofunc)
          )
 
 (progn
