@@ -1,3 +1,8 @@
+;; TODO: Disabled
+;; -*- lexical-binding: t -*-
+;; Lexical binding is necessary for make-conditional-key-translation
+;; to create a clojure object correctly.
+
 ;;; General emacs settings
 (setq visible-bell t) 
 (tool-bar-mode 0)
@@ -386,7 +391,9 @@ anyway, which doesn't always combine with defadvice. "
 (defun make-conditional-key-translation (key-from key-to translate-keys-p)
   "Make a Key Translation such that if the translate-keys-p function returns true,
 key-from translates to key-to, else key-from translates to itself.  translate-keys-p
-takes no args. "
+takes no args.
+
+lexical-binding must be t in order for this to work correctly. "
   (define-key key-translation-map key-from
               (lambda (prompt)
                       (if (funcall translate-keys-p) key-to key-from)))
@@ -537,9 +544,9 @@ takes no args. "
 ;; Thanks to: http://lists.gnu.org/archive/html/help-gnu-emacs/2003-03/msg00108.html
 (defun configure-faces (fl)
   "Set face attributes and create faces when necessary"
-  (mapc (lambda (f)
-          (unless (boundp (car f)) (make-empty-face (car f)))
-          (eval `(set-face-attribute (car f) nil ,@(cdr f))))
+  (mapc (lambda (face-arg)
+          (unless (boundp (car face-arg)) (make-empty-face (car face-arg)))
+          (eval `(set-face-attribute (car face-arg) nil ,@(cdr face-arg))))
         fl))
 (configure-faces
  '((isearch-lazy-highlight-face' :background "yellow" :foreground "black")))
