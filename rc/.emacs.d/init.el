@@ -1,4 +1,3 @@
-;; TODO: Disabled
 ;; -*- lexical-binding: t -*-
 ;; Lexical binding is necessary for make-conditional-key-translation
 ;; to create a clojure object correctly.
@@ -289,6 +288,7 @@ anyway, which doesn't always combine with defadvice. "
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(isearch-lazy-highlight-face ((((class color) (background dark)) (:background "yellow" :foreground "black"))))
  '(whitespace-tab ((((class color) (background dark)) (:background "grey50" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
@@ -402,7 +402,7 @@ lexical-binding must be t in order for this to work correctly. "
   "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
   (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))
   )
-;; TODO: Doesn't work yet, bug submitted to bugs-gnu-emacs
+;; TODO: Doesn't work yet
 (make-conditional-key-translation (kbd "ce") (kbd "C-e") 'my-translate-keys-p)
 
 (define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
@@ -538,18 +538,6 @@ lexical-binding must be t in order for this to work correctly. "
         (scroll-down num-times)
         (evil-previous-line num-times))
       ))
-
-;; Change color of isearch lazy highlighting
-;;
-;; Thanks to: http://lists.gnu.org/archive/html/help-gnu-emacs/2003-03/msg00108.html
-(defun configure-faces (fl)
-  "Set face attributes and create faces when necessary"
-  (mapc (lambda (face-arg)
-          (unless (boundp (car face-arg)) (make-empty-face (car face-arg)))
-          (eval `(set-face-attribute (car face-arg) nil ,@(cdr face-arg))))
-        fl))
-(configure-faces
- '((isearch-lazy-highlight-face' :background "yellow" :foreground "black")))
 
 ;;; Debug logging
 (defun my-insert-ant-log ()
