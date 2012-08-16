@@ -120,38 +120,11 @@ Issues:
                : How does the bound function determine the original key?
                : Perhaps use a macro or function to generate the function to bind to.
                : Wrote a function that attempts to do this, doesn't work yet.
-                  : Problem, submitted to help-gnu-emacs
-                     http://lists.gnu.org/archive/html/help-gnu-emacs/2012-07/msg00345.html
-                  : Submitted to bug-gnu-emacs
-                     : Looked at the subr for define-key.  It doesn't look like the def arg is used at all when it is a lambda.
-                     : Followed it to its insertion in the keymap.
-                     : Might be good to verify functionp on the entry in the keymap.
-                     : In the meantime, need to look more at keyboard.c for where key-translation-map is read.
-                        : read_key_sequence function
-                        : keyremap type
-                        : keyremap_step function
-                     : I changed the if check in access_keymap_keyremap and it works:
-                        if (do_funcall && (SYMBOLP (next) && !NILP (Ffboundp (next)) || FUNCTIONP(next)))
+                  : Patched bug
+                     : http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00449.html
                      : Patch accepted into bzr trunk.
-                        : It's not in the 24.2-rc1.
-                  : Need lexical scoping.
-                     : Enabled in init.el, but if the lambda created in configure-faces is a closure, there's an error.
-                        : May need to separate init.el into a file with lexical binding, one without.
-                        : Or debug configure-faces
-                           Debugger entered--Lisp error: (void-variable face-arg)
-                              (car face-arg)
-                              (set-face-attribute (car face-arg) nil (quote :background) "yellow" :foreground "black")
-                              eval((set-face-attribute (car face-arg) nil (quote :background) "yellow" :foreground "black"))
-                              (closure ((fl (isearch-lazy-highlight-face (quote :background) "yellow" :foreground "black")) t) (face-arg) (unless (boundp (car face-arg)) (make-empty-face (car face-arg))) (eval (\` (set-face-attribute (car face-arg) nil (\,@ (cdr face-arg))))))((isearch-lazy-highlight-face (quote :background) "yellow" :foreground "black"))
-                              mapc((closure ((fl (isearch-lazy-highlight-face (quote :background) "yellow" :foreground "black")) t) (face-arg) (unless (boundp (car face-arg)) (make-empty-face (car face-arg))) (eval (\` (set-face-attribute (car face-arg) nil (\,@ (cdr face-arg)))))) ((isearch-lazy-highlight-face (quote :background) "yellow" :foreground "black")))
-                              configure-faces(((isearch-lazy-highlight-face (quote :background) "yellow" :foreground "black")))
-                              eval-buffer(#<buffer  *load*> nil "/home/boreilly/.emacs.d/init.el" nil t)  ; Reading at buffer position 25076
-                              load-with-code-conversion("/home/boreilly/.emacs.d/init.el" "/home/boreilly/.emacs.d/init.el" t t)
-                              load("/home/boreilly/.emacs.d/init" t t)
-                              #[0 "\205\262 	\306=\203 \307\310Q\202; 	\311=\204 \307\312Q\202; \313\307\314\315#\203* \316\202; \313\307\314\317#\203: \320\nB\321\202; \316\322\323\322\211#\210\322=\203a \324\325\326\307\327Q!\"\323\322\211#\210\322=\203` \210\203\243 \330!\331\232\203\243 \332!\211\333P\334!\203} \211\202\210 \334!\203\207 \202\210 \314\262\203\241 \335\"\203\237 \336\337#\210\340\341!\210\266\f?\205\260 \314\323\342\322\211#)\262\207" [init-file-user system-type delayed-warnings-list user-init-file inhibit-default-init inhibit-startup-screen ms-dos "~" "/_emacs" windows-nt "/.emacs" directory-files nil "^\\.emacs\\(\\.elc?\\)?$" "~/.emacs" "^_emacs\\(\\.elc?\\)?$" (initialization "`_emacs' init file is deprecated, please use `.emacs'") "~/_emacs" t load expand-file-name "init" file-name-as-directory "/.emacs.d" file-name-extension "elc" file-name-sans-extension ".el" file-exists-p file-newer-than-file-p message "Warning: %s is newer than %s" sit-for 1 "default"] 7 "\n\n(fn)"]()
-                              command-line()
-                              normal-top-level()
-                  : Might need to (setq lexical-binding t) in my .emacs in order to generate the closure that the code relies on.
+                     : It's not in the 24.2-rc1.
+                  : Lexical binding is enabled, but it's not working.
          : Xah Lee reports bug with universal argument and key-translation-map
             https://groups.google.com/forum/?fromgroups#!topic/comp.emacs/p7PLJgWzNkY
    : Key bindings in minibuffer:
