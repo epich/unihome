@@ -8,6 +8,8 @@
          (define-key key-translation-map (kbd "C-e") 'foo)
          )
 
+(functionp 'foo)
+
 (progn
   (setq bar 4)
   (functionp bar)
@@ -53,3 +55,32 @@
 (setq x 1)
 (setq 1-adder (make-adder x))
 (funcall 1-adder 10)
+
+
+
+
+
+(setq lexical-binding t)
+(defun make-conditional-key-translation (key-from key-to translate-keys-p)
+  "Make a Key Translation such that if the translate-keys-p function returns true,
+key-from translates to key-to, else key-from translates to itself.  translate-keys-p
+takes no args.
+
+lexical-binding must be t in order for this to work correctly. "
+  (log-msg (format "DEBUG: Inside make-conditional-key-translation")) 
+  (define-key key-translation-map key-from
+              (lambda (prompt)
+                      (log-msg (format "DEBUG: Inside closure")) 
+                      (if (funcall translate-keys-p) key-to key-from)))
+  )
+(defun my-translate-keys-p ()
+  "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
+  (log-msg (format "DEBUG: Inside my-translate-keys-p")) 
+  (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))
+  )
+;; TODO: Doesn't work yet
+(make-conditional-key-translation (kbd "ce") (kbd "C-e") 'my-translate-keys-p)
+(message "key-translation-map: key:%s %s" (kbd "t") key-translation-map)
+
+(define-key key-translation-map (kbd "cf") (lambda (prompt) (kbd "C-e")))
+

@@ -124,7 +124,9 @@ Issues:
                      : http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00449.html
                      : Patch accepted into bzr trunk.
                      : It's not in the 24.2-rc1.
-                  : Lexical binding is enabled, but it's not working.
+                  : With lexical-binding t, the same Key Translation with lambda doesn't work.
+                     : Confirmed the closure lambda is in the key-translation-map.
+                     : See if problem occurs on Bzr latest.
          : Xah Lee reports bug with universal argument and key-translation-map
             https://groups.google.com/forum/?fromgroups#!topic/comp.emacs/p7PLJgWzNkY
    : Key bindings in minibuffer:
