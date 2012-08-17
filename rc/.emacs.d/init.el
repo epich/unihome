@@ -441,7 +441,11 @@ lexical-binding must be t in order for this to work correctly. "
 (define-key evil-motion-state-map "t" nil)
 (define-key evil-motion-state-map "t" 'find-tag)
 (define-key evil-motion-state-map "T" nil)
-(define-key evil-motion-state-map "T" 'visit-tags-table)
+(define-key evil-motion-state-map "T" 'pop-tag-mark)
+(define-key evil-motion-state-map "[" nil)
+(define-key evil-motion-state-map "[" 'kmacro-start-macro)
+(define-key evil-motion-state-map "]" nil)
+(define-key evil-motion-state-map "]" 'kmacro-end-macro)
 (define-key evil-normal-state-map "s" nil)
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
