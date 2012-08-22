@@ -109,28 +109,14 @@ Issues:
                : Bind a function to "sg", read-event, use event-modifiers function to check if control is applied, ...
          : Bind SPC to step when debugger is active.
       : Create function that generates all of the key-translation-map additions for C- keys.
-      : The key translation approach can make some key sequences inaccessible if defined in other keymaps.
-         : Is there a way to use read-event function, which is known to not reference key-translation-map?
-         : Is there an ideal way to circumvent the key-translation-map?
-         : Control whether additions to key-translation-map are active.
-            : Are there supported ways in Emacs?
-            : Use the Evil state hooks.
-               : Problematic -- switching between buffers in different states doesn't run the hooks.
-         : Have key-translation-map map to function which:
-            : Returns translation if in normal, motion, visual states
-            : Else returns the same key.
-               : How does the bound function determine the original key?
-               : Perhaps use a macro or function to generate the function to bind to.
-               : Wrote a function that attempts to do this, doesn't work yet.
-                  : Patched bug
-                     : http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00449.html
-                     : Patch accepted into bzr trunk.
-                     : It's not in the 24.2-rc1.
-                  : With lexical-binding t, the same Key Translation with lambda doesn't work.
-                     : Confirmed the closure lambda is in the key-translation-map.
-                     : See if problem occurs on Bzr latest.
-         : Xah Lee reports bug with universal argument and key-translation-map
-            https://groups.google.com/forum/?fromgroups#!topic/comp.emacs/p7PLJgWzNkY
+      : Use Key Translations which are active based on Evil state.
+         : Patch: http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00449.html
+            : Patch accepted into bzr trunk.
+            : It's not in the 24.2-rc1.
+         : Another patch: http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00628.html
+            : No reply on emacs-devel
+      : Xah Lee reports bug with universal argument and key-translation-map
+         https://groups.google.com/forum/?fromgroups#!topic/comp.emacs/p7PLJgWzNkY
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
@@ -296,6 +282,7 @@ Issues:
             : Maybe need a higher Python script to
                : start up Emacs multiple times
                : discard the first run in case there's any caching or byte compiling that occurs.
+   : In Evil motion state, can't mouse click buttons.  RET works however.
    : Pick through the elisp of others:
       : Michael Markert's:
          https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-evil.el
@@ -313,13 +300,6 @@ Issues:
       Thorough GDB guide: http://www.dirac.org/linux/gdb/
    : EmacsWiki contributions:
       : Write a section in the EmacsWiki for managing keymappings with Evil
-         : Prereqs:
-            : Write code to copy from evil-emacs-state-modes to evil-motion-state-maps
-            : Write Evil state hooks to set and unset key translation mappings
-            : Does the \ command run the Evil state hooks?
-               : Looks like the answer is yes in code
-               : Verify through manual testing
-            : Try it all out to be sure
          : Outline:
             : Basics:
                : Setting
@@ -327,9 +307,9 @@ Issues:
                : Conflicts between motion and normal
                : Unset a key before making it a prefix key
             : Key Translation approach
-               : Set and unset in Evil state hooks
-               : Conflicts with key bindings of other modes
-            : Buffers with no raw text editing
+               : Necessary patches
+               : How to do in Elisp
+            : Buffers with no text editing
             : Motion vs normal states
             : Moving evil-emacs-state-modes to evil-motion-state-modes
             : Setting evil-overriding-maps and evil-intercept-maps to nil
@@ -348,7 +328,6 @@ Issues:
             Managing key bindings with Evil
                If you want to use the full power of Emacs in Vim-like ways (ie using short key sequences near home row instead of Control-Shift-Nonsense), this section provides some guidance.  This guide assumes you've read the Evil manual section "Modes and states".
                Basic key bindings
-   : In Evil motion state, can't mouse click buttons.  RET works however.
 
 Bug reports filed:
    : Updating of highlighted search
