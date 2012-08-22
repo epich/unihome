@@ -211,9 +211,7 @@ Issues:
             : How to not have it apply patch until I save (this would seem to be most sensible)?
       : How to do merges
    : Learn about org-mode
-   : buffer-menu
-      : Display full file basename or at least widen column width.
-      : Learn more about it
+   : Learn about Buffer Menu and BS.  What's the difference?
    : Being prompted about running Python process is annoying.
       : CEDET starts it for sake of auto completion.
    : Smart editing:
