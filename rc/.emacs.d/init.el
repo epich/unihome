@@ -85,8 +85,8 @@ anyway, which doesn't always combine with defadvice. "
 
 ;;; Initialize CEDET
 ;;;
-(log-msg "Initializing CEDET.")
 (defvar my-cedet-path "~/.emacs.d/cedet-1.1" "Path to CEDET")
+(log-msg "Initializing CEDET.")
 (add-to-list 'load-path (format "%s/common" my-cedet-path))
 ;; CEDET documents loading must occur before other packages load any part of CEDET.
 ;; Especially important since Emacs has a different version builtin, which I can't
@@ -95,26 +95,31 @@ anyway, which doesn't always combine with defadvice. "
 ;; CEDET raises fatal error when reloading an already reloaded file,
 ;; undermining reloading of my init.el file.  This hacks that fix.
 (ignore-errors (load-file (format "%s/common/cedet.el" my-cedet-path)))
-;;; Enable EDE (Project Management) features
-(global-ede-mode 1)
-;; Enable EDE for a pre-existing C++ project
-;; (ede-cpp-root-project "NAME" :file "~/proj/name/Makefile")
-;;; Enabling Semantic (code-parsing, smart completion) features
-;;; Select one of the following:
-;; * This enables the database and idle reparse engines
-;;(semantic-load-enable-minimum-features)
-;; * This enables some tools useful for coding, such as summary mode,
-;;   imenu support, and the semantic navigator
-(semantic-load-enable-code-helpers)
-;; * This enables even more coding tools such as intellisense mode,
-;;   decoration mode, and stickyfunc mode (plus regular code helpers)
-;; (semantic-load-enable-gaudy-code-helpers)
-;;; Based on advice at http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
-;; For smart completion
-;; (require 'semantic-ia)
-;; Solves error when semantic-complete-jump:
-;;    Symbol's function definition is void: eieio-build-class-alist
-(require 'eieio-opt)
+(defun my-enable-cedet ()
+  "Enable CEDET. "
+   ;;; Enable EDE (Project Management) features
+   (global-ede-mode 1)
+   ;; Enable EDE for a pre-existing C++ project
+   ;; (ede-cpp-root-project "NAME" :file "~/proj/name/Makefile")
+   ;;; Enabling Semantic (code-parsing, smart completion) features
+   ;;; Select one of the following:
+   ;; * This enables the database and idle reparse engines
+   ;;(semantic-load-enable-minimum-features)
+   ;; * This enables some tools useful for coding, such as summary mode,
+   ;;   imenu support, and the semantic navigator
+   (semantic-load-enable-code-helpers)
+   ;; * This enables even more coding tools such as intellisense mode,
+   ;;   decoration mode, and stickyfunc mode (plus regular code helpers)
+   ;; (semantic-load-enable-gaudy-code-helpers)
+   ;;; Based on advice at http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+   ;; For smart completion
+   ;; (require 'semantic-ia)
+   ;; Solves error when semantic-complete-jump:
+   ;;    Symbol's function definition is void: eieio-build-class-alist
+   (require 'eieio-opt)
+   )
+;; CEDET is buggy when enabled.
+;;(my-enable-cedet)
 
 ;;; Initialize JDEE
 (defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
@@ -257,6 +262,7 @@ anyway, which doesn't always combine with defadvice. "
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(Buffer-menu-name-width 64)
  '(ac-delay 1.0)
  '(c-syntactic-indentation nil)
  '(ediff-merge-split-window-function (quote split-window-vertically))
@@ -278,17 +284,18 @@ anyway, which doesn't always combine with defadvice. "
  '(nxml-sexp-element-flag t)
  '(python-continuation-offset (my-continuation-offset))
  '(python-indent my-offset)
+ '(python-indent-offset my-offset)
  '(scroll-conservatively 1)
  '(scroll-step 1)
  '(whitespace-style (quote (face tabs trailing)))
- '(x-select-enable-primary t) 
- '(x-select-enable-clipboard t))
+ '(x-select-enable-clipboard t)
+ '(x-select-enable-primary t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(isearch-lazy-highlight-face ((((class color) (background dark)) (:background "yellow" :foreground "black"))))
+ '(lazy-highlight ((((class color) (background dark)) (:background "yellow" :foreground "black"))))
  '(whitespace-tab ((((class color) (background dark)) (:background "grey50" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
