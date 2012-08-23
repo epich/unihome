@@ -94,6 +94,7 @@ Issues:
          : Hit 'u' for undo.
          : Entire contents of scratch disappear, including the top default comments.
       : Does Evil's keyboard macro ('q') integrate better with the undo system?
+         : Investigate having the Emacs kmacro command set Evil undo boundary.
       : If I hit l at the end of a line, it prematurely ends kmacro.
          : Submitted bug report to Evil.
    : Keymapping
