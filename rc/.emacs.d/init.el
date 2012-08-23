@@ -568,7 +568,7 @@ lexical-binding must be t in order for this to work correctly. "
    (interactive)
    (insert "printf( \"%s:%d:DEBUG: \\n\", // TODO: temporary for debug")
    (evil-ret)
-   (insert "\t\t\t__FILE__, __LINE__ );")
+   (insert "\t\t\t__FILE__, __LINE__ ); fflush(stdout);")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
 (defun my-insert-java-log ()
