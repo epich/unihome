@@ -221,11 +221,7 @@ Issues:
          : Would be good to pursue if hacking the syntax table is more generalized than I find I want.
       : Relevant, but not particularly helpful:
          http://stackoverflow.com/questions/9595277/emacs-xterm-mouse-mode-double-click-to-highlight-word
-   : Syntax highlighting:
-      : Not keen on (in Python) strings and comments getting a similar color.
-   : Cursor position is difficult to discern over highlighted areas.
    : Make Emacs state visually obvious.  Ideas:
-      : Have Emacs state be black fg on white bg
       : Have the status line be a different color based on evil state.
          (set-face-background 'modeline "Blue")
          Use hooks

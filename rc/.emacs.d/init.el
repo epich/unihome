@@ -295,7 +295,7 @@ anyway, which doesn't always combine with defadvice. "
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(lazy-highlight ((((class color) (background dark)) (:background "yellow" :foreground "black"))))
+ '(lazy-highlight ((t (:background "gold" :foreground "black"))))
  '(whitespace-tab ((((class color) (background dark)) (:background "grey50" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
