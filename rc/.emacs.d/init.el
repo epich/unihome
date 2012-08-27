@@ -287,6 +287,7 @@ anyway, which doesn't always combine with defadvice. "
  '(python-indent-offset my-offset)
  '(scroll-conservatively 1)
  '(scroll-step 1)
+ '(tags-case-fold-search nil)
  '(whitespace-style (quote (face tabs trailing)))
  '(x-select-enable-clipboard t)
  '(x-select-enable-primary t))
