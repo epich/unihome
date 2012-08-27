@@ -1,0 +1,41 @@
+# Bazaar merge directive format 2 (Bazaar 0.90)
+# revision_id: address@hidden
+# target_branch: bzr://bzr.savannah.gnu.org/emacs/trunk/
+# testament_sha1: 97ac7d396cfcbf692e8e88df42589ecba0fc8c70
+# timestamp: 2012-08-11 22:24:03 -0400
+# base_revision_id: address@hidden
+# 
+# Begin patch
+=== modified file 'src/keyboard.c'
+--- src/keyboard.c	2012-08-08 15:53:52 +0000
++++ src/keyboard.c	2012-08-12 02:23:58 +0000
+@@ -8837,7 +8837,8 @@
+   /* If the keymap gives a function, not an
+      array, then call the function with one arg and use
+      its value instead.  */
+-  if (SYMBOLP (next) && !NILP (Ffboundp (next)) && do_funcall)
++  if ((SYMBOLP (next) && !NILP (Ffboundp (next)) || FUNCTIONP(next))
++      && do_funcall)
+     {
+       Lisp_Object tem;
+       tem = next;
+
+# Begin bundle
+IyBCYXphYXIgcmV2aXNpb24gYnVuZGxlIHY0CiMKQlpoOTFBWSZTWWp4r5MAAXxfgBAQceP/93sn
+3iC////0UAN88dFe9qAANJT1NpDQ0BoD0gaAaNHqGQyNGnqA0pMhtPUxCbSAAAAAAAAEEk9NI9Jk
+0AZMIADQGgBgjTETEkaepowNQDIAAAAZAaaAkoJhAE0aE2iZKb1Jp+qeNJqPUA0aek8oT9cFR1XA
+WtiCBBG0AAaiZqMGlpBA4zuxqGR/a4ICMnMPKWXUkRkKJvwzNxde7HRcZyvSiiIQNNae26t4wtZg
+IQQ8R5ejTmwzZ9bOmbWH23/DBf4HqKgkg5S/3Ja9mUc1elSGFUu2XqUC+Rm4czFPYkP6tF0TE/g0
+RdAmm0JyaObJvce6qI1NTY8vn0MTTn5bFepqtihF4rhG/0bpfkcQTSvbcIjKBssqoVmI8eIyQDpC
+dIqM/xPzZZMaBB4LWmCJCbuFe8c9MLovDyz0OmxXyVi0Pay2AsR1W59dnYK+dU8aWm44iuqZMlnF
+NdMan7aIakzIcnqCaRLDKVCsJ0NhE2lAF3gww9lWvFPexmqmT9tRor2RLhJoMeSLRKEjHUuwIMyS
+wV7CyecBKJCTiEoEG1gaMy9j7qr20kysgLBlg2SoV6ZMjcbRSlBt09LzU9cyCGwQHMJIOY4LACFi
+TxaLO0m9aUIHumlwRKAXEAkgMPJ45WG4DzSqWuM9B5Ewo+Gvcy3L9fCYCCI4TrBwMYffe9PSrrSl
+X3B9yXpV5YYQzZBKnFWI81v81Yq/NP15aMTx8p8WYQDbPxbgIXDBTrWJQ6O9TJspnRUyKshFUm8t
+gWhSZJgmOcrnJTr0GHA4wlxuXAvkarKh8f0/fOEDnv1WM+DbZh8f2NP3wWGqlQ0Mzvy9pUTazZ6t
+JncmL4atPboz1lSUguUVgFEMy/IXdaOOa4u/jlz198zcSVh9ufDSwqPdsMcg1oZ7JSEwMV9DEZVZ
+3GYO1C7cEzMsYkyzwxTH47SvQlkqYEN4V+eF7sAicg1u+P/C42UKavJ6btmxmQV7kqgtBzQi561G
+Hv4vkvBLoBmpGiB36eal1jEmKVBNMLq4soBgD9ydAXbRDsUUNxRFipBqfw2zXyS496s3oJh07E04
+UFIdQrVTlZVs7LW5a2MTS2OlKnKFy6LaKGtPUgtuqgmpiJ77SIOnwcoLzFJ9z4Qo1NV9p1FRbGs7
+GV7AZBap2K/lSTQ/6qDWNK2TkbIXzSwpM6PnKoK03gmxk1YdqaGG9RStjS3ooq4HcBZqlXqgWikr
+c0a1T6i8VG8o98f/F3JFOFCQanivkw==

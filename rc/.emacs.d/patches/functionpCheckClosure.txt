@@ -1,0 +1,41 @@
+# Bazaar merge directive format 2 (Bazaar 0.90)
+# revision_id: address@hidden
+# target_branch: file:///home/epich/bzr/emacs/trunk/
+# testament_sha1: bc2a442f40d7a6eaceb1089a20591c50114e0ae4
+# timestamp: 2012-08-19 22:24:19 -0400
+# base_revision_id: address@hidden
+# 
+# Begin patch
+=== modified file 'src/lisp.h'
+--- src/lisp.h	2012-08-18 23:53:43 +0000
++++ src/lisp.h	2012-08-20 02:23:54 +0000
+@@ -1907,7 +1907,8 @@
+ 
+ /* Non-zero if OBJ is a Lisp function.  */
+ #define FUNCTIONP(OBJ)					\
+-     ((CONSP (OBJ) && EQ (XCAR (OBJ), Qlambda))		\
++     ((CONSP (OBJ) && (EQ (XCAR (OBJ), Qlambda)         \
++                    || EQ (XCAR (OBJ), Qclosure)))      \
+       || (SYMBOLP (OBJ) && !NILP (Ffboundp (OBJ)))	\
+       || COMPILEDP (OBJ)				\
+       || SUBRP (OBJ))
+
+# Begin bundle
+IyBCYXphYXIgcmV2aXNpb24gYnVuZGxlIHY0CiMKQlpoOTFBWSZTWfdtTgAAAX//gDIQQABR5//3
+ezH+RL////RQA36XSlgYAwyRBoAKJp+mmKnhpGTTEymPU0DU2NUaBzAEYJiAYBME0ZDQwCYIxMMo
+Gmpqn+qaaRpoepoaAAMgGgABoHMARgmIBgEwTRkNDAJgjEwkkCmDQEMqeBKeaT1Cep5RiAxBiNGk
+Vjw8W/f5kN27TVoPy4XAcNznxHOtQnSGbX6vA8CvP22IiDh6jm05Oii0pa/qD/eq8Yvta+Q37xPS
+uMURJFV+pZbOGsqQijD526Fk47PjzV0qChBXZMF8iAg6NgPVT3l3MbNGBnIRj81/m2dOy++KOLM3
+JOZBYwiaeyUXrkMIvgoBDnzL/iUKgHOdPFTr0BuWp1OKmMp0BNdy8ylu4WaRtznDnL78j0w63KC8
+i0njiZmbfQX1FyVWhVag2IT08RWKG8UTcXyV7sHhB5sTVQurePTKxRlCxaTRfKNHM2CoRjftqzID
+XnKcKwNEUTTTW8Y2lohw5XPHeoqLThiPli4V0CzfGJgu1SpyjMorMsjVWXMsDMmK6UpKxitazooS
+yrEOwUG7NLTIwlPYqbrSi/ptVd1FBebLKrjML8worGAMKKgai3YicpPSBxQEnl00bDAHGIvdUnVg
+ezSLQUb+x3rNZPuIHgEGo2fF41zcW2LaTnlN74abPOK+C5cYdHMcXG73x88ap6EA3aliztWB3DTc
+me3w0XZo9MRMngA2CLpZ522iZoCMjCkDph7xsG17btf/OrTcdYE9RhFIfFA2bqKOmdTefhcCJnL2
+CayMZKIsFIlLC84vyDpdWT0B8R1yfgMgwod+bJWEwyP71z/yufryx5RaqJgEnYn1U5iQyZJYS81I
+qamrlKbYcaC9BSM5Qw0fe2jFiwitKkNSft7T1DnHTjinQOiYrHH08/Pd3icuBgjLTqI958BpV9Fj
+sbzBnL19/U5i1q7UcGSbZs/1NDsN+YjeqYnmO8LPXnk/WH/LEPOtOSi/w3Ls0zDFXqAhwUBQ4NXj
+FXLnzbPH0SoN6rPERp3CMVUTpOe2iMSI8KIPCxKDq9FkLJEGTLhOScLqlXDBIkHoeS5BW5UPWROa
+wswZk4hglRhHyF5dywVFGtODjOoiirS0o40htxffTIlzFcLa9U61VdRboxPEGkdzXCguFBqRYXzu
+7k+9/1L8063WZNRXNKqZUFYPZXfYnhwyYdNP6v49iVSeL0qteQrQZByV1agsqAfeu0WTgmb+/xdy
+RThQkPdtTgA=
