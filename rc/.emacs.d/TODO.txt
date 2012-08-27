@@ -323,8 +323,33 @@ Issues:
                : Using Evil state hooks to turn key translations on and off
          : Draft:
             Managing key bindings with Evil
-               If you want to use the full power of Emacs in Vim-like ways (ie using short key sequences near home row instead of Control-Shift-Nonsense), this section provides some guidance.  This guide assumes you've read the Evil manual section "Modes and states".
-               Basic key bindings
+               If you want to use the full power of Emacs in Vim-like ways (ie using short key sequences near home row instead of Control-Shift-Nonsense), this section provides some guidance.  This guide assumes you've read the Evil manual sections "Modes and states" and "Keymaps".
+
+               The evil-motion-state-map is active in more than one Evil state: normal, visual, and operator.  As the name suggests, it contains key bindings for motion, which generally don't manipulate text.  There are some Emacs major modes that come up in the motion state by default, because it does not make sense in those buffers to manipulate text.  Thus your own key bindings that don't manipulate text may go in evil-motion-state-map.  Those that do would typically go in evil-normal-state-map.  One thing to be aware of is that you may have to unset a binding in one keymap and add it to the other.  eg if you wish to define a motion command to "o", Evil defines "o" in the evil-normal-state-map keymap by default, so you'd need to nil it out and add the command to the evil-motion-state-map.  See evil-maps.el for which keys are bound to which commands.
+
+                  (define-key evil-normal-state-map "o" nil)
+                  (define-key evil-motion-state-map "o" 'next-buffer)
+
+               One example of a major mode which comes up in motion state is the Buffer Menu, entered via the buffer-menu command.  The Buffer Menu offers its own succinct key bindings independent of Evil, the kind of key bindings we like.  With Evil enabled, some of these key bindings are available because the evil-normal-state-map is disabled, a consequence of being in motion instead of normal state.  Evil does not bind "x" and "d" while in motion state, for example.  Consequently, Emacs' process of Key Lookup will use the Buffer Menu's bindings for these keys.  However, motion keys are active.  RET for example would normally visit a file in the Buffer Menu, but with Evil points moves down a line instead.  One solution to this is to use the \ Evil command.  \ allows you to execute one Key Sequence in Emacs state before automatically returning to the Evil state you were in.  Thus you could visit files in the Buffer Menu with two key presses: \ RET .  Personally, I never use RET and SPC in Vim, and yet these are common keys for non-editing major modes to define a key binding for.  So even though these are strictly speaking motion commands, I remove them from evil-motion-state-map so as they pass through to the other keymaps in major modes such as Buffer Menu.  You may optionally add them to evil-normal-state-map instead.
+
+                  (defun my-move-key (keymap-from keymap-to key)
+                    "Moves key binding from one keymap to another, deleting from the old location. "
+                    (define-key keymap-to key (lookup-key keymap-from key))
+                    (define-key keymap-from key nil)
+                    )
+                  (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
+                  (my-move-key evil-motion-state-map evil-normal-state-map " ")
+                  (my-move-key evil-normal-state-map evil-motion-state-map "\\")
+
+               Some major modes come up in the Emacs state or other Evil states by default.  The variables that control this behavior are: evil-motion-state-modes, evil-emacs-state-modes, etc.  I prefer to have all the modes that come up in Emacs state come up in motion state instead, so as I can rely on the Vim-like Evil key bindings always being available.  I do this to achieve that:
+
+                  (setq evil-motion-state-modes (append evil-emacs-state-modes evil-motion-state-modes))
+                  (setq evil-emacs-state-modes nil)
+
+               You'll also want to nil out a couple more variables.  Put these in your custom-set-variables list:
+
+                  '(evil-intercept-maps nil)
+                  '(evil-overriding-maps nil)
 
 Bug reports filed:
    : Updating of highlighted search
