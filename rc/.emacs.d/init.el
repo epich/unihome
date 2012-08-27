@@ -410,7 +410,6 @@ lexical-binding must be t in order for this to work correctly. "
   "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
   (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))
   )
-;; TODO: Doesn't work yet
 (make-conditional-key-translation (kbd "ce") (kbd "C-e") 'my-translate-keys-p)
 
 (define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
