@@ -290,4 +290,4 @@ Retired issues with residual notes:
                     (log-msg "Inside my-window-scroll"))
                   (add-hook 'window-scroll-functions 'my-window-scroll nil t)
          : Consider whether I'm ok with losing undo history.  Maybe make it conditional for the need to revert.
-            
+
