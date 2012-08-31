@@ -7,6 +7,7 @@ Latest on a branch
 To merge files.
     Set view of versions to merge to.
     ct findmerge . -c "Merge 20091203 scrubbed drop" -fversion ".../srnl_scrub/LATEST" -merge [or -print]
+    ct merge -g -to file_or_dir -insert -version ".../from_branch/LATEST"
 
 Get a list of files that have changed amongst checkouts
     cleartool lsco -r -cvi -fmt 'diff -options \"-hea\" -pred \"%n\"\n' | cleartool | grep '>>>'
