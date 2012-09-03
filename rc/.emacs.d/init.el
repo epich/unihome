@@ -348,20 +348,18 @@ anyway, which doesn't always combine with defadvice. "
 ;;    (define-key other-mode-map (kbd "ce") (lambda () (interactive) (log-msg "ce command")))
 ;; I can use the cd command but not the ce command via the key binding.  I cannot use
 ;; Evil's \ command because the other-mode-map would still be active in Emacs state.
-;; I've never ran into this issue, since prefix keys are usually C- or M- keys.  If I did,
-;; I'd probably try defining and undefining my key-translation-map bindings in the Evil state
-;; hooks.
+;; I've never ran into this issue, since prefix keys are usually C- or M- keys.
 ;;
 ;; This defines the "c" prefix key in motion state.  The choice of the second key in the
 ;; sequence and its command binding is somewhat arbitrary.
 (define-key evil-motion-state-map "cu" 'universal-argument)
-;;; C-c has its own set up as general purpose escape key sequence.
+;;; C-c as general purpose escape key sequence.
 ;;;
 (defun my-esc (prompt)
   "Functionality for escaping generally.  Includes exiting Evil insert state and C-g binding. "
   (cond
    ;; If we're in one of the Evil states that defines [escape] key, return [escape] so as
-   ;; Key Lookup will use it.  Perhaps there is a more orthogonal way to do so.
+   ;; Key Lookup will use it.
    ((or (evil-insert-state-p) (evil-normal-state-p) (evil-replace-state-p) (evil-visual-state-p)) [escape])
    ;; This is the best way I could infer for now to have C-c work during evil-read-key.
    ;; Note: As long as I return [escape] in normal-state, I don't need this.
