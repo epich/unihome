@@ -431,8 +431,6 @@ lexical-binding must be t in order for this to work correctly. "
 ;; Want RET to use other keymaps' binding sometimes.  Buffer Menu's for example.
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
-;; Want \ command to be available in the modes that come up in motion state by default.
-(my-move-key evil-normal-state-map evil-motion-state-map "\\")
 
 (define-key evil-normal-state-map "o" nil)
 (define-key evil-motion-state-map "o" 'next-buffer)
