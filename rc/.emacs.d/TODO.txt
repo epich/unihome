@@ -23,11 +23,13 @@ Issues:
             : Does not work:
                : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
    : Screen flashing:
+      : Use (ding t)
       : When finished with a cycle of search in a file
       : When auto reverting
    : Evil bug when auto reverting non existent file:
       : Open files A, B, C.  Delete C, then try to use Evil to copy and paste text from B to A.  Errors are issued and the paste cannot proceed.
          : Cannot reproduce this.
+   : Can Elisp macros use Xpaths to modify code?
    : Disconnect about Emacs' notion of where point is:
       : Official definition of point is between chars, cursor displayed over the next char.
          : Those which use this definition:
@@ -41,6 +43,7 @@ Issues:
          : When clicking past end of line, point is moved left one.
          : show-paren-mode is augmented, see evil-integration.el's show-paren-function.
          : Text selection
+         : Sexp evaluation (unconfirmed)
       : Ask on Emacs mailing list about this topic.
          : Create a defcustom for whether the user wants the over-char abstraction?
       : Study how Evil copes with this.
@@ -82,6 +85,7 @@ Issues:
             : Blog: http://mumble.net/~campbell/blag.txt
       : Automatically balance space between parens.
       : Command to delete all of sexp except what's marked.
+      : Try out port of Vim's surround to Emacs.
    : Keyboard macros
       : Weird bug:
          : In scratch buffer, in one insertion, create, left justified:
@@ -114,14 +118,6 @@ Issues:
                : Bind a function to "sg", read-event, use event-modifiers function to check if control is applied, ...
          : Bind SPC to step when debugger is active.
       : Create function that generates all of the key-translation-map additions for C- keys.
-      : Use Key Translations which are active based on Evil state.
-         : Patch: http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00449.html
-            : Patch accepted into bzr trunk.
-            : It's not in the 24.2-rc1.
-         : Another patch: http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00628.html
-            : No reply on emacs-devel
-      : Xah Lee reports bug with universal argument and key-translation-map
-         https://groups.google.com/forum/?fromgroups#!topic/comp.emacs/p7PLJgWzNkY
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
@@ -299,7 +295,6 @@ Issues:
          http://thread.gmane.org/gmane.emacs.vim-emulation/692
    : Other reading:
       Thorough GDB guide: http://www.dirac.org/linux/gdb/
-   : EmacsWiki contributions:
 
 Bug reports filed:
    : Updating of highlighted search
@@ -323,4 +318,5 @@ Bug reports filed:
       : Bug:
          : Select with mouse, char under point is not highlighted, but it is with v selection.
          : Report submitted to project.
+   : Evil doesn't allow point at end of line or end of buffer.
 
