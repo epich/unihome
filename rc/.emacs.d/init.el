@@ -267,6 +267,7 @@ anyway, which doesn't always combine with defadvice. "
  '(c-syntactic-indentation nil)
  '(ediff-merge-split-window-function (quote split-window-vertically))
  '(evil-intercept-maps nil)
+ '(evil-move-cursor-back nil)
  '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
