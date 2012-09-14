@@ -373,34 +373,29 @@ anyway, which doesn't always combine with defadvice. "
 ;; Not sure what behavior this changes, but might as well set it, seeing the Elisp manual's
 ;; documentation of it.
 (set-quit-char "C-c")
-;;; Other C-c key translations
+
+;;; Other key translations
 ;;;
-(define-key key-translation-map (kbd "cc") (kbd "C-c"))
-(define-key key-translation-map (kbd "ch") (kbd "C-h"))
-(define-key key-translation-map (kbd "cx") (kbd "C-x"))
-(define-key key-translation-map (kbd "cy") (kbd "C-y"))
 ;; Four NXML navigation key bindings
 (define-key key-translation-map (kbd "cmd") (kbd "C-M-d"))
 (define-key key-translation-map (kbd "cmn") (kbd "C-M-n"))
+(define-key key-translation-map (kbd "cmq") (kbd "C-M-q"))
 (define-key key-translation-map (kbd "cmp") (kbd "C-M-p"))
 (define-key key-translation-map (kbd "cmu") (kbd "C-M-u"))
-;; C-M-x is major mode dependant, but generally binds to the elisp function that
-;; instruments a function for the debugger.
+;; C-M-x is major mode dependant.  Of interest is the binding to the elisp function that
+;; instruments a function for the Edebug debugger.
 (define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
-(define-key key-translation-map (kbd "cs") (kbd "C-s"))
-(define-key key-translation-map (kbd "cu") (kbd "C-u"))
 (define-key key-translation-map (kbd "smx") (kbd "M-x"))
 ;; evil-repeat-pop-next isn't particularly useful to me.
 (define-key evil-normal-state-map (kbd "M-.") nil)
 (define-key key-translation-map (kbd "sm.") (kbd "M-."))
 (define-key key-translation-map (kbd "sm;") (kbd "M-;"))
 
+;; Note: lexical-binding must be t in order for this to work correctly.
 (defun make-conditional-key-translation (key-from key-to translate-keys-p)
   "Make a Key Translation such that if the translate-keys-p function returns true,
 key-from translates to key-to, else key-from translates to itself.  translate-keys-p
-takes no args.
-
-lexical-binding must be t in order for this to work correctly. "
+takes no args. "
   (define-key key-translation-map key-from
               (lambda (prompt)
                       (if (funcall translate-keys-p) key-to key-from)))
@@ -409,7 +404,15 @@ lexical-binding must be t in order for this to work correctly. "
   "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
   (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))
   )
+(make-conditional-key-translation (kbd "cc") (kbd "C-c") 'my-translate-keys-p)
 (make-conditional-key-translation (kbd "ce") (kbd "C-e") 'my-translate-keys-p)
+(make-conditional-key-translation (kbd "cf") (kbd "C-f") 'my-translate-keys-p)
+(make-conditional-key-translation (kbd "ch") (kbd "C-h") 'my-translate-keys-p)
+(make-conditional-key-translation (kbd "cq") (kbd "C-q") 'my-translate-keys-p)
+(make-conditional-key-translation (kbd "cs") (kbd "C-s") 'my-translate-keys-p)
+(make-conditional-key-translation (kbd "cu") (kbd "C-u") 'my-translate-keys-p)
+(make-conditional-key-translation (kbd "cx") (kbd "C-x") 'my-translate-keys-p)
+(make-conditional-key-translation (kbd "cy") (kbd "C-y") 'my-translate-keys-p)
 
 (define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
@@ -425,10 +428,14 @@ lexical-binding must be t in order for this to work correctly. "
 ;; In some cases I want key sequences looked up using keymaps other than
 ;; Evil's, such as RET and SPC in modes that don't involve editing.
 (defun my-move-key (keymap-from keymap-to key)
-  "Moves key binding from one keymap to another, deleting from the old location. "
-  (define-key keymap-to key (lookup-key keymap-from key))
-  (define-key keymap-from key nil)
-  )
+  "Moves key binding from one keymap to another, deleting from the old location.
+
+To account for more than one invocation, this won't do the move if key is
+nil in keymap-from."
+  (let ((keyval (lookup-key keymap-from key)))
+    (when keyval
+      (define-key keymap-to key keyval)
+      (define-key keymap-from key nil))))
 ;; Want RET to use other keymaps' binding sometimes.  Buffer Menu's for example.
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
