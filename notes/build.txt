@@ -1,0 +1,12 @@
+Notes on build systems
+
+# Reference: http://make.paulandlesley.org/autodep.html for the explanation
+# behind this make code.
+$($(CSU)_MAKEDEP): $(DIR)/obj/%.d : $(DIR)/src/%.cc
+	$(CXX) $(CPPFLAGS) $(TARGET_CPPFLAGS) -MM -MT $(addsuffix .o, $(addprefix $(patsubst %/src/, %/obj/, $(dir $<)), $(basename $(notdir $<)))) -MF $@ $<
+	sed -i 's/\([^ ]*\)\.o[ :]*/\1.o \1.d : /g' $@
+	cp $@ $@.tmp; \
+	   sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	       -e '/^$$/ d' -e 's/$$/ :/' < $@.tmp >> $@; \
+	   rm -f $@.tmp
+
