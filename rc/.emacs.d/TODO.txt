@@ -25,6 +25,9 @@ Issues:
    : Screen flashing:
       : Use (ding t)
       : When finished with a cycle of search in a file
+         : Need to augment the evil-ex-search-next function
+         : Appending sexp to a function works when not byte compiled.
+         : Figure out how to edit byte compiled functions at runtime
       : When auto reverting
    : If I C-c or backspace to beginning of evil-search prompt, I have to wait in order to enter more input.  How to fix?
    : Evil bug when auto reverting non existent file:
