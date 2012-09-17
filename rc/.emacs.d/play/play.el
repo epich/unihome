@@ -95,7 +95,8 @@ lexical-binding must be t in order for this to work correctly. "
 (symbol-function 'foo)
 (fset 'foo (append (symbol-function 'foo) '((message "Additional words"))))
 (foo)
-
+(print (symbol-function 'foo))
+(byte-compile 'foo)
 
 (setq myf (lambda () (message "Inside lambda")))
 (setq myf (append myf '((message "Additional words"))))
