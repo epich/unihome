@@ -70,6 +70,14 @@ anyway, which doesn't always combine with defadvice. "
    (interactive)
    (message (format "%s %s" (get-time-str) msg)))
 
+;;; File associations
+;;
+;; Ruby rake build files
+(add-to-list 'auto-mode-alist '("Rakefile" . ruby-mode))
+;; Conjure uses these extensions for Scheme code, for unknown reason
+(add-to-list 'auto-mode-alist '("\\.sls\\'" . scheme-mode))
+(add-to-list 'auto-mode-alist '("\\.sps\\'" . scheme-mode))
+
 ;; (add-to-list 'load-path "~/.emacs.d")
 ;; Compile .el files if they need to be.
 ;;

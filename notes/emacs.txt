@@ -42,6 +42,8 @@ Notes:
             : Open emacs on the diff file
             : M-x ediff-patch-file
             : Follow prompts
+         : Vertical mode:
+            : \|
    : Etags
       : Call visit-tag-table function to load TAGS file.
    : Use M-; on a selection to comment it out.

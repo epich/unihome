@@ -32,6 +32,7 @@ Issues:
          : Cannot reproduce this.
    : Can Elisp macros use Xpaths to modify code?
    : How to specify other filenames' major modes, such as for Makefiles, Rakefiles, SCons files?
+      : Is there a way to resort to magic-mode-alist if a mode is not found?
    : Disconnect about Emacs' notion of where point is:
       : Official definition of point is between chars, cursor displayed over the next char.
          : Those which use this definition:
@@ -88,6 +89,7 @@ Issues:
       : Automatically balance space between parens.
       : Command to delete all of sexp except what's marked.
       : Try out port of Vim's surround to Emacs.
+      : How to stop Emacs trying to load Lisp files?
    : Keyboard macros
       : Weird bug:
          : In scratch buffer, in one insertion, create, left justified:
