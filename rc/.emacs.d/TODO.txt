@@ -22,10 +22,6 @@ Issues:
                : M-x backward-delete-char-untabify
             : Does not work:
                : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
-   : Screen flashing:
-      : Use (ding t)
-      : When finished with a cycle of search in a file
-      : When auto reverting
    : If I C-c or backspace to beginning of evil-search prompt, I have to wait in order to enter more input.  How to fix?
    : Evil bug when auto reverting non existent file:
       : Open files A, B, C.  Delete C, then try to use Evil to copy and paste text from B to A.  Errors are issued and the paste cannot proceed.
@@ -284,6 +280,8 @@ Issues:
                : start up Emacs multiple times
                : discard the first run in case there's any caching or byte compiling that occurs.
    : In Evil motion state, can't mouse click buttons.  RET works however.
+   : Would like to pipe output of shell command to Emacs for display
+      : See https://github.com/lewang/e-sink
    : Pick through the elisp of others:
       : Michael Markert's:
          https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-evil.el

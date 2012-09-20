@@ -84,3 +84,22 @@ lexical-binding must be t in order for this to work correctly. "
 
 (define-key key-translation-map (kbd "cf") (lambda (prompt) (kbd "C-e")))
 
+
+
+
+;; Demonstrates taking an existing function definition and adding a line of code to it.
+;; Kind of like function advising.
+(defun foo ()
+   (message "Inside foo")
+   )
+(symbol-function 'foo)
+(fset 'foo (append (symbol-function 'foo) '((message "Additional words"))))
+(foo)
+(print (symbol-function 'foo))
+(byte-compile 'foo)
+
+(setq myf (lambda () (message "Inside lambda")))
+(setq myf (append myf '((message "Additional words"))))
+(funcall (eval myf))
+
+

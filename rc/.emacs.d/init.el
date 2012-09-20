@@ -243,7 +243,7 @@ anyway, which doesn't always combine with defadvice. "
 (defun my-insert-bullet ()
   "Insert a Unicode bullet character."
   (interactive)
-  (ucs-insert "2022"))
+  (insert-char #x2022))
 
 ;;; Customizations
 ;;
