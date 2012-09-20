@@ -1,0 +1,43 @@
+Hi, I'm interested in whether Conjure is suitable for building C projects.  Are there examples of these?
+
+I thought I would take a look at Spells to see what it does there.  I ran into issues with your SPE scripts.  Specifically the scripts/fetch-systems failed to find the doro exec.  So I cloned it manually in systems directory and proceeded to follow the setup instructions.  After manually cloning several dependencies from Git, I arrived at this error:
+
+epich-hp ~/git/spe/systems/dorodango : ./setup -i ypsilon --prefix `pwd`/install
+* Using ypsilon
+* Installing dorodango
+
+error in define: attempt to modify immutable binding
+  >  (define (cons* first . rest)
+       (let recur ((x first) (rest rest))
+         (if (pair? rest) (cons x (recur (car rest) (cdr rest))) x)))
+  ..."/home/epich/git/spe/systems/dorodango/../_libs/srfi/%3a1/lists.sls"
+
+expanding:
+  >  (syntax ((AV (|.quote| cons*)) x ...))
+  ..."/home/epich/git/spe/systems/dorodango/../_libs/srfi/%3a1/lists.sls"
+  *  ...
+  *  (define (make-list len . maybe-elt)
+       (check-arg (lambda (n) (and (integer? n) (>= n 0))) len make-list)
+       (let ((elt
+               (cond ((null? maybe-elt) #f)
+                     ((null? (cdr maybe-elt)) (car maybe-elt))
+                     (else
+                       (error
+                         "Too many arguments to MAKE-LIST"
+                         (cons len maybe-elt))))))
+         (do ((i len (- i 1)) (ans '() (cons elt ans))) ((<= i 0) ans))))
+       ...
+  ..."/home/epich/git/spe/systems/dorodango/../_libs/srfi/%3a1/lists.sls" line 75
+  *  (error-wrap define (AV (|.quote| xcons)) (define (xcons d a) (cons a d)))
+  ..."/home/epich/git/spe/systems/dorodango/../_libs/srfi/%3a1/lists.sls" line 75
+  *  (define (xcons d a) (cons a d))
+  ..."/home/epich/git/spe/systems/dorodango/../_libs/srfi/%3a1/lists.sls" line 75
+  *  (include/resolve ("srfi" "%3a1") "srfi-1-reference.scm")
+  ..."/home/epich/git/spe/systems/dorodango/../_libs/srfi/%3a1/lists.sls" line 75
+  *  (SRFI-23-error->R6RS
+       "(library (srfi :1 lists))"
+       (include/resolve ("srfi" "%3a1") "srfi-1-reference.scm"))
+  ..."/home/epich/git/spe/systems/dorodango/../_libs/srfi/%3a1/lists.sls" line 74
+
+Anyway, I'm not inclined to proceed, since I was originally just wanting to see what Conjure did in Spells.
+
