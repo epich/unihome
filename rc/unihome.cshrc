@@ -94,6 +94,7 @@ alias append_bin_path 'setenv PATH `$unihomeDir/scripts/addpaths_csh $PATH \!*`'
 alias prepend_bin_path 'setenv PATH `$unihomeDir/scripts/addpaths_csh \!* $PATH `'
 alias append_lib_path 'setenv LD_LIBRARY_PATH `$unihomeDir/scripts/addpaths_csh $LD_LIBRARY_PATH \!*`'
 alias prepend_lib_path 'setenv LD_LIBRARY_PATH `$unihomeDir/scripts/addpaths_csh \!* $LD_LIBRARY_PATH `'
+setenv PATH "~/bin:$PATH"
 
 alias revnc 'kill `pgrep -f Xvnc` ; setenv DISPLAY :10 ; vncserver :10 -geometry 1280x1024 '
 
