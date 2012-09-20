@@ -285,6 +285,8 @@ Issues:
                : start up Emacs multiple times
                : discard the first run in case there's any caching or byte compiling that occurs.
    : In Evil motion state, can't mouse click buttons.  RET works however.
+   : Would like to pipe output of shell command to Emacs for display
+      : See https://github.com/lewang/e-sink
    : Pick through the elisp of others:
       : Michael Markert's:
          https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-evil.el
