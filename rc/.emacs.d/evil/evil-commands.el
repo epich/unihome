@@ -2426,6 +2426,7 @@ Change to `%s'? "
          ((eq res 'wrapped) (setq wrapped t)))))
     (if wrapped
         (let (message-log-max)
+          (ding t)
           (message "Search wrapped")))
     (goto-char (match-beginning 0))
     (setq evil-ex-search-match-beg (match-beginning 0)
