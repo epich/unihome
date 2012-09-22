@@ -97,6 +97,8 @@ lexical-binding must be t in order for this to work correctly. "
 (foo)
 (print (symbol-function 'foo))
 (byte-compile 'foo)
+(disassemble 'foo)
+(disassemble 'evil-ex-search-next)
 
 (setq myf (lambda () (message "Inside lambda")))
 (setq myf (append myf '((message "Additional words"))))
