@@ -162,28 +162,6 @@ anyway, which doesn't always combine with defadvice. "
 ;; Since I like occasional non wholistic editing, I use ParEdit functions without
 ;; the minor mode enabled.
 
-;;; Initialize Clearcase extensions
-;;
-;; Initializes slowly (byte compiled).  I observed 12 seconds for 17 script files in a snapshot view.
-;; For that reason, I don't load ClearCase until I need it.
-(defun my-load-clearcase ()
-   (log-msg "Loading ClearCase.")
-   (add-to-list 'load-path "~/.emacs.d/clearcase")
-   ;; clearcase.el uses obsolete variable.  This works around it.
-   (defvar directory-sep-char ?/)
-   (require 'clearcase)
-   (clearcase-mode 1)
-   ;; Key bindings.  Little rhyme or reason except to choose unclaimed keys.
-   (define-key clearcase-prefix-map "n" 'clearcase-checkin-current-buffer)
-   (define-key clearcase-prefix-map "o" 'my-clearcase-checkout)
-   (log-msg "Loaded ClearCase.")
-   )
-(defun my-clearcase-checkout ()
-  (interactive)
-  (my-load-clearcase)
-  (clearcase-commented-checkout buffer-file-name "Checked out through Emacs. ")
-  )
-
 ;; Initialize project-specific elisp
 (log-msg "Initializing project-specific elisp.")
 ;; GOESR isn't relevant to all computers I work on, so ignore errors.
@@ -471,7 +449,6 @@ nil in keymap-from."
 (define-key evil-normal-state-map "P" 'evil-paste-after)
 (define-key evil-motion-state-map "," nil)
 (define-key evil-motion-state-map "," 'kmacro-end-and-call-macro)
-(define-key evil-motion-state-map "sco" 'my-clearcase-checkout)
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
 (define-key evil-normal-state-map "sej" 'paredit-wrap-round)
@@ -482,7 +459,6 @@ nil in keymap-from."
 ;; Note: Instead of key binding to kill-sexp, equivalent to 'sem' and then 'd'
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (toggle-fullscreen)))
-(define-key evil-motion-state-map "slc" (lambda () (interactive) (my-load-clearcase)))
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-motion-state-map "S" 'save-buffer)
 
