@@ -85,11 +85,15 @@ anyway, which doesn't always combine with defadvice. "
 ;; TODO: When files don't compile, it'll create errors and modest delay everytime Emacs starts.
 ;; (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
 
-;;; Initialize evil
 (log-msg "Initializing Evil.")
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
+
+(log-msg "Initializing Rainbow Delimiters.")
+(add-to-list 'load-path "~/.emacs.d/rainbow-delimiters")
+(require 'rainbow-delimiters)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 ;;; Initialize CEDET
 ;;;
@@ -284,6 +288,15 @@ anyway, which doesn't always combine with defadvice. "
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(lazy-highlight ((t (:background "gold" :foreground "black"))))
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "white"))))
+ '(rainbow-delimiters-depth-2-face ((t (:foreground "MediumOrchid2"))))
+ '(rainbow-delimiters-depth-3-face ((t (:foreground "orange"))))
+ '(rainbow-delimiters-depth-4-face ((t (:foreground "white"))))
+ '(rainbow-delimiters-depth-5-face ((t (:foreground "MediumOrchid2"))))
+ '(rainbow-delimiters-depth-6-face ((t (:foreground "orange"))))
+ '(rainbow-delimiters-depth-7-face ((t (:foreground "white"))))
+ '(rainbow-delimiters-depth-8-face ((t (:foreground "MediumOrchid2"))))
+ '(rainbow-delimiters-depth-9-face ((t (:foreground "orange")))) 
  '(whitespace-tab ((((class color) (background dark)) (:background "grey50" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 

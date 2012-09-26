@@ -9,6 +9,7 @@ sys.path.append( '~/unihome/py' )
 import generalUtil
 
 evilDir_g = 'evil'
+rainbowDelimitersDir_g = 'rainbow-delimiters'
 cedetDir_g = 'cedet-1.1'
 jdeeDir_g = 'jdee-2.4.0.1'
 pareditDir_g = './paredit'
@@ -24,7 +25,10 @@ def byteCompile(filesString, loadPathL=[]):
 
 def buildEvil():
    generalUtil.cmd('make -C %s'%(evilDir_g,), printStdout=True)
-
+   
+def buildRainbowDelimiters():
+   byteCompile(rainbowDelimitersDir_g+'/rainbow-delimiters.el')
+   
 def buildCedet():
    # CEDET contributes to annoying interrogations at Emacs closing time.
    # Create the .semanticdb dir to avoid one interrogation question.
@@ -52,6 +56,7 @@ def buildInitElisp():
 
 def buildEmacsD():
    buildEvil()
+   buildRainbowDelimiters()
    buildCedet()
    buildJdee()
    buildParedit()
