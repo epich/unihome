@@ -63,6 +63,7 @@ Issues:
                   : Checkout the bzr revision history, how frequent, who edits it?
             : pairs of parens, including within them, in different colors.
                See code samples at: http://community.schemewiki.org/?scheme-faq-language
+            : Trying out Rainbow Delimiters
       : ParEdit
          : Issues:
             : paredit-wrap-around (bound to sej) doesn't do as expected when there's active region.
@@ -85,7 +86,7 @@ Issues:
       : Automatically balance space between parens.
       : Command to delete all of sexp except what's marked.
       : Try out port of Vim's surround to Emacs.
-      : How to stop Emacs trying to load Lisp files?
+      : How to stop Emacs loading Lisp files when visiting them.
    : Keyboard macros
       : Weird bug:
          : In scratch buffer, in one insertion, create, left justified:

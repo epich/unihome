@@ -16,6 +16,7 @@
 (setq mouse-yank-at-point t)
 (show-paren-mode 1)
 (setq show-paren-delay 0)
+(setq enable-recursive-minibuffers t)
 ;; Emacs stupidly formats curly braces in neither of the two most common ways.
 ;; This fixes that.
 (setq c-default-style "linux")
@@ -93,7 +94,8 @@ anyway, which doesn't always combine with defadvice. "
 (log-msg "Initializing Rainbow Delimiters.")
 (add-to-list 'load-path "~/.emacs.d/rainbow-delimiters")
 (require 'rainbow-delimiters)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 
 ;;; Initialize CEDET
 ;;;
