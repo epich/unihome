@@ -1,5 +1,8 @@
 Git ClearCase integration:
    http://stackoverflow.com/questions/2342131/how-to-bridge-git-to-clearcase
 
+See origin:
+   git remote [returns origin]
+   git remote show origin
 
    
