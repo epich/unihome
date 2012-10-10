@@ -8,6 +8,8 @@
 (column-number-mode 1)
 ;; Disable the auto-save, the #* debris files slow down Emacs startup.
 (setq auto-save-default nil)
+;; Don't create debris files next to originals.
+(setq backup-directory-alist '((".*" . "~/emacs-backup")))
 (global-auto-revert-mode 1)
 (setq revert-without-query (quote (".*")))
 (setq case-replace nil)
