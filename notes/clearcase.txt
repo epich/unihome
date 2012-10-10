@@ -38,3 +38,7 @@ Snapshot view privates:
 Create view:
     ct mkview -tag path-for-view
 
+Merge arrow:
+    cleartool mkhlink -unidir Merge FROM_VERSION TO_VERSION
+
+    

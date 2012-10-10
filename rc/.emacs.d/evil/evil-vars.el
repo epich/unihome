@@ -1124,6 +1124,27 @@ paste-command (either `evil-paste-before' or `evil-paste-after'),
 POINT is the position of point before the paste,
 BEG end END are the region of the inserted text.")
 
+(evil-define-local-var evil-last-undo-entry nil
+  "Information about the latest undo entry in the buffer.
+This should be a pair (OBJ . CONS) where OBJ is the entry as an
+object, and CONS is a copy of the entry.")
+
+(evil-define-local-var evil-last-insertion-command nil
+  "The last command which inserted text in the buffer.")
+
+(evil-define-local-var evil-current-insertions nil
+  "Information about the latest insertion in insert state.
+This should be a pair (TEXT . INSERTIONS) where TEXT is a
+inserted text and INSERTIONS is a list of ranges, of which buffer
+string of the disjoint union is identical to TEXT.")
+
+(defvar evil-last-insertion nil
+  "The last piece of inserted text.")
+
+(defvar evil-last-small-deletion nil
+  "The last piece of deleted text.
+The text should be less than a line.")
+
 (defvar evil-paste-count nil
   "The count argument of the current paste command.")
 
@@ -1204,6 +1225,12 @@ They are reused to minimize flicker.")
 (defvar evil-visual-alist nil
   "Association list of Visual selection functions.
 Elements have the form (NAME . FUNCTION).")
+
+(evil-define-local-var evil-visual-x-select-timer nil
+  "Timer for updating the X selection in visual state.")
+
+(defvar evil-visual-x-select-timeout 0.1
+  "Time in seconds for the update of the X selection.")
 
 ;;; Ex
 
