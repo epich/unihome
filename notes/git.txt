@@ -1,3 +1,5 @@
-Linus describes Git workflows:
-   http://lkml.indiana.edu/hypermail/linux/kernel/0805.2/0539.html
+Git ClearCase integration:
+   http://stackoverflow.com/questions/2342131/how-to-bridge-git-to-clearcase
+
+
    

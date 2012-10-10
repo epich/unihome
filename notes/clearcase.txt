@@ -41,4 +41,7 @@ Create view:
 Merge arrow:
     cleartool mkhlink -unidir Merge FROM_VERSION TO_VERSION
 
+View versions:
+   In dynamic view:
+      cd /view/MyView/vobs/myVobs/myPath/myFile@@/main/[...]/maBranch
     
