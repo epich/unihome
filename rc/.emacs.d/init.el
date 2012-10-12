@@ -470,6 +470,12 @@ nil in keymap-from."
 (define-key evil-normal-state-map "P" 'evil-paste-after)
 (define-key evil-motion-state-map "," nil)
 (define-key evil-motion-state-map "," 'kmacro-end-and-call-macro)
+(define-key evil-motion-state-map "sco"
+  (lambda ()
+    (interactive)
+    (shell-command (format "cleartool co -nc %s"
+                           (file-name-nondirectory (or (buffer-file-name) default-directory))))
+    (revert-buffer)))
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
 (define-key evil-normal-state-map "sej" 'paredit-wrap-round)
