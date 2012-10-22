@@ -97,7 +97,8 @@ alias append_lib_path 'setenv LD_LIBRARY_PATH `$unihomeDir/scripts/addpaths_csh 
 alias prepend_lib_path 'setenv LD_LIBRARY_PATH `$unihomeDir/scripts/addpaths_csh \!* $LD_LIBRARY_PATH `'
 setenv PATH "~/bin:$PATH"
 
-alias revnc 'kill `pgrep -f Xvnc` ; setenv DISPLAY :10 ; vncserver :10 -geometry 1280x1024 '
+# Sleep because of asychronous latency kill Xvnc.
+alias revnc 'kill `pgrep -f Xvnc` ; sleep 1 ; setenv DISPLAY :10 ; vncserver :10 -geometry 1280x1024 '
 
 # Files of interest for opening up together in an editor.
 setenv unihomeFiles "$unihomeDir/README $unihomeDir/rc/unihome.sh $unihomeDir/rc/unihome.cshrc $unihomeDir/rc/.vimrc $unihomeDir/rc/.hgrc $unihomeDir/scripts/unihomeSetup.sh $unihomeDir/scripts/addpaths_csh $unihomeDir/scripts/open.pl"
