@@ -179,6 +179,9 @@ anyway, which doesn't always combine with defadvice. "
 (ignore-errors (defvar my-java-classpath goesr-classpath "Path for my .class or .jar files.")
    (defvar my-java-sourcepath goesr-sourcepath "Path for my .java files."))
 
+;; Workaround Evil bug https://bitbucket.org/lyro/evil/issue/211/doesnt-create-new-line-in-insert-mode
+(fset 'evil-insert-post-command nil)
+
 ;;; Relating to tabs
 ;; I would prefer automatic guessing of my-offset based on the offset in use for the
 ;; surrounding code.
