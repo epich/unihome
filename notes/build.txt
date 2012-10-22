@@ -10,3 +10,7 @@ $($(CSU)_MAKEDEP): $(DIR)/obj/%.d : $(DIR)/src/%.cc
 	       -e '/^$$/ d' -e 's/$$/ :/' < $@.tmp >> $@; \
 	   rm -f $@.tmp
 
+Benchmarks blog post, with link to GitHub benchmarking project:
+   http://softwareswirl.blogspot.com/2009/08/benchmarking-build-systems.html
+
+   
