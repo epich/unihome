@@ -6,6 +6,7 @@
 (setq visible-bell t) 
 (tool-bar-mode 0)
 (column-number-mode 1)
+(auto-fill-mode 1)
 ;; Disable the auto-save, the #* debris files slow down Emacs startup.
 (setq auto-save-default nil)
 ;; Don't create debris files next to originals.
@@ -180,7 +181,7 @@ anyway, which doesn't always combine with defadvice. "
    (defvar my-java-sourcepath goesr-sourcepath "Path for my .java files."))
 
 ;; Workaround Evil bug https://bitbucket.org/lyro/evil/issue/211/doesnt-create-new-line-in-insert-mode
-(fset 'evil-insert-post-command nil)
+(fset 'evil-insert-post-command (lambda () ))
 
 ;;; Relating to tabs
 ;; I would prefer automatic guessing of my-offset based on the offset in use for the
@@ -212,11 +213,6 @@ anyway, which doesn't always combine with defadvice. "
           (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
               (backward-delete-char (- (match-end 1) (match-beginning 1)))
             (call-interactively 'backward-delete-char)))))))
-;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
-(define-key evil-insert-state-map (kbd "DEL") 'backspace-whitespace-to-tab-stop)
-;; Tab behavior is too retarded in several major modes.  Either it is unncessarily
-;; restrictive about allowing tabbing, or it aligns with the line above in the wrong cases.
-(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
 ;; Permanently force Emacs to indent with spaces, never with TABs:
 (setq-default indent-tabs-mode nil)
 (setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
@@ -267,6 +263,7 @@ anyway, which doesn't always combine with defadvice. "
  '(ac-delay 1.0)
  '(c-syntactic-indentation nil)
  '(ediff-merge-split-window-function (quote split-window-vertically))
+ '(evil-ex-hl-update-delay 0.01)
  '(evil-intercept-maps nil)
  '(evil-move-cursor-back nil)
  '(evil-overriding-maps nil)
@@ -307,7 +304,7 @@ anyway, which doesn't always combine with defadvice. "
  '(rainbow-delimiters-depth-6-face ((t (:foreground "orange"))))
  '(rainbow-delimiters-depth-7-face ((t (:foreground "white"))))
  '(rainbow-delimiters-depth-8-face ((t (:foreground "MediumOrchid2"))))
- '(rainbow-delimiters-depth-9-face ((t (:foreground "orange")))) 
+ '(rainbow-delimiters-depth-9-face ((t (:foreground "orange"))))
  '(whitespace-tab ((((class color) (background dark)) (:background "grey50" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
@@ -669,9 +666,9 @@ nil in keymap-from."
       ;; Tabs are important in makefiles
       ;;
       ;; Set tab to nil, to get the builtin tab behavior.
-      (define-key evil-insert-state-map (kbd "TAB") nil)
+      (define-key evil-insert-state-local-map (kbd "TAB") nil)
       (setq indent-tabs-mode t)
-      
+
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-makefile-log)
       ))
 (add-hook 'nxml-mode-hook
@@ -702,11 +699,25 @@ nil in keymap-from."
 (add-hook 'text-mode-hook 
    (lambda ()
       (log-msg "Inside text-mode-hook")
+     ;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
+     (define-key evil-insert-state-local-map (kbd "DEL") 'backspace-whitespace-to-tab-stop)
+     ;; Tab behavior is too retarded in several major modes.  Either it is unncessarily
+     ;; restrictive about allowing tabbing, or it aligns with the line above in the wrong cases.
+     (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop)
       ))
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (log-msg "Inside prog-mode-hook")
+            ;; We want special tab behavior in programming modes, because the usefulness
+            ;; just barely out weights the annoyances.
+            (define-key evil-insert-state-local-map (kbd "DEL") nil)
+            (define-key evil-insert-state-local-map (kbd "TAB") nil)
+            ))
+
 (add-hook 'after-change-major-mode-hook
    (lambda ()
-      ;; Force Evil mode in Fundamental mode.
-      (evil-mode 1)))
+     ;; Force Evil mode in Fundamental mode.
+     (evil-mode 1)))
 
 ;;; Load TAGS file, searching upwards from the directory Emacs was launched.
 (defun find-file-upwards (file-to-find)
