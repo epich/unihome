@@ -123,6 +123,7 @@ Issues:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
       : Is there a way to disable electric-pair-mode in the minibuffer?
+   : How to automatically wrap text and code at 80 columns?
    : When up arrowing through search history, Vim goes to end of line, Evil beginning.
       : This is consistent with Emacs minibuffer in general.  Investigate
       : Can I use an Evil ex hook for this?  See:
@@ -259,6 +260,8 @@ Issues:
    : Opening through symlinks in an hg repo is slow by a factor of about 5.
    : Logging
       : Is there a way to get the current function's name, in order to put in log-msg prefix.
+      : Fix log-msg to accept var args like message function does.  ie using format tokens without the format function.
+   : Learn how to use M-$ ispell-word .
    : Organize and optimize Emacs lisp init code.
       : Move most of .emacs code to .el files and build it with the others.
       : Links:
@@ -277,7 +280,11 @@ Issues:
             : Maybe need a higher Python script to
                : start up Emacs multiple times
                : discard the first run in case there's any caching or byte compiling that occurs.
+         : Use Emacs daemon
+   : Figure out why word navigation Evil commands don't work right
+     : They don't consider _ a part of word for example
    : In Evil motion state, can't mouse click buttons.  RET works however.
+   : Figure out how to (setq-default major-mode 'text-mode) with out conflicting with Evil's (setq-default major-mode 'turn-on-evil-mode)
    : Would like to pipe output of shell command to Emacs for display
       : See https://github.com/lewang/e-sink
    : Pick through the elisp of others:
