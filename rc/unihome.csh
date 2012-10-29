@@ -19,6 +19,7 @@ endif
 # Packages I want to install that aren't always a standard part of a Linux distro.
 setenv unihomePackages "vim mercurial"
 setenv EDITOR vim
+setenv PAGER less
 
 # Can fail to git clone from GitHub without this
 setenv GIT_SSL_NO_VERIFY true
