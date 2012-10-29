@@ -426,6 +426,7 @@ If STATE is nil, Evil is disabled in the buffer."
     dvc-status-mode
     dvc-tips-mode
     ediff-mode
+    ediff-meta-mode
     efs-mode
     Electric-buffer-menu-mode
     emms-browser-mode
@@ -558,6 +559,7 @@ If STATE is nil, Evil is disabled in the buffer."
     command-history-mode
     compilation-mode
     dictionary-mode
+    dired-mode
     ert-results-mode
     help-mode
     Info-mode
@@ -794,6 +796,17 @@ list of categories."
   :group 'evil)
 
 ;; Searching
+(defcustom evil-magic t
+  "Meaning which characters in a pattern are magic.
+The meaning of those values is the same as in Vim. Note that it
+only has influence if the evil search module is chosen in
+`evil-search-module'."
+  :group 'evil
+  :type '(radio (const :tag "Very magic." :value very-magic)
+                (const :tag "Magic" :value t)
+                (const :tag "Nomagic" :value nil)
+                (const :tag "Very nomagic" :value very-nomagic)))
+
 (defcustom evil-ex-search-vim-style-regexp nil
   "If non-nil Vim-style backslash codes are supported in search patterns.
 See `evil-transform-vim-style-regexp' for the supported backslash

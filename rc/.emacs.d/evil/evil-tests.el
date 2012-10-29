@@ -2581,18 +2581,34 @@ This bufferThis bufferThis buffe[r];; and for Lisp evaluation."))
 (ert-deftest evil-test-register ()
   "Test yanking and pasting to and from register."
   :tags '(evil yank paste)
-  (evil-test-buffer
-    "[f]oo\n"
-    ("\"aywP")
-    "fo[o]foo\n"
-    ("\"ayyP")
-    "[f]oofoo\nfoofoo\n")
-  (evil-test-buffer
-    "[f]oo\n"
-    ("\"ayw\"Ayw\"aP")
-    "foofo[o]foo\n"
-    ("\"ayy\"Ayy\"aP")
-    "[f]oofoofoo\nfoofoofoo\nfoofoofoo\n")
+  (ert-info ("simple lower case register")
+    (evil-test-buffer
+      "[f]oo\n"
+      ("\"ayw\"aP")
+      "fo[o]foo\n"
+      ("\"ayy\"aP")
+      "[f]oofoo\nfoofoo\n"))
+  (ert-info ("upper case register")
+    (evil-test-buffer
+      "[f]oo\n"
+      ("\"ayw\"Ayw\"aP")
+      "foofo[o]foo\n"
+      ("\"ayy\"Ayy\"aP")
+      "[f]oofoofoo\nfoofoofoo\nfoofoofoo\n"))
+  (ert-info ("upper case register and lines")
+    (evil-test-buffer
+      "[l]ine 1\nline 2\nline 3\nline 4\n"
+      ("\"a2Yjj\"A2Y\"aP")
+      "line 1\nline 2\n[l]ine 1\nline 2\nline 3\nline 4\nline 3\nline 4\n"
+      ("8G\"ap")
+      "line 1\nline 2\nline 1\nline 2\nline 3\nline 4\nline 3\nline 4\n[l]ine 1\nline 2\nline 3\nline 4\n"))
+  (ert-info ("yank with count")
+    (evil-test-buffer
+      "[l]ine 1\nline 2\nline 3\n"
+      ("\"a2yw\"aP")
+      "line [1]line 1\nline 2\nline 3\n"
+      ("\"a2yy\"aP")
+      "[l]ine 1line 1\nline 2\nline 1line 1\nline 2\nline 3\n"))
   (ert-info ("special register /")
     (evil-test-buffer
       "[f]oo bar\n"

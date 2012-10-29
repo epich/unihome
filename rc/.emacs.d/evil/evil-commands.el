@@ -1491,10 +1491,9 @@ The return value is the yanked text."
            (overlay-put overlay 'after-string string)
            (list (or evil-this-register (read-char))))
        (delete-overlay overlay))))
-  (when (fboundp 'evil-paste-before)
-    (when (evil-paste-before nil register t)
-      ;; go to end of pasted text
-      (forward-char))))
+  (when (evil-paste-before nil register t)
+    ;; go to end of pasted text
+    (forward-char)))
 
 (evil-define-command evil-use-register (register)
   "Use REGISTER for the next command."
@@ -2342,7 +2341,8 @@ the previous shell command is executed instead."
 (eval-when-compile (require 'ffap))
 (evil-define-command evil-find-file-at-point-with-line ()
   "Opens the file at point and goes to line-number."
-  (let ((fname (ffap-file-at-point)))
+  (require 'ffap)
+  (let ((fname (with-no-warnings (ffap-file-at-point))))
     (if fname
         (let ((line
                (save-excursion
@@ -2350,7 +2350,7 @@ the previous shell command is executed instead."
                  (and (re-search-backward ":\\([0-9]+\\)\\="
                                           (line-beginning-position) t)
                       (string-to-number (match-string 1))))))
-          (ffap-other-window)
+          (with-no-warnings (ffap-other-window))
           (when line
             (goto-char (point-min))
             (forward-line (1- line))))

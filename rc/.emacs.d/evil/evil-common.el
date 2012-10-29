@@ -1529,9 +1529,30 @@ register instead of replacing its content."
     nil)
    ((and (<= ?A register) (<= register ?Z))
     (setq register (downcase register))
-    (set-register register
-                  (concat (get-register register)
-                          text)))
+    (let ((content (get-register register)))
+      (cond
+       ((not content)
+        (set-register register text))
+       ((or (text-property-not-all 0 (length content)
+                                   'yank-handler nil
+                                   content)
+            (text-property-not-all 0 (length text)
+                                   'yank-handler nil
+                                   text))
+        ;; some non-trivial yank-handler -> always switch to line handler
+        ;; ensure complete lines
+        (when (and (> (length content) 0)
+                   (/= (aref content (1- (length content))) ?\n))
+          (setq content (concat content "\n")))
+        (when (and (> (length text) 0)
+                   (/= (aref text (1- (length text))) ?\n))
+          (setq text (concat text "\n")))
+        (setq text (concat content text))
+        (remove-list-of-text-properties 0 (length text) '(yank-handler) text)
+        (setq text (propertize text 'yank-handler '(evil-yank-line-handler)))
+        (set-register register text))
+       (t
+        (set-register register (concat content text))))))
    (t
     (set-register register text))))
 
@@ -1802,7 +1823,8 @@ Store the inserted text and its range to
 represented as a series (a list) of ranges whose disjoint union
 is a single range."
   (let* ((list buffer-undo-list) e ins insertions)
-    (while (and list (not (setq e (car-safe list)))) (setq list (cdr list)))
+    (while (and list (not (setq e (car-safe list))))
+      (setq list (cdr-safe list)))
     (when (and (not (memq this-command '(evil-open-above evil-open-below)))
                (listp list)
                ;; check if the latest undo entry is the one who was added
@@ -2840,8 +2862,9 @@ is stored in `evil-temporary-undo' instead of `buffer-undo-list'."
            (debug t))
   `(unwind-protect
        (let (buffer-undo-list)
-         ,@body
-         (setq evil-temporary-undo (cons nil buffer-undo-list)))
+         (prog1
+             (progn ,@body)
+           (setq evil-temporary-undo (cons nil buffer-undo-list))))
      (unless (eq buffer-undo-list t)
        ;; undo is enabled, so update the global buffer undo list
        (setq buffer-undo-list
@@ -2901,22 +2924,137 @@ in `evil-temporary-undo' instead."
              txt)))
      regexp nil t)))
 
+(defun evil-transform-magic (str magic quote transform &optional start)
+  "Transforms STR with magic characters.
+MAGIC is a regexp that matches all potential magic
+characters. Each occurence of CHAR as magic character within str
+is replaced by the result of calling the associated TRANSFORM
+function. TRANSFORM is a function taking two arguments, the
+character to be transformed and the rest of string after the
+character. The function should return a triple (REPLACEMENT REST
+. STOP) where REPLACEMENT is the replacement and REST is the rest
+of the string that has not been transformed. If STOP is non-nil
+then the substitution stops immediately.  The replacement starts
+at position START, everything before that position is returned
+literally.  The result is a pair (RESULT . REST). RESULT is a
+list containing the transformed parts in order. If two
+subsequents parts are both strings, they are concatenated. REST
+is the untransformed rest string (usually \"\" but may be more if
+TRANSFORM stopped the substitution). Which characters are
+considered as magic characters (i.e. the transformation happens
+if the character is NOT preceeded by a backslash) is determined
+by `evil-magic'. The special tokens \\v, \\V, \\m and \\M have
+always a special meaning (like in Vim) and should not be
+contained in TRANSFORMS, otherwise their meaning is overwritten.
+
+The parameter QUOTE is a quoting function applied to literal
+transformations, usually `regexp-quote' or `replace-quote'."
+  (save-match-data
+    (let ((regexp (concat "\\(?:\\`\\|[^\\]\\)\\(\\\\\\(?:\\(" magic "\\)\\|\\(.\\)\\)\\|\\(" magic "\\)\\)"))
+          (magic-chars (evil-get-magic evil-magic))
+          (evil-magic evil-magic)
+          (quote (or quote #'identity))
+          result stop)
+      (while (and (not stop) str (string-match regexp str))
+        (unless (zerop (match-beginning 1))
+          (push (substring str 0 (match-beginning 1)) result))
+        (let ((char (or (match-string 2 str)
+                        (match-string 3 str)
+                        (match-string 4 str)))
+              (rest (substring str (match-end 0))))
+          (cond
+           ((match-beginning 4)
+            ;; magic character without backslash
+            (if (string-match magic-chars char)
+                ;; magic, do transform
+                (let ((trans (funcall transform (aref char 0) rest)))
+                  (push (car trans) result)
+                  (setq str (cadr trans) stop (nthcdr 2 trans)))
+              ;; non-magic, literal transformation
+              (push (funcall quote char) result)
+              (setq str rest)))
+           ((match-beginning 2)
+            ;; magic character with backslash
+            (if (not (string-match magic-chars char))
+                ;; non-magic, do transform
+                (let ((trans (funcall transform (aref char 0) rest)))
+                  (push (car trans) result)
+                  (setq str (cadr trans) stop (nthcdr 2 trans)))
+              ;; magic, literal transformation
+              (push (funcall quote char) result)
+              (setq str rest)))
+           ((memq (aref char 0) '(?m ?M ?v ?V))
+            (setq evil-magic (cdr (assq (aref char 0)
+                                        '((?m . t)
+                                          (?M . nil)
+                                          (?v . very-magic)
+                                          (?V . very-nomagic)))))
+            (setq magic-chars (evil-get-magic evil-magic))
+            (setq str rest))
+           (t
+            ;; non-magic char with backslash, literal transformation
+            (push (funcall quote char) result)
+            (setq str rest)))))
+      (cond
+       ((and str (not stop))
+        (push str result)
+        (setq str ""))
+       ((not str)
+        (setq str "")))
+      ;; concatenate subsequent strings
+      ;; note that result is in reverse order
+      (let (repl)
+        (while result
+          (cond
+           ((and (stringp (car result))
+                 (zerop (length (car result))))
+            (pop result))
+           ((and (stringp (car result))
+                 (stringp (cadr result)))
+            (setq result (cons (concat (cadr result)
+                                       (car result))
+                               (nthcdr 2 result))))
+           (t
+            (push (pop result) repl))))
+        (cons repl str)))))
+
+(defconst evil-vim-regexp-replacements
+  '((?s . "[[:space:]]") (?S . "[^[:space:]]")
+    (?d . "[[:digit:]]")  (?D . "[^[:digit:]]")
+    (?x . "[[:xdigit:]]") (?X . "[^[:xdigit:]]")
+    (?o . "[0-7]")        (?O . "[^0-7]")
+    (?a . "[[:alpha:]]")  (?A . "[^[:alpha:]]")
+    (?l . "[a-z]")        (?L . "[^a-z]")
+    (?u . "[A-Z]")        (?U . "[^A-Z]")
+    (?y . "\\s")          (?Y . "\\S")
+    (?( . "\\(")          (?) . "\\)")
+    (?{ . "\\{")          (?} . "\\}")
+    (?[ . "[")            (?] . "]")
+    (?< . "\\<")          (?> . "\\>")
+    (?_ . "\\_")
+    (?* . "*")            (?+ . "+")
+    (?? . "?")            (?= . "?")
+    (?. . ".")
+    (?` . "`")            (?^ . "^")
+    (?$ . "$")            (?| . "\\|")))
+
+(defconst evil-regexp-magic "[][(){}<>_dDsSxXoOaAlLuUwWyY.*+?=^$`|]")
+
 (defun evil-transform-vim-style-regexp (regexp)
   "Transforms vim-style backslash codes to Emacs regexp.
 This includes the backslash codes \\d, \\D, \\s, \\S, \\x, \\X,
 \\o, \\O, \\a, \\A, \\l, \\L, \\u, \\U and \\w, \\W. The new
 codes \\y and \\Y can be used instead of the Emacs code \\s and
 \\S which have a different meaning in Vim-style."
-  (evil-transform-regexp
-   regexp
-   '((?s . "[[:space:]]") (?S . "[^[:space:]]")
-     (?d . "[[:digit:]]")  (?D . "[^[:digit:]]")
-     (?x . "[[:xdigit:]]") (?X . "[^[:xdigit:]]")
-     (?o . "[0-7]")        (?O . "[^0-7]")
-     (?a . "[[:alpha:]]")  (?A . "[^[:alpha:]]")
-     (?l . "[a-z]")        (?L . "[^a-z]")
-     (?u . "[A-Z]")        (?U . "[^A-Z]")
-     (?y . "\\s")          (?Y . "\\S"))))
+  (car
+   (car
+    (evil-transform-magic
+     regexp evil-regexp-magic #'regexp-quote
+     #'(lambda (char rest)
+         (let ((repl (assoc char evil-vim-regexp-replacements)))
+           (if repl
+               (list (cdr repl) rest)
+             (list (concat "\\" (char-to-string char)) rest))))))))
 
 ;;; Substitute
 
@@ -2934,70 +3072,82 @@ codes \\y and \\Y can be used instead of the Emacs code \\s and
     (concat (upcase (substring str 0 1))
             (substring str 1))))
 
+(defun evil-get-magic (magic)
+  "Returns a regexp matching the magic characters according to MAGIC.
+Depending on the value of MAGIC the following characters are
+considered magic.
+  t             []{}*+?.&~$^
+  nil           []{}*+?$^
+  'very-magic   not 0-9A-Za-z_
+  'very-nomagic empty."
+  (cond
+   ((eq magic t) "[]}{*+?.&~$^]")
+   ((eq magic 'very-magic) "[^0-9A-Za-z_]")
+   ((eq magic 'very-nomagic) "\\\\")
+   (t "[]}{*+?$^]")))
+
+;; TODO: support magic characters in patterns
+(defconst evil-replacement-magic "[eElLuU0-9&#,]"
+  "All magic characters in a replacement string")
+
 (defun evil-compile-subreplacement (to &optional start)
   "Convert a regexp replacement TO to Lisp from START until \\e or \\E.
 Returns a pair (RESULT . REST). RESULT is a list suitable for
 `perform-replace' if necessary, the original string if not.
 REST is the unparsed remainder of TO."
-  (let ((regexp "\\(\\`\\|[^\\]\\)\\(\\\\\\\\\\)*\\\\[^0-9&]")
-        (rest "") char list)
-    (save-match-data
-      (if (not (string-match regexp to))
-          (cons to "")
-        (while (progn
-                 (setq start (match-end 0))
-                 (push (substring to 0 (- start 2)) list)
-                 (setq char (aref to (1- start))
-                       to (substring to start))
-                 (cond
-                  ((eq char ?#)
-                   (push '(number-to-string replace-count) list))
-                  ((memq char '(?e ?E))
-                   (setq rest to to ""))
-                  ((memq char '(?l ?L ?u ?U))
-                   (let ((result (evil-compile-subreplacement to))
-                         (func (cdr (assoc char
-                                           '((?l . evil-downcase-first)
-                                             (?L . downcase)
-                                             (?u . evil-upcase-first)
-                                             (?U . upcase))))))
-                     (push `(,func
-                             (replace-quote
-                              (evil-match-substitute-replacement
-                               ,(car result) t))) list)
-                     (setq to (cdr result))))
-                  ((eq char ?,)
-                   (setq start (read-from-string to))
-                   (push `(replace-quote ,(car start)) list)
-                   (let ((end
-                          ;; swallow a space after a symbol
-                          (if (and (or (symbolp (car start))
-                                       ;; swallow a space after 'foo,
-                                       ;; but not after (quote foo)
-                                       (and (eq (car-safe (car start)) 'quote)
-                                            (not (= ?\( (aref to 0)))))
-                                   (eq (string-match " " to (cdr start))
-                                       (cdr start)))
-                              (1+ (cdr start))
-                            (cdr start))))
-                     (setq to (substring to end))))
-                  ((eq char ?\\)
-                   (push "\\\\" list))
-                  (t ; let Emacs unescape the character
-                   (push (car-safe (read-from-string
-                                    (format "\"\\%c\"" char))) list)))
-                 (string-match regexp to)))
-        (setq to (nreverse (delete "" (cons to list))))
-        (replace-match-string-symbols to)
-        (cons (if (cdr to)
-                  (cons 'concat to)
-                (car to))
-              rest)))))
+  (let ((result
+         (evil-transform-magic
+          to evil-replacement-magic #'replace-quote
+          #'(lambda (char rest)
+              (cond
+               ((eq char ?#)
+                (list '(number-to-string replace-count) rest))
+               ((memq char '(?e ?E))
+                `("" ,rest . t))
+               ((memq char '(?l ?L ?u ?U))
+                (let ((result (evil-compile-subreplacement rest))
+                      (func (cdr (assoc char
+                                        '((?l . evil-downcase-first)
+                                          (?L . downcase)
+                                          (?u . evil-upcase-first)
+                                          (?U . upcase))))))
+                  (list `(,func
+                          (replace-quote
+                           (evil-match-substitute-replacement
+                            ,(car result) t)))
+                        (cdr result))))
+               ((eq char ?,)
+                (let* ((obj (read-from-string rest))
+                       (result `(replace-quote ,(car obj)))
+                       (end
+                        ;; swallow a space after a symbol
+                        (if (and (or (symbolp (car obj))
+                                     ;; swallow a space after 'foo,
+                                     ;; but not after (quote foo)
+                                     (and (eq (car-safe (car obj)) 'quote)
+                                          (not (= ?\( (aref rest 0)))))
+                                 (eq (string-match " " rest (cdr obj))
+                                     (cdr obj)))
+                            (1+ (cdr obj))
+                          (cdr obj))))
+                  (list result (substring rest end))))
+               (t
+                (list (concat "\\" (char-to-string char)) rest))))
+          start)))
+    (let ((rest (cdr result))
+          (result (car result)))
+      (replace-match-string-symbols result)
+      (cons (if (cdr result)
+                (cons 'concat result)
+              (car result))
+            rest))))
 
 (defun evil-compile-replacement (to)
   "Maybe convert a regexp replacement TO to Lisp.
-Returns a list suitable for `perform-replace' if necessary,
-the original string if not."
+Returns a list suitable for `perform-replace' if necessary, the
+original string if not. Currently the following magic characters
+in replacements are supported: 0-9&#lLuU,
+The magic character , (comma) start an Emacs-lisp expression."
   (when (stringp to)
     (save-match-data
       (cons 'replace-eval-replacement
