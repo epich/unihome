@@ -36,20 +36,38 @@
        (electric-pair-mode 0)))
 
 ;; Maximize window upon startup.  A non toggling way to do this would be nice.
-(defun toggle-fullscreen ()
+(defun x-toggle-fullscreen ()
+  "Toggle fullscreen in X11. "
   (interactive)
   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
                          '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
                          '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
+(defun msw-toggle-fullscreen ()
+  "Placeholder for MS Windows fullscreen function. "
+  )
+(defun toggle-fullscreen ()
+  (interactive)
+  ;; When cl-case is available, use that for a bit more cleanliness.
+  (cond
+   ((eql system-type 'aix)           (x-toggle-fullscreen))
+   ((eql system-type 'berkeley-unix) (x-toggle-fullscreen))
+   ((eql system-type 'cygwin)        (msw-toggle-fullscreen))
+   ((eql system-type 'darwin)        (x-toggle-fullscreen))
+   ((eql system-type 'gnu)           (x-toggle-fullscreen))
+   ((eql system-type 'gnu/linux)     (x-toggle-fullscreen))
+   ((eql system-type 'gnu/kfreebsd)  (x-toggle-fullscreen))
+   ((eql system-type 'hpux)          (x-toggle-fullscreen))
+   ((eql system-type 'irix)          (x-toggle-fullscreen))
+   ((eql system-type 'ms-dos)        (msw-toggle-fullscreen))
+   ((eql system-type 'usg-unix-v)    (x-toggle-fullscreen))
+   ((eql system-type 'windows-nt)    (msw-toggle-fullscreen))))
 (toggle-fullscreen)
 
 ;; Set the frame title to the current filename.
 (setq-default frame-title-format
               '(:eval (format "%s"
                               (file-name-nondirectory (or (buffer-file-name) default-directory)))))
-
-(defun my-no-op () "No op, meaning do nothing.")
 
 ;;; Functions to facilitate elisp debug logging.
 (defvar my-date-time-format "%Y-%m-%dT%H:%M:%S"
@@ -425,10 +443,10 @@ takes no args. "
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
 (define-key evil-insert-state-map (kbd "C-y") nil)
 ;; Disable C-0 and C-- since I hit them alot unintentionally.
-(define-key evil-motion-state-map (kbd "C-0") 'my-no-op)
-(define-key evil-normal-state-map (kbd "C-0") 'my-no-op)
-(define-key evil-motion-state-map (kbd "C--") 'my-no-op)
-(define-key evil-normal-state-map (kbd "C--") 'my-no-op)
+(define-key evil-motion-state-map (kbd "C-0") (lambda ()))
+(define-key evil-normal-state-map (kbd "C-0") (lambda ()))
+(define-key evil-motion-state-map (kbd "C--") (lambda ()))
+(define-key evil-normal-state-map (kbd "C--") (lambda ()))
 
 ;; Move keybindings between keymaps.
 ;;
