@@ -262,6 +262,9 @@ Issues:
       : Is there a way to get the current function's name, in order to put in log-msg prefix.
       : Fix log-msg to accept var args like message function does.  ie using format tokens without the format function.
    : Learn how to use M-$ ispell-word .
+   : Learn how to do this with better semi-automation:
+      : case longlonglong     do-something-aligned-with-below
+      : case short            do-something-aligned-with-above
    : Organize and optimize Emacs lisp init code.
       : Move most of .emacs code to .el files and build it with the others.
       : Links:
