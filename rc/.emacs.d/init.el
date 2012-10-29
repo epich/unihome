@@ -648,6 +648,22 @@ nil in keymap-from."
       (define-key evil-motion-state-local-map (kbd "<down>") 'down-list)
    )
 
+(defun bind-my-tab-del-keys ()
+  "Bind the TAB and DEL keys because default behaviors are shitty. "
+     ;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
+     (define-key evil-insert-state-local-map (kbd "DEL") 'backspace-whitespace-to-tab-stop)
+     ;; Tab behavior is too retarded in several major modes.  Either it is unncessarily
+     ;; restrictive about allowing tabbing, or it aligns with the line above in the wrong cases.
+     (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop))
+
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (log-msg "Inside prog-mode-hook")
+            ;; We want special tab behavior in programming modes, because the usefulness
+            ;; just barely out weights the annoyances.
+            (define-key evil-insert-state-local-map (kbd "DEL") nil)
+            (define-key evil-insert-state-local-map (kbd "TAB") nil)
+            ))
 (add-hook 'emacs-lisp-mode-hook 
    (lambda ()
       (log-msg "Inside emacs-lisp-mode-hook")
@@ -679,11 +695,6 @@ nil in keymap-from."
 (add-hook 'python-mode-hook 
    (lambda ()
       (log-msg "Inside python-mode-hook")
-      ;; I'm not sure I like tab behavior in Python, so redefine tab.
-      ;;
-      ;; Emacs' bzr trunk has significant changes to the Python major mode, so I'll
-      ;; reevaluate what to do about tabbing in Python once I've tried it out.
-      ;; (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop)
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-python-log)
       (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-python-doc)))
 (add-hook 'c-mode-common-hook 
@@ -691,6 +702,7 @@ nil in keymap-from."
       (log-msg "Inside c-mode-common-hook. ")
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
       (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
+      (bind-my-tab-del-keys)
       ))
 (add-hook 'sh-mode-hook 
    (lambda ()
@@ -699,20 +711,8 @@ nil in keymap-from."
 (add-hook 'text-mode-hook 
    (lambda ()
       (log-msg "Inside text-mode-hook")
-     ;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
-     (define-key evil-insert-state-local-map (kbd "DEL") 'backspace-whitespace-to-tab-stop)
-     ;; Tab behavior is too retarded in several major modes.  Either it is unncessarily
-     ;; restrictive about allowing tabbing, or it aligns with the line above in the wrong cases.
-     (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop)
+     (bind-my-tab-del-keys)
       ))
-(add-hook 'prog-mode-hook
-          (lambda ()
-            (log-msg "Inside prog-mode-hook")
-            ;; We want special tab behavior in programming modes, because the usefulness
-            ;; just barely out weights the annoyances.
-            (define-key evil-insert-state-local-map (kbd "DEL") nil)
-            (define-key evil-insert-state-local-map (kbd "TAB") nil)
-            ))
 
 (add-hook 'after-change-major-mode-hook
    (lambda ()
