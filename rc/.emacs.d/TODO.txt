@@ -223,6 +223,8 @@ Issues:
          : Would be good to pursue if hacking the syntax table is more generalized than I find I want.
       : Relevant, but not particularly helpful:
          http://stackoverflow.com/questions/9595277/emacs-xterm-mouse-mode-double-click-to-highlight-word
+      : Double clicking a / char in Evil states no longer works, does work in Emacs state.
+         : Bisect the Evil repo to determine the guilty changeset.
    : Make Emacs state visually obvious.  Ideas:
       : Have the status line be a different color based on evil state.
          (set-face-background 'modeline "Blue")
