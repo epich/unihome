@@ -26,6 +26,8 @@
 
 ;;; Code:
 
+(declare-function evil-visual-state-p "evil-visual-state-p")
+
 ;;; Compatibility for Emacs 23
 (unless (fboundp 'deactivate-input-method)
   (defalias 'deactivate-input-method 'inactivate-input-method))
@@ -1409,7 +1411,7 @@ or a marker object pointing nowhere."
 (defun evil-set-jump (&optional pos)
   "Set jump point at POS.
 POS defaults to point."
-  (unless (region-active-p)
+  (unless (or (region-active-p) (evil-visual-state-p))
     (evil-save-echo-area
       (mapc #'(lambda (marker)
                 (set-marker marker nil))
@@ -2573,6 +2575,7 @@ use `evil-regexp-range'."
   (let ((open-regexp (regexp-quote (string open)))
         (close-regexp (regexp-quote (string close)))
         (count (or count 1))
+        forward-sexp-function ; always use the default one
         level range)
     (save-excursion
       (if (or (evil-in-comment-p)
