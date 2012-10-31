@@ -44,6 +44,8 @@ Notes:
             : Follow prompts
          : Vertical mode:
             : \|
+   : Useful commands:
+      : align-regexp for aligning to the right of other text, eg Python dictionaries with an entry per line, use :.*, as regexp.
    : Etags
       : Call visit-tag-table function to load TAGS file.
    : Use M-; on a selection to comment it out.

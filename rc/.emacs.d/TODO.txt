@@ -290,6 +290,9 @@ Issues:
      : They don't consider _ a part of word for example
    : In Evil motion state, can't mouse click buttons.  RET works however.
    : Figure out how to (setq-default major-mode 'text-mode) with out conflicting with Evil's (setq-default major-mode 'turn-on-evil-mode)
+   : Finding location of .emacs.d
+      : See thread: http://lists.gnu.org/archive/html/help-gnu-emacs/2012-10/msg00467.html
+      : Try: using --eval flag with an ordinary load of init.el .  Verify correct behaviors result.
    : Would like to pipe output of shell command to Emacs for display
       : See https://github.com/lewang/e-sink
    : Pick through the elisp of others:
