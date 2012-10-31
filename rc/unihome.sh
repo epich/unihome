@@ -16,5 +16,6 @@ alias gentags='etags `find . -name "*.h" -o -name "*.cc" -o -name "*.java" -o -n
 PATH=~/bin:$PATH
 export EDITOR=vim
 export PAGER=less
-export PS1="\e[0;36m\h \w :\e[m "
+#export PS1="\e[0;36m\h \w :\e[m "
+export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\]"
 
