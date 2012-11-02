@@ -44,4 +44,10 @@ Merge arrow:
 View versions:
    In dynamic view:
       cd /view/MyView/vobs/myVobs/myPath/myFile@@/main/[...]/maBranch
-    
+
+If get error in dynamic view:
+   ls: reading directory .: Stale NFS file handle
+Then do:
+   cd ~
+   ct setcs -current
+
