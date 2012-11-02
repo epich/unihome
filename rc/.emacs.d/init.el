@@ -331,6 +331,8 @@ anyway, which doesn't always combine with defadvice. "
 ;; Change modes that come up in Emacs state to come up in motion state instead.
 (setq evil-motion-state-modes (append evil-emacs-state-modes evil-motion-state-modes))
 (setq evil-emacs-state-modes nil)
+;; Use Dired in motion state instead of the keymap created in evil-integration.el .
+(setq evil-motion-state-modes (cons 'dired-mode evil-motion-state-modes))
 
 ;;; Evil key bindings
 ;;
