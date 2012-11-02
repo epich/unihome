@@ -182,23 +182,27 @@ Issues:
                : Dependancy graph
                : Composition graph
                : Inheritance graph
-   : Learn about VCS use
-      : Ediff
-         : Submit patch to Evil to include 'ediff-meta-mode in evil-motion-state-maps.
-            : Use opportunity to ask about how to push directly to project.
-         : Figure out a good way to apply motion commands to both windows.
-            : Perhaps rebind Ediff's commands selectively, particular v and V commands
-            : Perhaps use a prefix key to access Ediff's keymap
-               : Maybe a capital letter, so as I can put caps lock and still use my ; and ' motion commands.
-            : Or take a more generalized approach for applying motion commands to all displayed windows
-         : Customize to open vertically split
-            : Set custom value, but doesn't work
-         : \| doesn't work sometimes at first when entering an Ediff session.
-            : Seems doing C-z puts me back in motion state after this happens.
-            : Submitted bug report.
-         : ediff-patch-file applies the patch and saves the file, even if file is read only (and owned by me)
-            : How to not have it apply patch until I save (this would seem to be most sensible)?
-      : How to do merges
+   : Multi window navigation
+      : Set up so as motion commands will go to all windows.
+         : Make toggle for on and off.
+   : Ediff
+      : Deficiencies
+         : When navigating in non changed regions, other window should navigate automatically in sync.
+            : There is v, V, <, > commands, but why shouldn't it integrate with all existing motions?
+               : v and V don't even resync the windows if they get out of sync.
+         : Highlighting is overkill, hides font locking etc.
+            : Can we use indicators in the margin?
+               : How to indicate the intra line diffs this way?
+                  : Perhaps with underline or bold face?
+         : Should open vertically by default.
+            : Set custom value, but doesn't work.
+               : '(ediff-merge-split-window-function (quote split-window-vertically))
+               : Seems ediff-merge-split-window-function is neither a variable nor function.
+         : ediff-patch-file alters the file and saves!  What if I just want to preview the patch?
+            : How else may I enter Ediff?
+         : Is there a way to forego having another window at all, and I can simply bind useful Ediff commands myself.
+   : Learn merging in Git
+      : Use magit?
    : Learn about org-mode
    : Learn about Buffer Menu and BS.  What's the difference?
    : Being prompted about running Python process is annoying.
