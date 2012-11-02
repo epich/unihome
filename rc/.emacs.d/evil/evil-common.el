@@ -26,7 +26,7 @@
 
 ;;; Code:
 
-(declare-function evil-visual-state-p "evil-visual-state-p")
+(declare-function evil-visual-state-p "evil-states")
 
 ;;; Compatibility for Emacs 23
 (unless (fboundp 'deactivate-input-method)
@@ -1547,6 +1547,15 @@ register instead of replacing its content."
                               ?0 ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
                 register-alist)
         #'(lambda (reg1 reg2) (< (car reg1) (car reg2)))))
+
+(defsubst evil-kbd-macro-suppress-motion-error ()
+  "Returns non-nil if a motion error should be suppressed.
+Whether the motion error should be suppressed depends on the
+variable `evil-kbd-macro-suppress-motion-error'."
+  (or (and defining-kbd-macro
+           (memq evil-kbd-macro-suppress-motion-error '(t record)))
+      (and executing-kbd-macro
+           (memq evil-kbd-macro-suppress-motion-error '(t replay)))))
 
 ;;; Region
 
@@ -3123,7 +3132,7 @@ REST is the unparsed remainder of TO."
       (replace-match-string-symbols result)
       (cons (if (cdr result)
                 (cons 'concat result)
-              (car result))
+              (or (car result) ""))
             rest))))
 
 (defun evil-compile-replacement (to)

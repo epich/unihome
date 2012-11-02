@@ -1150,6 +1150,17 @@ If nil, KEYS is used."
       "ABCABCABCABCABCABCABCABCABCABABCABCABCABCABCABCABCABCABCABCAB[C]C;; \
 This buffer is for notes")))
 
+(ert-deftest evil-test-repeat-error ()
+  "Test whether repeat returns to normal state in case of an error."
+  (evil-test-buffer
+    "[l]ine 1\nline 2\nline 3\nline 4"
+    ("ixxx" [down] [down] [home] "yyy" [escape])
+    "xxxline 1\nline 2\nyy[y]line 3\nline 4"
+    (should-error (execute-kbd-macro "j^."))
+    (should (evil-normal-state-p))
+    ("^")
+    "xxxline 1\nline 2\nyyyline 3\n[x]xxline 4"))
+
 (ert-deftest evil-test-insert-vcount ()
   "Test `evil-insert' with vertical repeating"
   :tags '(evil repeat)
@@ -6460,7 +6471,12 @@ if no previous selection")
       (evil-test-buffer
         "no 1\nno 2\nno 3\n[y]es 4\nno 5\nno 6\nno 7\n"
         (":s/^/# /g")
-        "no 1\nno 2\nno 3\n[#] yes 4\nno 5\nno 6\nno 7\n"))))
+        "no 1\nno 2\nno 3\n[#] yes 4\nno 5\nno 6\nno 7\n"))
+    (ert-info ("Substitute with empty")
+      (evil-test-buffer
+        "[a]bc def abc jkl"
+        (":s/b//g")
+        "[a]c def ac jkl"))))
 
 (ert-deftest evil-test-ex-substitute-replacement ()
   "Test `evil-ex-substitute' with special replacements."

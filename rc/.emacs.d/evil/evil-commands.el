@@ -46,7 +46,8 @@ Movement is restricted to the current line unless CROSSLINES is non-nil.
 If NOERROR is non-nil, don't signal an error upon reaching the end
 of the line or the buffer; just return nil."
   :type exclusive
-  (interactive "<c>" (list evil-cross-lines))
+  (interactive "<c>" (list evil-cross-lines
+                           (evil-kbd-macro-suppress-motion-error)))
   (cond
    (noerror
     (condition-case nil
@@ -78,7 +79,8 @@ Movement is restricted to the current line unless CROSSLINES is non-nil.
 If NOERROR is non-nil, don't signal an error upon reaching the beginning
 of the line or the buffer; just return nil."
   :type exclusive
-  (interactive "<c>" (list evil-cross-lines))
+  (interactive "<c>" (list evil-cross-lines
+                           (evil-kbd-macro-suppress-motion-error)))
   (cond
    (noerror
     (condition-case nil
@@ -1535,10 +1537,10 @@ The return value is the yanked text."
   :keep-visual t
   :suppress-operator t
   (interactive
-   (list (unless evil-this-macro
+   (list (unless (and evil-this-macro defining-kbd-macro)
            (or evil-this-register (read-char)))))
   (cond
-   (evil-this-macro
+   ((and evil-this-macro defining-kbd-macro)
     (condition-case nil
         (end-kbd-macro)
       (error nil))
@@ -1548,6 +1550,7 @@ The return value is the yanked text."
       (evil-set-register evil-this-macro last-kbd-macro))
     (setq evil-this-macro nil))
    (t
+    (when defining-kbd-macro (end-kbd-macro))
     (setq evil-this-macro register)
     (evil-set-register evil-this-macro nil)
     (start-kbd-macro nil))))
@@ -1578,11 +1581,13 @@ when called interactively."
       ;; when defining macro
       (unless evil-this-macro
         (error "No previous macro"))
-    (condition-case nil
+    (condition-case err
         (execute-kbd-macro macro count)
       ;; enter Normal state if the macro fails
-      (error (evil-normal-state)
-             (evil-normalize-keymaps)))))
+      (error
+       (evil-normal-state)
+       (evil-normalize-keymaps)
+       (signal (car err) (cdr err))))))
 
 ;;; Visual commands
 
