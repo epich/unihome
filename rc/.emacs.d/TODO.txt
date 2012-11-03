@@ -198,8 +198,9 @@ Issues:
             : Set custom value, but doesn't work.
                : '(ediff-merge-split-window-function (quote split-window-vertically))
                : Seems ediff-merge-split-window-function is neither a variable nor function.
-         : ediff-patch-file alters the file and saves!  What if I just want to preview the patch?
-            : How else may I enter Ediff?
+         : ediff-patch-file alters the file and saves.  What if I just want to preview the patch?
+            : Ediff manual suggests ediff-patch-file is the only way.
+            : ediff-patch-buffer doesn't work for multi file diffs.
          : Is there a way to forego having another window at all, and I can simply bind useful Ediff commands myself.
    : Learn merging in Git
       : Use magit?
