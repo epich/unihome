@@ -1,0 +1,6 @@
+Use mklink to establish a symlink from unihome/rc/.emacs.d to C:\Users\epich\AppData\Roaming\.emacs.d
+
+Make a shortcut to unihome/scripts/start-emacs.bat .
+
+Use Cygwin to byte compile Evil and other elisp.
+
