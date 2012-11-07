@@ -280,6 +280,7 @@ anyway, which doesn't always combine with defadvice. "
  '(Buffer-menu-name-width 64)
  '(ac-delay 1.0)
  '(c-syntactic-indentation nil)
+ '(delete-by-moving-to-trash t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
  '(evil-ex-hl-update-delay 0.01)
  '(evil-intercept-maps nil)
