@@ -45,7 +45,7 @@
                          '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
 (defun msw-toggle-fullscreen ()
   "Placeholder for MS Windows fullscreen function. "
-  )
+  (w32-send-sys-command 61488))
 (defun toggle-fullscreen ()
   (interactive)
   ;; When cl-case is available, use that for a bit more cleanliness.
