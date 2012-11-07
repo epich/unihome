@@ -3,6 +3,8 @@
    select * from all_tables;
    select * from user_tables;
 
+select value from product_attribute where product_id in (select product_id from product where product_type_id=1002 and product_attribute_type_id=250);
+
 sqlplus:
    Non interactive:
       echo exit | sqlplus
