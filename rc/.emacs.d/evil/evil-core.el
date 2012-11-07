@@ -117,10 +117,9 @@
       (setq major-mode 'fundamental-mode))
     ;; determine and enable the initial state
     (unless evil-state
-      (evil-initialize-state)
-      ;; re-determine the initial state in `post-command-hook' since
-      ;; the major mode may not have been initialized yet
-      (add-hook 'post-command-hook #'evil-initialize-state t t))
+      ;; note: the initial state may be re-determined in
+      ;; `post-command-hook' by `evil-mode-check-buffers'
+      (evil-initialize-state))
     (add-hook 'input-method-activate-hook #'evil-activate-input-method t t)
     (add-hook 'input-method-deactivate-hook #'evil-deactivate-input-method t t)
     (add-hook 'activate-mark-hook #'evil-visual-activate-hook nil t)
@@ -216,8 +215,7 @@ Restore the previous state afterwards."
 
 (defun evil-initializing-p (&optional buffer)
   "Whether Evil is in the process of being initialized."
-  (with-current-buffer (or buffer (current-buffer))
-    (memq #'evil-initialize-state post-command-hook)))
+  (memq (or buffer (current-buffer)) evil-mode-buffers))
 
 (defun evil-initialize-state (&optional state buffer)
   "Set up the initial state for BUFFER.
@@ -225,7 +223,6 @@ BUFFER defaults to the current buffer.
 Uses STATE if specified, or calls `evil-initial-state-for-buffer'.
 See also `evil-set-initial-state'."
   (with-current-buffer (or buffer (current-buffer))
-    (remove-hook 'post-command-hook #'evil-initialize-state t)
     (if state (evil-change-state state)
       (evil-change-to-initial-state buffer))))
 (put 'evil-initialize-state 'permanent-local-hook t)
@@ -285,6 +282,14 @@ This is the state the buffer comes up in."
     (set modes (delq mode (symbol-value modes))))
   (when state
     (add-to-list (evil-state-property state :modes) mode)))
+
+(defadvice evil-mode-check-buffers (before start-evil activate)
+  "Determine the initial state."
+  (dolist (buffer evil-mode-buffers)
+    (when (and (buffer-live-p buffer)
+               (not (minibufferp buffer)))
+      (with-current-buffer buffer
+        (evil-initialize-state)))))
 
 (evil-define-command evil-change-to-initial-state
   (&optional buffer message)
