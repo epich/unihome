@@ -45,7 +45,7 @@
                          '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
 (defun msw-toggle-fullscreen ()
   "Placeholder for MS Windows fullscreen function. "
-  )
+  (w32-send-sys-command 61488))
 (defun toggle-fullscreen ()
   (interactive)
   ;; When cl-case is available, use that for a bit more cleanliness.
@@ -280,6 +280,7 @@ anyway, which doesn't always combine with defadvice. "
  '(Buffer-menu-name-width 64)
  '(ac-delay 1.0)
  '(c-syntactic-indentation nil)
+ '(delete-by-moving-to-trash t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
  '(evil-ex-hl-update-delay 0.01)
  '(evil-intercept-maps nil)
