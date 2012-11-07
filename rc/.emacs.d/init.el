@@ -486,6 +486,8 @@ nil in keymap-from."
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
 (define-key evil-normal-state-map "P" 'evil-paste-after)
+;; Emacs' undo is more useful in visual state than evil-downcase is.
+(define-key evil-visual-state-map "u" nil)
 (define-key evil-motion-state-map "," nil)
 (define-key evil-motion-state-map "," 'kmacro-end-and-call-macro)
 (define-key evil-motion-state-map "sco"
