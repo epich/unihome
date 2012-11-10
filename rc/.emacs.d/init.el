@@ -466,6 +466,8 @@ nil in keymap-from."
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
 
+;; ^ in Dired is more useful than Evil's binding.
+(define-key evil-motion-state-map "^" nil)
 (define-key evil-normal-state-map "o" nil)
 (define-key evil-motion-state-map "o" 'next-buffer)
 (define-key evil-normal-state-map "O" nil)
