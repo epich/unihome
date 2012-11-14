@@ -1,15 +1,4 @@
 Issues:
-   : = key binding
-      : Have = trim trailing whitespace in the selected region.
-         : Use the whitespace-* elisp functions.
-         : Someone patched delete-trailing-whitespace to delete within region if active:
-            : URL: http://lists.gnu.org/archive/html/emacs-devel/2011-02/msg00432.html
-            : Available in Emacs 24.1
-            : Should prefer the whitespace elisp functions unless they don't work out.
-   : Have the p command paste and do a ==
-      : Make this conditional on the line pasting to is whitespace only.
-      : Perhaps file bug about pasting with 'p' on lines with no chars.  A space char is effectively created.
-      : Either way, when fixed, undo p and P swapping in evil-normal-state-map .
    : Backspace to tab stop backward-delete-whitespace-to-tab-stop
       : Doesn't correctly handle backspace when there's a selection.
          : Snag with solution:
@@ -23,12 +12,7 @@ Issues:
             : Does not work:
                : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
    : If I C-c or backspace to beginning of evil-search prompt, I have to wait in order to enter more input.  How to fix?
-   : Evil bug when auto reverting non existent file:
-      : Open files A, B, C.  Delete C, then try to use Evil to copy and paste text from B to A.  Errors are issued and the paste cannot proceed.
-         : Cannot reproduce this.
    : Can Elisp macros use Xpaths to modify code?
-   : How to specify other filenames' major modes, such as for Makefiles, Rakefiles, SCons files?
-      : Is there a way to resort to magic-mode-alist if a mode is not found?
    : Disconnect about Emacs' notion of where point is:
       : Official definition of point is between chars, cursor displayed over the next char.
          : Those which use this definition:
@@ -87,11 +71,6 @@ Issues:
       : Command to delete all of sexp except what's marked.
       : Try out port of Vim's surround to Emacs.
       : How to stop Emacs loading Lisp files when visiting them.
-   : Keyboard macros
-      : Weird bug that causes wipeout of undo boundaries
-         : Submitted bug report
-         : Works in bzr trunk, not 24.2.3 and earlier.
-            : Need to bisect
    : Keymapping
       : Edebug comes up in normal state.
          : Learn why
@@ -110,6 +89,7 @@ Issues:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
       : Is there a way to disable electric-pair-mode in the minibuffer?
    : How to automatically wrap text and code at 80 columns?
+      : Auto fill mode?
    : When up arrowing through search history, Vim goes to end of line, Evil beginning.
       : This is consistent with Emacs minibuffer in general.  Investigate
       : Can I use an Evil ex hook for this?  See:
@@ -121,54 +101,37 @@ Issues:
       : Need Evil analog to highlight-regexp and highlight-phrase
       : Look more at evil-ex-make-hl
       : Need a way to clear them.  evil-ex-delete-hl perhaps.
-   : Repeat . command issues:
-      : Pasting text into Emacs isn't recorded to repeat ring.
-         : Bug report submitted to Evil project.
-   : Learn the debugger
-      : Evil bug when exiting debugger, submitted bug report.
+   : Learn Edebug
       : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
    : Look into using undo-tree extension.
       : If it doesn't work out, consider mapping U to undo-only .
    : Learn about Dired
       : Is there a notion of finding a set of files based on a criteria (search term, use of symbol), then iteratively visiting just those?
       : Dired doesn't update when a directory is created separately.  Including when Auto Revert is enabled.
-   : Learn about CEDET
-      : Notes:
-         : EDE:
-            : Sets up project.
-            : Can be used to restrict search space for Semantic.
-         : Semantic
-            : Smart Help/Jump (show info and jump to definition)
-            : Symbol References (where is a symbol referenced)
-            : Smart completion: (require 'semantic-ia)
-            : Know about system headers: (require 'semantic-gcc)
-               : Also: (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
-         : COGRE
-            : UML diagrams (Cogre)
-         : Reference "gentle introduction": http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
-      Issues:
-         : Display in minibuffer undermines promptings and my ability to read them.
-      Needs:
-         : Symbol reference -- where is a symbol used or called?
-         : Jumping to definition
-            : Type 
-            : Symbol
-            : Function
-         : Backtrack from jumping
-            : Ideally my place would be saved automatically
-            : If not, Emacs and Evil likely offer a manual way to set my location to return to later.
-         : Highlight symbol where point is, and stay highlighted as I move around.
-         : Manage includes
-         : Switch between .h and .cpp
-            : Investigate eassist
-            : semantic-analyze-proto-impl-toggle
-            : Split display the two?
-         : Have function prototype and docs display, whether as tooltip or in other buffer.
-         : UML diagrams
-            : From a set of files, how do I generate:
-               : Dependancy graph
-               : Composition graph
-               : Inheritance graph
+   : CEDET
+      : Display in minibuffer undermines promptings and my ability to read them.
+      : Symbol reference -- where is a symbol used or called?
+      : Jumping to definition
+         : Type 
+         : Symbol
+         : Function
+      : Backtrack from jumping
+         : Ideally my place would be saved automatically
+         : If not, Emacs and Evil likely offer a manual way to set my location to return to later.
+      : Highlight symbol where point is, and stay highlighted as I move around.
+      : Manage includes
+      : Switch between .h and .cpp
+         : Investigate eassist
+         : semantic-analyze-proto-impl-toggle
+         : Split display the two?
+      : Have function prototype and docs display, whether as tooltip or in other buffer.
+      : UML diagrams
+         : From a set of files, how do I generate:
+            : Dependancy graph
+            : Composition graph
+            : Inheritance graph
+   : JDEE
+      : Hack to use CEDET in Emacs
    : Multi window navigation
       : Set up so as motion commands will go to all windows.
          : Make toggle for on and off.
@@ -217,17 +180,14 @@ Issues:
          http://stackoverflow.com/questions/9595277/emacs-xterm-mouse-mode-double-click-to-highlight-word
       : Double clicking a / char in Evil states no longer works, does work in Emacs state.
          : Bisect the Evil repo to determine the guilty changeset.
-   : Make Emacs state visually obvious.  Ideas:
-      : Have the status line be a different color based on evil state.
-         (set-face-background 'modeline "Blue")
-         Use hooks
-      : Could also set color of cursor instead:
-         See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
    : Get % to match <> such as in C++ or Java.
+      : Is this done via syntax table?
+   : Syntax tables:
+      : Change - and _ so as motion over variable names and such work better.
+      : Have double clicking work better (see above).
    : Frame's title
       : Set title to include host and directory (after file's basename)
       : Set title for Untitled buffers.
-   : How to toggle display of line wrapping?
    : Tabs
       : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
          : Some extensions:
@@ -278,8 +238,6 @@ Issues:
                : start up Emacs multiple times
                : discard the first run in case there's any caching or byte compiling that occurs.
          : Use Emacs daemon
-   : Figure out why word navigation Evil commands don't work right
-     : They don't consider _ a part of word for example
    : In Evil motion state, can't mouse click buttons.  RET works however.
    : Figure out how to (setq-default major-mode 'text-mode) with out conflicting with Evil's (setq-default major-mode 'turn-on-evil-mode)
    : Finding location of .emacs.d
@@ -303,7 +261,7 @@ Issues:
    : Other reading:
       Thorough GDB guide: http://www.dirac.org/linux/gdb/
 
-Bug reports filed:
+Evil bugs (submitted):
    : Updating of highlighted search
       : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
          1: Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
@@ -313,17 +271,8 @@ Bug reports filed:
          5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
       : Bug submitted to Evil project.
          : Issue 1 was solved with a defcustom.
-   : Evil prevents quitting Emacs from recursive edit when . repeating with repeat-ring under certain conditions:
-      : See my email to the mailing list: Confused by what command is "dot repeatable"
-      : Submitted bug report to Evil project.
-   : Visual mode
-      : Bug:
-         : Select text with v
-         : Select different text with mouse
-         : Both are highlighted, but y will only yank the second.
-         : Report submitted to project.
-      : Bug:
-         : Select with mouse, char under point is not highlighted, but it is with v selection.
-         : Report submitted to project.
-   : Evil doesn't allow point at end of line or end of buffer.
+   : Weird bug that causes wipeout of undo boundaries
+      : Submitted bug report
+      : Works in bzr trunk, not 24.2.3 and earlier.
+         : Need to bisect
 

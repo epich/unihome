@@ -95,6 +95,28 @@ Notes:
       M-:
    : Key chords:
       See http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
+   : Modes (major, minor)
+      : Use magic-mode-alist to use the beginning of a buffer to determine major mode.
+   : Modeline:
+      : To change color of modeline:
+         (set-face-background 'modeline "Blue")
+   : Point:
+      : To change color of point:
+         http://permalink.gmane.org/gmane.emacs.vim-emulation/1170
+   : CEDET
+      : Notes:
+         : EDE:
+            : Sets up project.
+            : Can be used to restrict search space for Semantic.
+         : Semantic
+            : Smart Help/Jump (show info and jump to definition)
+            : Symbol References (where is a symbol referenced)
+            : Smart completion: (require 'semantic-ia)
+            : Know about system headers: (require 'semantic-gcc)
+               : Also: (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
+         : COGRE
+            : UML diagrams (Cogre)
+         : Reference "gentle introduction": http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
    : Vim mapping plan:
       : Vim keys that aren't mapped to anything useful:
          t mapped
@@ -129,6 +151,9 @@ Notes:
       : There are experimental ParEdit patches.
          : http://mumble.net/~campbell/tmp/paredit/
          : None look compelling given their experimental nature.
+   : Whitespace
+      : Use delete-trailing-whitespace, whitespace-* functions to clean up trailing whitespace on lines.
+
 Retired issues with residual notes:
    : All things C-g does C-c should do.
       : Mapping to keyboard-escape-quit appears to cover most cases, except for quiting with unsaved mods.
