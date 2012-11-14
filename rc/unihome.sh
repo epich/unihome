@@ -8,7 +8,7 @@ alias c='cat'
 alias m='mplayer -loop 0'
 alias title='echo -n "]2;\!*"'
 alias cwdcmd='title "$hostString : `pwd`"'
-alias sa='source $unihomeDir/rc/unihome.sh'
+alias sa='source ~/unihome/rc/unihome.sh'
 alias 0='cat $unihomeDir/misc/clearScreen.txt'
 alias fdate="date '+%Y%m%d_%H%M%S'"
 alias h=history
@@ -17,5 +17,5 @@ PATH=~/bin:$PATH
 export EDITOR=vim
 export PAGER=less
 #export PS1="\e[0;36m\h \w :\e[m "
-export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\]"
+export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\] "
 
