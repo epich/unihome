@@ -44,7 +44,7 @@
   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
                          '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
 (defun msw-toggle-fullscreen ()
-  "Placeholder for MS Windows fullscreen function. "
+  "MS Windows fullscreen function. "
   (w32-send-sys-command 61488))
 (defun toggle-fullscreen ()
   (interactive)
