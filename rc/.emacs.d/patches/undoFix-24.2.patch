@@ -1,0 +1,66 @@
+commit 603632c493d4e58de6484781f4d5a4bf0f89a4e4
+Author: Stefan Monnier <monnier@iro.umontreal.ca>
+Date:   Wed Jul 18 09:20:59 2012 -0400
+
+    * src/lisp.h (last_undo_boundary): Declare new var.
+    * src/keyboard.c (command_loop_1): Set it.
+    * src/cmds.c (Fself_insert_command): Use it to only remove boundaries that
+    were auto-added by the command loop.
+
+diff --git a/src/cmds.c b/src/cmds.c
+index d617c7f..a7a2eb6 100644
+--- a/src/cmds.c
++++ b/src/cmds.c
+@@ -296,7 +296,10 @@ At the end, it runs `post-self-insert-hook'.  */)
+ 
+   if (remove_boundary
+       && CONSP (BVAR (current_buffer, undo_list))
+-      && NILP (XCAR (BVAR (current_buffer, undo_list))))
++      && NILP (XCAR (BVAR (current_buffer, undo_list)))
++      /* Only remove auto-added boundaries, not boundaries
++	 added be explicit calls to undo-boundary.  */
++      && EQ (BVAR (current_buffer, undo_list), last_undo_boundary))
+     /* Remove the undo_boundary that was just pushed.  */
+     BVAR (current_buffer, undo_list) = XCDR (BVAR (current_buffer, undo_list));
+ 
+diff --git a/src/keyboard.c b/src/keyboard.c
+index 963f40a..9f3bc47 100644
+--- a/src/keyboard.c
++++ b/src/keyboard.c
+@@ -1318,6 +1318,9 @@ cancel_hourglass_unwind (Lisp_Object arg)
+ }
+ #endif
+ 
++/* The last boundary auto-added to buffer-undo-list.  */
++Lisp_Object last_undo_boundary;
++
+ /* FIXME: This is wrong rather than test window-system, we should call
+    a new set-selection, which will then dispatch to x-set-selection, or
+    tty-set-selection, or w32-set-selection, ...  */
+@@ -1565,7 +1568,13 @@ command_loop_1 (void)
+ #endif
+ 
+             if (NILP (KVAR (current_kboard, Vprefix_arg))) /* FIXME: Why?  --Stef  */
+-              Fundo_boundary ();
++              {
++		Lisp_Object undo = BVAR (current_buffer, undo_list);
++		Fundo_boundary ();
++		last_undo_boundary
++		  = (EQ (undo, BVAR (current_buffer, undo_list))
++		     ? Qnil : BVAR (current_buffer, undo_list));
++	      }
+             Fcommand_execute (Vthis_command, Qnil, Qnil, Qnil);
+ 
+ #ifdef HAVE_WINDOW_SYSTEM
+diff --git a/src/lisp.h b/src/lisp.h
+index 4bd0b78..4dd9f37 100644
+--- a/src/lisp.h
++++ b/src/lisp.h
+@@ -2956,6 +2956,7 @@ extern void cancel_echoing (void);
+ extern Lisp_Object Qdisabled, QCfilter;
+ extern Lisp_Object Qup, Qdown, Qbottom;
+ extern Lisp_Object Qtop;
++extern Lisp_Object last_undo_boundary;
+ extern int input_pending;
+ extern Lisp_Object menu_bar_items (Lisp_Object);
+ extern Lisp_Object tool_bar_items (Lisp_Object, int *);
