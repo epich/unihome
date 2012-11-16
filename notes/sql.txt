@@ -8,4 +8,12 @@ select value from product_attribute where product_id in (select product_id from 
 sqlplus:
    Non interactive:
       echo exit | sqlplus
+   Execute .sql script:
+      sqlplus @foo.sql
+   Login as sysdba:
+      sqlplus sys/pqdb@<your sid here> as sysdba
+   Login remotely:
+      $ORACLE_CLIENT_HOME/sqlplus "pqdbuser/pqdb@(DESCRIPTION = (ADDRESS_LIST=(ADDRESS = (PROTOCOL = TCP)(HOST = goesrpora)(PORT = 36001)))(CONNECT_DATA =(SID = barrydev)))"
+   See transactions:
+      select b.LOGON_TIME logontime, b.command cmd, substr(a.spid,1,9) pid, substr(b.username,1,10) username, substr(b.osuser,1,8) os_user, substr(b.program,1,30) program from v$session b, v$process a where b.paddr = a.addr and type='USER' order by spid;
 
