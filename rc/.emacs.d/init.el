@@ -281,6 +281,7 @@ anyway, which doesn't always combine with defadvice. "
  '(ac-delay 1.0)
  '(c-syntactic-indentation nil)
  '(delete-by-moving-to-trash t)
+ '(dired-auto-revert-buffer t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
  '(evil-ex-hl-update-delay 0.01)
  '(evil-intercept-maps nil)
