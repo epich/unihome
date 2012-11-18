@@ -286,6 +286,7 @@ anyway, which doesn't always combine with defadvice. "
  '(evil-ex-hl-update-delay 0.01)
  '(evil-intercept-maps nil)
  '(evil-kbd-macro-suppress-motion-error t)
+ '(evil-mouse-word (quote evil-move-WORD))
  '(evil-move-cursor-back nil)
  '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
