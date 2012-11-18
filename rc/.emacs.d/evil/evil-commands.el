@@ -312,7 +312,7 @@ If BIGWORD is non-nil, move by WORDS."
     ;; if changing a one-letter word, don't move point to the
     ;; next word (which would change two words)
     (if (and (evil-operator-state-p)
-             (looking-at (format "[%s]" evil-word)))
+             (looking-at "[[:word:]]"))
         (prog1 (evil-move-end count move)
           (unless (bobp) (backward-char)))
       (evil-move-end count move nil t))))
@@ -3359,22 +3359,20 @@ START END), mark to end of word at (max START END)."
   (if (/= mode 1) (list start end)
     (list
      (save-excursion
-       (goto-char start)
-       (cond
-        ((looking-at "[ \t\r\n]")
-         (save-excursion
-           (unless (bolp) (skip-chars-backward " \t\r"))
-           (point)))
-        ((looking-back "[ \t\r\n]") start)
-        (t (evil-move-word -1) (point))))
+       (goto-char (min (point-max) (1+ start)))
+       (if (zerop (funcall evil-mouse-word -1))
+           (let ((bpnt (point)))
+             (funcall evil-mouse-word +1)
+             (if (> (point) start) bpnt (point)))
+         (point-min)))
      (save-excursion
        (goto-char end)
-       (cond
-        ((looking-at "[ \t\r\n]")
-         (save-excursion
-           (unless (eolp) (skip-chars-forward " \t\r"))
-           (if (bolp) (point) (1- (point)))))
-        (t (evil-move-word +1) (1- (point))))))))
+       (1-
+        (if (zerop (funcall evil-mouse-word +1))
+            (let ((epnt (point)))
+              (funcall evil-mouse-word -1)
+              (if (<= (point) end) epnt (point)))
+          (point-max)))))))
 
 ;;; State switching
 
