@@ -1,6 +1,15 @@
-Use mklink to establish a symlink from unihome/rc/.emacs.d to C:\Users\epich\AppData\Roaming\.emacs.d
+Use Windows mklink in order to create symlinks that work within Cygwin and Emacs Windows version.
+    Ctrl-ESC cmd
+    Right click cmd and run as admin
+    mklink /d <newlink> <location>
 
-Make a shortcut to unihome/scripts/start-emacs.bat .
+Create a symlink for unihome:
+    mklink /d C:\cygwin\home\epich\unihome C:\Users\epich\sw\unihome
+
+Create a symlink for .emacs.d:
+    mklink /d C:\Users\epich\AppData\Roaming\.emacs.d C:\Users\epich\sw\unihome\rc\.emacs.d
+
+Make a shortcut to unihome/scripts/start-emacs.bat for putting in Quick Launch.
 
 Use Cygwin to byte compile Evil and other elisp.
 
