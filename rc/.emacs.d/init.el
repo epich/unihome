@@ -83,14 +83,14 @@
       (format "%s.%s" 
          (format-time-string my-date-time-format)
          (get-usec-str cur-time))))
-(defun log-msg (msg)
+(defun log-msg (msg &rest vargs)
    "Log a message, with prepended information.  Used for debugging.
 
 I attempted to use defadvice on the message function, but the minibuffer
 misbehaves under some conditions.  The message function is a C primitive
 anyway, which doesn't always combine with defadvice. "
    (interactive)
-   (message (format "%s %s" (get-time-str) msg)))
+   (message "%s %s" (get-time-str) (apply 'format msg vargs)))
 
 ;;; File associations
 ;;
@@ -284,6 +284,7 @@ anyway, which doesn't always combine with defadvice. "
  '(dired-auto-revert-buffer t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
  '(evil-ex-hl-update-delay 0.01)
+ '(evil-highlight-closing-paren-at-point-states (quote (not)))
  '(evil-intercept-maps nil)
  '(evil-kbd-macro-suppress-motion-error t)
  '(evil-mouse-word (quote evil-move-WORD))
@@ -600,7 +601,7 @@ nil in keymap-from."
 (defun my-insert-elisp-log ()
    "Insert log statement for elisp. "
    (interactive)
-   (insert "(log-msg (format \"DEBUG: \")) ")
+   (insert "(log-msg \"DEBUG: \") ")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
 (defun my-insert-c-log ()
