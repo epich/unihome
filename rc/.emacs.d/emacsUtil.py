@@ -12,7 +12,6 @@ evilDir_g = 'evil'
 rainbowDelimitersDir_g = 'rainbow-delimiters'
 cedetDir_g = 'cedet-1.1'
 jdeeDir_g = 'jdee-2.4.0.1'
-pareditDir_g = './paredit'
 
 def byteCompile(filesString, loadPathL=[]):
    """Byte compile the inputted elisp files.
@@ -47,19 +46,15 @@ def buildJdee():
    # TODO: Doesn't compile
    #byteCompile(patchedFilePathNoExt+'.el', [cedetDir_g+'/semantic', jdeeLispDir,])
 
-def buildParedit():
-   byteCompile(pareditDir_g+'/paredit.el')
-
 def buildInitElisp():
    # TODO: Runtime errors
-   pass#byteCompile('init.el', [evilDir_g, pareditDir_g, TODO,])
+   pass#byteCompile('init.el', [evilDir_g, TODO,])
 
 def buildEmacsD():
    buildEvil()
    buildRainbowDelimiters()
    buildCedet()
    buildJdee()
-   buildParedit()
    buildInitElisp()
 
 def __MAIN__():
