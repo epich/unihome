@@ -16,7 +16,7 @@ Issues:
    : Disconnect about Emacs' notion of where point is:
       : Official definition of point is between chars, cursor displayed over the next char.
          : Those which use this definition:
-            : ParEdit commands of interest
+            : ParEdit
             : Emacs commands for navigating sexp
             : Emacs paren navigation:
                http://www.gnu.org/software/emacs/manual/html_node/emacs/Moving-by-Parens.html
@@ -36,7 +36,6 @@ Issues:
    : Figure out how to edit elisp code efficiently.
       : Cope with official definition of where point is.
          : Extend, wrap, advise, or replace functions for which I want the over-char abstraction.
-            : ParEdit commands of interest
             : Emacs sexp commands
          : Concern applies equally to XML elements as sexp
       : Have editing functions operate on an sexp when point is within it.
@@ -48,25 +47,7 @@ Issues:
             : pairs of parens, including within them, in different colors.
                See code samples at: http://community.schemewiki.org/?scheme-faq-language
             : Trying out Rainbow Delimiters
-      : ParEdit
-         : Issues:
-            : paredit-wrap-around (bound to sej) doesn't do as expected when there's active region.
-               Example:
-                  (list 'quote (cons nil nil ))
-                  ; Select: (co
-                  ; Execute function, code becomes: (list 'quote (co () ns nil nil ))
-                  ; Expected: (list 'quote ((cons nil nil )))
-                     : Same as if just the ( was selected, but you have more of the sexp selected.
-                  ; Less ideal, but better: (list 'quote ((co)ns nil nil ))
-            : paredit-splice-sexp (bound to sek) doesn't do as expected when there's active region.
-         : Email developer:
-            : Ask about whether he is maintaining, referring to comment in blag.txt
-            : Ask why it's not on GitHub.
-            : Point out bugs described above (not location of point issue).
-            : Ask about syntax highlighting.
-         : Developer
-            : campbell@mumble.net
-            : Blog: http://mumble.net/~campbell/blag.txt
+      : Review lisp.el for useful function
       : Automatically balance space between parens.
       : Command to delete all of sexp except what's marked.
       : Try out port of Vim's surround to Emacs.
@@ -163,6 +144,10 @@ Issues:
          : Done for Python (as much as can be)
          : Do for C like languages
          : Do for XML
+   : XML editting
+      : Surround with tags
+         : See my-insert-tags at:
+            http://stackoverflow.com/questions/2746484/is-there-an-extension-or-mode-in-emacs-similar-to-surround-vim
    : electric-pair minor mode
       : Put /** */ in pair list.
       : Remove ' from pair list.  It's annoying in comments with English contractions.
@@ -212,10 +197,6 @@ Issues:
                   ;; style guessing.
                   (add-to-list 'load-path "~/.emacs.d/cc-mode")
    : Opening through symlinks in an hg repo is slow by a factor of about 5.
-   : Logging
-      : Is there a way to get the current function's name, in order to put in log-msg prefix.
-      : Fix log-msg to accept var args like message function does.  ie using format tokens without the format function.
-   : Learn how to use M-$ ispell-word .
    : Learn how to do this with better semi-automation:
       : case longlonglong     do-something-aligned-with-below
       : case short            do-something-aligned-with-above

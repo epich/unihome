@@ -177,19 +177,6 @@ anyway, which doesn't always combine with defadvice. "
    )
 (setup-jdee)
 
-;;; Initialize ParEdit
-(log-msg "Initializing Paredit.")
-(add-to-list 'load-path "~/.emacs.d/paredit")
-(require 'paredit)
-;; NB: I don't enable-paredit-mode because it is not designed to support non wholistic
-;; editing.  It intends the user to add and remove parens always in pairs.  Inserting
-;; only a closing paren in a valid place doesn't work well, I would need to use C-q to
-;; do so.  Another example is commenting out code.  ParEdit expects you would use the
-;; wholistic M-; and will misbehave if you add ';' characters line by line.
-;;
-;; Since I like occasional non wholistic editing, I use ParEdit functions without
-;; the minor mode enabled.
-
 ;; Initialize project-specific elisp
 (log-msg "Initializing project-specific elisp.")
 ;; GOESR isn't relevant to all computers I work on, so ignore errors.
@@ -504,8 +491,8 @@ nil in keymap-from."
     (revert-buffer)))
 (define-key evil-motion-state-map "sh" 'highlight-phrase)
 (define-key evil-motion-state-map "sex" 'eval-last-sexp)
-(define-key evil-normal-state-map "sej" 'paredit-wrap-round)
-(define-key evil-normal-state-map "sek" 'paredit-splice-sexp)
+(define-key evil-normal-state-map "sej" 'insert-parentheses)
+(define-key evil-normal-state-map "sek" 'delete-pair)
 (define-key evil-normal-state-map "seh" (lambda () (interactive) (transpose-sexps -1)))
 (define-key evil-normal-state-map "sel" (lambda () (interactive) (transpose-sexps 1)))
 (define-key evil-motion-state-map "sem" 'mark-sexp)
