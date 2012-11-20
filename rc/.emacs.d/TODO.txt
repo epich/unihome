@@ -12,44 +12,21 @@ Issues:
             : Does not work:
                : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
    : If I C-c or backspace to beginning of evil-search prompt, I have to wait in order to enter more input.  How to fix?
-   : Can Elisp macros use Xpaths to modify code?
-   : Disconnect about Emacs' notion of where point is:
-      : Official definition of point is between chars, cursor displayed over the next char.
-         : Those which use this definition:
-            : ParEdit
-            : Emacs commands for navigating sexp
-            : Emacs paren navigation:
-               http://www.gnu.org/software/emacs/manual/html_node/emacs/Moving-by-Parens.html
-            : show-paren-mode
-            : Text selection
-      : Evil compensates for some of these, presenting an abstraction of point over char:
-         : When clicking past end of line, point is moved left one.
-         : show-paren-mode is augmented, see evil-integration.el's show-paren-function.
-         : Text selection
-         : Sexp evaluation (unconfirmed)
-      : Ask on Emacs mailing list about this topic.
-         : Create a defcustom for whether the user wants the over-char abstraction?
-      : Study how Evil copes with this.
-         : See comment block in evil-commands.el "Text objects"
-         : evil-define-motion type inclusive/exclusive looks relevant.
-         : Ask on Evil mailing list about approaches for dealing with this.
-   : Figure out how to edit elisp code efficiently.
-      : Cope with official definition of where point is.
-         : Extend, wrap, advise, or replace functions for which I want the over-char abstraction.
-            : Emacs sexp commands
-         : Concern applies equally to XML elements as sexp
+   : Editing Lisp
       : Have editing functions operate on an sexp when point is within it.
-      : Syntax highlighting:
-         : Highlight text based on its level in the sexp tree, from point to the root.
-            : pairs of parens in different colors.
-               : Perhaps extending paren (which provides show-paren-mode) is doable.  paren.el looks fairly simple.
-                  : Checkout the bzr revision history, how frequent, who edits it?
-            : pairs of parens, including within them, in different colors.
-               See code samples at: http://community.schemewiki.org/?scheme-faq-language
-            : Trying out Rainbow Delimiters
-      : Review lisp.el for useful function
-      : Automatically balance space between parens.
+         : eg "sek" inside an sexp would remove the parens which immediately surround point
       : Command to delete all of sexp except what's marked.
+      : Syntax highlighting:
+         : Pairs of parens in different colors, bottom up from point
+            : See code samples at: http://community.schemewiki.org/?scheme-faq-language
+            : Perhaps extending paren (which provides show-paren-mode) is doable.  paren.el looks fairly simple.
+               : Uses overlays
+            : Rainbow Delimiters is related, but colors from top down.
+               : Uses font lock
+                  : Presumably because it highlights parens throughout the buffer
+                  : Perhaps also because coloring doesn't change when point moves
+      : Review lisp.el for useful functions.
+      : Automatically balance space between parens.
       : Try out port of Vim's surround to Emacs.
       : How to stop Emacs loading Lisp files when visiting them.
    : Keymapping
@@ -241,6 +218,7 @@ Issues:
          http://thread.gmane.org/gmane.emacs.vim-emulation/692
    : Other reading:
       Thorough GDB guide: http://www.dirac.org/linux/gdb/
+   : Can Elisp macros use Xpaths to modify code?
 
 Evil bugs (submitted):
    : Updating of highlighted search

@@ -370,3 +370,24 @@ Retired issues with residual notes:
       : Developer
          : campbell@mumble.net
          : Blog: http://mumble.net/~campbell/blag.txt
+   : Disconnect about Emacs' notion of where point is:
+      : Decided to live with it
+      : Official definition of point is between chars, cursor displayed over the next char.
+         : Those which use this definition:
+            : ParEdit
+            : Emacs commands for navigating sexp
+            : Emacs paren navigation:
+               http://www.gnu.org/software/emacs/manual/html_node/emacs/Moving-by-Parens.html
+            : show-paren-mode
+            : Text selection
+      : Evil compensates for some of these, presenting an abstraction of point over char:
+         : When clicking past end of line, point is moved left one.
+         : show-paren-mode is augmented, see evil-integration.el's show-paren-function.
+         : Text selection
+         : Sexp evaluation (unconfirmed)
+      : Ask on Emacs mailing list about this topic.
+         : Create a defcustom for whether the user wants the over-char abstraction?
+      : Study how Evil copes with this.
+         : See comment block in evil-commands.el "Text objects"
+         : evil-define-motion type inclusive/exclusive looks relevant.
+         : Ask on Evil mailing list about approaches for dealing with this.
