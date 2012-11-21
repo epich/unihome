@@ -123,8 +123,10 @@ Issues:
          : Do for XML
    : XML editting
       : Surround with tags
-         : See my-insert-tags at:
+         : Some implementations:
             http://stackoverflow.com/questions/2746484/is-there-an-extension-or-mode-in-emacs-similar-to-surround-vim
+            http://tech.groups.yahoo.com/group/emacs-nxml-mode/message/1012
+      : Search based on XPath
    : electric-pair minor mode
       : Put /** */ in pair list.
       : Remove ' from pair list.  It's annoying in comments with English contractions.
