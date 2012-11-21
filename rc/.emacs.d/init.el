@@ -578,6 +578,15 @@ nil in keymap-from."
         (evil-previous-line num-times))
       ))
 
+(defun surround-region-with-tag (tag-name beg end)
+  "Insert XML tag named tag-name around region defined by beg end. "
+  (interactive "sTag name: \nr")
+  (save-excursion
+    (goto-char beg)
+    (insert "<" tag-name ">")
+    (goto-char (+ end 2 (length tag-name)))
+    (insert "</" tag-name ">")))
+
 ;;; Debug logging
 (defun my-insert-ant-log ()
   "Insert log statement for Ant build files. "
