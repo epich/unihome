@@ -158,32 +158,28 @@ anyway, which doesn't always combine with defadvice. "
 ;;(my-enable-cedet)
 
 ;;; Initialize JDEE
+(log-msg "Initializing JDEE.")
 (defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
-(defun setup-jdee ()
-  "Set up JDEE"
-   (log-msg "Initializing JDEE.")
-   (add-to-list 'load-path (format "%s/lisp" my-jdee-path))
-   ;; NB: (require 'jde) in Java mode hook, so as startup is more
-   ;; efficient when not editing Java.
-   ;;(require 'jde)
-
-   ;; Online posting says these might be necessary for JDEE.
-   ;; http://forums.fedoraforum.org/showthread.php?t=280711
-   ;; (defun screen-width nil -1)
-   (define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
-
-   ;; Docs indicate elib is a dependency.  However, I haven't witnessed
-   ;; a problem yet.  Emacs documents Elib is a part of Emacs.
-   )
-(setup-jdee)
+(add-to-list 'load-path (format "%s/lisp" my-jdee-path))
+;; Online posting says these might be necessary for JDEE.
+;; http://forums.fedoraforum.org/showthread.php?t=280711
+;; (defun screen-width nil -1)
+(define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
+(autoload 'jde-mode "jde" "JDE mode." t)
+(setq auto-mode-alist
+      (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
 
 ;; Initialize project-specific elisp
 (log-msg "Initializing project-specific elisp.")
 ;; GOESR isn't relevant to all computers I work on, so ignore errors.
 (ignore-errors (load-file "~/goesr/goesrDev.el"))
 ;; Classpaths for JDEE
-(ignore-errors (defvar my-java-classpath goesr-classpath "Path for my .class or .jar files.")
-   (defvar my-java-sourcepath goesr-sourcepath "Path for my .java files."))
+(defvar my-java-classpath nil "Classpaths for Java. ")
+(when (boundp 'goesr-classpath)
+  (append goesr-classpath my-java-classpath))
+(defvar my-java-sourcepath nil)
+(when (boundp 'goesr-sourcepath)
+  (append goesr-sourcepath my-java-sourcepath))
 
 ;; Workaround Evil bug https://bitbucket.org/lyro/evil/issue/211/doesnt-create-new-line-in-insert-mode
 (fset 'evil-insert-post-command (lambda () ))
@@ -695,7 +691,6 @@ nil in keymap-from."
 (add-hook 'java-mode-hook 
    (lambda ()
       (log-msg "Inside java-mode-hook")
-      (require 'jde)
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-java-log)
       ))
 (add-hook 'makefile-mode-hook 
