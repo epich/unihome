@@ -110,6 +110,9 @@ anyway, which doesn't always combine with defadvice. "
 
 (log-msg "Initializing Evil.")
 (add-to-list 'load-path "~/.emacs.d/evil")
+(add-to-list 'load-path "~/.emacs.d/evil/lib")
+(require 'undo-tree)
+(require 'goto-chg)
 (require 'evil)
 (evil-mode 1)
 
@@ -180,9 +183,6 @@ anyway, which doesn't always combine with defadvice. "
 (defvar my-java-sourcepath nil)
 (when (boundp 'goesr-sourcepath)
   (append goesr-sourcepath my-java-sourcepath))
-
-;; Workaround Evil bug https://bitbucket.org/lyro/evil/issue/211/doesnt-create-new-line-in-insert-mode
-(fset 'evil-insert-post-command (lambda () ))
 
 ;;; Relating to tabs
 ;; I would prefer automatic guessing of my-offset based on the offset in use for the
@@ -497,6 +497,9 @@ nil in keymap-from."
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-motion-state-map "S" 'save-buffer)
+
+;;; Key bindings for undo-tree
+(define-key evil-motion-state-map "suv" 'undo-tree-visualize)
 
 ;;; Java bindings
 ;;;
