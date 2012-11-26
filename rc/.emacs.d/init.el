@@ -167,7 +167,12 @@ anyway, which doesn't always combine with defadvice. "
 ;; Online posting says these might be necessary for JDEE.
 ;; http://forums.fedoraforum.org/showthread.php?t=280711
 ;; (defun screen-width nil -1)
+(setq jde-check-version-flag nil)
 (define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
+(unless (fboundp 'semantic-format-prototype-tag-java-mode)
+  (defalias 'semantic-format-prototype-tag-java-mode 'semantic-format-tag-prototype-java-mode))
+;; To prevent an error with hippie-exp variable not being defined.
+(require 'hippie-exp)
 (autoload 'jde-mode "jde" "JDE mode." t)
 (setq auto-mode-alist
       (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
@@ -744,6 +749,7 @@ nil in keymap-from."
   "Recursively searches each parent directory starting from the default-directory.
 looking for a file with name file-to-find.  Returns the path to it
 or nil if not found."
+  ;; TODO: Once 24.2.90 or higher is available on Windows, change labels to cl-labels
   (labels
       ((find-file-r (path)
                     (let* ((parent (file-name-directory path))

@@ -11,7 +11,6 @@ import generalUtil
 evilDir_g = 'evil'
 rainbowDelimitersDir_g = 'rainbow-delimiters'
 cedetDir_g = 'cedet-1.1'
-jdeeDir_g = 'jdee-2.4.0.1'
 
 def byteCompile(filesString, loadPathL=[]):
    """Byte compile the inputted elisp files.
@@ -38,13 +37,8 @@ def buildCedet():
    generalUtil.cmd('make -C %s'%(cedetDir_g,), printStdout=True)
 
 def buildJdee():
-   # Assumes jde.el was patched to change jde-cedet-max-version .
-   jdeeLispDir = jdeeDir_g+'/lisp'
-   patchedFilePathNoExt = '%s/jde'%(jdeeLispDir,)
-   if os.path.isfile(patchedFilePathNoExt+'.elc'):
-      generalUtil.cmd('rm %s'%(patchedFilePathNoExt+'.elc',))
-   # TODO: Doesn't compile
-   #byteCompile(patchedFilePathNoExt+'.el', [cedetDir_g+'/semantic', jdeeLispDir,])
+   # Simply unzip binary distribution.
+   generalUtil.cmd('unzip jdee-bin-2.4.0.1.zip')
 
 def buildInitElisp():
    # TODO: Runtime errors
