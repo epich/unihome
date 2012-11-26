@@ -1134,11 +1134,16 @@ Save in REGISTER or in the kill-ring with YANK-HANDLER."
   (interactive "<R><x>")
   (evil-delete beg end type register))
 
-(evil-define-operator evil-delete-backward-word (beg end type register)
+(evil-define-command evil-delete-backward-word ()
   "Delete previous word."
-  :motion evil-backward-word-begin
-  (interactive "<R><x>")
-  (evil-delete beg end type register))
+  (if (and (bolp) (not (bobp)))
+      (delete-char -1)
+    (evil-delete (save-excursion
+                   (evil-backward-word-begin)
+                   (point))
+                 (point)
+                 'exclusive
+                 nil)))
 
 (evil-define-operator evil-change
   (beg end type register yank-handler delete-func)
@@ -1256,6 +1261,19 @@ but doesn't insert or remove any spaces."
   (save-excursion
     (condition-case nil
         (fill-region beg end)
+      (error nil))))
+
+(evil-define-operator evil-fill-and-move (beg end)
+  "Fill text and move point to the end of the filled region."
+  :move-point nil
+  :type line
+  (let ((marker (make-marker)))
+    (move-marker marker (1- end))
+    (condition-case nil
+        (progn
+          (fill-region beg end)
+          (goto-char marker)
+          (evil-first-non-blank))
       (error nil))))
 
 (evil-define-operator evil-indent (beg end)
@@ -3392,7 +3410,15 @@ if the previous state was Emacs state."
 (defun evil-execute-in-normal-state ()
   "Execute the next command in Normal state."
   (interactive)
-  (evil-delay '(not (eq this-command #'evil-execute-in-normal-state))
+  (evil-delay '(not (memq this-command
+                          '(evil-execute-in-normal-state
+                            evil-use-register
+                            digit-argument
+                            negative-argument
+                            universal-argument
+                            universal-argument-minus
+                            universal-argument-more
+                            universal-argument-other-key)))
       `(progn
          (evil-change-to-previous-state)
          (setq evil-move-cursor-back ',evil-move-cursor-back))
