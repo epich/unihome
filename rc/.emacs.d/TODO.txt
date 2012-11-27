@@ -61,8 +61,6 @@ Issues:
       : Need a way to clear them.  evil-ex-delete-hl perhaps.
    : Learn Edebug
       : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
-   : Look into using undo-tree extension.
-      : If it doesn't work out, consider mapping U to undo-only .
    : Learn about Dired
       : Is there a notion of finding a set of files based on a criteria (search term, use of symbol), then iteratively visiting just those?
       : Dired doesn't update when a directory is created separately.  Including when Auto Revert is enabled.
