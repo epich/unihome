@@ -181,13 +181,15 @@ anyway, which doesn't always combine with defadvice. "
 (log-msg "Initializing project-specific elisp.")
 ;; GOESR isn't relevant to all computers I work on, so ignore errors.
 (ignore-errors (load-file "~/goesr/goesrDev.el"))
-;; Classpaths for JDEE
-(defvar my-java-classpath nil "Classpaths for Java. ")
-(when (boundp 'goesr-classpath)
-  (append goesr-classpath my-java-classpath))
-(defvar my-java-sourcepath nil)
-(when (boundp 'goesr-sourcepath)
-  (append goesr-sourcepath my-java-sourcepath))
+;; Paths for JDEE
+(defvar my-java-classpath (if (boundp 'goesr-classpath)
+                              goesr-classpath
+                            nil)
+  "Classpaths for Java. ")
+(defvar my-java-sourcepath (if (boundp 'goesr-sourcepath)
+                               goesr-sourcepath
+                             nil)
+  "Sourcepaths for Java. ")
 
 ;;; Relating to tabs
 ;; I would prefer automatic guessing of my-offset based on the offset in use for the
