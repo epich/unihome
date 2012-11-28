@@ -19,9 +19,13 @@ Issues:
       : Syntax highlighting:
          : Pairs of parens in different colors, bottom up from point
             : See code samples at: http://community.schemewiki.org/?scheme-faq-language
-            : Perhaps extending paren (which provides show-paren-mode) is doable.  paren.el looks fairly simple.
+            : Perhaps extend paren (which provides show-paren-mode)?
+               : paren.el looks fairly simple.
                : Uses overlays
-            : Rainbow Delimiters is related, but colors from top down.
+            : Perhaps extend hi-lock (which provides highlight-regexp)
+               : Uses font lock
+            : Perhaps extend Rainbow Delimiters
+               : Colors from top down.
                : Uses font lock
                   : Presumably because it highlights parens throughout the buffer
                   : Perhaps also because coloring doesn't change when point moves
