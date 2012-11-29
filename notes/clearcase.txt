@@ -35,6 +35,9 @@ Snapshot view privates:
     cleartool ls -recurse -view_only | grep -v CHECKEDOUT
     ct ls -r -vie
 
+Find location of snapshot views:
+   locate view.dat
+
 Create view:
     ct mkview -tag path-for-view
 
