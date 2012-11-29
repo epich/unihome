@@ -417,12 +417,10 @@ key-from translates to key-to, else key-from translates to itself.  translate-ke
 takes no args. "
   (define-key key-translation-map key-from
               (lambda (prompt)
-                      (if (funcall translate-keys-p) key-to key-from)))
-  )
+                      (if (funcall translate-keys-p) key-to key-from))))
 (defun my-translate-keys-p ()
   "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
-  (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))
-  )
+  (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p)))
 (make-conditional-key-translation (kbd "cc") (kbd "C-c") 'my-translate-keys-p)
 (make-conditional-key-translation (kbd "ce") (kbd "C-e") 'my-translate-keys-p)
 (make-conditional-key-translation (kbd "cf") (kbd "C-f") 'my-translate-keys-p)
@@ -486,6 +484,32 @@ nil in keymap-from."
 (define-key evil-visual-state-map "u" nil)
 (define-key evil-motion-state-map "," nil)
 (define-key evil-motion-state-map "," 'kmacro-end-and-call-macro)
+
+;;; Merge Evil's g prefix key with Emacs' C-x prefix key.
+;; Define key translation to C-x, then add the Evil g bindings to keep.
+(make-conditional-key-translation (kbd "g") (kbd "C-x") 'my-translate-keys-p)
+(define-key evil-normal-state-map "\C-x&" 'evil-ex-repeat-global-substitute)
+(define-key evil-normal-state-map "\C-xa" 'what-cursor-position)
+(define-key evil-normal-state-map "\C-xJ" 'evil-join-whitespace)
+(define-key evil-normal-state-map "\C-xw" 'evil-fill)
+(define-key evil-normal-state-map "\C-xu" 'evil-downcase)
+(define-key evil-normal-state-map "\C-xU" 'evil-upcase)
+(define-key evil-normal-state-map "\C-xf" 'find-file-at-point)
+(define-key evil-normal-state-map "\C-xF" 'evil-find-file-at-point-with-line)
+(define-key evil-normal-state-map "\C-x?" 'evil-rot13)
+(define-key evil-normal-state-map "\C-x~" 'evil-invert-case)
+(define-key evil-normal-state-map "\C-x;" 'goto-last-change)
+(define-key evil-normal-state-map "\C-x," 'goto-last-change-reverse)
+(define-key evil-motion-state-map "\C-xd" 'evil-goto-definition)
+(define-key evil-motion-state-map "\C-xe" 'evil-backward-word-end)
+(define-key evil-motion-state-map "\C-xE" 'evil-backward-WORD-end)
+(define-key evil-motion-state-map "\C-xg" 'evil-goto-first-line)
+(define-key evil-motion-state-map "\C-xj" 'evil-next-visual-line)
+(define-key evil-motion-state-map "\C-xk" 'evil-previous-visual-line)
+(define-key evil-motion-state-map "\C-x_" 'evil-last-non-blank)
+(define-key evil-motion-state-map "\C-x\C-]" 'find-tag)
+(define-key evil-motion-state-map "\C-xv" 'evil-visual-restore)
+
 (define-key evil-motion-state-map "sco"
   (lambda ()
     (interactive)

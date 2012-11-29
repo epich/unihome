@@ -150,6 +150,61 @@ Notes:
       : CL Wiki: http://www.cliki.net/Editing%20Lisp%20Code%20with%20Emacs
    : Whitespace
       : Use delete-trailing-whitespace, whitespace-* functions to clean up trailing whitespace on lines.
+   : Evil g prefix key compared with C-x prefix key, with usefulness annotation (Y/N)
+      (define-key evil-normal-state-map "g&" 'evil-ex-repeat-global-substitute)
+         Undefined
+      N (define-key evil-normal-state-map "g8" 'what-cursor-position)
+         Y Prefix key for printing unusual characters
+      (define-key evil-normal-state-map "ga" 'what-cursor-position)
+         N Prefix key for abbrev functions
+      N (define-key evil-normal-state-map "gi" 'evil-insert-resume)
+         Y insert-file
+      (define-key evil-normal-state-map "gJ" 'evil-join-whitespace)
+         Undefined
+      N (define-key evil-normal-state-map "gq" 'evil-fill-and-move)
+         Y kbd-macro-query
+      (define-key evil-normal-state-map "gw" 'evil-fill)
+         Undefined
+      Y (define-key evil-normal-state-map "gu" 'evil-downcase)
+         Y undo-tree-visualize
+      (define-key evil-normal-state-map "gU" 'evil-upcase)
+         N undo-tree-visualize
+      (define-key evil-normal-state-map "gf" 'find-file-at-point)
+         N set-fill-column
+      (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
+         N set-fill-column
+      (define-key evil-normal-state-map "g?" 'evil-rot13)
+         Undefined
+      (define-key evil-normal-state-map "g~" 'evil-invert-case)
+         Undefined
+      Y (define-key evil-normal-state-map "g;" 'goto-last-change)
+         Y comment-set-column
+      (define-key evil-normal-state-map "g," 'goto-last-change-reverse)
+         Undefined
+      Y (define-key evil-motion-state-map "gd" 'evil-goto-definition)
+         N dired
+      Y (define-key evil-motion-state-map "ge" 'evil-backward-word-end)
+         N kmacro-end-and-call-macro
+      Y (define-key evil-motion-state-map "gE" 'evil-backward-WORD-end)
+         N kmacro-end-and-call-macro
+      (define-key evil-motion-state-map "gg" 'evil-goto-first-line)
+         Undefined
+      (define-key evil-motion-state-map "gj" 'evil-next-visual-line)
+         Undefined
+      N (define-key evil-motion-state-map "gk" 'evil-previous-visual-line)
+         N kill-buffer
+      N (define-key evil-motion-state-map "g0" 'evil-beginning-of-visual-line)
+         Y delete-window
+      (define-key evil-motion-state-map "g_" 'evil-last-non-blank)
+         Undefined
+      N (define-key evil-motion-state-map "g^" 'evil-first-non-blank-of-visual-line)
+         N enlarge-window
+      N (define-key evil-motion-state-map "g$" 'evil-end-of-visual-line)
+         Y set-selective-display
+      (define-key evil-motion-state-map "g\C-]" 'find-tag)
+         Undefined
+      Y (define-key evil-motion-state-map "gv" 'evil-visual-restore)
+         Y Prefix key for version control
 
 Retired issues with residual notes:
    : All things C-g does C-c should do.
