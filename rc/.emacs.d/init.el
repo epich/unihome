@@ -421,15 +421,25 @@ takes no args. "
 (defun my-translate-keys-p ()
   "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
   (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p)))
-(make-conditional-key-translation (kbd "cc") (kbd "C-c") 'my-translate-keys-p)
-(make-conditional-key-translation (kbd "ce") (kbd "C-e") 'my-translate-keys-p)
-(make-conditional-key-translation (kbd "cf") (kbd "C-f") 'my-translate-keys-p)
-(make-conditional-key-translation (kbd "ch") (kbd "C-h") 'my-translate-keys-p)
-(make-conditional-key-translation (kbd "cq") (kbd "C-q") 'my-translate-keys-p)
-(make-conditional-key-translation (kbd "cs") (kbd "C-s") 'my-translate-keys-p)
-(make-conditional-key-translation (kbd "cu") (kbd "C-u") 'my-translate-keys-p)
-(make-conditional-key-translation (kbd "cx") (kbd "C-x") 'my-translate-keys-p)
-(make-conditional-key-translation (kbd "cy") (kbd "C-y") 'my-translate-keys-p)
+;; Create Key Translations of for example:
+;;   (kbd "cc") to (kbd "C-c")
+;;   (kbd "cx") to (kbd "C-x")
+(if (fboundp 'cl-loop)
+    ;; cl-loop iterates from ASCII '!' to ASCII '~'.
+    (cl-loop for ascii-code-i from 33 to 126 by 1 do
+             (make-conditional-key-translation (kbd (format "%s%c" "c" ascii-code-i))
+                                               (kbd (format "%s%c" "C-" ascii-code-i))
+                                               'my-translate-keys-p))
+  ;; TODO: When cl-loop is in a formal Emacs release, delete these and rely on the cl-loop .
+  (make-conditional-key-translation (kbd "cc") (kbd "C-c") 'my-translate-keys-p)
+  (make-conditional-key-translation (kbd "ce") (kbd "C-e") 'my-translate-keys-p)
+  (make-conditional-key-translation (kbd "cf") (kbd "C-f") 'my-translate-keys-p)
+  (make-conditional-key-translation (kbd "ch") (kbd "C-h") 'my-translate-keys-p)
+  (make-conditional-key-translation (kbd "cq") (kbd "C-q") 'my-translate-keys-p)
+  (make-conditional-key-translation (kbd "cs") (kbd "C-s") 'my-translate-keys-p)
+  (make-conditional-key-translation (kbd "cu") (kbd "C-u") 'my-translate-keys-p)
+  (make-conditional-key-translation (kbd "cx") (kbd "C-x") 'my-translate-keys-p)
+  (make-conditional-key-translation (kbd "cy") (kbd "C-y") 'my-translate-keys-p))
 
 (define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
