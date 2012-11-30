@@ -425,11 +425,13 @@ takes no args. "
 ;;   (kbd "cc") to (kbd "C-c")
 ;;   (kbd "cx") to (kbd "C-x")
 (if (fboundp 'cl-loop)
-    ;; cl-loop iterates from ASCII '!' to ASCII '~'.
+    ;; Iterate from ASCII '!' to ASCII '~'.
     (cl-loop for ascii-code-i from 33 to 126 by 1 do
-             (make-conditional-key-translation (kbd (format "%s%c" "c" ascii-code-i))
-                                               (kbd (format "%s%c" "C-" ascii-code-i))
-                                               'my-translate-keys-p))
+             ;; Except "cm" because it's used for C-M- keys.
+             (unless (equal ascii-code-i 109)
+               (make-conditional-key-translation (kbd (format "c%c" ascii-code-i))
+                                                 (kbd (format "C-%c" ascii-code-i))
+                                                 'my-translate-keys-p)))
   ;; TODO: When cl-loop is in a formal Emacs release, delete these and rely on the cl-loop .
   (make-conditional-key-translation (kbd "cc") (kbd "C-c") 'my-translate-keys-p)
   (make-conditional-key-translation (kbd "ce") (kbd "C-e") 'my-translate-keys-p)
@@ -520,7 +522,7 @@ nil in keymap-from."
 (define-key evil-motion-state-map "\C-x\C-]" 'find-tag)
 (define-key evil-motion-state-map "\C-xv" 'evil-visual-restore)
 
-(define-key evil-motion-state-map "sco"
+(define-key evil-motion-state-map "svo"
   (lambda ()
     (interactive)
     (shell-command (format "cleartool co -nc %s"

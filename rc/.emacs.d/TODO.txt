@@ -46,6 +46,8 @@ Issues:
                : Bind a function to "sg", read-event, use event-modifiers function to check if control is applied, ...
          : Bind SPC to step when debugger is active.
       : Create function that generates all of the key-translation-map additions for C- keys.
+      : What to do about eg "sco" translating to "sC-o"
+         : Is there a way to have the my-translate-keys-p check whether starting a Key Sequence?
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
