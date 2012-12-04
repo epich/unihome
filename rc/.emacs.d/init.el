@@ -414,14 +414,17 @@ anyway, which doesn't always combine with defadvice. "
 (defun make-conditional-key-translation (key-from key-to translate-keys-p)
   "Make a Key Translation such that if the translate-keys-p function returns true,
 key-from translates to key-to, else key-from translates to itself.  translate-keys-p
-takes no args. "
+takes key-from as an argument. "
   (define-key key-translation-map key-from
-              (lambda (prompt)
-                      (if (funcall translate-keys-p) key-to key-from))))
-(defun my-translate-keys-p ()
+    (lambda (prompt)
+      (if (funcall translate-keys-p key-from) key-to key-from))))
+(defun my-translate-keys-p (key-from)
   "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
-  (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p)))
-;; Create Key Translations of for example:
+  (and
+    ;; Only allow a non identity translation if we're beginning a Key Sequence.
+    (equal key-from (this-command-keys))
+    (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))))
+;; Create Key Translations for Control keys. Some examples:
 ;;   (kbd "cc") to (kbd "C-c")
 ;;   (kbd "cx") to (kbd "C-x")
 (if (fboundp 'cl-loop)
@@ -522,7 +525,7 @@ nil in keymap-from."
 (define-key evil-motion-state-map "\C-x\C-]" 'find-tag)
 (define-key evil-motion-state-map "\C-xv" 'evil-visual-restore)
 
-(define-key evil-motion-state-map "svo"
+(define-key evil-motion-state-map "sco"
   (lambda ()
     (interactive)
     (shell-command (format "cleartool co -nc %s"
