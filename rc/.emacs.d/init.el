@@ -420,31 +420,30 @@ takes key-from as an argument. "
       (if (funcall translate-keys-p key-from) key-to key-from))))
 (defun my-translate-keys-p (key-from)
   "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
+  (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p)))
+(defun my-translate-keys-initial-p (key-from)
+  "Returns whether conditional key translations should be active; nil if not the initial key of a Key Sequence.  See make-conditional-key-translation function. "
   (and
     ;; Only allow a non identity translation if we're beginning a Key Sequence.
     (equal key-from (this-command-keys))
-    (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))))
+    (my-translate-keys-p key-from)))
+(make-conditional-key-translation (kbd "cc") (kbd "C-c") 'my-translate-keys-p)
 ;; Create Key Translations for Control keys. Some examples:
-;;   (kbd "cc") to (kbd "C-c")
+;;   (kbd "ch") to (kbd "C-h")
 ;;   (kbd "cx") to (kbd "C-x")
 (if (fboundp 'cl-loop)
-    ;; Iterate from ASCII '!' to ASCII '~'.
-    (cl-loop for ascii-code-i from 33 to 126 by 1 do
-             ;; Except "cm" because it's used for C-M- keys.
-             (unless (equal ascii-code-i 109)
-               (make-conditional-key-translation (kbd (format "c%c" ascii-code-i))
-                                                 (kbd (format "C-%c" ascii-code-i))
-                                                 'my-translate-keys-p)))
-  ;; TODO: When cl-loop is in a formal Emacs release, delete these and rely on the cl-loop .
-  (make-conditional-key-translation (kbd "cc") (kbd "C-c") 'my-translate-keys-p)
-  (make-conditional-key-translation (kbd "ce") (kbd "C-e") 'my-translate-keys-p)
-  (make-conditional-key-translation (kbd "cf") (kbd "C-f") 'my-translate-keys-p)
-  (make-conditional-key-translation (kbd "ch") (kbd "C-h") 'my-translate-keys-p)
-  (make-conditional-key-translation (kbd "cq") (kbd "C-q") 'my-translate-keys-p)
-  (make-conditional-key-translation (kbd "cs") (kbd "C-s") 'my-translate-keys-p)
-  (make-conditional-key-translation (kbd "cu") (kbd "C-u") 'my-translate-keys-p)
-  (make-conditional-key-translation (kbd "cx") (kbd "C-x") 'my-translate-keys-p)
-  (make-conditional-key-translation (kbd "cy") (kbd "C-y") 'my-translate-keys-p))
+    ;; Iterate from ASCII '!' to ASCII '~', minding exceptions:
+    ;;  "cm" because it's used for C-M- keys.
+    ;;  "cc" because it needs to be in effect throughout a Key Sequence.
+    (let ((ascii-exceptions
+           (mapcar (lambda (char-arg)
+                     (string-to-number (format "%d" char-arg)))
+                   '(?c ?m))))
+      (cl-loop for ascii-code-i from 33 to 126 by 1 do
+               (unless (member ascii-code-i ascii-exceptions)
+                 (make-conditional-key-translation (kbd (format "c%c" ascii-code-i))
+                                                   (kbd (format "C-%c" ascii-code-i))
+                                                   'my-translate-keys-initial-p)))))
 
 (define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
@@ -502,7 +501,7 @@ nil in keymap-from."
 
 ;;; Merge Evil's g prefix key with Emacs' C-x prefix key.
 ;; Define key translation to C-x, then add the Evil g bindings to keep.
-(make-conditional-key-translation (kbd "g") (kbd "C-x") 'my-translate-keys-p)
+(make-conditional-key-translation (kbd "g") (kbd "C-x") 'my-translate-keys-initial-p)
 (define-key evil-normal-state-map "\C-x&" 'evil-ex-repeat-global-substitute)
 (define-key evil-normal-state-map "\C-xa" 'what-cursor-position)
 (define-key evil-normal-state-map "\C-xJ" 'evil-join-whitespace)
@@ -537,15 +536,22 @@ nil in keymap-from."
 (define-key evil-normal-state-map "sek" 'delete-pair)
 (define-key evil-normal-state-map "seh" (lambda () (interactive) (transpose-sexps -1)))
 (define-key evil-normal-state-map "sel" (lambda () (interactive) (transpose-sexps 1)))
-(define-key evil-motion-state-map "sem" 'mark-sexp)
-;; Note: Instead of key binding to kill-sexp, equivalent to 'sem' and then 'd'
 (define-key evil-motion-state-map "srb" 'revert-buffer)
 (define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-motion-state-map "S" 'save-buffer)
 
 ;;; Key bindings for undo-tree
-(define-key evil-motion-state-map "suv" 'undo-tree-visualize)
+(define-key evil-motion-state-map "sv" 'undo-tree-visualize)
+
+;;; Key bindings for diff mode
+(define-key evil-motion-state-map "sdj" 'diff-file-next)
+(define-key evil-motion-state-map "sdk" 'diff-file-prev)
+(define-key evil-motion-state-map "sdb" 'diff-refine-hunk)
+(define-key evil-motion-state-map "sdc" 'diff-goto-source)
+(define-key evil-motion-state-map "sde" 'diff-ediff-patch)
+(define-key evil-motion-state-map "sdr" 'diff-reverse-direction)
+(define-key evil-motion-state-map "sdw" 'diff-ignore-whitespace-hunk)
 
 ;;; Java bindings
 ;;;
