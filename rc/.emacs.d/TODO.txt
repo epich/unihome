@@ -1,4 +1,9 @@
 Issues:
+   : Assess which Evil key bindings need to move from evil-normal-state-map to evil-motion-state-map
+      (define-key evil-normal-state-map "y" 'evil-yank)
+      (define-key evil-normal-state-map "Y" 'evil-yank-line)
+      (define-key evil-normal-state-map "gf" 'find-file-at-point)
+      (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
    : Backspace to tab stop backward-delete-whitespace-to-tab-stop
       : Doesn't correctly handle backspace when there's a selection.
          : Snag with solution:
@@ -45,9 +50,10 @@ Issues:
                : Does the hyperify example in the Elisp manual's documentation of key-translation-map help?
                : Bind a function to "sg", read-event, use event-modifiers function to check if control is applied, ...
          : Bind SPC to step when debugger is active.
-      : Create function that generates all of the key-translation-map additions for C- keys.
-      : What to do about eg "sco" translating to "sC-o"
-         : Is there a way to have the my-translate-keys-p check whether starting a Key Sequence?
+      : Some "s" key bindings can go in major mode specific hooks instead of being global amongst major modes.
+         : Can we make these two keys instead of three?
+         : Between "s" and one other prefix key, have one be for globals and another for major mode specific key bindings?
+         : Use capital letters for the globals?
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
@@ -69,7 +75,9 @@ Issues:
       : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
    : Learn about Dired
       : Is there a notion of finding a set of files based on a criteria (search term, use of symbol), then iteratively visiting just those?
+         : Need Dired Plus to visit marked files
       : Dired doesn't update when a directory is created separately.  Including when Auto Revert is enabled.
+      : Would be nice if I could expand and collapse directories inline, rather than at the bottom of the same buffer, and retain same information.
    : CEDET
       : Display in minibuffer undermines promptings and my ability to read them.
       : Symbol reference -- where is a symbol used or called?
