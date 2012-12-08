@@ -521,22 +521,23 @@ nil in keymap-from."
 (define-key evil-motion-state-map "\C-xv" 'evil-visual-restore)
 
 (define-key evil-normal-state-map "o" nil)
+(define-key evil-visual-state-map "o" nil)
 (define-key evil-normal-state-map "O" nil)
-(define-key evil-motion-state-map "oo"
+(define-key evil-normal-state-map "oo"
   (lambda ()
     (interactive)
     (shell-command (format "cleartool co -nc %s"
                            (file-name-nondirectory (or (buffer-file-name) default-directory))))
     (revert-buffer)))
-(define-key evil-motion-state-map "oh" 'highlight-phrase)
-(define-key evil-motion-state-map "oj" 'insert-parentheses)
-(define-key evil-motion-state-map "ok" 'delete-pair)
-(define-key evil-motion-state-map "oh" (lambda () (interactive) (transpose-sexps -1)))
-(define-key evil-motion-state-map "ol" (lambda () (interactive) (transpose-sexps 1)))
+(define-key evil-motion-state-map "o/" 'highlight-phrase)
+(define-key evil-normal-state-map "oj" 'insert-parentheses)
+(define-key evil-normal-state-map "ok" 'delete-pair)
+(define-key evil-normal-state-map "oh" (lambda () (interactive) (transpose-sexps -1)))
+(define-key evil-normal-state-map "ol" (lambda () (interactive) (transpose-sexps 1)))
 (define-key evil-motion-state-map "or" 'revert-buffer)
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
-(define-key evil-motion-state-map "S" 'save-buffer)
+(define-key evil-normal-state-map "S" 'save-buffer)
 (define-key evil-motion-state-map "V" 'undo-tree-visualize)
 
 ;;; More Evil key bindings
