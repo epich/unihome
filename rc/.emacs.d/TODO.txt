@@ -125,6 +125,10 @@ Issues:
          : Is there a way to forego having another window at all, and I can simply bind useful Ediff commands myself.
    : Diff mode
       : When navigating hunks, top of hunk displays in the middle of display, even if all of the hunk doesn't show.
+   : Undo Tree
+      : Update version to see if issues below still exist.
+      : Have a different character in the visual tree indicate the last save point
+      : Visual tree is not as compact as it could be
    : Learn merging in Git
       : Use magit?
    : Learn about org-mode
@@ -247,8 +251,3 @@ Evil bugs (submitted):
          5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
       : Bug submitted to Evil project.
          : Issue 1 was solved with a defcustom.
-   : Weird bug that causes wipeout of undo boundaries
-      : Submitted bug report
-      : Works in bzr trunk, not 24.2.3 and earlier.
-         : Need to bisect
-
