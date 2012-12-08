@@ -46,18 +46,15 @@ Issues:
          : Compare with Edebug bindings
          : Options:
             : Make like Edebug
-            : Define Key Translation from (something convenient (maybe Z) then <key>) to "C-x C-a C-<key>"
+            : Should I define Key Translation from (something convenient (maybe an upper case letter) then <key>) to "C-x C-a C-<key>"?
                : read-event approach:
                   : Does the hyperify example in the Elisp manual's documentation of key-translation-map help?
                   : Bind a function to the desired prefix key, read-event, use event-modifiers function to check if control is applied, ...
                : Same approach as for C-<key> Key Translations
                : See commands to bind at:
                   http://www.gnu.org/software/emacs/manual/html_node/emacs/Commands-of-GUD.html
+            : Can I get away with using normal Key Mapping instead of Key Translations?
          : Bind SPC to step when debugger is active.
-      : Some "s" key bindings can go in major mode specific hooks instead of being global amongst major modes.
-         : Can we make these two keys instead of three?
-         : Between "s" and one other prefix key, have one be for globals and another for major mode specific key bindings?
-         : Use capital letters for the globals?
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
