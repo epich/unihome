@@ -404,11 +404,11 @@ anyway, which doesn't always combine with defadvice. "
 ;; C-M-x is major mode dependant.  Of interest is the binding to the elisp function that
 ;; instruments a function for the Edebug debugger.
 (define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
-(define-key key-translation-map (kbd "smx") (kbd "M-x"))
+(define-key key-translation-map (kbd "omx") (kbd "M-x"))
 ;; evil-repeat-pop-next isn't particularly useful to me.
 (define-key evil-normal-state-map (kbd "M-.") nil)
-(define-key key-translation-map (kbd "sm.") (kbd "M-."))
-(define-key key-translation-map (kbd "sm;") (kbd "M-;"))
+(define-key key-translation-map (kbd "om.") (kbd "M-."))
+(define-key key-translation-map (kbd "om;") (kbd "M-;"))
 
 ;; Note: lexical-binding must be t in order for this to work correctly.
 (defun make-conditional-key-translation (key-from key-to translate-keys-p)
@@ -473,10 +473,6 @@ nil in keymap-from."
 
 ;; ^ in Dired is more useful than Evil's binding.
 (define-key evil-motion-state-map "^" nil)
-(define-key evil-normal-state-map "o" nil)
-(define-key evil-motion-state-map "o" 'next-buffer)
-(define-key evil-normal-state-map "O" nil)
-(define-key evil-motion-state-map "O" 'previous-buffer)
 (define-key evil-motion-state-map "f" 'buffer-menu)
 (define-key evil-motion-state-map "F" nil)
 (define-key evil-motion-state-map "F" 'other-window)
@@ -491,13 +487,13 @@ nil in keymap-from."
 (define-key evil-motion-state-map "]" nil)
 (define-key evil-motion-state-map "]" 'kmacro-end-macro)
 (define-key evil-normal-state-map "s" nil)
+(define-key evil-motion-state-map "s" 'kmacro-end-and-call-macro)
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
 (define-key evil-normal-state-map "P" 'evil-paste-after)
 ;; Emacs' undo is more useful in visual state than evil-downcase is.
 (define-key evil-visual-state-map "u" nil)
 (define-key evil-motion-state-map "," nil)
-(define-key evil-motion-state-map "," 'kmacro-end-and-call-macro)
 
 ;;; Merge Evil's g prefix key with Emacs' C-x prefix key.
 ;; Define key translation to C-x, then add the Evil g bindings to keep.
@@ -524,85 +520,24 @@ nil in keymap-from."
 (define-key evil-motion-state-map "\C-x\C-]" 'find-tag)
 (define-key evil-motion-state-map "\C-xv" 'evil-visual-restore)
 
-(define-key evil-motion-state-map "sco"
+(define-key evil-normal-state-map "o" nil)
+(define-key evil-normal-state-map "O" nil)
+(define-key evil-motion-state-map "oo"
   (lambda ()
     (interactive)
     (shell-command (format "cleartool co -nc %s"
                            (file-name-nondirectory (or (buffer-file-name) default-directory))))
     (revert-buffer)))
-(define-key evil-motion-state-map "sh" 'highlight-phrase)
-(define-key evil-motion-state-map "sex" 'eval-last-sexp)
-(define-key evil-normal-state-map "sej" 'insert-parentheses)
-(define-key evil-normal-state-map "sek" 'delete-pair)
-(define-key evil-normal-state-map "seh" (lambda () (interactive) (transpose-sexps -1)))
-(define-key evil-normal-state-map "sel" (lambda () (interactive) (transpose-sexps 1)))
-(define-key evil-motion-state-map "srb" 'revert-buffer)
-(define-key evil-motion-state-map "sle" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (toggle-fullscreen)))
+(define-key evil-motion-state-map "oh" 'highlight-phrase)
+(define-key evil-motion-state-map "oj" 'insert-parentheses)
+(define-key evil-motion-state-map "ok" 'delete-pair)
+(define-key evil-motion-state-map "oh" (lambda () (interactive) (transpose-sexps -1)))
+(define-key evil-motion-state-map "ol" (lambda () (interactive) (transpose-sexps 1)))
+(define-key evil-motion-state-map "or" 'revert-buffer)
+(define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-motion-state-map "S" 'save-buffer)
-
-;;; Key bindings for undo-tree
-(define-key evil-motion-state-map "sv" 'undo-tree-visualize)
-
-;;; Key bindings for diff mode
-(define-key evil-motion-state-map "sdj" 'diff-file-next)
-(define-key evil-motion-state-map "sdk" 'diff-file-prev)
-(define-key evil-motion-state-map "sdb" 'diff-refine-hunk)
-(define-key evil-motion-state-map "sdc" 'diff-goto-source)
-(define-key evil-motion-state-map "sde" 'diff-ediff-patch)
-(define-key evil-motion-state-map "sdr" 'diff-reverse-direction)
-(define-key evil-motion-state-map "sdw" 'diff-ignore-whitespace-hunk)
-
-;;; Java bindings
-;;;
-;; Based on jde-key-bindings from jde.el, which are not in any keymap by default:
-(define-key evil-normal-state-map "sjCa" 'jde-run-menu-run-applet)
-(define-key evil-normal-state-map "sjCb" 'jde-build)
-(define-key evil-normal-state-map "sjCc" 'jde-compile)
-(define-key evil-normal-state-map "sjCd" 'jde-debug)
-(define-key evil-normal-state-map "sjCf" 'jde-find)
-(define-key evil-normal-state-map "sjCg" 'jde-open-class-at-point)
-(define-key evil-normal-state-map "sjCk" 'jde-bsh-run)
-(define-key evil-normal-state-map "sjCl" 'jde-gen-println)
-(define-key evil-normal-state-map "sjCn" 'jde-help-browse-jdk-doc)
-(define-key evil-normal-state-map "sjCp" 'jde-save-project)
-(define-key evil-normal-state-map "sjCq" 'jde-wiz-update-class-list)
-(define-key evil-normal-state-map "sjCr" 'jde-run)
-(define-key evil-normal-state-map "sjCs" 'speedbar-frame-mode)
-(define-key evil-normal-state-map "sjCt" 'jde-jdb-menu-debug-applet)
-(define-key evil-normal-state-map "sjCw" 'jde-help-symbol)
-(define-key evil-normal-state-map "sjCx" 'jde-show-superclass-source)
-(define-key evil-normal-state-map "sjCy" 'jde-open-class-at-point)
-(define-key evil-normal-state-map "sjCz" 'jde-import-find-and-import)
-(define-key evil-normal-state-map "sje"    'jde-wiz-extend-abstract-class)
-(define-key evil-normal-state-map "sjf"    'jde-gen-try-finally-wrapper)
-(define-key evil-normal-state-map "sji"    'jde-wiz-implement-interface)
-(define-key evil-normal-state-map "sjj"    'jde-javadoc-autodoc-at-line)
-(define-key evil-normal-state-map "sjo"    'jde-wiz-override-method)
-(define-key evil-normal-state-map "sjt"    'jde-gen-try-catch-wrapper)
-(define-key evil-normal-state-map "sjz"    'jde-import-all)
-(define-key evil-normal-state-map "sjc[" 'jde-run-etrace-prev)
-(define-key evil-normal-state-map "sjc]" 'jde-run-etrace-next)
-(define-key evil-normal-state-map "sjc." 'jde-complete)
-(define-key evil-normal-state-map "sj." 'jde-complete-in-line)
-;; My own
-(define-key evil-normal-state-map "sja" (lambda () (interactive) (jde-import-all) (jde-import-kill-extra-imports) (jde-import-organize)))
-
-;; Key bindings for GDB
-(define-key evil-normal-state-map "sgb" 'gud-break)
-(define-key evil-normal-state-map "sgl" 'gud-refresh)
-(define-key evil-normal-state-map "sgl" 'gud-step)
-(define-key evil-normal-state-map "sgn" 'gud-next)
-(define-key evil-normal-state-map "sgi" 'gud-stepi)
-(define-key evil-normal-state-map "sgp" 'gud-print)
-(define-key evil-normal-state-map "sgr" 'gud-cont)
-(define-key evil-normal-state-map "sgd" 'gud-remove)
-(define-key evil-normal-state-map "sgt" 'gud-tbreak)
-(define-key evil-normal-state-map "sg<" 'gud-up)
-(define-key evil-normal-state-map "sg>" 'gud-down)
-(define-key evil-normal-state-map "sgu" 'gud-until)
-(define-key evil-normal-state-map "sgf" 'gud-finish)
-(define-key evil-normal-state-map "sgj" 'gud-jump)
+(define-key evil-motion-state-map "V" 'undo-tree-visualize)
 
 ;;; More Evil key bindings
 
@@ -729,6 +664,16 @@ nil in keymap-from."
      ;; restrictive about allowing tabbing, or it aligns with the line above in the wrong cases.
      (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop))
 
+(add-hook 'diff-mode-hook
+          (lambda ()
+            (define-key evil-motion-state-local-map ",j" 'diff-file-next)
+            (define-key evil-motion-state-local-map ",k" 'diff-file-prev)
+            (define-key evil-motion-state-local-map ",b" 'diff-refine-hunk)
+            (define-key evil-motion-state-local-map ",c" 'diff-goto-source)
+            (define-key evil-motion-state-local-map ",e" 'diff-ediff-patch)
+            (define-key evil-motion-state-local-map ",r" 'diff-reverse-direction)
+            (define-key evil-motion-state-local-map ",w" 'diff-ignore-whitespace-hunk)
+            ))
 (add-hook 'prog-mode-hook
           (lambda ()
             (log-msg "Inside prog-mode-hook")
@@ -741,12 +686,46 @@ nil in keymap-from."
    (lambda ()
       (log-msg "Inside emacs-lisp-mode-hook")
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-elisp-log)
+      (define-key evil-motion-state-local-map ",e" 'eval-last-sexp)
       (bind-arrow-keys-for-sexp)
       ))
 (add-hook 'java-mode-hook 
    (lambda ()
       (log-msg "Inside java-mode-hook")
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-java-log)
+
+      ;;; Based on jde-key-bindings from jde.el, which are not in any keymap by default:
+      (define-key evil-normal-state-local-map ",Ca" 'jde-run-menu-run-applet)
+      (define-key evil-normal-state-local-map ",Cb" 'jde-build)
+      (define-key evil-normal-state-local-map ",Cc" 'jde-compile)
+      (define-key evil-normal-state-local-map ",Cd" 'jde-debug)
+      (define-key evil-normal-state-local-map ",Cf" 'jde-find)
+      (define-key evil-normal-state-local-map ",Cg" 'jde-open-class-at-point)
+      (define-key evil-normal-state-local-map ",Ck" 'jde-bsh-run)
+      (define-key evil-normal-state-local-map ",Cl" 'jde-gen-println)
+      (define-key evil-normal-state-local-map ",Cn" 'jde-help-browse-jdk-doc)
+      (define-key evil-normal-state-local-map ",Cp" 'jde-save-project)
+      (define-key evil-normal-state-local-map ",Cq" 'jde-wiz-update-class-list)
+      (define-key evil-normal-state-local-map ",Cr" 'jde-run)
+      (define-key evil-normal-state-local-map ",Cs" 'speedbar-frame-mode)
+      (define-key evil-normal-state-local-map ",Ct" 'jde-jdb-menu-debug-applet)
+      (define-key evil-normal-state-local-map ",Cw" 'jde-help-symbol)
+      (define-key evil-normal-state-local-map ",Cx" 'jde-show-superclass-source)
+      (define-key evil-normal-state-local-map ",Cy" 'jde-open-class-at-point)
+      (define-key evil-normal-state-local-map ",Cz" 'jde-import-find-and-import)
+      (define-key evil-normal-state-local-map ",e"    'jde-wiz-extend-abstract-class)
+      (define-key evil-normal-state-local-map ",f"    'jde-gen-try-finally-wrapper)
+      (define-key evil-normal-state-local-map ",i"    'jde-wiz-implement-interface)
+      (define-key evil-normal-state-local-map ",j"    'jde-javadoc-autodoc-at-line)
+      (define-key evil-normal-state-local-map ",o"    'jde-wiz-override-method)
+      (define-key evil-normal-state-local-map ",t"    'jde-gen-try-catch-wrapper)
+      (define-key evil-normal-state-local-map ",z"    'jde-import-all)
+      (define-key evil-normal-state-local-map ",c[" 'jde-run-etrace-prev)
+      (define-key evil-normal-state-local-map ",c]" 'jde-run-etrace-next)
+      (define-key evil-normal-state-local-map ",c." 'jde-complete)
+      (define-key evil-normal-state-local-map ",." 'jde-complete-in-line)
+      ;; My own
+      (define-key evil-normal-state-local-map ",a" (lambda () (interactive) (jde-import-all) (jde-import-kill-extra-imports) (jde-import-organize)))
       ))
 (add-hook 'makefile-mode-hook 
    (lambda ()
