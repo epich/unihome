@@ -1,0 +1,8 @@
+Packages to install:
+   gcc
+   git
+   hg
+   make
+   unzip
+   wget
+
