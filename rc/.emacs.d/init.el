@@ -398,7 +398,9 @@ anyway, which doesn't always combine with defadvice. "
 ;;; Other key translations
 ;;;
 ;; Four NXML navigation key bindings
+(define-key key-translation-map (kbd "cmb") (kbd "C-M-b"))
 (define-key key-translation-map (kbd "cmd") (kbd "C-M-d"))
+(define-key key-translation-map (kbd "cmf") (kbd "C-M-f"))
 (define-key key-translation-map (kbd "cmn") (kbd "C-M-n"))
 (define-key key-translation-map (kbd "cmq") (kbd "C-M-q"))
 (define-key key-translation-map (kbd "cmp") (kbd "C-M-p"))
@@ -656,14 +658,6 @@ nil in keymap-from."
   (search-backward "\"\"\"")
   (goto-char (match-end 0)))
 
-(defun bind-arrow-keys-for-sexp ()
-  "Bind the arrow keys to commands for navigating S expressions. "
-      (define-key evil-motion-state-local-map (kbd "<left>") 'backward-sexp)
-      (define-key evil-motion-state-local-map (kbd "<right>") 'forward-sexp)
-      (define-key evil-motion-state-local-map (kbd "<up>") 'backward-up-list)
-      (define-key evil-motion-state-local-map (kbd "<down>") 'down-list)
-   )
-
 (defun bind-my-tab-del-keys ()
   "Bind the TAB and DEL keys because default behaviors are shitty. "
      ;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
@@ -695,7 +689,6 @@ nil in keymap-from."
       (log-msg "Inside emacs-lisp-mode-hook")
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-elisp-log)
       (define-key evil-motion-state-local-map ",e" 'eval-last-sexp)
-      (bind-arrow-keys-for-sexp)
       ))
 (add-hook 'java-mode-hook 
    (lambda ()
@@ -749,8 +742,7 @@ nil in keymap-from."
 (add-hook 'nxml-mode-hook
           (lambda ()
             (log-msg "Inside nxml-mode-hook")
-            (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-ant-log)
-            (bind-arrow-keys-for-sexp)))
+            (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-ant-log)))
 (add-hook 'python-mode-hook 
    (lambda ()
       (log-msg "Inside python-mode-hook")

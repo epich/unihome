@@ -38,14 +38,22 @@ Issues:
       : Sexp navigation:
          : Sort out how these work, and which to bind to arrow keys:
             forward-list
+               It is bound to C-M-n.
             backward-list
+               It is bound to C-M-p.
             down-list
+               It is bound to <C-M-down>, C-M-d.
             backward-up-list
+               It is bound to <C-M-up>, C-M-u.
             up-list
+               No binding.
             forward-sexp
+               It is bound to <C-M-right>, C-M-f.
             backward-sexp
+               It is bound to <C-M-left>, C-M-b.
       : Automatically balance space between parens.
       : How to stop Emacs loading Lisp files when visiting them.
+      : Make raise-sexp a composite of a new function and delete-pair in lisp.el?
    : Keymapping
       : Edebug comes up in normal state.
          : Learn why
@@ -69,6 +77,7 @@ Issues:
       : Is there a way to disable electric-pair-mode in the minibuffer?
    : How to automatically wrap text and code at 80 columns?
       : Auto fill mode?
+         : Thought I turned it on, but "Fill" not in modeline.
    : When up arrowing through search history, Vim goes to end of line, Evil beginning.
       : This is consistent with Emacs minibuffer in general.  Investigate
       : Can I use an Evil ex hook for this?  See:
