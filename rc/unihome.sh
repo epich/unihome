@@ -1,5 +1,5 @@
 # Enable core files
-ulimit -c 50000 
+ulimit -c unlimited
 
 alias v='vim'
 function e() { emacs --reverse-video "$@" & }

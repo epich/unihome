@@ -30,7 +30,7 @@ set history=10000
 set histdup erase
 set ignoreeof=1
 # Allow core files, sys default is 0.  No particular reason for chosen value.
-limit coredumpsize 50000
+limit coredumpsize unlimited
 
 #alias title 'echo -n "\033]0;\!*\007"'
 alias title 'echo -n "]2;\!*"'
