@@ -475,6 +475,11 @@ nil in keymap-from."
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
 
+(global-set-key (kbd "C-<down>") 'shrink-window)
+(global-set-key (kbd "C-<up>") 'enlarge-window)
+(global-set-key (kbd "C-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "C-<right>") 'enlarge-window-horizontally)
+
 ;; ^ in Dired is more useful than Evil's binding.
 (define-key evil-motion-state-map "^" nil)
 (define-key evil-motion-state-map "f" 'buffer-menu)
