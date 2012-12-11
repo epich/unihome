@@ -32,11 +32,17 @@ Issues:
                   : Presumably because it highlights parens throughout the buffer
                   : Perhaps also because coloring doesn't change when point moves
       : Editing:
-         : Build on insert-parentheses to make more convenient
          : How to make insert-pair useful?
+            : Iterate through insert-pair-alist and define eg:
+               : o(
+               : o[
+               : o{
+               : o<
+               : o"
+               : o'
          : Take a step back and look at my commands and their key bindings
-      : Sexp navigation:
-         : Sort out how these work, and which to bind to arrow keys:
+      : Notes:
+         : List and sexp navigation
             forward-list
                It is bound to C-M-n.
             backward-list
@@ -51,9 +57,10 @@ Issues:
                It is bound to <C-M-right>, C-M-f.
             backward-sexp
                It is bound to <C-M-left>, C-M-b.
+         : Editing:
+            : 1oj to surround the next 1 sexp
       : Automatically balance space between parens.
       : How to stop Emacs loading Lisp files when visiting them.
-      : Make raise-sexp a composite of a new function and delete-pair in lisp.el?
    : Keymapping
       : Edebug comes up in normal state.
          : Learn why
@@ -142,6 +149,7 @@ Issues:
          : Is there a way to forego having another window at all, and I can simply bind useful Ediff commands myself.
    : Diff mode
       : When navigating hunks, top of hunk displays in the middle of display, even if all of the hunk doesn't show.
+      : Why not refine all diffs during initialization?
    : Undo Tree
       : Update version to see if issues below still exist.
       : Have a different character in the visual tree indicate the last save point
@@ -182,8 +190,8 @@ Issues:
          http://stackoverflow.com/questions/9595277/emacs-xterm-mouse-mode-double-click-to-highlight-word
       : Double clicking a / char in Evil states no longer works, does work in Emacs state.
          : Bisect the Evil repo to determine the guilty changeset.
-   : Get % to match <> such as in C++ or Java.
-      : Is this done via syntax table?
+   : Pair matching
+      : Need to be able to use % for <> pairs, "" and '' pairs too.
    : Syntax tables:
       : Change - and _ so as motion over variable names and such work better.
       : Have double clicking work better (see above).

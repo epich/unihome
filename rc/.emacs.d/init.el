@@ -237,10 +237,8 @@ anyway, which doesn't always combine with defadvice. "
 (defun my-insert-bullet ()
   "Insert a Unicode bullet character."
   (interactive)
-  (cond ((<= 25 emacs-major-version)
-         (insert-char #x2022))
-        (t (ucs-insert "2022")))
-  )
+  ;; Note: Emacs 24.2 and earlier, use: (ucs-insert "2022")
+  (insert-char #x2022))
 
 ;;; Customizations
 ;;
@@ -297,8 +295,7 @@ anyway, which doesn't always combine with defadvice. "
  '(python-continuation-offset (my-continuation-offset))
  '(python-indent my-offset)
  '(python-indent-offset my-offset)
- '(scroll-conservatively 1)
- '(scroll-step 1)
+ '(scroll-conservatively 101)
  '(tags-case-fold-search nil)
  '(undo-tree-visualizer-diff t)
  '(undo-tree-visualizer-timestamps t)
@@ -532,17 +529,16 @@ nil in keymap-from."
 (define-key evil-normal-state-map "o" nil)
 (define-key evil-visual-state-map "o" nil)
 (define-key evil-normal-state-map "O" nil)
-(define-key evil-normal-state-map "oo"
+(define-key evil-normal-state-map "oC"
   (lambda ()
     (interactive)
     (shell-command (format "cleartool co -nc %s"
                            (file-name-nondirectory (or (buffer-file-name) default-directory))))
     (revert-buffer)))
 (define-key evil-motion-state-map "o/" 'highlight-phrase)
-(define-key evil-normal-state-map "J" 'insert-parentheses)
-(define-key evil-normal-state-map "K"
-  (lambda () (interactive)
-    (save-excursion (backward-up-list) (delete-pair))))
+(define-key evil-normal-state-map "oa" 'move-past-close-and-reindent)
+(define-key evil-normal-state-map "o\"" (lambda (arg) (interactive "P")
+                                          (insert-pair arg ?\")))
 (define-key evil-normal-state-map "od" 'delete-pair)
 (define-key evil-normal-state-map "oj" 'insert-parentheses)
 (define-key evil-normal-state-map "ok" 'raise-sexp)
