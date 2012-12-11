@@ -83,12 +83,11 @@
       (format "%s.%s" 
          (format-time-string my-date-time-format)
          (get-usec-str cur-time))))
+;; I attempted to use defadvice on the message function, but the minibuffer
+;; misbehaves under some conditions.  The message function is a C primitive
+;; anyway, which doesn't always combine with defadvice.
 (defun log-msg (msg &rest vargs)
-   "Log a message, with prepended information.  Used for debugging.
-
-I attempted to use defadvice on the message function, but the minibuffer
-misbehaves under some conditions.  The message function is a C primitive
-anyway, which doesn't always combine with defadvice. "
+   "Log a message, with prepended information.  Used for debugging. "
    (interactive)
    (message "%s %s" (get-time-str) (apply 'format msg vargs)))
 
@@ -240,6 +239,10 @@ anyway, which doesn't always combine with defadvice. "
   ;; Note: Emacs 24.2 and earlier, use: (ucs-insert "2022")
   (insert-char #x2022))
 
+;; Get rid of annoying messages when saving makefiles
+(fset 'makefile-warn-suspicious-lines nil)
+(fset 'makefile-warn-continuations nil)
+
 ;;; Customizations
 ;;
 ;; Specific customizations are documented outside the sexp, because
@@ -295,7 +298,7 @@ anyway, which doesn't always combine with defadvice. "
  '(python-continuation-offset (my-continuation-offset))
  '(python-indent my-offset)
  '(python-indent-offset my-offset)
- '(scroll-conservatively 101)
+ '(scroll-conservatively 1)
  '(tags-case-fold-search nil)
  '(undo-tree-visualizer-diff t)
  '(undo-tree-visualizer-timestamps t)
@@ -500,6 +503,13 @@ nil in keymap-from."
 ;; Emacs' undo is more useful in visual state than evil-downcase is.
 (define-key evil-visual-state-map "u" nil)
 (define-key evil-motion-state-map "," nil)
+;; Need scroll-conservatively to have a different value when using some Evil commands.
+(defadvice evil-window-top (around my-advice-evil-window-top activate)
+  (let ((scroll-conservatively 101))
+    ad-do-it))
+(defadvice evil-window-bottom (around my-advice-evil-window-bottom activate)
+  (let ((scroll-conservatively 101))
+    ad-do-it))
 
 ;;; Merge Evil's g prefix key with Emacs' C-x prefix key.
 ;; Define key translation to C-x, then add the Evil g bindings to keep.
@@ -546,9 +556,9 @@ nil in keymap-from."
 (define-key evil-normal-state-map "ol" (lambda () (interactive) (transpose-sexps 1)))
 (define-key evil-motion-state-map "or" 'revert-buffer)
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (toggle-fullscreen)))
+(define-key evil-motion-state-map "ov" 'undo-tree-visualize)
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-normal-state-map "S" 'save-buffer)
-(define-key evil-motion-state-map "V" 'undo-tree-visualize)
 
 ;;; More Evil key bindings
 
@@ -600,9 +610,16 @@ nil in keymap-from."
 (defun my-insert-c-log ()
    "Insert log statement for C and C++. "
    (interactive)
-   (insert "printf( \"%s:%d:DEBUG: \\n\", // TODO: temporary for debug")
-   (evil-ret)
-   (insert "\t\t\t__FILE__, __LINE__ ); fflush(stdout);")
+   ;; This is the simplest way I could find to get a proper and complete current time.
+   (insert "{ // TODO: temporary for debug") (evil-ret)
+   (cl-dotimes (dummy my-offset) (insert " "))
+   (insert "timespec ts; clock_gettime(CLOCK_REALTIME, &ts);") (evil-ret)
+   (insert "tm mytm; localtime_r(&ts.tv_sec, &mytm);") (evil-ret)
+   (insert "char dateStr[20]; strftime(dateStr, 20, \"%Y-%m-%dT%H:%M:%S\", &mytm);") (evil-ret)
+   (insert "printf( \"%s|%s|%d| DEBUG: \\n\",") (evil-ret)
+   (insert "        dateStr, __FILE__, __LINE__ ); fflush(stdout);") (evil-ret)
+   (delete-char (- (+ 8 my-offset)))
+   (insert "}")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
 (defun my-insert-java-log ()

@@ -156,6 +156,7 @@ Issues:
       : Can't get undo diffs to work.
       : Visual tree is not as compact as it could be
       : Set up undo-tree-auto-save-history to put undo history in ~/emacs-backup
+      : Byte compile undo-tree.el!
    : Learn merging in Git
       : Use magit?
    : Learn about org-mode
@@ -192,6 +193,15 @@ Issues:
          : Bisect the Evil repo to determine the guilty changeset.
    : Pair matching
       : Need to be able to use % for <> pairs, "" and '' pairs too.
+         : forward-sexp seems to have the knowledge match "" chars.  Understand how.
+   : Automatic scrolling:
+      : Advised evil-window-top and evil-window-bottom to set scroll-conservatively to 101
+         : Doesn't seem work, even though log-msg in Evil shows scroll-conservatively is set
+      : scroll-down-aggressively scroll-up-aggressively
+         : Look useful
+         : Emacs manual states these are ignored if scroll-conservatively is set to non zero.  Fix this?
+            http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Scrolling.html
+      : Find command for keeping point where it is, but vertically centering it in the display.
    : Syntax tables:
       : Change - and _ so as motion over variable names and such work better.
       : Have double clicking work better (see above).
