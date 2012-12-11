@@ -9,7 +9,6 @@ sys.path.append( '~/unihome/py' )
 import generalUtil
 
 evilDir_g = 'evil'
-rainbowDelimitersDir_g = 'rainbow-delimiters'
 cedetDir_g = 'cedet-1.1'
 jdeeVersion_g = '2.4.0.1'
 
@@ -24,9 +23,15 @@ def byteCompile(filesString, loadPathL=[]):
 
 def buildEvil():
    generalUtil.cmd('make -C %s'%(evilDir_g,), printStdout=True)
-   
+
+def buildGotoChg():
+   byteCompile('evil/lib/goto-chg.el')
+
+def buildUndoTree():
+   byteCompile('evil/lib/undo-tree.el')
+
 def buildRainbowDelimiters():
-   byteCompile(rainbowDelimitersDir_g+'/rainbow-delimiters.el')
+   byteCompile('rainbow-delimiters/rainbow-delimiters.el')
    
 def buildCedet():
    # CEDET contributes to annoying interrogations at Emacs closing time.
@@ -60,6 +65,8 @@ def buildInitElisp():
 
 def buildEmacsD():
    buildEvil()
+   buildUndoTree()
+   buildGotoChg()
    buildRainbowDelimiters()
    buildCedet()
    buildJdee()

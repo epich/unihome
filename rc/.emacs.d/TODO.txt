@@ -96,8 +96,10 @@ Issues:
       : Need Evil analog to highlight-regexp and highlight-phrase
       : Look more at evil-ex-make-hl
       : Need a way to clear them.  evil-ex-delete-hl perhaps.
-   : Learn Edebug
-      : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
+   : Debugging
+      : Learn Edebug
+         : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
+      : Consider approaches to put *Messages* buffer to file.
    : Learn about Dired
       : Is there a notion of finding a set of files based on a criteria (search term, use of symbol), then iteratively visiting just those?
          : Need Dired Plus to visit marked files
@@ -156,7 +158,6 @@ Issues:
       : Can't get undo diffs to work.
       : Visual tree is not as compact as it could be
       : Set up undo-tree-auto-save-history to put undo history in ~/emacs-backup
-      : Byte compile undo-tree.el!
    : Learn merging in Git
       : Use magit?
    : Learn about org-mode
@@ -235,26 +236,16 @@ Issues:
    : Learn how to do this with better semi-automation:
       : case longlonglong     do-something-aligned-with-below
       : case short            do-something-aligned-with-above
+   : Learn using Emacs as a daemon
    : Organize and optimize Emacs lisp init code.
       : Move most of .emacs code to .el files and build it with the others.
-      : Links:
-         : Optimization: http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Compilation-Tips
-         : Optimization: http://www.emacswiki.org/emacs/OptimizingEmacsStartup
-         : Optimization: http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster/779145#779145
-      : Create error handling such that a single failure doesn't abort my init.
-         : See http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Errors
-      : Write code which automates benchmarking a bit better.
-         : If the elisp manual link above is insufficient:
-            : Elisp:
-               : Have the elisp measure the time elapsed from start of .emacs to end of term-setup-hook.
-               : Maybe output result to stdout to facilitate analyzing multiple runs of Emacs.
-                  : For printing to stdout, might be helpful:
-                     http://www.gnu.org/software/emacs/manual/html_node/elisp/Output-Functions.html
-            : Maybe need a higher Python script to
-               : start up Emacs multiple times
-               : discard the first run in case there's any caching or byte compiling that occurs.
-         : Use Emacs daemon
-   : In Evil motion state, can't mouse click buttons.  RET works however.
+         : Be sure log-msg is issued earlier in initialization so as startup time can be assessed.
+         : Be sure my essential commands are available when an error occurs in initialization
+            : See http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Errors
+      : Optimization:
+         : http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Compilation-Tips
+         : http://www.emacswiki.org/emacs/OptimizingEmacsStartup
+         : http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster/779145#779145
    : Figure out how to (setq-default major-mode 'text-mode) with out conflicting with Evil's (setq-default major-mode 'turn-on-evil-mode)
    : Finding location of .emacs.d
       : See thread: http://lists.gnu.org/archive/html/help-gnu-emacs/2012-10/msg00467.html
@@ -288,3 +279,4 @@ Evil bugs (submitted):
          5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
       : Bug submitted to Evil project.
          : Issue 1 was solved with a defcustom.
+   : In Evil motion state, can't mouse click buttons.  RET works however.
