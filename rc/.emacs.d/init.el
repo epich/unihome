@@ -397,17 +397,6 @@
 
 ;;; Other key translations
 ;;;
-;; Four NXML navigation key bindings
-(define-key key-translation-map (kbd "cmb") (kbd "C-M-b"))
-(define-key key-translation-map (kbd "cmd") (kbd "C-M-d"))
-(define-key key-translation-map (kbd "cmf") (kbd "C-M-f"))
-(define-key key-translation-map (kbd "cmn") (kbd "C-M-n"))
-(define-key key-translation-map (kbd "cmq") (kbd "C-M-q"))
-(define-key key-translation-map (kbd "cmp") (kbd "C-M-p"))
-(define-key key-translation-map (kbd "cmu") (kbd "C-M-u"))
-;; C-M-x is major mode dependant.  Of interest is the binding to the elisp function that
-;; instruments a function for the Edebug debugger.
-(define-key key-translation-map (kbd "cmx") (kbd "C-M-x"))
 (define-key key-translation-map (kbd "omx") (kbd "M-x"))
 ;; evil-repeat-pop-next isn't particularly useful to me.
 (define-key evil-normal-state-map (kbd "M-.") nil)
@@ -447,7 +436,11 @@ takes key-from as an argument. "
                (unless (member ascii-code-i ascii-exceptions)
                  (make-conditional-key-translation (kbd (format "c%c" ascii-code-i))
                                                    (kbd (format "C-%c" ascii-code-i))
-                                                   'my-translate-keys-initial-p)))))
+                                                   'my-translate-keys-initial-p))
+               ;; ascii-exception don't apply to the C-M- case
+               (make-conditional-key-translation (kbd (format "cm%c" ascii-code-i))
+                                                 (kbd (format "C-M-%c" ascii-code-i))
+                                                 'my-translate-keys-initial-p))))
 
 (define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.

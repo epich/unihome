@@ -65,19 +65,26 @@ Issues:
       : Edebug comes up in normal state.
          : Learn why
          : Give Edebug keymap priority for SPC over Evil.
-      : Define GDB key bindings
-         : Compare with Edebug bindings
-         : Options:
-            : Make like Edebug
-            : Should I define Key Translation from (something convenient (maybe an upper case letter) then <key>) to "C-x C-a C-<key>"?
-               : read-event approach:
-                  : Does the hyperify example in the Elisp manual's documentation of key-translation-map help?
-                  : Bind a function to the desired prefix key, read-event, use event-modifiers function to check if control is applied, ...
-               : Same approach as for C-<key> Key Translations
-               : See commands to bind at:
-                  http://www.gnu.org/software/emacs/manual/html_node/emacs/Commands-of-GUD.html
-            : Can I get away with using normal Key Mapping instead of Key Translations?
-         : Bind SPC to step when debugger is active.
+      : Move key bindings systematically between keymaps
+         : Approaches:
+            : Preferred approach: Copy all key bindings from one keymap to another with better prefix Key Sequence
+            : Key Translation approach, as with C- and C-M- key bindings
+            : read-event approach:
+               : Does the hyperify example in the Elisp manual's documentation of key-translation-map help?
+               : Bind a function to the desired prefix key, read-event, use event-modifiers function to check if control is applied, ...
+         : GDB key bindings
+            : Change C-x C-a C-<key> to (something convenient (maybe an upper case letter)) then <key>.
+               : See http://www.gnu.org/software/emacs/manual/html_node/emacs/Commands-of-GUD.html
+            : Compare with Edebug bindings, perhaps mimic key bindings
+            : Bind SPC to step when debugger is active.
+         : Diff mode key bindings
+            : Improve C-c C-<key>
+            : Or use one letter Key Translation for C-c (see below)
+      : Should I make a one letter Key Translation for C-c?
+         : How about z?
+            : Assess whether Evil z commands are useful or suitable for rebinding.
+            : Might be a good choice since it'll often be followed by c.  eg C-c C-a becomes zca
+      : Should I make the c<key> and cm<key> Key Translations use my-translate-keys-p instead of my-translate-keys-initial-p?
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
@@ -232,10 +239,6 @@ Issues:
                   ;; cc-mode is distributed with Emacs, but using a newer version in order to get 
                   ;; style guessing.
                   (add-to-list 'load-path "~/.emacs.d/cc-mode")
-   : Opening through symlinks in an hg repo is slow by a factor of about 5.
-   : Learn how to do this with better semi-automation:
-      : case longlonglong     do-something-aligned-with-below
-      : case short            do-something-aligned-with-above
    : Learn using Emacs as a daemon
    : Organize and optimize Emacs lisp init code.
       : Move most of .emacs code to .el files and build it with the others.
