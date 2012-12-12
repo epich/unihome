@@ -68,6 +68,8 @@ Issues:
       : Move key bindings systematically between keymaps
          : Approaches:
             : Preferred approach: Copy all key bindings from one keymap to another with better prefix Key Sequence
+               : The key-binding function gets the keymap data structure.
+                  : Why does (key-binding (kbd "g")) show the global and Evil prefix keys but not the undo-tree ones?
             : Key Translation approach, as with C- and C-M- key bindings
             : read-event approach:
                : Does the hyperify example in the Elisp manual's documentation of key-translation-map help?
@@ -82,7 +84,7 @@ Issues:
             : Or use one letter Key Translation for C-c (see below)
       : Should I make a one letter Key Translation for C-c?
          : How about z?
-            : Assess whether Evil z commands are useful or suitable for rebinding.
+            : No conflicts with Evil z commands.
             : Might be a good choice since it'll often be followed by c.  eg C-c C-a becomes zca
       : Should I make the c<key> and cm<key> Key Translations use my-translate-keys-p instead of my-translate-keys-initial-p?
    : Key bindings in minibuffer:
