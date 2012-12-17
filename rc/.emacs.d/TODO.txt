@@ -164,9 +164,12 @@ Issues:
    : Undo Tree
       : Update version to see if issues below still exist.
       : Have a different character in the visual tree indicate the last save point
-      : Can't get undo diffs to work.
       : Visual tree is not as compact as it could be
-      : Set up undo-tree-auto-save-history to put undo history in ~/emacs-backup
+      : Maybe set up undo-tree-auto-save-history to put undo history in ~/emacs-backup
+      : Diffing:
+         : Windows: Can't get undo diffs to work
+         : Linux: Diff is so slow, I have to customize undo-tree-visualizer-diff to nil.
+            : Profile the problem and re enable.
    : Learn merging in Git
       : Use magit?
    : Learn about org-mode

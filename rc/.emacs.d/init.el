@@ -300,7 +300,7 @@
  '(python-indent-offset my-offset)
  '(scroll-conservatively 1)
  '(tags-case-fold-search nil)
- '(undo-tree-visualizer-diff t)
+ '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
  '(whitespace-style (quote (face tabs trailing)))
  '(x-select-enable-clipboard t)
