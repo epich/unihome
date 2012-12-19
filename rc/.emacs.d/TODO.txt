@@ -1,4 +1,6 @@
 Issues:
+   : How to distribute strings?
+      http://stackoverflow.com/questions/13962720/how-to-distribute-strings-in-emacs-or-vim
    : Assess which Evil key bindings need to move from evil-normal-state-map to evil-motion-state-map
       (define-key evil-normal-state-map "y" 'evil-yank)
       (define-key evil-normal-state-map "Y" 'evil-yank-line)
@@ -69,7 +71,7 @@ Issues:
          : Approaches:
             : Preferred approach: Copy all key bindings from one keymap to another with better prefix Key Sequence
                : The key-binding function gets the keymap data structure.
-                  : Why does (key-binding (kbd "g")) show the global and Evil prefix keys but not the undo-tree ones?
+                  : Does not observe Key Translation
             : Key Translation approach, as with C- and C-M- key bindings
             : read-event approach:
                : Does the hyperify example in the Elisp manual's documentation of key-translation-map help?
@@ -91,6 +93,7 @@ Issues:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
       : Is there a way to disable electric-pair-mode in the minibuffer?
+   : Makefile still prompts for suspicious lines, even though I fset the function to nil.
    : How to automatically wrap text and code at 80 columns?
       : Auto fill mode?
          : Thought I turned it on, but "Fill" not in modeline.
