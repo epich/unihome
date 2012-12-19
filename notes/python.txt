@@ -11,3 +11,11 @@ Module location:
    moduleName.__file__
    __file__ for current module.  Not defined when run as script.
 
+
+A common theme is to translate a CLI arg into an object, necessitating a dictionary from string to an instance of a class type:
+   def addInstanceToDict(targetsDict, targetName, classType):
+      targetsDict[targetName] = classType(targetName)
+   targetsG = {}
+   addInstanceToDict(targetsG, 'option1', Class1)
+   addInstanceToDict(targetsG, 'option2', Class2)
+
