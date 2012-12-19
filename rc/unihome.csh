@@ -87,7 +87,7 @@ alias vv 'perl $unihomeDir/scripts/open.pl \!*; cwdcmd'
 alias s 'source'
 alias 0 'cat $unihomeDir/misc/clearScreen.txt'
 alias l 'ls -lart1'
-alias fdate "date '+%Y%m%d_%H%M%S'"
+alias fdate "date '+%Y%m%dT%H%M%S'"
 alias h history
 alias sv 'cleartool setview'
 alias p 'python'
