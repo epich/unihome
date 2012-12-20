@@ -1,6 +1,23 @@
 Issues:
    : How to distribute strings?
-      http://stackoverflow.com/questions/13962720/how-to-distribute-strings-in-emacs-or-vim
+      : Stackoverflow:
+         http://stackoverflow.com/questions/13962720/how-to-distribute-strings-in-emacs-or-vim
+      : An approach:
+         : make-list-matches function:
+            : Inputs:
+               : region
+               : regex
+               : symbol
+            : Algorithm:
+               : Function takes all matches to regex in region and assigns to symbol variable cell as a list.
+         : distribute-and-replace function:
+            : Inputs:
+               : region
+               : regex
+               : symbol
+            : Algorithm:
+               : Function replaces all matches to regex in region with elements from the list (variable cell of symbol)
+         : Scale to many lines with keyboard macro for one line
    : Assess which Evil key bindings need to move from evil-normal-state-map to evil-motion-state-map
       (define-key evil-normal-state-map "y" 'evil-yank)
       (define-key evil-normal-state-map "Y" 'evil-yank-line)
@@ -104,10 +121,17 @@ Issues:
    : C-c bug:
       : Occasionally I get to a state which looks like insert, but has a C-c mapping for keyboard-quit.
    : How to mark search terms with different colors?
+      : Leverage highlight-regexp or highlight-phrase:
+         : Implementation:
+            : Would use evil-transform-vim-style-regexp to translate regexp to Emacs style
+            : Then feed into one of these highlight- functions.
+            : How to clear highlights?
+         : Limitations
+            : Doesn't case-fold the same way.
+      : Use Evil facilities:
+         : evil-ex-make-hl makes a highlight object
+         : evil-ex-delete-hl to clear them?
       : Submit RFE to Evil for a function analogous to highlight-regexp and highlight-phrase .
-      : Need Evil analog to highlight-regexp and highlight-phrase
-      : Look more at evil-ex-make-hl
-      : Need a way to clear them.  evil-ex-delete-hl perhaps.
    : Debugging
       : Learn Edebug
          : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
