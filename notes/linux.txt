@@ -21,6 +21,9 @@ SSH:
 Firewall:
     The iptables firewall on the ccgwrksn and dvswrksn allow only SSH over their Internet-facing NIC.  There are no restrictions between hosts on the private network.
 
+NFS:
+   See mount locations: 'mount -l'
+
 RPM repo mirror:
     Using mrepo software, ccgwrksn is set up as a mirror of public RPM repositories, available only to hosts on the private network.
 
