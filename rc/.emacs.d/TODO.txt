@@ -3,21 +3,26 @@ Issues:
       : Stackoverflow:
          http://stackoverflow.com/questions/13962720/how-to-distribute-strings-in-emacs-or-vim
       : An approach:
-         : make-list-matches function:
+         : make-match-list function:
             : Inputs:
                : region
                : regex
                : symbol
             : Algorithm:
                : Function takes all matches to regex in region and assigns to symbol variable cell as a list.
+               : Should I use re-search-forward , isearch-forward , evil-search-forward ?
+                  : Use re-search-forward, other two are higher level
          : distribute-and-replace function:
             : Inputs:
                : region
                : regex
-               : symbol
+               : symbol (offer a default)
             : Algorithm:
                : Function replaces all matches to regex in region with elements from the list (variable cell of symbol)
          : Scale to many lines with keyboard macro for one line
+         : Started in play.el
+   : Triple clicking highlights whole line then disappears.
+      : File bug report with Evil.
    : Assess which Evil key bindings need to move from evil-normal-state-map to evil-motion-state-map
       (define-key evil-normal-state-map "y" 'evil-yank)
       (define-key evil-normal-state-map "Y" 'evil-yank-line)
@@ -197,6 +202,8 @@ Issues:
          : Windows: Can't get undo diffs to work
          : Linux: Diff is so slow, I have to customize undo-tree-visualizer-diff to nil.
             : Profile the problem and re enable.
+            : gnulib might have something useful:
+               http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob;f=lib/diffseq.h;hb=HEAD
    : Learn merging in Git
       : Use magit?
    : Learn about org-mode

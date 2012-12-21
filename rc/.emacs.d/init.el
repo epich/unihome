@@ -579,6 +579,25 @@ nil in keymap-from."
         (evil-previous-line num-times))
       ))
 
+;;; General utility functions
+
+(defvar last-match-list nil
+  "A symbol for the last saved match list from calling the save-match-list function. ")
+(defun make-match-list (regex beg end)
+  "Return a list of REGEX matches in the region from BEG to END. "
+  (let ((match-list nil))
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward regex end t)
+        (setq match-list (cons (match-string 0) match-list)))
+      match-list)))
+(defun save-match-list (regex matches-var-name beg end)
+  "Make a list of REGEX matches in the region from BEG to END and assign to a variable named by the MATCHES-VAR-NAME string. "
+  (interactive "sRegex: \nsVariable to store matches: \nr")
+  (let ((matches-sym (intern matches-var-name)))
+    (set matches-sym (make-match-list regex beg end))
+    (setq last-match-list matches-sym)))
+
 (defun surround-region-with-tag (tag-name beg end)
   "Insert XML tag named tag-name around region defined by beg end. "
   (interactive "sTag name: \nr")

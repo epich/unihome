@@ -104,4 +104,66 @@ lexical-binding must be t in order for this to work correctly. "
 (setq myf (append myf '((message "Additional words"))))
 (funcall (eval myf))
 
+(let ((list '(1 2 3)) (new-elem 4))
+  (setq list (cons new-elem list)))
+
+(defun make-match-list (regex matches-var-name beg end)
+  "Make a list of REGEX matches in the region from BEG to END and assign to a variable named by the MATCHES-VAR-NAME string. "
+  (interactive "sRegex: \nsVariable to store matches: \nr")
+  (let ((matches-sym (intern matches-var-name)))
+    (set matches-sym nil)
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward regex end t)
+        (set matches-sym (cons (match-string 0) (eval matches-sym)))))))
+
+
+(defvar last-match-list nil
+  "A symbol for the last saved match list from calling the save-match-list function. ")
+(defun make-match-list (regex beg end)
+  "Return a list of REGEX matches in the region from BEG to END. "
+  (let ((match-list nil))
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward regex end t)
+        (setq match-list (cons (match-string 0) match-list)))
+      match-list)))
+(defun save-match-list (regex matches-var-name beg end)
+  "Make a list of REGEX matches in the region from BEG to END and assign to a variable named by the MATCHES-VAR-NAME string. "
+  (interactive "sRegex: \nsVariable to store matches: \nr")
+  (let ((matches-sym (intern matches-var-name)))
+    (set matches-sym (make-match-list regex beg end))
+    (setq last-match-list matches-sym)))
+gogogo
+(log-msg "DEBUG: mym=%s last-match-list=%s" mym last-match-list)
+(stringp (car mym))
+(symbolp last-match-list)
+
+(replace-match "xx")
+
+: distribute-and-replace function:
+   : Inputs:
+      : region
+      : regex
+      : symbol (offer a default)
+   : Algorithm:
+      : Function replaces all matches to regex in region with elements from the list (variable cell of symbol)
+
+
+;; TODO: Verify right values passed to replace-match
+(defun distribute-replace-from-list-var (regex dist-list beg end)
+  "TODO"
+  (let ((list-i dist-list))
+    (save-excursion
+      (goto-char beg)
+      (while (and list-i (re-search-forward regex end t))
+        (replace-match (car list-i))
+        (setq list-i (cdr list-i))))))
+(defun distribute-replace-from-list (regex list-var-name beg end)
+  "TODO"
+  (interactive "sRegex: \nsVariable containing list: \nr") ; TODO set default
+  (let ((matches-sym (intern matches-var-name)))
+    (set matches-sym (make-match-list regex beg end))
+    (setq last-match-list matches-sym)))
+
 
