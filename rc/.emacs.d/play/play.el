@@ -1,5 +1,5 @@
 ;;; General purpose elisp, which should persist more than a scratch buffer.
-
+;;
 ;; Using a named function to map C-e to C-c, the Key Translation is successful:
 ;;
 (setq lexical-binding t)
@@ -165,5 +165,42 @@ gogogo
   (let ((matches-sym (intern matches-var-name)))
     (set matches-sym (make-match-list regex beg end))
     (setq last-match-list matches-sym)))
+
+
+
+
+(defvar match-list nil
+  "A list of matches, as set through the set-match-list and consumed by the cycle-match-list function. ")
+(defvar match-list-iter nil
+  "Iterator through the global match-list variable. ")
+(defun reset-match-list-iter ()
+  "Set match-list-iter to the beginning of match-list. "
+  (interactive)
+  (setq match-list-iter match-list))
+(defun make-match-list (regex beg end)
+  "Return a list of REGEX matches in the region from BEG to END. "
+  (let ((match-list nil))
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward regex end t)
+        (setq match-list (cons (match-string 0) match-list)))
+      match-list)))
+(defun set-match-list (regex beg end)
+  "Make a list of REGEX matches in the region from BEG to END and assign to the global match-list variable. "
+  (interactive "sRegex: \nr")
+  (setq match-list (make-match-list regex beg end))
+  (reset-match-list-iter))
+(defun cycle-match-list (&optional after-end-string)
+  "Return the next element of match-list.
+
+If after-end-string is nil, cycle back to the beginning of match-list.
+Else return after-end-string once the end of match-list is reached."
+  (let ((next-elm (car match-list-iter)))
+    (setq match-list-iter (cdr match-list-iter))
+    (if next-elm
+        next-elm
+      (if after-end-string
+          after-end-string
+        (reset-match-list-iter)))))
 
 

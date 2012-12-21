@@ -21,8 +21,18 @@ Issues:
                : Function replaces all matches to regex in region with elements from the list (variable cell of symbol)
          : Scale to many lines with keyboard macro for one line
          : Started in play.el
+      : Would like to be able to do something like:
+         s/\(.*\),/\1\m,/g
+         : \m is a tentative token for "pop the car from match-list".
+      : Learn about replace-regexp before deciding on design.
+         : Instead of \m above, could use the \, feature of replace-regexp
+            : How to define a pop-match-list function that will restore match-list when the whole replace-regexp is finished?
    : Triple clicking highlights whole line then disappears.
       : File bug report with Evil.
+   : Emacs encoding bug:
+      : Put in file:
+         <?xml version="1.0" encoding="UTF-16"?>
+      : Displays gibberish because of UTF-16, even in fundamental mode.  I could maybe understand this in nxml mode.
    : Assess which Evil key bindings need to move from evil-normal-state-map to evil-motion-state-map
       (define-key evil-normal-state-map "y" 'evil-yank)
       (define-key evil-normal-state-map "Y" 'evil-yank-line)
