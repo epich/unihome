@@ -1,32 +1,19 @@
 Issues:
    : How to distribute strings?
       : Stackoverflow:
-         http://stackoverflow.com/questions/13962720/how-to-distribute-strings-in-emacs-or-vim
-      : An approach:
-         : make-match-list function:
-            : Inputs:
-               : region
-               : regex
-               : symbol
-            : Algorithm:
-               : Function takes all matches to regex in region and assigns to symbol variable cell as a list.
-               : Should I use re-search-forward , isearch-forward , evil-search-forward ?
-                  : Use re-search-forward, other two are higher level
-         : distribute-and-replace function:
-            : Inputs:
-               : region
-               : regex
-               : symbol (offer a default)
-            : Algorithm:
-               : Function replaces all matches to regex in region with elements from the list (variable cell of symbol)
-         : Scale to many lines with keyboard macro for one line
-         : Started in play.el
-      : Would like to be able to do something like:
-         s/\(.*\),/\1\m,/g
-         : \m is a tentative token for "pop the car from match-list".
-      : Learn about replace-regexp before deciding on design.
-         : Instead of \m above, could use the \, feature of replace-regexp
-            : How to define a pop-match-list function that will restore match-list when the whole replace-regexp is finished?
+         : URL:
+            http://stackoverflow.com/questions/13962720/how-to-distribute-strings-in-emacs-or-vim
+         : Writeup:
+            : Scale to many lines with keyboard macro for one line
+      : Further work:
+         : Have save-match-list accept two regexps, one to match, the other to place in the match-list.
+            : eg match '\([^,]*\),' and put in match-list: '\1'
+            : Which function to use to get the string to place in match-list?
+               : replace-regexp is too high level and replace-match manipulates the buffer directly
+                  : Use replace-match with temporaroy buffer?
+         : Convert Evil regexp to Emacs regexp
+         : Evil does not call replace-regexp, so need to also defadvice the appropriate Evil function.
+         : Note: Evil's search and replace supports the \, feature.
    : Triple clicking highlights whole line then disappears.
       : File bug report with Evil.
    : Emacs encoding bug:
@@ -125,6 +112,7 @@ Issues:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
       : Is there a way to disable electric-pair-mode in the minibuffer?
+   : How is emacs-startup-hook different from term-setup-hook?
    : Makefile still prompts for suspicious lines, even though I fset the function to nil.
    : How to automatically wrap text and code at 80 columns?
       : Auto fill mode?

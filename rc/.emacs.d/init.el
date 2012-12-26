@@ -581,22 +581,66 @@ nil in keymap-from."
 
 ;;; General utility functions
 
-(defvar last-match-list nil
-  "A symbol for the last saved match list from calling the save-match-list function. ")
-(defun make-match-list (regex beg end)
-  "Return a list of REGEX matches in the region from BEG to END. "
+(defvar match-list nil
+  "A list of matches, as set through the set-match-list and consumed by the cycle-match-list function. ")
+(defvar match-list-iter nil
+  "Iterator through the global match-list variable. ")
+(defun reset-match-list-iter ()
+  "Set match-list-iter to the beginning of match-list and return it. "
+  (interactive)
+  (setq match-list-iter match-list))
+(defun make-match-list (match-regexp beg end)
+  "Set the match-list variable as described in the documentation for set-match-list. "
+  ;; Starts at the beginning of region, searches forward and builds match-list.
+  ;; For efficiency, matches are appended to the front of match-list and then reversed
+  ;; at the end.
+  ;;
+  ;; Note that the behavior of re-search-backward is such that the same match-list
+  ;; is not created by starting at the end of the region and searching backward.
   (let ((match-list nil))
     (save-excursion
       (goto-char beg)
-      (while (re-search-forward regex end t)
+      (while (re-search-forward match-regexp end t)
         (setq match-list (cons (match-string 0) match-list)))
-      match-list)))
-(defun save-match-list (regex matches-var-name beg end)
-  "Make a list of REGEX matches in the region from BEG to END and assign to a variable named by the MATCHES-VAR-NAME string. "
-  (interactive "sRegex: \nsVariable to store matches: \nr")
-  (let ((matches-sym (intern matches-var-name)))
-    (set matches-sym (make-match-list regex beg end))
-    (setq last-match-list matches-sym)))
+      (setq match-list (nreverse match-list)))))
+(defun set-match-list (match-regexp beg end)
+;; TODO: Implement USE-REGEXP
+;;   "Set the match-list global variable to a list of regexp matches.  MATCH-REGEXP
+;; is used to find matches in the region from BEG to END, and USE-REGEXP is the
+;; regexp to place in the match-list variable.
+
+;; For example, if the region contains the text: {alpha,beta,gamma}
+;; and MATCH-REGEXP is: \\([a-z]+\\),
+;; and USE-REGEXP is: \\1
+;; then match-list will become the list of strings: (\"alpha\" \"beta\")"
+;;   (interactive "sMatch regexp: \nsPlace in match-list: \nr")
+  "Set the match-list global variable to a list of regexp matches.  MATCH-REGEXP
+is used to find matches in the region from BEG to END, and is placed in the
+match-list variable.
+
+For example, if the region contains the text: {alpha,beta,gamma}
+and MATCH-REGEXP is: \\([a-z]+\\),
+then match-list will become the list of strings: (\"alpha,\" \"beta,\")"
+  (interactive "sMatch regexp: \nr")
+  (setq match-list (make-match-list match-regexp beg end))
+  (reset-match-list-iter))
+(defun cycle-match-list (&optional after-end-string)
+  "Return the next element of match-list.
+
+If AFTER-END-STRING is nil, cycle back to the beginning of match-list.
+Else return AFTER-END-STRING once the end of match-list is reached."
+  (let ((ret-elm (car match-list-iter)))
+    (unless ret-elm
+      (if after-end-string
+          (setq ret-elm after-end-string)
+        (reset-match-list-iter)
+        (setq ret-elm (car match-list-iter))))
+    (setq match-list-iter (cdr match-list-iter))
+    ret-elm))
+(defadvice replace-regexp (before my-advice-replace-regexp activate)
+  "Advise replace-regexp to support match-list functionality. "
+  (log-msg "DEBUG: Inside replace-regexp advice") 
+  (reset-match-list-iter))
 
 (defun surround-region-with-tag (tag-name beg end)
   "Insert XML tag named tag-name around region defined by beg end. "

@@ -167,40 +167,44 @@ gogogo
     (setq last-match-list matches-sym)))
 
 
+(defun get-region-boundaries (beg end)
+  "Log the beg and end of the current region. "
+  (interactive "r")
+  (log-msg "DEBUG: beg=%s end=%s" beg end))
+
+;; This is test text
+;; (alpha, beta, gamma, delta, epsilon) blah (11, 22, 33, 44, 55)
 
 
-(defvar match-list nil
-  "A list of matches, as set through the set-match-list and consumed by the cycle-match-list function. ")
-(defvar match-list-iter nil
-  "Iterator through the global match-list variable. ")
-(defun reset-match-list-iter ()
-  "Set match-list-iter to the beginning of match-list. "
-  (interactive)
-  (setq match-list-iter match-list))
-(defun make-match-list (regex beg end)
-  "Return a list of REGEX matches in the region from BEG to END. "
+# 1023,
+# 1023,
+(setq match-list nil)
+(defun make-match-list-backwards (regex beg end)
+  "Return a list of REGEX matches in the region from END to BEG. "
   (let ((match-list nil))
     (save-excursion
-      (goto-char beg)
-      (while (re-search-forward regex end t)
+      (goto-char end)
+      (while (re-search-backward regex beg t)
         (setq match-list (cons (match-string 0) match-list)))
       match-list)))
-(defun set-match-list (regex beg end)
-  "Make a list of REGEX matches in the region from BEG to END and assign to the global match-list variable. "
-  (interactive "sRegex: \nr")
-  (setq match-list (make-match-list regex beg end))
-  (reset-match-list-iter))
-(defun cycle-match-list (&optional after-end-string)
-  "Return the next element of match-list.
-
-If after-end-string is nil, cycle back to the beginning of match-list.
-Else return after-end-string once the end of match-list is reached."
-  (let ((next-elm (car match-list-iter)))
-    (setq match-list-iter (cdr match-list-iter))
-    (if next-elm
-        next-elm
-      (if after-end-string
-          after-end-string
-        (reset-match-list-iter)))))
 
 
+
+
+(progn
+  (log-msg "DEBUG: match-list forwards : %s" (make-match-list "\\([a-zA-Z]+\\)," 5539 5626))
+  (log-msg "DEBUG: match-list backwards: %s" (make-match-list-backwards "\\([a-zA-Z]+\\)," 5539 5626))
+  (set-match-list "\\([a-zA-Z]+\\)," 5539 5626)
+  (log-msg "DEBUG: match-list=%s" match-list)
+  (log-msg "DEBUG: cycle-match-list 1st: %s" (cycle-match-list "foo")) 
+  (log-msg "DEBUG: cycle-match-list 2nd: %s" (cycle-match-list "foo")) 
+  (log-msg "DEBUG: cycle-match-list 3rd: %s" (cycle-match-list "foo")) 
+  (log-msg "DEBUG: cycle-match-list 4th: %s" (cycle-match-list "foo")) 
+  (log-msg "DEBUG: cycle-match-list 5th: %s" (cycle-match-list "foo")) 
+  (log-msg "DEBUG: cycle-match-list 6th: %s" (cycle-match-list "foo")) 
+)
+
+(progn
+  (setq my-list '(1 2 3))
+  (setq my-list (nreverse my-list))
+  my-list)
