@@ -4,6 +4,10 @@ To import files.  Use -preview if desired.
 Latest on a branch
     ct find . -version "version(.../branch/LATEST)" -print
 
+Apply a label:
+   ct mklbtype -nc LABEL_NAME
+   ct mklabel -r LABEL_NAME .
+
 To merge files.
     Set view of versions to merge to.
     ct findmerge . -c "Merge 20091203 scrubbed drop" -fversion ".../srnl_scrub/LATEST" -merge [or -print]
