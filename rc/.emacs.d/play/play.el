@@ -176,6 +176,13 @@ gogogo
 ;; (alpha, beta, gamma, delta, epsilon) blah (11, 22, 33, 44, 55)
 
 
+(replace-regexp-in-string "\\([a-z]+\\),"
+                          "\\1x"
+                          "(ALPHA, BETA, Gamma, deLta, epsilon,) blah (11, 22, 33, 44, 55,)"
+                          t
+                          )
+
+
 # 1023,
 # 1023,
 (setq match-list nil)
@@ -187,7 +194,15 @@ gogogo
       (while (re-search-backward regex beg t)
         (setq match-list (cons (match-string 0) match-list)))
       match-list)))
-
+(replace-regexp-in-string "\\([a-z]+\\),"
+                          "\\1x"
+                          "(ALPHA, BETA, Gamma, deLta, epsilon,) blah (11, 22, 33, 44, 55,)"
+                          t)
+(replace-regexp-in-string "\\([a-z]+\\)," ; match-regexp
+                          "\\1"           ; use-regexp
+                          "alpha,"        ; (match-string 0)
+                          t)
+(replace-regexp-in-string match-regexp use-regexp (match-string 0) t)
 
 
 

@@ -3,14 +3,7 @@ Issues:
       : Stackoverflow:
          : URL:
             http://stackoverflow.com/questions/13962720/how-to-distribute-strings-in-emacs-or-vim
-         : Writeup:
-            : Scale to many lines with keyboard macro for one line
       : Further work:
-         : Have save-match-list accept two regexps, one to match, the other to place in the match-list.
-            : eg match '\([^,]*\),' and put in match-list: '\1'
-            : Which function to use to get the string to place in match-list?
-               : replace-regexp is too high level and replace-match manipulates the buffer directly
-                  : Use replace-match with temporaroy buffer?
          : Convert Evil regexp to Emacs regexp
          : Evil does not call replace-regexp, so need to also defadvice the appropriate Evil function.
          : Note: Evil's search and replace supports the \, feature.

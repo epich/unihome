@@ -589,7 +589,7 @@ nil in keymap-from."
   "Set match-list-iter to the beginning of match-list and return it. "
   (interactive)
   (setq match-list-iter match-list))
-(defun make-match-list (match-regexp beg end)
+(defun make-match-list (match-regexp use-regexp beg end)
   "Set the match-list variable as described in the documentation for set-match-list. "
   ;; Starts at the beginning of region, searches forward and builds match-list.
   ;; For efficiency, matches are appended to the front of match-list and then reversed
@@ -601,28 +601,24 @@ nil in keymap-from."
     (save-excursion
       (goto-char beg)
       (while (re-search-forward match-regexp end t)
-        (setq match-list (cons (match-string 0) match-list)))
+        (setq match-list
+              (cons (replace-regexp-in-string match-regexp
+                                              use-regexp
+                                              (match-string 0)
+                                              t)
+                    match-list)))
       (setq match-list (nreverse match-list)))))
-(defun set-match-list (match-regexp beg end)
-;; TODO: Implement USE-REGEXP
-;;   "Set the match-list global variable to a list of regexp matches.  MATCH-REGEXP
-;; is used to find matches in the region from BEG to END, and USE-REGEXP is the
-;; regexp to place in the match-list variable.
-
-;; For example, if the region contains the text: {alpha,beta,gamma}
-;; and MATCH-REGEXP is: \\([a-z]+\\),
-;; and USE-REGEXP is: \\1
-;; then match-list will become the list of strings: (\"alpha\" \"beta\")"
-;;   (interactive "sMatch regexp: \nsPlace in match-list: \nr")
+(defun set-match-list (match-regexp use-regexp beg end)
   "Set the match-list global variable to a list of regexp matches.  MATCH-REGEXP
-is used to find matches in the region from BEG to END, and is placed in the
-match-list variable.
+is used to find matches in the region from BEG to END, and USE-REGEXP is the
+regexp to place in the match-list variable.
 
 For example, if the region contains the text: {alpha,beta,gamma}
 and MATCH-REGEXP is: \\([a-z]+\\),
-then match-list will become the list of strings: (\"alpha,\" \"beta,\")"
-  (interactive "sMatch regexp: \nr")
-  (setq match-list (make-match-list match-regexp beg end))
+and USE-REGEXP is: \\1
+then match-list will become the list of strings: (\"alpha\" \"beta\")"
+  (interactive "sMatch regexp: \nsPlace in match-list: \nr")
+  (setq match-list (make-match-list match-regexp use-regexp beg end))
   (reset-match-list-iter))
 (defun cycle-match-list (&optional after-end-string)
   "Return the next element of match-list.
@@ -639,7 +635,6 @@ Else return AFTER-END-STRING once the end of match-list is reached."
     ret-elm))
 (defadvice replace-regexp (before my-advice-replace-regexp activate)
   "Advise replace-regexp to support match-list functionality. "
-  (log-msg "DEBUG: Inside replace-regexp advice") 
   (reset-match-list-iter))
 
 (defun surround-region-with-tag (tag-name beg end)
