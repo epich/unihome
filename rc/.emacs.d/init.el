@@ -240,8 +240,8 @@
   (insert-char #x2022))
 
 ;; Get rid of annoying messages when saving makefiles
-(fset 'makefile-warn-suspicious-lines nil)
-(fset 'makefile-warn-continuations nil)
+(fset 'makefile-warn-suspicious-lines (lambda ()))
+(fset 'makefile-warn-continuations (lambda ()))
 
 ;;; Customizations
 ;;
@@ -600,7 +600,12 @@ nil in keymap-from."
   (let ((match-list nil))
     (save-excursion
       (goto-char beg)
-      (while (re-search-forward match-regexp end t)
+      (while
+          (let ((old-pos (point)) (new-pos (re-search-forward match-regexp end t)))
+            (when (equal old-pos new-pos)
+              (error "re-search-forward makes no progress.  old-pos=%s new-pos=%s end=%s match-regexp=%s"
+                     old-pos new-pos end match-regexp))
+            new-pos)
         (setq match-list
               (cons (replace-regexp-in-string match-regexp
                                               use-regexp

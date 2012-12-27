@@ -1,18 +1,4 @@
 Issues:
-   : How to distribute strings?
-      : Stackoverflow:
-         : URL:
-            http://stackoverflow.com/questions/13962720/how-to-distribute-strings-in-emacs-or-vim
-      : Further work:
-         : Convert Evil regexp to Emacs regexp
-         : Evil does not call replace-regexp, so need to also defadvice the appropriate Evil function.
-         : Note: Evil's search and replace supports the \, feature.
-   : Triple clicking highlights whole line then disappears.
-      : File bug report with Evil.
-   : Emacs encoding bug:
-      : Put in file:
-         <?xml version="1.0" encoding="UTF-16"?>
-      : Displays gibberish because of UTF-16, even in fundamental mode.  I could maybe understand this in nxml mode.
    : Assess which Evil key bindings need to move from evil-normal-state-map to evil-motion-state-map
       (define-key evil-normal-state-map "y" 'evil-yank)
       (define-key evil-normal-state-map "Y" 'evil-yank-line)
@@ -301,6 +287,18 @@ Issues:
    : Other reading:
       Thorough GDB guide: http://www.dirac.org/linux/gdb/
    : Can Elisp macros use Xpaths to modify code?
+   : How to distribute strings?
+      : Stackoverflow:
+         : URL:
+            http://stackoverflow.com/questions/13962720/how-to-distribute-strings-in-emacs-or-vim
+      : Further work:
+         : Convert Evil regexp to Emacs regexp
+         : Evil does not call replace-regexp, so need to also defadvice the appropriate Evil function.
+         : Note: Evil's search and replace supports the \, feature.
+   : Emacs encoding bug:
+      : Put in file:
+         <?xml version="1.0" encoding="UTF-16"?>
+      : Displays gibberish because of UTF-16, even in fundamental mode.  I could maybe understand this in nxml mode.
 
 Evil bugs (submitted):
    : Updating of highlighted search
@@ -313,3 +311,4 @@ Evil bugs (submitted):
       : Bug submitted to Evil project.
          : Issue 1 was solved with a defcustom.
    : In Evil motion state, can't mouse click buttons.  RET works however.
+   : Triple clicking highlights whole line then disappears.

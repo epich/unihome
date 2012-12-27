@@ -183,6 +183,37 @@ gogogo
                           )
 
 
+(while (re-search-forward ".*" nil t)
+  (replace-match "xxx" 5927 nil))
+
+
+
+
+;; Write macro that takes:
+
+
+(while-let ((pos (condition-func))) (and (equals pos nil) (equals pos end))
+  )
+
+
+(while
+    (let ((pos (re-search-forward TODO)))
+      (and )))
+            (not (or (equal new-pos nil) (equal new-pos end) (equal old-pos new-pos))))
+
+(let ((pos (condition-func)))
+  (cl-loop while (and (equals pos nil) (equals pos end))
+           do
+           ))
+
+(setq pos 0)
+(cl-loop with pos = (log-msg "DEBUG: Setting pos") 
+         while (not (equal pos "foo"))
+         do (log-msg "DEBUG: In the do clause"))
+
+
+
+
 # 1023,
 # 1023,
 (setq match-list nil)
