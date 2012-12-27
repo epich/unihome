@@ -93,6 +93,7 @@
 
 ;;; File associations
 ;;
+(add-to-list 'auto-mode-alist '("README.*" . text-mode))
 ;; Ruby rake build files
 (add-to-list 'auto-mode-alist '("Rakefile" . ruby-mode))
 ;; Conjure uses these extensions for Scheme code, for unknown reason
