@@ -4,6 +4,9 @@ Issues:
       (define-key evil-normal-state-map "Y" 'evil-yank-line)
       (define-key evil-normal-state-map "gf" 'find-file-at-point)
       (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
+   : Redefine tag navigation to use q and Q instead of t and T
+      : Don't need Evil's keyboard macros, Emacs's keyboard macros seem sufficient.
+      : Will make prefix key navigation with 1q easier than 1t
    : Backspace to tab stop backward-delete-whitespace-to-tab-stop
       : Doesn't correctly handle backspace when there's a selection.
          : Snag with solution:
@@ -79,20 +82,11 @@ Issues:
                : See http://www.gnu.org/software/emacs/manual/html_node/emacs/Commands-of-GUD.html
             : Compare with Edebug bindings, perhaps mimic key bindings
             : Bind SPC to step when debugger is active.
-         : Diff mode key bindings
-            : Improve C-c C-<key>
-            : Or use one letter Key Translation for C-c (see below)
-      : Should I make a one letter Key Translation for C-c?
-         : How about z?
-            : No conflicts with Evil z commands.
-            : Might be a good choice since it'll often be followed by c.  eg C-c C-a becomes zca
-      : Should I make the c<key> and cm<key> Key Translations use my-translate-keys-p instead of my-translate-keys-initial-p?
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
       : Is there a way to disable electric-pair-mode in the minibuffer?
    : How is emacs-startup-hook different from term-setup-hook?
-   : Makefile still prompts for suspicious lines, even though I fset the function to nil.
    : How to automatically wrap text and code at 80 columns?
       : Auto fill mode?
          : Thought I turned it on, but "Fill" not in modeline.
@@ -169,6 +163,7 @@ Issues:
          : Is there a way to forego having another window at all, and I can simply bind useful Ediff commands myself.
    : Diff mode
       : When navigating hunks, top of hunk displays in the middle of display, even if all of the hunk doesn't show.
+         : Can use zt zb commands for now
       : Why not refine all diffs during initialization?
    : Undo Tree
       : Update version to see if issues below still exist.
@@ -312,3 +307,5 @@ Evil bugs (submitted):
          : Issue 1 was solved with a defcustom.
    : In Evil motion state, can't mouse click buttons.  RET works however.
    : Triple clicking highlights whole line then disappears.
+   : Selecting only part of line and doing s/  */\n/g replaces whole line, including outside of selection.
+      : Vim behaves similarly.
