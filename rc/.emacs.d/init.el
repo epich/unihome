@@ -257,6 +257,9 @@
 ;;    The default 0.1 ac-delay can cause display update delays when I'm typing.
 ;;    If I know what I'm typing, it is inconvenient.  1.0 is sufficiently high
 ;;    to imply I'm pausing in my typing.
+;; font-lock-maximum-decoration
+;;    C++ was behaving way to slow when simply typing comments.  I lowered
+;;    its font-lock-maximum-decoration to 2 and saw massive improvement.
 ;; global-semantic-idle-summary-mode
 ;;    Disable Minibuffer info which overwrites other information displaying.
 ;; inverse-video
@@ -284,6 +287,7 @@
  '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
+ '(font-lock-maximum-decoration (quote ((c++-mode . 2))))
  '(global-semantic-idle-summary-mode nil nil (semantic-idle))
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
@@ -437,11 +441,11 @@ takes key-from as an argument. "
                (unless (member ascii-code-i ascii-exceptions)
                  (make-conditional-key-translation (kbd (format "c%c" ascii-code-i))
                                                    (kbd (format "C-%c" ascii-code-i))
-                                                   'my-translate-keys-initial-p))
+                                                   'my-translate-keys-p))
                ;; ascii-exception don't apply to the C-M- case
                (make-conditional-key-translation (kbd (format "cm%c" ascii-code-i))
                                                  (kbd (format "C-M-%c" ascii-code-i))
-                                                 'my-translate-keys-initial-p))))
+                                                 'my-translate-keys-p))))
 
 (define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
@@ -485,10 +489,6 @@ nil in keymap-from."
 (define-key evil-motion-state-map "t" 'find-tag)
 (define-key evil-motion-state-map "T" nil)
 (define-key evil-motion-state-map "T" 'pop-tag-mark)
-(define-key evil-motion-state-map "[" nil)
-(define-key evil-motion-state-map "[" 'kmacro-start-macro)
-(define-key evil-motion-state-map "]" nil)
-(define-key evil-motion-state-map "]" 'kmacro-end-macro)
 (define-key evil-normal-state-map "s" nil)
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
@@ -529,6 +529,22 @@ nil in keymap-from."
 (define-key evil-motion-state-map "\C-x_" 'evil-last-non-blank)
 (define-key evil-motion-state-map "\C-x\C-]" 'find-tag)
 (define-key evil-motion-state-map "\C-xv" 'evil-visual-restore)
+
+;;; Merge Evil's z prefix key with Emacs' C-c prefix key.
+;; Define key translation to C-c, then add the Evil z bindings to keep.
+(make-conditional-key-translation (kbd "z") (kbd "C-c") 'my-translate-keys-initial-p)
+(define-key evil-normal-state-map "\C-co" 'evil-open-fold)
+(define-key evil-normal-state-map "\C-cc" 'evil-close-fold)
+(define-key evil-normal-state-map "\C-ca" 'evil-toggle-fold)
+(define-key evil-normal-state-map "\C-cr" 'evil-open-folds)
+(define-key evil-normal-state-map "\C-cm" 'evil-close-folds)
+(define-key evil-motion-state-map "\C-c^" 'evil-scroll-top-line-to-bottom)
+(define-key evil-motion-state-map "\C-c+" 'evil-scroll-bottom-line-to-top)
+(define-key evil-motion-state-map "\C-ct" 'evil-scroll-line-to-top)
+(define-key evil-motion-state-map "\C-cz" 'evil-scroll-line-to-center)
+(define-key evil-motion-state-map "\C-c." "\C-cz^")
+(define-key evil-motion-state-map "\C-cb" 'evil-scroll-line-to-bottom)
+(define-key evil-motion-state-map "\C-c-" "\C-cb^")
 
 (define-key evil-normal-state-map "o" nil)
 (define-key evil-visual-state-map "o" nil)
@@ -751,6 +767,10 @@ Else return AFTER-END-STRING once the end of match-list is reached."
             (define-key evil-motion-state-local-map "se" 'diff-ediff-patch)
             (define-key evil-motion-state-local-map "sr" 'diff-reverse-direction)
             (define-key evil-motion-state-local-map "sw" 'diff-ignore-whitespace-hunk)
+            (define-key evil-motion-state-map "[" nil)
+            (define-key evil-motion-state-map "[" 'diff-file-prev)
+            (define-key evil-motion-state-map "]" nil)
+            (define-key evil-motion-state-map "]" 'diff-file-next)
             ))
 (add-hook 'prog-mode-hook
           (lambda ()
