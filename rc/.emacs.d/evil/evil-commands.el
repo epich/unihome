@@ -1828,9 +1828,7 @@ line.  The insertion will be repeated COUNT times.  If VCOUNT is
 non nil it should be number > 0. The insertion will be repeated
 in the next VCOUNT - 1 lines below the current one."
   (interactive "p")
-  (if evil-auto-indent
-      (back-to-indentation)
-    (evil-move-beginning-of-line))
+  (back-to-indentation)
   (setq evil-insert-count count
         evil-insert-lines nil
         evil-insert-vcount
@@ -3287,7 +3285,9 @@ DO-MOUSE-DRAG-REGION-POST-PROCESS should only be used by
                                   (functionp fun)
                                   (not (memq fun '(mouse-set-point
                                                    mouse-set-region))))))
-        (if (and (/= (mark) (point))
+        (if (and (or (/= (mark) (point))
+                     (= click-count 1) ; word selection
+                     (and (memq (evil-visual-type) '(line block))))
                  (not do-multi-click))
 
             ;; If point has moved, finish the drag.
