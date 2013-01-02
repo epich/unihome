@@ -1071,7 +1071,7 @@ Save in REGISTER or in the kill-ring with YANK-HANDLER."
   (evil-yank beg end type register yank-handler)
   (cond
    ((eq type 'block)
-    (evil-apply-on-block #'delete-region beg end))
+    (evil-apply-on-block #'delete-region beg end nil))
    ((and (eq type 'line)
          (= end (point-max))
          (or (= beg end)
@@ -1193,20 +1193,20 @@ of the block."
 (evil-define-operator evil-upcase (beg end type)
   "Convert text to upper case."
   (if (eq type 'block)
-      (evil-apply-on-block #'evil-upcase beg end)
+      (evil-apply-on-block #'evil-upcase beg end nil)
     (upcase-region beg end)))
 
 (evil-define-operator evil-downcase (beg end type)
   "Convert text to lower case."
   (if (eq type 'block)
-      (evil-apply-on-block #'evil-downcase beg end)
+      (evil-apply-on-block #'evil-downcase beg end nil)
     (downcase-region beg end)))
 
 (evil-define-operator evil-invert-case (beg end type)
   "Invert case of text."
   (let (char)
     (if (eq type 'block)
-        (evil-apply-on-block #'evil-invert-case beg end)
+        (evil-apply-on-block #'evil-invert-case beg end nil)
       (save-excursion
         (goto-char beg)
         (while (< beg end)
@@ -1221,7 +1221,7 @@ of the block."
   "Invert case of character."
   :motion evil-forward-char
   (if (eq type 'block)
-      (evil-apply-on-block #'evil-invert-case beg end)
+      (evil-apply-on-block #'evil-invert-case beg end nil)
     (evil-invert-case beg end)
     (when evil-this-motion
       (goto-char end))))
@@ -1229,7 +1229,7 @@ of the block."
 (evil-define-operator evil-rot13 (beg end type)
   "ROT13 encrypt text."
   (if (eq type 'block)
-      (evil-apply-on-block #'evil-rot13 beg end)
+      (evil-apply-on-block #'evil-rot13 beg end nil)
     (rot13-region beg end)))
 
 (evil-define-operator evil-join (beg end)
@@ -1385,7 +1385,16 @@ The default for width is the value of `fill-column'."
   (when char
     (if (eq type 'block)
         (save-excursion
-          (evil-apply-on-block #'evil-replace beg end nil char))
+          (evil-apply-on-rectangle
+           #'(lambda (begcol endcol char)
+               (let ((maxcol (evil-column (line-end-position))))
+                 (when (< begcol maxcol)
+                   (setq endcol (min endcol maxcol))
+                   (let ((beg (evil-move-to-column begcol nil t))
+                         (end (evil-move-to-column endcol nil t)))
+                     (delete-region beg end)
+                     (insert (make-string (- endcol begcol) char))))))
+           beg end char))
       (goto-char beg)
       (while (< (point) end)
         (if (eq (char-after) ?\n)
