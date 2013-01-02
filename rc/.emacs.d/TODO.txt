@@ -86,6 +86,7 @@ Issues:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
       : Is there a way to disable electric-pair-mode in the minibuffer?
+   : Consider freeing up the m key for something like the % command.
    : How is emacs-startup-hook different from term-setup-hook?
    : How to automatically wrap text and code at 80 columns?
       : Auto fill mode?
@@ -117,6 +118,7 @@ Issues:
          : Need Dired Plus to visit marked files
       : Dired doesn't update when a directory is created separately.  Including when Auto Revert is enabled.
       : Would be nice if I could expand and collapse directories inline, rather than at the bottom of the same buffer, and retain same information.
+      : The ^ command is inconvenient to reach, find another key binding.
    : CEDET
       : Display in minibuffer undermines promptings and my ability to read them.
       : Symbol reference -- where is a symbol used or called?
@@ -306,6 +308,5 @@ Evil bugs (submitted):
       : Bug submitted to Evil project.
          : Issue 1 was solved with a defcustom.
    : In Evil motion state, can't mouse click buttons.  RET works however.
-   : Triple clicking highlights whole line then disappears.
    : Selecting only part of line and doing s/  */\n/g replaces whole line, including outside of selection.
       : Vim behaves similarly.
