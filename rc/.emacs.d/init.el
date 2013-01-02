@@ -767,10 +767,11 @@ Else return AFTER-END-STRING once the end of match-list is reached."
             (define-key evil-motion-state-local-map "se" 'diff-ediff-patch)
             (define-key evil-motion-state-local-map "sr" 'diff-reverse-direction)
             (define-key evil-motion-state-local-map "sw" 'diff-ignore-whitespace-hunk)
+            ;; Define and [ and ] to be similar to sj and sk, but move beginning of file diff to top visible line.
             (define-key evil-motion-state-map "[" nil)
-            (define-key evil-motion-state-map "[" 'diff-file-prev)
+            (define-key evil-motion-state-map "[" "skzt")
             (define-key evil-motion-state-map "]" nil)
-            (define-key evil-motion-state-map "]" 'diff-file-next)
+            (define-key evil-motion-state-map "]" "sjzt")
             ))
 (add-hook 'prog-mode-hook
           (lambda ()

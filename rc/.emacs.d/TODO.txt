@@ -167,6 +167,7 @@ Issues:
       : When navigating hunks, top of hunk displays in the middle of display, even if all of the hunk doesn't show.
          : Can use zt zb commands for now
       : Why not refine all diffs during initialization?
+      : In the diff file, lines '^Only in .*' are not navigated to by diff-file-next and diff-file-prev.
    : Undo Tree
       : Update version to see if issues below still exist.
       : Have a different character in the visual tree indicate the last save point
