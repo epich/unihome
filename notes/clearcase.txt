@@ -12,6 +12,9 @@ To merge files.
     Set view of versions to merge to.
     ct findmerge . -c "Merge 20091203 scrubbed drop" -fversion ".../srnl_scrub/LATEST" -merge [or -print]
     ct merge -g -to file_or_dir -insert -version ".../from_branch/LATEST"
+    ct findmerge . -nc -fve 'version(.../branch/LATEST) && created_since(16-Feb.23:00)' -merge -gmerge
+    ct findmerge . -nc -fve '{version(/main/mybranch/LATEST) && !created_since(09-Nov.23:00)}' -merge -gmerge
+      : Haven't confirmed what created_since means in this context
 
 Get a list of files that have changed amongst checkouts
     cleartool lsco -r -cvi -fmt 'diff -options \"-hea\" -pred \"%n\"\n' | cleartool | grep '>>>'
