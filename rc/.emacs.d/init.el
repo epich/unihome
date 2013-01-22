@@ -6,7 +6,8 @@
 (setq visible-bell t) 
 (tool-bar-mode 0)
 (column-number-mode 1)
-(auto-fill-mode 1)
+;; TODO: auto-fill-mode doesn't work right for debug statement insert commands
+;; (auto-fill-mode 1)
 ;; Disable the auto-save, the #* debris files slow down Emacs startup.
 (setq auto-save-default nil)
 ;; Don't create debris files next to originals.
@@ -239,10 +240,6 @@
   (interactive)
   ;; Note: Emacs 24.2 and earlier, use: (ucs-insert "2022")
   (insert-char #x2022))
-
-;; Get rid of annoying messages when saving makefiles
-(fset 'makefile-warn-suspicious-lines (lambda ()))
-(fset 'makefile-warn-continuations (lambda ()))
 
 ;;; Customizations
 ;;
@@ -533,11 +530,11 @@ nil in keymap-from."
 ;;; Merge Evil's z prefix key with Emacs' C-c prefix key.
 ;; Define key translation to C-c, then add the Evil z bindings to keep.
 (make-conditional-key-translation (kbd "z") (kbd "C-c") 'my-translate-keys-initial-p)
-(define-key evil-normal-state-map "\C-co" 'evil-open-fold)
-(define-key evil-normal-state-map "\C-cc" 'evil-close-fold)
-(define-key evil-normal-state-map "\C-ca" 'evil-toggle-fold)
-(define-key evil-normal-state-map "\C-cr" 'evil-open-folds)
-(define-key evil-normal-state-map "\C-cm" 'evil-close-folds)
+;; (define-key evil-normal-state-map "\C-co" 'evil-open-fold)
+;; (define-key evil-normal-state-map "\C-cc" 'evil-close-fold)
+;; (define-key evil-normal-state-map "\C-ca" 'evil-toggle-fold)
+;; (define-key evil-normal-state-map "\C-cr" 'evil-open-folds)
+;; (define-key evil-normal-state-map "\C-cm" 'evil-close-folds)
 (define-key evil-motion-state-map "\C-c^" 'evil-scroll-top-line-to-bottom)
 (define-key evil-motion-state-map "\C-c+" 'evil-scroll-bottom-line-to-top)
 (define-key evil-motion-state-map "\C-ct" 'evil-scroll-line-to-top)
@@ -685,15 +682,11 @@ Else return AFTER-END-STRING once the end of match-list is reached."
    "Insert log statement for C and C++. "
    (interactive)
    ;; This is the simplest way I could find to get a proper and complete current time.
-   (insert "{ // TODO: temporary for debug") (evil-ret)
-   (cl-dotimes (dummy my-offset) (insert " "))
-   (insert "timespec ts; clock_gettime(CLOCK_REALTIME, &ts);") (evil-ret)
-   (insert "tm mytm; localtime_r(&ts.tv_sec, &mytm);") (evil-ret)
-   (insert "char dateStr[20]; strftime(dateStr, 20, \"%Y-%m-%dT%H:%M:%S\", &mytm);") (evil-ret)
-   (insert "printf( \"%s|tid:%ld|%s|%d| DEBUG: \\n\",") (evil-ret)
-   (insert "        dateStr, pthread_self(), __FILE__, __LINE__ ); fflush(stdout);") (evil-ret)
-   (delete-char (- (+ 8 my-offset)))
-   (insert "}")
+   (insert "{ timespec debug_ts; char debug_dateStr[20]; { ::clock_gettime(CLOCK_REALTIME, &debug_ts); tm mytm; ::localtime_r(&debug_ts.tv_sec, &mytm); ::strftime(debug_dateStr, 20, \"%Y-%m-%dT%H:%M:%S\", &mytm); }")
+   (evil-ret)
+   (insert "  printf( \"%s.%09ld|pid:%d|tid:%ld|%s|%d| DEBUG: \\n\", // TODO: debugging")
+   (evil-ret)
+   (insert "          debug_dateStr, debug_ts.tv_nsec, ::getpid(), ::pthread_self(), __FILE__, __LINE__ ); fflush(stdout); }")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
 (defun my-insert-java-log ()
@@ -834,6 +827,13 @@ Else return AFTER-END-STRING once the end of match-list is reached."
       (define-key evil-insert-state-local-map (kbd "TAB") nil)
       (setq indent-tabs-mode t)
 
+      ;; Get rid of annoying messages when saving makefiles
+      ;;
+      ;; Not sufficient to fset directly in upper level of init.el .
+      ;; Fsetting these misguided buggers here seems to work.
+      (fset 'makefile-warn-suspicious-lines (lambda ()))
+      (fset 'makefile-warn-continuations (lambda ()))
+
       (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-makefile-log)
       ))
 (add-hook 'nxml-mode-hook
@@ -896,6 +896,7 @@ or nil if not found."
      ;; Apparently some elisp needs to be placed here to work.
 
      (delete-other-windows)
+
      ;;(setq search-whitespace-regexp nil)
      (log-msg "Finished with term-setup-hook. ")))
 
