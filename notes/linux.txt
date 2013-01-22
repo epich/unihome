@@ -159,6 +159,16 @@ PMP Poor Man's Profiler
    : Gets stack traces of running threads.
    : poormansprofiler.org
 
+bash:
+   : Redirect stderr:
+      some-command 2>&1 | tee logfile
+   : Redirect to a command instead of to file:
+      some-command | tee >(other-command)
+      : Requires new enough bash to get Process Substitution functionality.
+
+sed:
+   : { ./myexec & } | sed '/String to wait for on stdout from myexec/q'
+
 XPath:
    Like regex for XML?
 

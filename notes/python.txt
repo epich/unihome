@@ -19,3 +19,10 @@ A common theme is to translate a CLI arg into an object, necessitating a diction
    addInstanceToDict(targetsG, 'option1', Class1)
    addInstanceToDict(targetsG, 'option2', Class2)
 
+pexpect:
+   Patch a file:
+      patchProc = pexpect.spawn('patch -p0')
+      patchProc.send(patchString)
+      patchProc.sendcontrol('d')
+
+
