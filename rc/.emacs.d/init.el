@@ -101,6 +101,7 @@
 (add-to-list 'auto-mode-alist '("\\.sls\\'" . scheme-mode))
 (add-to-list 'auto-mode-alist '("\\.sps\\'" . scheme-mode))
 (add-to-list 'auto-mode-alist '("wscript" . python-mode))
+(add-to-list 'auto-mode-alist '("Makefile.*" . makefile-mode))
 
 ;; (add-to-list 'load-path "~/.emacs.d")
 ;; Compile .el files if they need to be.
@@ -712,7 +713,7 @@ Else return AFTER-END-STRING once the end of match-list is reached."
 (defun my-insert-python-log ()
   "Insert log statement for Python. "
   (interactive)
-  (insert "print( \"DEBUG: \"%() ) # TODO: temporary for debug")
+  (insert "print( \"DEBUG: \"%() ) ; sys.stdout.flush() # TODO: temporary for debug")
   (search-backward "DEBUG: ")
   (goto-char (match-end 0)))
 (defun my-insert-sh-log ()

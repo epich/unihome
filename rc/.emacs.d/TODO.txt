@@ -20,6 +20,8 @@ Issues:
             : Does not work:
                : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
    : If I C-c or backspace to beginning of evil-search prompt, I have to wait in order to enter more input.  How to fix?
+   : Evil bugs:
+      : After revert-buffer, the . command doesn't remember
    : Editing Lisp
       : Syntax highlighting:
          : Pairs of parens in different colors, bottom up from point
@@ -179,6 +181,9 @@ Issues:
             : Profile the problem and re enable.
             : gnulib might have something useful:
                http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob;f=lib/diffseq.h;hb=HEAD
+      : Bug with inserting redos in wrong place:
+         : Left Emacs sitting for several days, reverted buffer, did redo, redo was inserted into wrong part of buffer
+         : Try to reproduce.  If I can't, remove this TODO item.  If I can, see if bug exists without Undo Tree.
    : Learn merging in Git
       : Use magit?
    : Learn about org-mode
