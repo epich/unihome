@@ -184,6 +184,7 @@ Issues:
       : Bug with inserting redos in wrong place:
          : Left Emacs sitting for several days, reverted buffer, did redo, redo was inserted into wrong part of buffer
          : Try to reproduce.  If I can't, remove this TODO item.  If I can, see if bug exists without Undo Tree.
+      : Behaves incorrectly when: unsaved changes, revert-buffer, overrite unsaved changes.  All previous undo states are consequently hosed.
    : Learn merging in Git
       : Use magit?
    : Learn about org-mode
