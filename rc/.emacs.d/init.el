@@ -92,6 +92,26 @@
    (interactive)
    (message "%s %s" (get-time-str) (apply 'format msg vargs)))
 
+;;  When fully upgraded to Emacs 24.3, can delete this
+(cond ((and (<= emacs-major-version 24) (< emacs-minor-version 3))
+      (defalias 'cl-labels 'labels)))
+(defun find-file-upwards (file-to-find)
+  "Recursively searches each parent directory starting from the default-directory.
+looking for a file with name file-to-find.  Returns the path to it
+or nil if not found."
+  (cl-labels
+      ((find-file-r (path)
+                    (let* ((parent (file-name-directory path))
+                           (possible-file (concat parent file-to-find)))
+                      (cond
+                       ((file-exists-p possible-file) possible-file) ; Found
+                       ;; The parent of ~ is nil and the parent of / is itself.
+                       ;; Thus the terminating condition for not finding the file
+                       ;; accounts for both.
+                       ((or (null parent) (equal parent (directory-file-name parent))) nil) ; Not found
+                       (t (find-file-r (directory-file-name parent))))))) ; Continue
+    (find-file-r default-directory)))
+
 ;;; File associations
 ;;
 (add-to-list 'auto-mode-alist '("README.*" . text-mode))
@@ -126,41 +146,71 @@
 
 ;;; Initialize CEDET
 ;;;
-(defvar my-cedet-path "~/.emacs.d/cedet-1.1" "Path to CEDET")
 (log-msg "Initializing CEDET.")
-(add-to-list 'load-path (format "%s/common" my-cedet-path))
+(defvar my-enable-cedet-function
+  'my-enable-cedet-from-bzr
+  "Function to use for loading CEDET.  Determines which CEDET to load. ")
+
+;; CEDET 1.1 is needed when using JDEE
+(defun my-enable-cedet-1.1 ()
+  "Loads CEDET 1.1. "
+  (defvar my-cedet-path "~/.emacs.d/cedet-1.1" "Path to CEDET")
+  (add-to-list 'load-path (format "%s/common" my-cedet-path))
+  ;; CEDET raises fatal error when reloading an already reloaded file,
+  ;; undermining reloading of my init.el file.  This hacks that fix.
+  (ignore-errors (load-file (format "%s/common/cedet.el" my-cedet-path)))
+  
+  ;; Disable Minibuffer info which overwrites other information displaying.
+  ;;
+  ;; Note, this was a customization setting in custom-set-variables
+  ;; for CEDET 1.1, but it is not compatible with newer CEDET.
+  ;; '(global-semantic-idle-summary-mode nil nil (semantic-idle))
+
+  ;;; Enable EDE (Project Management) features
+  (global-ede-mode 1)
+  ;; Enable EDE for a pre-existing C++ project
+  ;; (ede-cpp-root-project "NAME" :file "~/proj/name/Makefile")
+  ;;; Enabling Semantic (code-parsing, smart completion) features
+  ;;; Select one of the following:
+  ;; * This enables the database and idle reparse engines
+  ;;(semantic-load-enable-minimum-features)
+  ;; * This enables some tools useful for coding, such as summary mode,
+  ;;   imenu support, and the semantic navigator
+  (semantic-load-enable-code-helpers)
+  ;; * This enables even more coding tools such as intellisense mode,
+  ;;   decoration mode, and stickyfunc mode (plus regular code helpers)
+  ;; (semantic-load-enable-gaudy-code-helpers)
+  ;;; Based on advice at http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+  ;; For smart completion
+  ;; (require 'semantic-ia)
+  ;; Solves error when semantic-complete-jump:
+  ;;    Symbol's function definition is void: eieio-build-class-alist
+  (require 'eieio-opt)
+  (require 'eassist)
+  )
+
+(defun my-enable-cedet-from-emacs ()
+  "Loads CEDET distrubted with Emacs."
+  ;; TODO: Probably has a lot in common with my-enable-cedet-from-bzr
+  ;;
+  ;; TODO: require eassist
+  )
+
+;; Experimenting with latest CEDET from their bzr repo
+(defun my-enable-cedet-from-bzr ()
+  "Loads the latest snapshot of CEDET bzr trunk. "
+  (defvar my-cedet-path "/psd15/linux/boreilly/sw/cedet-bzr/trunk" "Path to CEDET")
+  (load-file (format "%s/cedet-devel-load.el" my-cedet-path))
+  ;; require eassist
+  (load-file (format "%s/contrib/eassist.el" my-cedet-path))
+  (semantic-mode 1)
+  (require 'semantic/bovine/gcc)
+  )
+
 ;; CEDET documents loading must occur before other packages load any part of CEDET.
 ;; Especially important since Emacs has a different version builtin, which I can't
 ;; use because of JDEE.
-;;
-;; CEDET raises fatal error when reloading an already reloaded file,
-;; undermining reloading of my init.el file.  This hacks that fix.
-(ignore-errors (load-file (format "%s/common/cedet.el" my-cedet-path)))
-(defun my-enable-cedet ()
-  "Enable CEDET. "
-   ;;; Enable EDE (Project Management) features
-   (global-ede-mode 1)
-   ;; Enable EDE for a pre-existing C++ project
-   ;; (ede-cpp-root-project "NAME" :file "~/proj/name/Makefile")
-   ;;; Enabling Semantic (code-parsing, smart completion) features
-   ;;; Select one of the following:
-   ;; * This enables the database and idle reparse engines
-   ;;(semantic-load-enable-minimum-features)
-   ;; * This enables some tools useful for coding, such as summary mode,
-   ;;   imenu support, and the semantic navigator
-   (semantic-load-enable-code-helpers)
-   ;; * This enables even more coding tools such as intellisense mode,
-   ;;   decoration mode, and stickyfunc mode (plus regular code helpers)
-   ;; (semantic-load-enable-gaudy-code-helpers)
-   ;;; Based on advice at http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
-   ;; For smart completion
-   ;; (require 'semantic-ia)
-   ;; Solves error when semantic-complete-jump:
-   ;;    Symbol's function definition is void: eieio-build-class-alist
-   (require 'eieio-opt)
-   )
-;; CEDET is buggy when enabled.
-;;(my-enable-cedet)
+(funcall my-enable-cedet-function)
 
 ;;; Initialize JDEE
 (log-msg "Initializing JDEE.")
@@ -182,7 +232,7 @@
 ;; Initialize project-specific elisp
 (log-msg "Initializing project-specific elisp.")
 ;; GOESR isn't relevant to all computers I work on, so ignore errors.
-(ignore-errors (load-file "~/goesr/goesrDev.el"))
+(ignore-errors (load-file "~/g/goesr-dev.el"))
 ;; Paths for JDEE
 (defvar my-java-classpath (if (boundp 'goesr-classpath)
                               goesr-classpath
@@ -258,8 +308,6 @@
 ;; font-lock-maximum-decoration
 ;;    C++ was behaving way to slow when simply typing comments.  I lowered
 ;;    its font-lock-maximum-decoration to 2 and saw massive improvement.
-;; global-semantic-idle-summary-mode
-;;    Disable Minibuffer info which overwrites other information displaying.
 ;; inverse-video
 ;;    An attempt to get white on black.  For some reason this doesn't work
 ;;    but the --reverse-video CLI arg does.
@@ -286,7 +334,6 @@
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
  '(font-lock-maximum-decoration (quote ((c++-mode . 2))))
- '(global-semantic-idle-summary-mode nil nil (semantic-idle))
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(inverse-video t)
@@ -869,23 +916,6 @@ Else return AFTER-END-STRING once the end of match-list is reached."
      (evil-mode 1)))
 
 ;;; Load TAGS file, searching upwards from the directory Emacs was launched.
-(defun find-file-upwards (file-to-find)
-  "Recursively searches each parent directory starting from the default-directory.
-looking for a file with name file-to-find.  Returns the path to it
-or nil if not found."
-  ;; TODO: Once 24.2.90 or higher is available on Windows, change labels to cl-labels
-  (labels
-      ((find-file-r (path)
-                    (let* ((parent (file-name-directory path))
-                           (possible-file (concat parent file-to-find)))
-                      (cond
-                       ((file-exists-p possible-file) possible-file) ; Found
-                       ;; The parent of ~ is nil and the parent of / is itself.
-                       ;; Thus the terminating condition for not finding the file
-                       ;; accounts for both.
-                       ((or (null parent) (equal parent (directory-file-name parent))) nil) ; Not found
-                       (t (find-file-r (directory-file-name parent))))))) ; Continue
-    (find-file-r default-directory)))
 (let ((my-tags-file (find-file-upwards "TAGS")))
   (when my-tags-file
     (message "Loading tags file: %s" my-tags-file)

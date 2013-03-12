@@ -143,6 +143,8 @@ Issues:
             : Dependancy graph
             : Composition graph
             : Inheritance graph
+      : Trying out CEDET from their bzr trunk
+         : Look into some of the other submodes to add to semantic-default-submodes
    : JDEE
       : Hack to use CEDET in Emacs
    : Multi window navigation
