@@ -597,8 +597,10 @@ nil in keymap-from."
 (define-key evil-normal-state-map "oC"
   (lambda ()
     (interactive)
-    (shell-command (format "cleartool co -nc %s"
-                           (file-name-nondirectory (or (buffer-file-name) default-directory))))
+    (call-process "cleartool"
+                  nil nil nil
+                  "co" "-nc"
+                  (format "%s" (file-name-nondirectory (or (buffer-file-name) default-directory))))
     (revert-buffer)))
 (define-key evil-motion-state-map "o/" 'highlight-phrase)
 (define-key evil-normal-state-map "oa" 'move-past-close-and-reindent)
@@ -931,5 +933,5 @@ Else return AFTER-END-STRING once the end of match-list is reached."
      ;;(setq search-whitespace-regexp nil)
      (log-msg "Finished with term-setup-hook. ")))
 
-(log-msg "Finished init file. ")
+(log-msg "Finished loading init file. ")
 
