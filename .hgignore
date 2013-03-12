@@ -9,3 +9,6 @@ rc/.emacs.d/evil/.depend
 rc/.emacs.d/cedet-1.1/*
 # JDEE is unzipped, so ignore the unzipped files
 rc/.emacs.d/jdee-2.4.0.1/*
+# CEDET Semantic generated file
+rc/.emacs.d/srecode-map.el
+
