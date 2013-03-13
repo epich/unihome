@@ -1,6 +1,9 @@
 ;;; evil-common.el --- Common functions and utilities
 ;; Author: Vegard Øye <vegard_oye at hotmail.com>
 ;; Maintainer: Vegard Øye <vegard_oye at hotmail.com>
+
+;; Version: 1.0-dev
+
 ;;
 ;; This file is NOT part of GNU Emacs.
 
@@ -22,6 +25,7 @@
 ;; along with Evil.  If not, see <http://www.gnu.org/licenses/>.
 
 (require 'evil-vars)
+(require 'evil-digraphs)
 (require 'rect)
 
 ;;; Code:
@@ -116,7 +120,7 @@ otherwise add at the end of the list."
   "Delete by side-effect all items satisfying PREDICATE in LIST.
 Stop when reaching POINTER.  If the first item satisfies PREDICATE,
 there is no way to remove it by side-effect; therefore, write
-\(setq foo (evil-delete-if 'predicate foo)) to be sure of
+\(setq foo (evil-filter-list 'predicate foo)) to be sure of
 changing the value of `foo'."
   (let ((tail list) elt head)
     (while (and tail (not (eq tail pointer)))
@@ -611,6 +615,36 @@ This command can be used wherever `read-quoted-char' is required
 as a command. Its main use is in the `evil-read-key-map'."
   (interactive)
   (read-quoted-char))
+
+(defun evil-read-digraph-char (&optional hide-chars)
+  "Read two keys from keyboard forming a digraph.
+This function creates an overlay at (point), hiding the next
+HIDE-CHARS characters. HIDE-CHARS defaults to 1."
+  (interactive)
+  (let (char1 char2 string overlay)
+    (unwind-protect
+        (progn
+          (setq overlay (make-overlay (point)
+                                      (min (point-max)
+                                           (+ (or hide-chars 1)
+                                              (point)))))
+          (overlay-put overlay 'invisible t)
+          ;; create overlay prompt
+          (setq string "?")
+          (put-text-property 0 1 'face 'minibuffer-prompt string)
+          ;; put cursor at (i.e., right before) the prompt
+          (put-text-property 0 1 'cursor t string)
+          (overlay-put overlay 'after-string string)
+          (setq char1 (read-key))
+          (setq string (string char1))
+          (put-text-property 0 1 'face 'minibuffer-prompt string)
+          (put-text-property 0 1 'cursor t string)
+          (overlay-put overlay 'after-string string)
+          (setq char2 (read-key)))
+      (delete-overlay overlay))
+    (or (evil-digraph (list char1 char2))
+        ;; use the last character if undefined
+        (cadr char2))))
 
 (defun evil-read-motion (&optional motion count type modifier)
   "Read a MOTION, motion COUNT and motion TYPE from the keyboard.
@@ -1211,92 +1245,127 @@ POS defaults to the current position of point."
         (and (> pos (match-beginning 0))
              (< pos (match-end 0)))))))
 
-(defun evil-in-comment-p (&optional pos)
-  "Whether POS is inside a comment.
-POS defaults to the current position of point."
-  (let ((parse #'(lambda (p)
-                   (let ((c (char-after p)))
-                     (or (and c (eq (char-syntax c) ?<))
-                         (memq (get-text-property p 'face)
-                               '(font-lock-comment-face
-                                 font-lock-comment-delimiter-face))
-                         (nth 4 (parse-partial-sexp
-                                 (save-excursion
-                                   (beginning-of-defun)
-                                   (point)) p)))))))
-    (save-excursion
-      (goto-char (or pos (point)))
-      (and (or (funcall parse (point))
-               ;; `parse-partial-sexp's notion of comments
-               ;; doesn't span lines
-               (progn
-                 (back-to-indentation)
-                 (unless (eolp)
-                   (forward-char)
-                   (funcall parse (point))))) t))))
-
 (defun evil-in-string-p (&optional pos)
   "Whether POS is inside a string.
 POS defaults to the current position of point."
   (save-excursion
-    (goto-char (or pos (point)))
-    (and (nth 3 (parse-partial-sexp
-                 (save-excursion (beginning-of-defun) (point))
-                 (point))) t)))
-
-(defun evil-find-beginning (predicate &optional pos limit)
-  "Find the beginning of a series of characters satisfying PREDICATE.
-POS is the starting point and defaults to the current position.
-Stops at LIMIT, which defaults to the beginning of the buffer."
-  (setq pos (or pos (point))
-        limit (or limit (buffer-end -1)))
-  (while (let ((prev (1- pos)))
-           (when (and (>= prev limit)
-                      (funcall predicate prev))
-             (setq pos prev))))
-  pos)
-
-(defun evil-find-end (predicate &optional pos limit)
-  "Find the end of a series of characters satisfying PREDICATE.
-POS is the starting point and defaults to the current position.
-Stops at LIMIT, which defaults to the end of the buffer."
-  (setq pos (or pos (point))
-        limit (or limit (buffer-end 1)))
-  (while (let ((next (1+ pos)))
-           (when (and (<= next limit)
-                      (funcall predicate next))
-             (setq pos next))))
-  pos)
-
-(defun evil-comment-beginning (&optional pos)
-  "Return beginning of comment containing POS.
-POS defaults to the current position of point."
-  (let ((pos (or pos (point))))
-    (when (evil-in-comment-p pos)
-      (evil-find-beginning #'evil-in-comment-p pos))))
-
-(defun evil-comment-end (&optional pos)
-  "Return end of comment containing POS.
-POS defaults to the current position of point."
-  (let ((pos (or pos (point))))
-    (when (evil-in-comment-p pos)
-      (evil-find-end #'evil-in-comment-p pos))))
+    (let ((state (syntax-ppss pos)))
+      (and (nth 3 state) (nth 8 state)))))
 
 (defun evil-string-beginning (&optional pos)
   "Return beginning of string containing POS.
 POS defaults to the current position of point."
-  (let ((pos (or pos (point))))
-    (when (evil-in-string-p pos)
-      (evil-normalize-position
-       (1- (evil-find-beginning #'evil-in-string-p pos))))))
+  (evil-normalize-position (evil-in-string-p)))
 
-(defun evil-string-end (&optional pos)
+(defun evil-string-end (&optional pos limit)
   "Return end of string containing POS.
+POS defaults to the current position of point. Stops at LIMIT,
+which defaults to the end of the buffer."
+  (save-excursion
+    (let ((state (syntax-ppss pos)))
+      (when (nth 3 state)
+        (parse-partial-sexp (or pos (point))
+                            (or limit (point-max))
+                            nil
+                            nil
+                            state
+                            'syntax-table)
+        (evil-normalize-position (point))))))
+
+(defun evil-in-comment-p (&optional pos)
+  "Checks if POS is within a comment according to current syntax.
+If POS is nil, (point) is used. The return value is the beginning
+position of the comment."
+  (setq pos (or pos (point)))
+  (let ((chkpos
+         (cond
+          ((eobp) pos)
+          ((= (char-syntax (char-after)) ?<) (1+ pos))
+          ((and (not (zerop (logand (car (syntax-after (point)))
+                                    (lsh 1 16))))
+                (not (zerop (logand (or (car (syntax-after (1+ (point)))) 0)
+                                    (lsh 1 17)))))
+           (+ pos 2))
+          ((and (not (zerop (logand (car (syntax-after (point)))
+                                    (lsh 1 17))))
+                (not (zerop (logand (or (car (syntax-after (1- (point)))) 0)
+                                    (lsh 1 16)))))
+           (1+ pos))
+          (t pos))))
+    (let ((syn (save-excursion (syntax-ppss chkpos))))
+      (and (nth 4 syn) (nth 8 syn)))))
+
+(defun evil-looking-at-start-comment (&optional move)
+  "Returns t if point is at the start of a comment.
+point must be on one of the opening characters of a block comment
+according to the current syntax table. Futhermore these
+characters must been parsed as opening characters, i.e. they
+won't be considered as comment starters inside a string or
+possibly another comment. Point is moved to the first character
+of the comment opener if MOVE is non-nil."
+  (cond
+   ;; one character opener
+   ((= (char-syntax (char-after)) ?<)
+    (equal (point) (evil-in-comment-p (1+ (point)))))
+   ;; two character opener on first char
+   ((and (not (zerop (logand (car (syntax-after (point)))
+                             (lsh 1 16))))
+         (not (zerop (logand (or (car (syntax-after (1+ (point)))) 0)
+                             (lsh 1 17)))))
+    (equal (point) (evil-in-comment-p (+ 2 (point)))))
+   ;; two character opener on second char
+   ((and (not (zerop (logand (car (syntax-after (point)))
+                             (lsh 1 17))))
+         (not (zerop (logand (or (car (syntax-after (1- (point)))) 0)
+                             (lsh 1 16)))))
+    (and (equal (1- (point)) (evil-in-comment-p (1+ (point))))
+         (prog1 t (when move (backward-char)))))))
+
+(defun evil-looking-at-end-comment (&optional move)
+  "Returns t if point is at the end of a comment.
+point must be on one of the opening characters of a block comment
+according to the current syntax table. Futhermore these
+characters must been parsed as opening characters, i.e. they
+won't be considered as comment starters inside a string or
+possibly another comment. Point is moved right after the comment
+closer if MOVE is non-nil."
+  (cond
+   ;; one char closer
+   ((= (char-syntax (char-after)) ?>)
+    (and (evil-in-comment-p) ; in comment
+         (not (evil-in-comment-p (1+ (point))))
+         (prog1 t (when move (forward-char)))))
+   ;; two char closer on first char
+   ((and (not (zerop (logand (car (syntax-after (point)))
+                             (lsh 1 18))))
+         (not (zerop (logand (or (car (syntax-after (1+ (point)))) 0)
+                             (lsh 1 19)))))
+    (and (evil-in-comment-p)
+         (not (evil-in-comment-p (+ (point) 2)))
+         (prog1 t (when move (forward-char 2)))))
+   ;; two char closer on second char
+   ((and (not (zerop (logand (car (syntax-after (point)))
+                             (lsh 1 19))))
+         (not (zerop (logand (or (car (syntax-after (1- (point)))) 0)
+                             (lsh 1 18)))))
+    (and (evil-in-comment-p)
+         (not (evil-in-comment-p (1+ (point))))
+         (prog1 t (when move (forward-char)))))))
+
+(defun evil-comment-beginning (&optional pos)
+  "Return beginning of comment containing POS.
 POS defaults to the current position of point."
-  (let ((pos (or pos (point))))
-    (when (evil-in-string-p pos)
-      (evil-normalize-position
-       (1+ (evil-find-end #'evil-in-string-p pos))))))
+  (evil-in-comment-p pos))
+
+(defun evil-comment-end (&optional pos)
+  "Return end of comment containing POS.
+POS defaults to the current position of point."
+  (let ((beg (evil-in-comment-p pos)))
+    (and beg
+         (save-excursion
+           (goto-char beg)
+           (forward-comment 1)
+           (1- (point))))))
 
 (defmacro evil-narrow-to-comment (&rest body)
   "Narrow to the current comment or docstring, if any."
@@ -1441,6 +1510,7 @@ The following special registers are supported.
   :  the last command line (read only)
   .  the last inserted text (read only)
   -  the last small (less than a line) delete
+  _  the black hole register
   =  the expression register (read only)"
   (when (characterp register)
     (or (cond
@@ -1831,7 +1901,8 @@ The tracked insertion is set to `evil-last-insertion'."
       (setq text (propertize text 'yank-handler (list yank-handler))))
     (when register
       (evil-set-register register text))
-    (kill-new text)))
+    (unless (eq register ?_)
+      (kill-new text))))
 
 (defun evil-yank-lines (beg end &optional register yank-handler)
   "Saves the lines in the region BEG and END into the kill-ring."
@@ -1846,7 +1917,8 @@ The tracked insertion is set to `evil-last-insertion'."
     (setq text (propertize text 'yank-handler yank-handler))
     (when register
       (evil-set-register register text))
-    (kill-new text)))
+    (unless (eq register ?_)
+      (kill-new text))))
 
 (defun evil-yank-rectangle (beg end &optional register yank-handler)
   "Stores the rectangle defined by region BEG and END into the kill-ring."
@@ -1867,7 +1939,8 @@ The tracked insertion is set to `evil-last-insertion'."
                              'yank-handler yank-handler)))
       (when register
         (evil-set-register register text))
-      (kill-new text))))
+      (unless (eq register ?_)
+        (kill-new text)))))
 
 (defun evil-yank-line-handler (text)
   "Inserts the current text linewise."
@@ -2337,7 +2410,9 @@ the default is \"[ \\f\\t\\n\\r\\v]+\"."
       (save-match-data
         (goto-char pos)
         (cond
-         ((if (< dir 0) (looking-back regexp) (not (looking-at regexp)))
+         ((if (< dir 0)
+              (looking-back regexp (1- (line-beginning-position)))
+            (not (looking-at regexp)))
           (or (evil-add-whitespace-after-range range regexp)
               (evil-add-whitespace-before-range range regexp)))
          (t
@@ -2355,7 +2430,7 @@ Returns t if RANGE was successfully increased and nil otherwise."
     (save-excursion
       (save-match-data
         (goto-char (evil-range-beginning range))
-        (when (looking-back regexp nil t)
+        (when (looking-back regexp (1- (line-beginning-position)) t)
           ;; exclude the newline on the preceding line
           (goto-char (match-beginning 0))
           (when (eolp) (forward-char))
@@ -2395,7 +2470,8 @@ Returns t if RANGE was successfully adjusted and nil otherwise."
           (evil-move-beginning-of-line))
         (evil-set-range range (point) nil))
       (goto-char (evil-range-end range))
-      (when (and shrink (looking-back (concat "^" regexp)))
+      (when (and shrink (looking-back (concat "^" regexp)
+                                      (line-beginning-position)))
         (evil-set-range range nil (line-end-position 0)))
       (not (evil-subrange-p orig range)))))
 
@@ -2564,22 +2640,33 @@ use `evil-regexp-range'."
            ;; if OPEN is equal to CLOSE, handle as string delimiters
            ((eq open close)
             (modify-syntax-entry open "\"")
-            (while (not (or (eobp) (evil-in-string-p)))
-              (forward-char))
-            (when (evil-in-string-p)
-              (setq range (evil-range
-                           (if exclusive
-                               (1+ (evil-string-beginning))
-                             (evil-string-beginning))
-                           (if exclusive
-                               (1- (evil-string-end))
-                             (evil-string-end))))))
+            ;; syntax table is out-of-date, encourage reparsing
+            (let ((pnt (point)))
+              (beginning-of-defun)
+              (let ((state (parse-partial-sexp (point) pnt)))
+                (when (not (nth 3 state))
+                  (setq state (parse-partial-sexp (point)
+                                                  (point-max)
+                                                  0
+                                                  nil
+                                                  state
+                                                  'syntax-table)))
+                (when (nth 3 state)
+                  (let ((beg (nth 8 state)))
+                    (parse-partial-sexp (point) (point-max)
+                                        0
+                                        nil
+                                        state
+                                        'syntax-table)
+                    (setq range (evil-range
+                                 (if exclusive (1+ beg) beg)
+                                 (if exclusive (1- (point)) (point)))))))))
            (t
             ;; otherwise handle as open and close parentheses
             (modify-syntax-entry open (format "(%c" close))
             (modify-syntax-entry close (format ")%c" open))
             (if (< count 0)
-                (when (looking-back close-regexp)
+                (when (looking-back close-regexp (line-beginning-position))
                   (backward-char))
               (when (looking-at open-regexp)
                 (forward-char)
@@ -2674,7 +2761,7 @@ the range; otherwise they are included. See also `evil-paren-range'."
                            (goto-char (match-beginning 0))))
                        ;; Is point next to a delimiter?
                        (if (< count 0)
-                           (when (looking-back close)
+                           (when (looking-back close (line-beginning-position))
                              (goto-char (match-beginning 0)))
                          (when (looking-at open)
                            (goto-char (match-end 0))))
@@ -2694,7 +2781,7 @@ the range; otherwise they are included. See also `evil-paren-range'."
                                beg-exc (match-end 0))
                          (while (and (> level 0)
                                      (re-search-forward either nil t))
-                           (if (looking-back close)
+                           (if (looking-back close (line-beginning-position))
                                (setq level (1- level))
                              ;; found an OPEN, so need to find another
                              ;; CLOSE first
@@ -2771,7 +2858,8 @@ If no description is available, return the empty string."
 All following buffer modifications are grouped together as a
 single action. If CONTINUE is non-nil, preceding modifications
 are included. The step is terminated with `evil-end-undo-step'."
-  (when (listp buffer-undo-list)
+  (when (and (listp buffer-undo-list)
+             (not evil-in-single-undo))
     (if evil-undo-list-pointer
         (evil-refresh-undo-step)
       (unless (or continue (null (car-safe buffer-undo-list)))
@@ -2781,7 +2869,8 @@ are included. The step is terminated with `evil-end-undo-step'."
 (defun evil-end-undo-step (&optional continue)
   "End a undo step started with `evil-start-undo-step'.
 Adds an undo boundary unless CONTINUE is specified."
-  (when evil-undo-list-pointer
+  (when (and evil-undo-list-pointer
+             (not evil-in-single-undo))
     (evil-refresh-undo-step)
     (unless continue
       (undo-boundary))
@@ -2828,7 +2917,8 @@ is stored in `evil-temporary-undo' instead of `buffer-undo-list'."
        (unwind-protect
            (progn
              (evil-start-undo-step)
-             ,@body)
+             (let ((evil-in-single-undo t))
+               ,@body))
          (evil-end-undo-step)))))
 
 (defun evil-undo-pop ()
