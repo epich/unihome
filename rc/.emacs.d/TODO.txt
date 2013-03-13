@@ -146,11 +146,13 @@ Issues:
       : Trying out CEDET from their bzr trunk
          : Look into some of the other submodes to add to semantic-default-submodes
          : Make it so as we only call ede-cpp-root-project when actually opening a C or C++ file (remember .h is deemed as C)
-         : Include paths don't appear in semantic-c-describe-environment command output.  Why?
-         : How to call project methods, such as ede-system-include-path
          : How does the project know about .cc files?
-         : Should I put goesr-dev.el in unihome source control?
+         : Should I put goesr-dev.el in unihome or IPT_PG/Dev source control?
          : Get CEDET Java working with managing imports and symbol jumping, then rip out cedet-1.1 and jdee altogether
+         : Semantic is slow to to go declaration with semantic-ia-fast-jump .
+            : Try Alex Ott's advice at http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+            : Investigate semanticdb-create-*
+            : Try turning on semantic submodes to get more information about internals
    : JDEE
       : Hack to use CEDET in Emacs
    : Multi window navigation
