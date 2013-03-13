@@ -204,7 +204,9 @@ or nil if not found."
   ;; require eassist
   (load-file (format "%s/contrib/eassist.el" my-cedet-path))
   (semantic-mode 1)
+  (require 'semantic/ia)
   (require 'semantic/bovine/gcc)
+  (global-ede-mode 1)
   )
 
 ;; CEDET documents loading must occur before other packages load any part of CEDET.
@@ -463,7 +465,12 @@ takes key-from as an argument. "
       (if (funcall translate-keys-p key-from) key-to key-from))))
 (defun my-translate-keys-p (key-from)
   "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
-  (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p)))
+  (and
+   ;; Evil's 'r' command doesn't change evil-state, but we don't want key translations to take effect, otherwise
+   ;; replacing a char with g (translated to Ctrl-x) would replace the char with ^X instead.  This check is
+   ;; a somewhat hackish way of inferring Evil is in the middle of an evil-read-key call.
+   (not (eq overriding-terminal-local-map evil-read-key-map))
+   (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))))
 (defun my-translate-keys-initial-p (key-from)
   "Returns whether conditional key translations should be active; nil if not the initial key of a Key Sequence.  See make-conditional-key-translation function. "
   (and
