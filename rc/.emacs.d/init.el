@@ -203,16 +203,16 @@ or nil if not found."
   (load-file (format "%s/cedet-devel-load.el" my-cedet-path))
   ;; require eassist
   (load-file (format "%s/contrib/eassist.el" my-cedet-path))
-  (semantic-mode 1)
   (require 'semantic/ia)
   (require 'semantic/bovine/gcc)
+  (semantic-mode 1)
   (global-ede-mode 1)
   )
 
 ;; CEDET documents loading must occur before other packages load any part of CEDET.
 ;; Especially important since Emacs has a different version builtin, which I can't
 ;; use because of JDEE.
-(funcall my-enable-cedet-function)
+(ignore-errors (funcall my-enable-cedet-function))
 
 ;;; Initialize JDEE
 (log-msg "Initializing JDEE.")
@@ -537,11 +537,12 @@ nil in keymap-from."
 (define-key evil-motion-state-map "F" 'other-window)
 (define-key evil-normal-state-map "-" nil)
 (define-key evil-motion-state-map "-" 'evil-end-of-line)
-(define-key evil-motion-state-map "t" nil)
-(define-key evil-motion-state-map "t" 'find-tag)
-(define-key evil-motion-state-map "T" nil)
-(define-key evil-motion-state-map "T" 'pop-tag-mark)
+(define-key evil-normal-state-map "q" 'find-tag)
+(define-key evil-motion-state-map "Q" 'pop-tag-mark)
 (define-key evil-normal-state-map "s" nil)
+(define-key evil-motion-state-map "t" nil)
+(define-key evil-motion-state-map "T" nil)
+(define-key evil-motion-state-map "t" 'semantic-ia-fast-jump)
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
 (define-key evil-normal-state-map "P" 'evil-paste-after)
