@@ -121,7 +121,9 @@ Issues:
       : Dired doesn't update when a directory is created separately.  Including when Auto Revert is enabled.
       : Would be nice if I could expand and collapse directories inline, rather than at the bottom of the same buffer, and retain same information.
       : The ^ command is inconvenient to reach, find another key binding.
-   : CEDET
+   : JDEE
+      : Hack to use CEDET in Emacs
+   : CEDET 1.1
       : Display in minibuffer undermines promptings and my ability to read them.
       : Symbol reference -- where is a symbol used or called?
       : Jumping to definition
@@ -143,18 +145,31 @@ Issues:
             : Dependancy graph
             : Composition graph
             : Inheritance graph
-      : Trying out CEDET from their bzr trunk
-         : Look into some of the other submodes to add to semantic-default-submodes
-         : Make it so as we only call ede-cpp-root-project when actually opening a C or C++ file (remember .h is deemed as C)
-         : How does the project know about .cc files?
-         : Should I put goesr-dev.el in unihome or IPT_PG/Dev source control?
-         : Get CEDET Java working with managing imports and symbol jumping, then rip out cedet-1.1 and jdee altogether
-         : Semantic is slow to to go declaration with semantic-ia-fast-jump .
-            : Try Alex Ott's advice at http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
-            : Investigate semanticdb-create-*
-            : Try turning on semantic submodes to get more information about internals
-   : JDEE
-      : Hack to use CEDET in Emacs
+   : CEDET 2.0 r8498 from upstream bzr trunk
+      : Look into some of the other submodes to add to semantic-default-submodes
+      : Make it so as we only call ede-cpp-root-project when actually opening a C or C++ file (remember .h is deemed as C)
+      : How does the project know about .cc files?
+      : Should I put goesr-dev.el in unihome or IPT_PG/Dev source control?
+      : Get CEDET Java working with managing imports and symbol jumping, then rip out cedet-1.1 and jdee altogether
+      : Semantic is slow to to go declaration with semantic-ia-fast-jump .
+         : Try Alex Ott's advice at http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+         : Investigate semanticdb-create-*
+         : Try turning on semantic submodes to get more information about internals
+         : When I restart Emacs, the first semantic-ia-fast-jump on the same symbol is slow again, taking 45s
+         : Tried without my prog-mode and c-common-mode hooks and saw no appreciable speedup.
+      : Figure out how to generate semanticdb for the whole source tree in advance
+      : semanticdb-project-roots is nil.  Shouldn't my project be there?
+         : This returns the right root directory:
+            (ede-toplevel-project-or-nil "/psd15/linux/boreilly/cc/l0int/vobs/goes_r_dev/Software_Engineering/IPT_PG/Dev/src/L1Processing/SEISS_L1b/SEISS_CommonUtilities/src")
+      : Find key bindings for:
+         : Commands:
+            semantic-c-describe-environment
+            semantic-show-summary
+            semantic-ia-fast-jump
+            semantic-analyze-proto-impl-toggle
+         : Should I add it to semantic-mode-map so as I can use it with t key translation?
+      : How to manage includes?
+      : If a class name is not namespace scoped correctly, semantic-ia-fast-jump won't jump to it.  How to find right namespace using semantic?
    : Multi window navigation
       : Set up so as motion commands will go to all windows.
          : Make toggle for on and off.
@@ -198,7 +213,13 @@ Issues:
    : Learn merging in Git
       : Use magit?
    : Learn about org-mode
-   : Learn about Buffer Menu and BS.  What's the difference?
+   : Buffer Menu
+      : What's the difference between Buffer Menu and BS?
+      : If accidentally his S key:
+         : tabulated-list-sort is called to sort by the column at point.
+         : Sets tabulated-list-sort-key from its default nil value
+         : There is then no interactive command I find to set it back to nil
+         : However, kill-buffer works
    : Being prompted about running Python process is annoying.
       : CEDET starts it for sake of auto completion.
    : Smart editing:
