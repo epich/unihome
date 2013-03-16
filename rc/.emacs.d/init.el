@@ -148,7 +148,7 @@ or nil if not found."
 ;;;
 (log-msg "Initializing CEDET.")
 (defvar my-enable-cedet-function
-  'my-enable-cedet-from-bzr
+  'my-enable-cedet-from-emacs
   "Function to use for loading CEDET.  Determines which CEDET to load. ")
 
 ;; CEDET 1.1 is needed when using JDEE
@@ -191,9 +191,11 @@ or nil if not found."
 
 (defun my-enable-cedet-from-emacs ()
   "Loads CEDET distrubted with Emacs."
-  ;; TODO: Probably has a lot in common with my-enable-cedet-from-bzr
-  ;;
-  ;; TODO: require eassist
+  ;; Note: Apparently eassist is not distributed with Emacs 24.3
+  (require 'semantic/ia)
+  (require 'semantic/bovine/gcc)
+  (semantic-mode 1)
+  (global-ede-mode 1)
   )
 
 ;; Experimenting with latest CEDET from their bzr repo
@@ -208,6 +210,8 @@ or nil if not found."
   (semantic-mode 1)
   (global-ede-mode 1)
   )
+;; For now, while trying out CEDET from bzr
+(when (eql system-type 'gnu/linux) (setq my-enable-cedet-function 'my-enable-cedet-from-bzr))
 
 ;; CEDET documents loading must occur before other packages load any part of CEDET.
 ;; Especially important since Emacs has a different version builtin, which I can't
