@@ -130,8 +130,8 @@
 (log-msg "Initializing CEDET.")
 (add-to-list 'load-path (format "%s/common" my-cedet-path))
 ;; CEDET documents loading must occur before other packages load any part of CEDET.
-;; Especially important since Emacs has a different version builtin, which I can't
-;; use because of JDEE.
+;; Especially important since Emacs has a different version builtin.  My use of
+;; JDEE requires use of the newer CEDET 1.1.
 ;;
 ;; CEDET raises fatal error when reloading an already reloaded file,
 ;; undermining reloading of my init.el file.  This hacks that fix.
