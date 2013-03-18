@@ -158,6 +158,7 @@ Issues:
          : When I restart Emacs, the first semantic-ia-fast-jump on the same symbol is slow again, taking 45s
          : Tried without my prog-mode and c-common-mode hooks and saw no appreciable speedup.
       : Figure out how to generate semanticdb for the whole source tree in advance
+      : Verify returns project root: (ede-project-root-directory ede-object-root-project)
       : semanticdb-project-roots is nil.  Shouldn't my project be there?
          : This returns the right root directory:
             (ede-toplevel-project-or-nil "/psd15/linux/boreilly/cc/l0int/vobs/goes_r_dev/Software_Engineering/IPT_PG/Dev/src/L1Processing/SEISS_L1b/SEISS_CommonUtilities/src")
