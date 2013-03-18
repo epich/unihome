@@ -203,7 +203,7 @@ or nil if not found."
   "Loads the latest snapshot of CEDET bzr trunk. "
   (defvar my-cedet-path "/psd15/linux/boreilly/sw/cedet-bzr/trunk" "Path to CEDET")
   (load-file (format "%s/cedet-devel-load.el" my-cedet-path))
-  (add-to-list 'load-path (concat my-cedet-path "contrib"))
+  (add-to-list 'load-path (concat my-cedet-path "/contrib"))
   (require 'semantic/ia)
   (require 'semantic/bovine/gcc)
   (semantic-mode 1)
@@ -541,9 +541,6 @@ nil in keymap-from."
 (define-key evil-motion-state-map "F" 'other-window)
 (define-key evil-normal-state-map "-" nil)
 (define-key evil-motion-state-map "-" 'evil-end-of-line)
-;; TODO: Get used to Emacs defaults M-. and M-* , then delete q and Q bindings.
-(define-key evil-normal-state-map "q" 'find-tag)
-(define-key evil-motion-state-map "Q" 'pop-tag-mark)
 (define-key evil-normal-state-map "s" nil)
 (define-key evil-motion-state-map "t" nil)
 (define-key evil-motion-state-map "T" nil)
