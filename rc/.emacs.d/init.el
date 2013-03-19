@@ -92,9 +92,6 @@
    (interactive)
    (message "%s %s" (get-time-str) (apply 'format msg vargs)))
 
-;;  When fully upgraded to Emacs 24.3, can delete this
-(cond ((and (<= emacs-major-version 24) (< emacs-minor-version 3))
-      (defalias 'cl-labels 'labels)))
 (defun find-file-upwards (file-to-find)
   "Recursively searches each parent directory starting from the default-directory.
 looking for a file with name file-to-find.  Returns the path to it
