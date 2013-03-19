@@ -19,7 +19,7 @@ def byteCompile(filesString, loadPathL=[]):
    filesString -- string which is passed to command line.  Example: '*.el'
    """
    loadPathOpts = ['-L '+loadPathI+' ' for loadPathI in loadPathL]
-   generalUtil.cmd( 'emacs --batch -Q %s -f batch-byte-compile %s'%(''.join(loadPathOpts), filesString,), printStdout=True )
+   generalUtil.cmd( 'emacs --batch -Q %s -f batch-byte-compile %s'%(''.join(loadPathOpts), filesString,), printDebug=True, printStdout=True )
 
 def buildEvil():
    generalUtil.cmd('make -C %s'%(evilDir_g,), printStdout=True)
@@ -59,18 +59,19 @@ def buildJdee():
    if not os.path.exists('jdee-%s'%(jdeeVersion_g)):
       generalUtil.cmd('unzip jdee-bin-%s.zip'%(jdeeVersion_g))
 
-def buildInitElisp():
-   # TODO: Runtime errors
-   pass#byteCompile('init.el', [evilDir_g, TODO,])
+def buildMy():
+   byteCompile('my/my-util.el')
+   byteCompile('my/my-config.el')
 
-def buildEmacsD():
+def buildEmacsD(buildCedetP):
    buildEvil()
    buildUndoTree()
    buildGotoChg()
    buildRainbowDelimiters()
-   buildCedet()
+   if buildCedetP:
+      buildCedet()
    buildJdee()
-   buildInitElisp()
+   buildMy()
 
 def __MAIN__():
    buildEmacsD()

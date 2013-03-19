@@ -36,78 +36,16 @@
 (cond ((<= 24 emacs-major-version)
        (electric-pair-mode 0)))
 
-;; Maximize window upon startup.  A non toggling way to do this would be nice.
-(defun x-toggle-fullscreen ()
-  "Toggle fullscreen in X11. "
-  (interactive)
-  (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-                         '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
-  (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-                         '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
-(defun msw-toggle-fullscreen ()
-  "MS Windows fullscreen function. "
-  (w32-send-sys-command 61488))
-(defun toggle-fullscreen ()
-  (interactive)
-  ;; When cl-case is available, use that for a bit more cleanliness.
-  (cond
-   ((eql system-type 'aix)           (x-toggle-fullscreen))
-   ((eql system-type 'berkeley-unix) (x-toggle-fullscreen))
-   ((eql system-type 'cygwin)        (msw-toggle-fullscreen))
-   ((eql system-type 'darwin)        (x-toggle-fullscreen))
-   ((eql system-type 'gnu)           (x-toggle-fullscreen))
-   ((eql system-type 'gnu/linux)     (x-toggle-fullscreen))
-   ((eql system-type 'gnu/kfreebsd)  (x-toggle-fullscreen))
-   ((eql system-type 'hpux)          (x-toggle-fullscreen))
-   ((eql system-type 'irix)          (x-toggle-fullscreen))
-   ((eql system-type 'ms-dos)        (msw-toggle-fullscreen))
-   ((eql system-type 'usg-unix-v)    (x-toggle-fullscreen))
-   ((eql system-type 'windows-nt)    (msw-toggle-fullscreen))))
-(toggle-fullscreen)
+;; Load my stuff
+(add-to-list 'load-path "~/.emacs.d/my")
+(require 'my-util)
+
+(my-toggle-fullscreen)
 
 ;; Set the frame title to the current filename.
 (setq-default frame-title-format
               '(:eval (format "%s"
                               (file-name-nondirectory (or (buffer-file-name) default-directory)))))
-
-;;; Functions to facilitate elisp debug logging.
-(defvar my-date-time-format "%Y-%m-%dT%H:%M:%S"
-  "Format for date string. ")
-(defun get-usec-str (cur-time)
-   "Get the microseconds as string. "
-   (format "%06d"
-      (nth 2 cur-time)))
-(defun get-time-str ()
-   "Get the current time as a string. "
-   (interactive)
-   (let ((cur-time (current-time)))
-      (format "%s.%s" 
-         (format-time-string my-date-time-format)
-         (get-usec-str cur-time))))
-;; I attempted to use defadvice on the message function, but the minibuffer
-;; misbehaves under some conditions.  The message function is a C primitive
-;; anyway, which doesn't always combine with defadvice.
-(defun log-msg (msg &rest vargs)
-   "Log a message, with prepended information.  Used for debugging. "
-   (interactive)
-   (message "%s %s" (get-time-str) (apply 'format msg vargs)))
-
-(defun find-file-upwards (file-to-find)
-  "Recursively searches each parent directory starting from the default-directory.
-looking for a file with name file-to-find.  Returns the path to it
-or nil if not found."
-  (cl-labels
-      ((find-file-r (path)
-                    (let* ((parent (file-name-directory path))
-                           (possible-file (concat parent file-to-find)))
-                      (cond
-                       ((file-exists-p possible-file) possible-file) ; Found
-                       ;; The parent of ~ is nil and the parent of / is itself.
-                       ;; Thus the terminating condition for not finding the file
-                       ;; accounts for both.
-                       ((or (null parent) (equal parent (directory-file-name parent))) nil) ; Not found
-                       (t (find-file-r (directory-file-name parent))))))) ; Continue
-    (find-file-r default-directory)))
 
 ;;; File associations
 ;;
@@ -127,7 +65,7 @@ or nil if not found."
 ;; TODO: When files don't compile, it'll create errors and modest delay everytime Emacs starts.
 ;; (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
 
-(log-msg "Initializing Evil.")
+(my-msg "Initializing Evil.")
 (add-to-list 'load-path "~/.emacs.d/evil")
 (add-to-list 'load-path "~/.emacs.d/evil/lib")
 (require 'undo-tree)
@@ -135,7 +73,7 @@ or nil if not found."
 (require 'evil)
 (evil-mode 1)
 
-(log-msg "Initializing Rainbow Delimiters.")
+(my-msg "Initializing Rainbow Delimiters.")
 (add-to-list 'load-path "~/.emacs.d/rainbow-delimiters")
 (require 'rainbow-delimiters)
 ;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
@@ -143,7 +81,7 @@ or nil if not found."
 
 ;;; Initialize CEDET
 ;;;
-(log-msg "Initializing CEDET.")
+(my-msg "Initializing CEDET.")
 (defvar my-enable-cedet-function
   'my-enable-cedet-from-emacs
   "Function to use for loading CEDET.  Determines which CEDET to load. ")
@@ -216,7 +154,7 @@ or nil if not found."
 (ignore-errors (funcall my-enable-cedet-function))
 
 ;;; Initialize JDEE
-(log-msg "Initializing JDEE.")
+(my-msg "Initializing JDEE.")
 (defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
 (add-to-list 'load-path (format "%s/lisp" my-jdee-path))
 ;; Online posting says these might be necessary for JDEE.
@@ -233,7 +171,7 @@ or nil if not found."
       (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
 
 ;; Initialize project-specific elisp
-(log-msg "Initializing project-specific elisp.")
+(my-msg "Initializing project-specific elisp.")
 ;; GOESR isn't relevant to all computers I work on, so ignore errors.
 (ignore-errors (load-file "~/g/goesr-dev.el"))
 ;; Paths for JDEE
@@ -419,8 +357,8 @@ or nil if not found."
 ;; use the prefix key's keymap if the next key is not translated.  For example,
 ;; if I define:
 ;;    (define-key key-translation-map (kbd "ce") (kbd "C-e"))
-;;    (define-key other-mode-map (kbd "cd") (lambda () (interactive) (log-msg "cd command")))
-;;    (define-key other-mode-map (kbd "ce") (lambda () (interactive) (log-msg "ce command")))
+;;    (define-key other-mode-map (kbd "cd") (lambda () (interactive) (my-msg "cd command")))
+;;    (define-key other-mode-map (kbd "ce") (lambda () (interactive) (my-msg "ce command")))
 ;; I can use the cd command but not the ce command via the key binding.  I cannot use
 ;; Evil's \ command because the other-mode-map would still be active in Emacs state.
 ;; I've never ran into this issue, since prefix keys are usually C- or M- keys.
@@ -620,7 +558,7 @@ nil in keymap-from."
 (define-key evil-normal-state-map "ol" (lambda () (interactive) (transpose-sexps 1)))
 (define-key evil-motion-state-map "or" 'revert-buffer)
 (define-key evil-motion-state-map "os" 'eassist-switch-h-cpp)
-(define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (toggle-fullscreen)))
+(define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (my-toggle-fullscreen)))
 (define-key evil-motion-state-map "ov" 'undo-tree-visualize)
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-normal-state-map "S" 'save-buffer)
@@ -650,295 +588,25 @@ nil in keymap-from."
         (evil-previous-line num-times))
       ))
 
-;;; General utility functions
-
-(defvar match-list nil
-  "A list of matches, as set through the set-match-list and consumed by the cycle-match-list function. ")
-(defvar match-list-iter nil
-  "Iterator through the global match-list variable. ")
-(defun reset-match-list-iter ()
-  "Set match-list-iter to the beginning of match-list and return it. "
-  (interactive)
-  (setq match-list-iter match-list))
-(defun make-match-list (match-regexp use-regexp beg end)
-  "Set the match-list variable as described in the documentation for set-match-list. "
-  ;; Starts at the beginning of region, searches forward and builds match-list.
-  ;; For efficiency, matches are appended to the front of match-list and then reversed
-  ;; at the end.
-  ;;
-  ;; Note that the behavior of re-search-backward is such that the same match-list
-  ;; is not created by starting at the end of the region and searching backward.
-  (let ((match-list nil))
-    (save-excursion
-      (goto-char beg)
-      (while
-          (let ((old-pos (point)) (new-pos (re-search-forward match-regexp end t)))
-            (when (equal old-pos new-pos)
-              (error "re-search-forward makes no progress.  old-pos=%s new-pos=%s end=%s match-regexp=%s"
-                     old-pos new-pos end match-regexp))
-            new-pos)
-        (setq match-list
-              (cons (replace-regexp-in-string match-regexp
-                                              use-regexp
-                                              (match-string 0)
-                                              t)
-                    match-list)))
-      (setq match-list (nreverse match-list)))))
-(defun set-match-list (match-regexp use-regexp beg end)
-  "Set the match-list global variable to a list of regexp matches.  MATCH-REGEXP
-is used to find matches in the region from BEG to END, and USE-REGEXP is the
-regexp to place in the match-list variable.
-
-For example, if the region contains the text: {alpha,beta,gamma}
-and MATCH-REGEXP is: \\([a-z]+\\),
-and USE-REGEXP is: \\1
-then match-list will become the list of strings: (\"alpha\" \"beta\")"
-  (interactive "sMatch regexp: \nsPlace in match-list: \nr")
-  (setq match-list (make-match-list match-regexp use-regexp beg end))
-  (reset-match-list-iter))
-(defun cycle-match-list (&optional after-end-string)
-  "Return the next element of match-list.
-
-If AFTER-END-STRING is nil, cycle back to the beginning of match-list.
-Else return AFTER-END-STRING once the end of match-list is reached."
-  (let ((ret-elm (car match-list-iter)))
-    (unless ret-elm
-      (if after-end-string
-          (setq ret-elm after-end-string)
-        (reset-match-list-iter)
-        (setq ret-elm (car match-list-iter))))
-    (setq match-list-iter (cdr match-list-iter))
-    ret-elm))
-(defadvice replace-regexp (before my-advice-replace-regexp activate)
-  "Advise replace-regexp to support match-list functionality. "
-  (reset-match-list-iter))
-
-(defun surround-region-with-tag (tag-name beg end)
-  "Insert XML tag named tag-name around region defined by beg end. "
-  (interactive "sTag name: \nr")
-  (save-excursion
-    (goto-char beg)
-    (insert "<" tag-name ">")
-    (goto-char (+ end 2 (length tag-name)))
-    (insert "</" tag-name ">")))
-
-;;; Debug logging
-(defun my-insert-ant-log ()
-  "Insert log statement for Ant build files. "
-  (interactive)
-  (insert "<echo message=\"DEBUG: \"/> <!-- TODO: temporary for debug -->")
-  (search-backward "DEBUG: ")
-  (goto-char (match-end 0)))
-(defun my-insert-elisp-log ()
-   "Insert log statement for elisp. "
-   (interactive)
-   (insert "(log-msg \"DEBUG: \") ")
-   (search-backward "DEBUG: ")
-   (goto-char (match-end 0)))
-(defun my-insert-c-log ()
-   "Insert log statement for C and C++. "
-   (interactive)
-   ;; This is the simplest way I could find to get a proper and complete current time.
-   (insert "{ timespec debug_ts; char debug_dateStr[20]; { ::clock_gettime(CLOCK_REALTIME, &debug_ts); tm mytm; ::localtime_r(&debug_ts.tv_sec, &mytm); ::strftime(debug_dateStr, 20, \"%Y-%m-%dT%H:%M:%S\", &mytm); }")
-   (evil-ret)
-   (insert "  printf( \"%s.%09ld|pid:%d|tid:%ld|%s|%d| DEBUG: \\n\", // TODO: debugging")
-   (evil-ret)
-   (insert "          debug_dateStr, debug_ts.tv_nsec, ::getpid(), ::pthread_self(), __FILE__, __LINE__ ); fflush(stdout); }")
-   (search-backward "DEBUG: ")
-   (goto-char (match-end 0)))
-(defun my-insert-java-log ()
-   "Insert log statement for Java. "
-   (interactive)
-   ;; The vimscript was:
-   ;;imap <F3> org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // temporary for debug<Enter><Tab><Tab><Tab>"DEBUG: ",<Enter>new Object[]{} );<Esc>khi
-   (insert "org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // TODO: temporary for debug")
-   (evil-ret)
-   (insert "\t\t\t\"DEBUG: \",")
-   (evil-ret)
-   (insert "new Object[]{} );")
-   (search-backward "DEBUG: ")
-   (goto-char (match-end 0)))
-;; For the GOESR program, redefine logger.
-;; (fset 'my-insert-java-log 'goesr-insert-java-log)
-(defun my-insert-makefile-log ()
-  "Insert log statement for make files. "
-  (interactive)
-  (insert "$(warning DEBUG: ) # TODO: temporary for debug")
-  (search-backward "DEBUG: ")
-  (goto-char (match-end 0)))
-(defun my-insert-python-log ()
-  "Insert log statement for Python. "
-  (interactive)
-  (insert "print( \"DEBUG: \"%() ) ; sys.stdout.flush() # TODO: temporary for debug")
-  (search-backward "DEBUG: ")
-  (goto-char (match-end 0)))
-(defun my-insert-sh-log ()
-  "Insert log statement for shell. "
-  (interactive)
-  (insert "# TODO: temporary for debug")
-  (evil-ret)
-  (insert "echo \"DEBUG: \"")
-  (search-backward "DEBUG: ")
-  (goto-char (match-end 0)))
-(defun my-insert-cc-doc ()
-  "Insert doc comment for C like languages in the form of /** */"
-  (interactive)
-  (insert "/***/")
-  (search-backward "/**")
-  (goto-char (match-end 0)))
-(defun my-insert-python-doc ()
-  "Insert docstring for Python."
-  (interactive)
-  (insert "\"\"\"")
-  (evil-ret)
-  (evil-ret)
-  (insert "Keyword arguments:")
-  (evil-ret)
-  (insert "\"\"\"")
-  (evil-ret)
-  (search-backward "\"\"\"")
-  (search-backward "\"\"\"")
-  (goto-char (match-end 0)))
-
-(defun bind-my-tab-del-keys ()
-  "Bind the TAB and DEL keys because default behaviors are shitty. "
-     ;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
-     (define-key evil-insert-state-local-map (kbd "DEL") 'backspace-whitespace-to-tab-stop)
-     ;; Tab behavior is too retarded in several major modes.  Either it is unncessarily
-     ;; restrictive about allowing tabbing, or it aligns with the line above in the wrong cases.
-     (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop))
-
-(add-hook 'diff-mode-hook
-          (lambda ()
-            (define-key evil-motion-state-local-map "sj" 'diff-file-next)
-            (define-key evil-motion-state-local-map "sk" 'diff-file-prev)
-            (define-key evil-motion-state-local-map "sb" 'diff-refine-hunk)
-            (define-key evil-motion-state-local-map "sc" 'diff-goto-source)
-            (define-key evil-motion-state-local-map "se" 'diff-ediff-patch)
-            (define-key evil-motion-state-local-map "sr" 'diff-reverse-direction)
-            (define-key evil-motion-state-local-map "sw" 'diff-ignore-whitespace-hunk)
-            ;; Define and [ and ] to be similar to sj and sk, but move beginning of file diff to top visible line.
-            (define-key evil-motion-state-map "[" nil)
-            (define-key evil-motion-state-map "[" "skzt")
-            (define-key evil-motion-state-map "]" nil)
-            (define-key evil-motion-state-map "]" "sjzt")
-            ))
-(add-hook 'prog-mode-hook
-          (lambda ()
-            (log-msg "Inside prog-mode-hook")
-            ;; We want special tab behavior in programming modes, because the usefulness
-            ;; just barely out weights the annoyances.
-            (define-key evil-insert-state-local-map (kbd "DEL") nil)
-            (define-key evil-insert-state-local-map (kbd "TAB") nil)
-            ))
-(add-hook 'emacs-lisp-mode-hook 
-   (lambda ()
-      (log-msg "Inside emacs-lisp-mode-hook")
-      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-elisp-log)
-      (define-key evil-motion-state-local-map "se" 'eval-last-sexp)
-      ))
-(add-hook 'java-mode-hook 
-   (lambda ()
-      (log-msg "Inside java-mode-hook")
-      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-java-log)
-
-      ;;; Based on jde-key-bindings from jde.el, which are not in any keymap by default:
-      (define-key evil-normal-state-local-map "sCa" 'jde-run-menu-run-applet)
-      (define-key evil-normal-state-local-map "sCb" 'jde-build)
-      (define-key evil-normal-state-local-map "sCc" 'jde-compile)
-      (define-key evil-normal-state-local-map "sCd" 'jde-debug)
-      (define-key evil-normal-state-local-map "sCf" 'jde-find)
-      (define-key evil-normal-state-local-map "sCg" 'jde-open-class-at-point)
-      (define-key evil-normal-state-local-map "sCk" 'jde-bsh-run)
-      (define-key evil-normal-state-local-map "sCl" 'jde-gen-println)
-      (define-key evil-normal-state-local-map "sCn" 'jde-help-browse-jdk-doc)
-      (define-key evil-normal-state-local-map "sCp" 'jde-save-project)
-      (define-key evil-normal-state-local-map "sCq" 'jde-wiz-update-class-list)
-      (define-key evil-normal-state-local-map "sCr" 'jde-run)
-      (define-key evil-normal-state-local-map "sCs" 'speedbar-frame-mode)
-      (define-key evil-normal-state-local-map "sCt" 'jde-jdb-menu-debug-applet)
-      (define-key evil-normal-state-local-map "sCw" 'jde-help-symbol)
-      (define-key evil-normal-state-local-map "sCx" 'jde-show-superclass-source)
-      (define-key evil-normal-state-local-map "sCy" 'jde-open-class-at-point)
-      (define-key evil-normal-state-local-map "sCz" 'jde-import-find-and-import)
-      (define-key evil-normal-state-local-map "se"    'jde-wiz-extend-abstract-class)
-      (define-key evil-normal-state-local-map "sf"    'jde-gen-try-finally-wrapper)
-      (define-key evil-normal-state-local-map "si"    'jde-wiz-implement-interface)
-      (define-key evil-normal-state-local-map "sj"    'jde-javadoc-autodoc-at-line)
-      (define-key evil-normal-state-local-map "so"    'jde-wiz-override-method)
-      (define-key evil-normal-state-local-map "st"    'jde-gen-try-catch-wrapper)
-      (define-key evil-normal-state-local-map "sz"    'jde-import-all)
-      (define-key evil-normal-state-local-map "sc[" 'jde-run-etrace-prev)
-      (define-key evil-normal-state-local-map "sc]" 'jde-run-etrace-next)
-      (define-key evil-normal-state-local-map "sc." 'jde-complete)
-      (define-key evil-normal-state-local-map "s." 'jde-complete-in-line)
-      ;; My own
-      (define-key evil-normal-state-local-map "sa" (lambda () (interactive) (jde-import-all) (jde-import-kill-extra-imports) (jde-import-organize)))
-      ))
-(add-hook 'makefile-mode-hook 
-   (lambda ()
-      (log-msg "Inside makefile-mode-hook")
-      ;; Tabs are important in makefiles
-      ;;
-      ;; Set tab to nil, to get the builtin tab behavior.
-      (define-key evil-insert-state-local-map (kbd "TAB") nil)
-      (setq indent-tabs-mode t)
-
-      ;; Get rid of annoying messages when saving makefiles
-      ;;
-      ;; Not sufficient to fset directly in upper level of init.el .
-      ;; Fsetting these misguided buggers here seems to work.
-      (fset 'makefile-warn-suspicious-lines (lambda ()))
-      (fset 'makefile-warn-continuations (lambda ()))
-
-      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-makefile-log)
-      ))
-(add-hook 'nxml-mode-hook
-          (lambda ()
-            (log-msg "Inside nxml-mode-hook")
-            (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-ant-log)))
-(add-hook 'python-mode-hook 
-   (lambda ()
-      (log-msg "Inside python-mode-hook")
-      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-python-log)
-      (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-python-doc)))
-(add-hook 'c-mode-common-hook 
-   (lambda ()
-      (log-msg "Inside c-mode-common-hook. ")
-      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
-      (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
-      (bind-my-tab-del-keys)
-      ))
-(add-hook 'sh-mode-hook 
-   (lambda ()
-      (log-msg "Inside sh-mode-hook")
-      (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-sh-log)))
-(add-hook 'text-mode-hook 
-   (lambda ()
-      (log-msg "Inside text-mode-hook")
-     (bind-my-tab-del-keys)
-      ))
-
-(add-hook 'after-change-major-mode-hook
-   (lambda ()
-     ;; Force Evil mode in Fundamental mode.
-     (evil-mode 1)))
-
 ;;; Load TAGS file, searching upwards from the directory Emacs was launched.
-(let ((my-tags-file (find-file-upwards "TAGS")))
+(let ((my-tags-file (my-find-file-upwards "TAGS")))
   (when my-tags-file
-    (message "Loading tags file: %s" my-tags-file)
+    (my-msg "Loading tags file: %s" my-tags-file)
     (visit-tags-table my-tags-file)))
 
-;;; Finalizing initialization
-(add-hook 'term-setup-hook
-   (lambda ()
-     ;; Apparently some elisp needs to be placed here to work.
+(require 'my-config)
+(add-hook 'prog-mode-hook 'my-prog-mode-hook)
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+(add-hook 'diff-mode-hook 'my-diff-mode-hook)
+(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+(add-hook 'java-mode-hook 'my-java-mode-hook)
+(add-hook 'makefile-mode-hook 'my-makefile-mode-hook)
+(add-hook 'nxml-mode-hook 'my-nxml-mode-hook)
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+(add-hook 'sh-mode-hook 'my-sh-mode-hook)
+(add-hook 'text-mode-hook 'my-text-mode-hook)
+(add-hook 'after-change-major-mode-hook 'my-after-change-major-mode-hook)
+(add-hook 'term-setup-hook 'my-term-setup-hook)
 
-     (delete-other-windows)
-
-     ;;(setq search-whitespace-regexp nil)
-     (log-msg "Finished with term-setup-hook. ")))
-
-(log-msg "Finished loading init file. ")
+(my-msg "Finished loading init file. ")
 
