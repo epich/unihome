@@ -172,6 +172,8 @@ Issues:
          : Should I add it to semantic-mode-map so as I can use it with t key translation?
       : How to manage includes?
       : If a class name is not namespace scoped correctly, semantic-ia-fast-jump won't jump to it.  How to find right namespace using semantic?
+      : Try out GNU Global
+         : http://www.wolinlabs.com/blog/emacs.global.speedbar.html
    : Multi window navigation
       : Set up so as motion commands will go to all windows.
          : Make toggle for on and off.
