@@ -86,15 +86,15 @@
 (defvar my-enable-cedet-function
   'my-enable-cedet-from-emacs
   "Function to use for loading CEDET.  Determines which CEDET to load. ")
+(defvar cedet-loaded nil
+  "Whether the initialization loaded CEDET explicitly. ")
 
 ;; CEDET 1.1 is needed when using JDEE
 (defun my-enable-cedet-1.1 ()
   "Loads CEDET 1.1. "
   (defvar my-cedet-path "~/.emacs.d/cedet-1.1" "Path to CEDET")
   (add-to-list 'load-path (format "%s/common" my-cedet-path))
-  ;; CEDET raises fatal error when reloading an already reloaded file,
-  ;; undermining reloading of my init.el file.  This hacks that fix.
-  (ignore-errors (load-file (format "%s/common/cedet.el" my-cedet-path)))
+  (load-file (format "%s/common/cedet.el" my-cedet-path))
   
   ;; Disable Minibuffer info which overwrites other information displaying.
   ;;
@@ -123,6 +123,7 @@
   ;;    Symbol's function definition is void: eieio-build-class-alist
   (require 'eieio-opt)
   (require 'eassist)
+  (setq cedet-loaded t)
   )
 
 (defun my-enable-cedet-from-emacs ()
@@ -132,27 +133,35 @@
   (require 'semantic/bovine/gcc)
   (semantic-mode 1)
   (global-ede-mode 1)
+  (setq cedet-loaded t)
   )
 
+(defvar my-bzr-cedet-path "/psd15/linux/boreilly/sw/cedet-bzr/trunk" "Path to CEDET")
 ;; Experimenting with latest CEDET from their bzr repo
 (defun my-enable-cedet-from-bzr ()
   "Loads the latest snapshot of CEDET bzr trunk. "
-  (defvar my-cedet-path "/psd15/linux/boreilly/sw/cedet-bzr/trunk" "Path to CEDET")
-  (load-file (format "%s/cedet-devel-load.el" my-cedet-path))
-  (add-to-list 'load-path (concat my-cedet-path "/contrib"))
+  (load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
+  (add-to-list 'load-path (concat my-bzr-cedet-path "/contrib"))
   (require 'semantic/ia)
   (require 'semantic/bovine/gcc)
   (semantic-mode 1)
   (require 'eassist)
   (global-ede-mode 1)
+  (setq cedet-loaded t)
   )
-;; For now, while trying out CEDET from bzr
-(when (eql system-type 'gnu/linux) (setq my-enable-cedet-function 'my-enable-cedet-from-bzr))
+
+(defvar my-load-goesr (getenv "LOAD_GOESR_ELISP") "Whether initialization loads GOESR Elisp. ")
+(when my-load-goesr
+  (setq my-enable-cedet-function 'my-enable-cedet-from-bzr)
+  )
 
 ;; CEDET documents loading must occur before other packages load any part of CEDET.
 ;; Especially important since Emacs has a different version builtin, which I can't
 ;; use when using JDEE.
-(ignore-errors (funcall my-enable-cedet-function))
+;;
+;; CEDET raises an error if loaded again.
+(unless cedet-loaded
+  (funcall my-enable-cedet-function))
 
 ;;; Initialize JDEE
 (my-msg "Initializing JDEE.")
@@ -173,8 +182,10 @@
 
 ;; Initialize project-specific elisp
 (my-msg "Initializing project-specific elisp.")
-;; GOESR isn't relevant to all computers I work on, so ignore errors.
-(ignore-errors (load-file "~/g/goesr-dev.el"))
+(when my-load-goesr
+  ;; GOESR isn't relevant to all computers I work on, so ignore errors.
+  (load-file "~/g/goesr-dev.el"))
+
 ;; Paths for JDEE
 (defvar my-java-classpath (if (boundp 'goesr-classpath)
                               goesr-classpath

@@ -294,16 +294,10 @@ Issues:
                   ;; cc-mode is distributed with Emacs, but using a newer version in order to get 
                   ;; style guessing.
                   (add-to-list 'load-path "~/.emacs.d/cc-mode")
-   : Learn using Emacs as a daemon
-   : Organize and optimize Emacs lisp init code.
-      : Move most of .emacs code to .el files and build it with the others.
-         : Be sure log-msg is issued earlier in initialization so as startup time can be assessed.
-         : Be sure my essential commands are available when an error occurs in initialization
-            : See http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Errors
-      : Optimization:
-         : http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Compilation-Tips
-         : http://www.emacswiki.org/emacs/OptimizingEmacsStartup
-         : http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster/779145#779145
+   : Improve Emacs initialization
+      : Learn about emacs as a server and client
+      : See if there's a better way to ensure essential commands are available in the presence of other init errors
+         : See http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Errors
    : Figure out how to (setq-default major-mode 'text-mode) with out conflicting with Evil's (setq-default major-mode 'turn-on-evil-mode)
    : Finding location of .emacs.d
       : See thread: http://lists.gnu.org/archive/html/help-gnu-emacs/2012-10/msg00467.html

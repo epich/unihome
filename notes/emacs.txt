@@ -117,6 +117,18 @@ Notes:
          : COGRE
             : UML diagrams (Cogre)
          : Reference "gentle introduction": http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+   : Optimization:
+      : Use elp Elisp profiler
+         : Example:
+            : elp-instrument-package
+            : Enter semantic-
+            : elp-instrument-package
+            : Enter semanticdb-
+            : Execute a command such as semantic-ia-fast-jump
+            : elp-results
+      : http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Compilation-Tips
+      : http://www.emacswiki.org/emacs/OptimizingEmacsStartup
+      : http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster/779145#779145
    : Vim mapping plan:
       : Vim keys that aren't mapped to anything useful:
          t mapped
