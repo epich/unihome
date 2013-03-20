@@ -1,6 +1,9 @@
 ;; -*- lexical-binding: t -*-
 ;;
 ;; Utility functions for my Emacs init file.
+;;
+;; Lexical binding is necessary for make-conditional-key-translation
+;; to create a clojure object correctly.
 
 (require 'cl)
 
@@ -25,6 +28,12 @@
    "Log a message, with prepended information.  Used for debugging. "
    (interactive)
    (message "%s %s" (my-get-time-str) (apply 'format msg vargs)))
+
+(defun my-insert-bullet ()
+  "Insert a Unicode bullet character."
+  (interactive)
+  ;; Note: Emacs 24.2 and earlier, use: (ucs-insert "2022")
+  (insert-char #x2022))
 
 ;; Maximize window upon startup.  A non toggling way to do this would be nice.
 (defun my-x-toggle-fullscreen ()
@@ -134,6 +143,44 @@ Else return AFTER-END-STRING once the end of match-list is reached."
   "Advise replace-regexp to support match-list functionality. "
   (reset-match-list-iter))
 
+;; Move keybindings between keymaps.
+;;
+;; In some cases I want key sequences looked up using keymaps other than
+;; Evil's, such as RET and SPC in modes that don't involve editing.
+(defun my-move-key (keymap-from keymap-to key)
+  "Moves key binding from one keymap to another, deleting from the old location.
+
+To account for more than one invocation, this won't do the move if key is
+nil in keymap-from."
+  (let ((keyval (lookup-key keymap-from key)))
+    (when keyval
+      (define-key keymap-to key keyval)
+      (define-key keymap-from key nil))))
+
+;; For binding to backspace.
+;;
+;; Taken from: http://stackoverflow.com/questions/1450169/how-do-i-emulate-vims-softtabstop-in-emacs
+;;
+;; Doesn't correctly handle backspace when there's a selection.
+(defun backspace-whitespace-to-tab-stop ()
+  "Delete whitespace backwards to the next tab-stop, otherwise delete one character."
+  (interactive)
+  (cond
+    (indent-tabs-mode
+      (call-interactively 'backward-delete-char-untabify))
+    ((region-active-p)
+      (call-interactively 'backward-delete-char-untabify))
+    (t
+       (let ((movement (% (current-column) my-offset))
+            (p (point)))
+        (when (= movement 0) (setq movement my-offset))
+        ;; Account for edge case near beginning of buffer
+        (setq movement (min (- p 1) movement))
+        (save-match-data
+          (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
+              (backward-delete-char (- (match-end 1) (match-beginning 1)))
+            (call-interactively 'backward-delete-char)))))))
+
 (defun my-bind-tab-del-keys ()
   "Bind the TAB and DEL keys because default behaviors are shitty. "
      ;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
@@ -150,6 +197,15 @@ Else return AFTER-END-STRING once the end of match-list is reached."
     (insert "<" tag-name ">")
     (goto-char (+ end 2 (length tag-name)))
     (insert "</" tag-name ">")))
+
+;; Note: lexical-binding must be t in order for this to work correctly.
+(defun make-conditional-key-translation (key-from key-to translate-keys-p)
+  "Make a Key Translation such that if the translate-keys-p function returns true,
+key-from translates to key-to, else key-from translates to itself.  translate-keys-p
+takes key-from as an argument. "
+  (define-key key-translation-map key-from
+    (lambda (prompt)
+      (if (funcall translate-keys-p key-from) key-to key-from))))
 
 (provide 'my-util)
 
