@@ -136,7 +136,7 @@
   (setq cedet-loaded t)
   )
 
-(defvar my-bzr-cedet-path "/psd15/linux/boreilly/sw/cedet-bzr/trunk" "Path to CEDET")
+(defvar my-bzr-cedet-path "/goesr/user/boreilly/sw/cedet" "Path to CEDET")
 ;; Experimenting with latest CEDET from their bzr repo
 (defun my-enable-cedet-from-bzr ()
   "Loads the latest snapshot of CEDET bzr trunk. "
@@ -148,6 +148,7 @@
   (require 'eassist)
   (global-ede-mode 1)
   (setq cedet-loaded t)
+  (setq semanticdb-default-save-directory "/goesr/user/boreilly/semanticdb")
   )
 
 (defvar my-load-goesr (getenv "LOAD_GOESR_ELISP") "Whether initialization loads GOESR Elisp. ")
@@ -184,7 +185,7 @@
 (my-msg "Initializing project-specific elisp.")
 (when my-load-goesr
   ;; GOESR isn't relevant to all computers I work on, so ignore errors.
-  (load-file "~/g/goesr-dev.el"))
+  (load-file "/goesr/user/boreilly/goesr-dev.el"))
 
 ;; Paths for JDEE
 (defvar my-java-classpath (if (boundp 'goesr-classpath)
