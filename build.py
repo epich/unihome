@@ -16,20 +16,24 @@ Build unihome.
 
 Options:
   -h, --help  Print this help.
-  --no-cedet  Don't build CEDET"""
+
+Arguments:
+  [default]     Build all except CEDET
+  all           Build all including CEDET"""
 
 def __MAIN__():
-   buildCedet = True
+   buildCedet = False
 
    # Parse args
    #
-   (opts, args) = getopt.getopt(sys.argv[1:], 'h', ["help", "no-cedet",])
+   (opts, args) = getopt.getopt(sys.argv[1:], 'h', ["help", ])
    for optI, argI in opts:
       if optI in ('-h', '--help'):
          print(scriptHelp_g)
          sys.exit(0)
-      if optI in ('--no-cedet'):
-         buildCedet = False
+
+   if 0<args.count('all'):
+      buildCedet = True
 
    emacsDir = os.path.dirname( emacsUtil.__file__ )
    os.chdir(emacsDir)
