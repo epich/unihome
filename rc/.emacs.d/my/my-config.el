@@ -459,7 +459,9 @@
   (delete-other-windows)
 
   ;;(setq search-whitespace-regexp nil)
-  (my-msg "Finished with my-term-setup-hook. ")
+
+  ;; Make the end obvious, since this is a major point in the Emacs runtime
+  (my-msg "Finished with my-term-setup-hook. --------------------------------")
   )
 
 (provide 'my-config)
