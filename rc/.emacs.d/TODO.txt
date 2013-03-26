@@ -147,22 +147,12 @@ Issues:
             : Dependancy graph
             : Composition graph
             : Inheritance graph
-   : CEDET 2.0 r8498 from upstream bzr trunk
+   : CEDET 2.0 from upstream bzr trunk
       : Look into some of the other submodes to add to semantic-default-submodes
       : Make it so as we only call ede-cpp-root-project when actually opening a C or C++ file (remember .h is deemed as C)
-      : How does the project know about .cc files?
-      : Should I put goesr-dev.el in unihome or IPT_PG/Dev source control?
+      : Put a version of goesr-dev.el in unihome.
       : Get CEDET Java working with managing imports and symbol jumping, then rip out cedet-1.1 and jdee altogether
-      : Semantic is slow to to go declaration with semantic-ia-fast-jump .
-         : Try Alex Ott's advice at http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
-         : Investigate semanticdb-create-*
-         : Try turning on semantic submodes to get more information about internals
-         : When I restart Emacs, the first semantic-ia-fast-jump on the same symbol is slow again, taking 45s
-         : Tried without my prog-mode and c-common-mode hooks and saw no appreciable speedup.
-      : Figure out how to generate semanticdb for the whole source tree in advance
-      : semanticdb-project-roots is nil.  Shouldn't my project be there?
-         : This returns the right root directory:
-            (ede-toplevel-project-or-nil "/psd15/linux/boreilly/cc/l0int/vobs/goes_r_dev/Software_Engineering/IPT_PG/Dev/src/L1Processing/SEISS_L1b/SEISS_CommonUtilities/src")
+      : How to narrow down the project's include-path based on where the original file is in the project?
       : Find key bindings for:
          : Commands:
             semantic-c-describe-environment
@@ -170,20 +160,15 @@ Issues:
             semantic-ia-fast-jump
             semantic-analyze-proto-impl-toggle
          : Should I add it to semantic-mode-map so as I can use it with t key translation?
-      : How to manage includes?
       : If a class name is not namespace scoped correctly, semantic-ia-fast-jump won't jump to it.  How to find right namespace using semantic?
-      : Try out GNU Global
-         : http://www.wolinlabs.com/blog/emacs.global.speedbar.html
-         : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Request semantic-ia-fast-jump usability enhancement:
          : When doing semantic-ia-fast-jump on a variable, it may take me to eg Namespace::Class with point before Namespace.  I have to move cursor to Class to do another semantic-ia-fast-jump .  Perhaps provide customization that moves point to Class rather than to Namespace.
       : semantic-analyze-proto-impl-toggle
-         : Respond to Eric's post
-            : I would probably use this most when editing source code, so GNU Global might be out of date for the file I issue the command in.
-            : Instead of trusting, have CEDET run incremental gtags?  Would that be faster than trying to compensate with snooping around?
-            : Typically, wouldn't the parent have more hits, since it is more general than the tag?
-         : Try seeing what part of fw.el's semantic-find-file-noselect takes the longest.  Its average 1.2s execution is a bit long.
-         : Try Eric's advice for semantic--analyze-refs-full-lookup
+         : Takes 26 minutes
+   : GNU Global
+      : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
+      : Is it worth using outside of Semantic commands?
+         : Review http://www.wolinlabs.com/blog/emacs.global.speedbar.html
    : Multi window navigation
       : Set up so as motion commands will go to all windows.
          : Make toggle for on and off.

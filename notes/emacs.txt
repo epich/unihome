@@ -117,6 +117,12 @@ Notes:
          : COGRE
             : UML diagrams (Cogre)
          : Reference "gentle introduction": http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+         : To generate a semanticdb for the whole source tree, see Eric's answer at:
+            http://sourceforge.net/mailarchive/forum.php?thread_name=514A7623.10400%40siege-engine.com&forum_name=cedet-devel
+         : Project root
+            : semanticdb-project-roots is nil.  Seems to be independent of EDE's project roots.
+            : This returns EDE project root:
+               (ede-toplevel-project-or-nil "/psd15/linux/boreilly/cc/l0int/vobs/goes_r_dev/Software_Engineering/IPT_PG/Dev/src/L1Processing/SEISS_L1b/SEISS_CommonUtilities/src")
    : Optimization:
       : Use elp Elisp profiler
          : Example:
