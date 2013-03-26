@@ -149,6 +149,12 @@
   (global-ede-mode 1)
   (setq cedet-loaded t)
   (setq semanticdb-default-save-directory "/goesr/user/boreilly/semanticdb")
+
+  ;; Configure GNU Global
+  (if (not (cedet-gnu-global-version-check t))
+      (my-msg "WARNING: Failed cedet-gnu-global-version-check ")
+    (semanticdb-enable-gnu-global-databases 'c-mode)
+    (semanticdb-enable-gnu-global-databases 'c++-mode))
   )
 
 (defvar my-load-goesr (getenv "LOAD_GOESR_ELISP") "Whether initialization loads GOESR Elisp. ")
