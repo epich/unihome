@@ -176,6 +176,13 @@ Issues:
          : http://www.wolinlabs.com/blog/emacs.global.speedbar.html
       : Request semantic-ia-fast-jump usability enhancement:
          : When doing semantic-ia-fast-jump on a variable, it may take me to eg Namespace::Class with point before Namespace.  I have to move cursor to Class to do another semantic-ia-fast-jump .  Perhaps provide customization that moves point to Class rather than to Namespace.
+      : semantic-analyze-proto-impl-toggle
+         : Respond to Eric's post
+            : I would probably use this most when editing source code, so GNU Global might be out of date for the file I issue the command in.
+            : Instead of trusting, have CEDET run incremental gtags?  Would that be faster than trying to compensate with snooping around?
+            : Typically, wouldn't the parent have more hits, since it is more general than the tag?
+         : Try seeing what part of fw.el's semantic-find-file-noselect takes the longest.  Its average 1.2s execution is a bit long.
+         : Try Eric's advice for semantic--analyze-refs-full-lookup
    : Multi window navigation
       : Set up so as motion commands will go to all windows.
          : Make toggle for on and off.
