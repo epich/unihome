@@ -174,6 +174,7 @@ Issues:
       : If a class name is not namespace scoped correctly, semantic-ia-fast-jump won't jump to it.  How to find right namespace using semantic?
       : Try out GNU Global
          : http://www.wolinlabs.com/blog/emacs.global.speedbar.html
+         : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Request semantic-ia-fast-jump usability enhancement:
          : When doing semantic-ia-fast-jump on a variable, it may take me to eg Namespace::Class with point before Namespace.  I have to move cursor to Class to do another semantic-ia-fast-jump .  Perhaps provide customization that moves point to Class rather than to Namespace.
       : semantic-analyze-proto-impl-toggle
