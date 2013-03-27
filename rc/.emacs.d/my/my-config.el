@@ -11,6 +11,7 @@
 (setq evil-emacs-state-modes nil)
 ;; Use Dired in motion state instead of the keymap created in evil-integration.el .
 (setq evil-motion-state-modes (cons 'dired-mode evil-motion-state-modes))
+(setq evil-motion-state-modes (cons 'eassist-mode evil-motion-state-modes))
 
 ;;; Evil key bindings
 ;;
@@ -221,12 +222,13 @@
 (define-key evil-normal-state-map "o\"" (lambda (arg) (interactive "P")
                                           (insert-pair arg ?\")))
 (define-key evil-normal-state-map "od" 'delete-pair)
+(define-key evil-motion-state-map "of" 'ff-find-other-file)
 (define-key evil-normal-state-map "oj" 'insert-parentheses)
 (define-key evil-normal-state-map "ok" 'raise-sexp)
 (define-key evil-normal-state-map "oh" (lambda () (interactive) (transpose-sexps -1)))
 (define-key evil-normal-state-map "ol" (lambda () (interactive) (transpose-sexps 1)))
 (define-key evil-motion-state-map "or" 'revert-buffer)
-(define-key evil-motion-state-map "os" 'my-file-switch)
+(define-key evil-motion-state-map "os" 'eassist-list-methods)
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (my-toggle-fullscreen)))
 (define-key evil-motion-state-map "ov" 'undo-tree-visualize)
 (define-key evil-normal-state-map "S" nil)
