@@ -157,6 +157,50 @@ nil in keymap-from."
       (define-key keymap-to key keyval)
       (define-key keymap-from key nil))))
 
+;; From eassist, GPLed
+(defun my-string-without-last (string n)
+  "This function truncates from the STRING last N characters."
+  (substring string 0 (max 0(- (length string) n))))
+(defun my-string-ends-with (string end)
+  "Check whether STRING ends with END substring."
+  (string= end (substring string (- (length end)))))
+(defvar my-header-switches '(("h" . ("cpp" "cc" "c"))
+                             ("hpp" . ("cpp" "cc"))
+                             ("cpp" . ("h" "hpp"))
+                             ("c" . ("h"))
+                             ("C" . ("H"))
+                             ("H" . ("C" "CPP" "CC"))
+                             ("cc" . ("h" "hpp")))
+  "This variable defines possible switches for `my-file-switch' function.
+Its format is list of (from . (to1 to2 to3...)) elements.  From and toN are
+strings which are extentions of the files.")
+(defun my-file-switch ()
+  "Switch header and body file according to `my-header-switches' var.
+The current buffer's file name extention is searched in
+`my-header-switches' variable to find out extention for file's counterpart,
+for example *.hpp <--> *.cpp."
+  (interactive)
+  (let* ((ext (file-name-extension (buffer-file-name)))
+         (base-name (my-string-without-last (buffer-name) (length ext)))
+         (base-path (my-string-without-last (buffer-file-name) (length ext)))
+         (count-ext (cdr (find-if (lambda (i) (string= (car i) ext)) my-header-switches))))
+    (cond
+     (count-ext
+      (unless
+          (or
+           (cl-loop for b in (mapcar (lambda (i) (concat base-name i)) count-ext)
+		 when (bufferp (get-buffer b)) return
+ 		 (if (get-buffer-window b)
+ 		     (switch-to-buffer-other-window b)
+ 		   (if (get-buffer-window b t)
+ 		       (switch-to-buffer-other-frame b)
+ 		     (switch-to-buffer b))))
+           (cl-loop for c in (mapcar (lambda (count-ext) (concat base-path count-ext)) count-ext)
+                 when (file-exists-p c) return (find-file c)))
+        (message "There is no corresponding pair (header or body) file.")))
+     (t
+      (message "It is not a header or body file! See my-header-switches variable.")))))
+
 ;; For binding to backspace.
 ;;
 ;; Taken from: http://stackoverflow.com/questions/1450169/how-do-i-emulate-vims-softtabstop-in-emacs

@@ -226,7 +226,7 @@
 (define-key evil-normal-state-map "oh" (lambda () (interactive) (transpose-sexps -1)))
 (define-key evil-normal-state-map "ol" (lambda () (interactive) (transpose-sexps 1)))
 (define-key evil-motion-state-map "or" 'revert-buffer)
-(define-key evil-motion-state-map "os" 'eassist-switch-h-cpp)
+(define-key evil-motion-state-map "os" 'my-file-switch)
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (my-toggle-fullscreen)))
 (define-key evil-motion-state-map "ov" 'undo-tree-visualize)
 (define-key evil-normal-state-map "S" nil)

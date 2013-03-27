@@ -190,8 +190,8 @@
 ;; Initialize project-specific elisp
 (my-msg "Initializing project-specific elisp.")
 (when my-load-goesr
-  (require 'my-proj)
   (load-file "/goesr/user/boreilly/goesr-dev.el")
+  (require 'my-proj)
   )
 
 ;; Paths for JDEE

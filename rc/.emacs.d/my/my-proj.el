@@ -74,7 +74,9 @@ NAME is the name of the file to find, basename including extension.  DIR is the 
     (when (file-exists-p my-root-file)
       (ede-cpp-root-project "goesr-cxx"
                             :file my-root-file
-                            :include-path (my-get-goesr-include-path)
+                            ;; This way of getting path is more robust, but can take time.
+                            ;; :include-path (my-get-goesr-include-path)
+                            :include-path goesr-cxx-include-path
                             ;; The sheer number of Boost header dependency files makes it impractical to use
                             ;; :system-include-path (list (format "%s/rhel%sx/gnu/local/boost-1.48.0-x86_64/include" goesr-sdf-ots-path my-rhel-release))
                           )))
