@@ -125,27 +125,10 @@ Issues:
       : The ^ command is inconvenient to reach, find another key binding.
    : CEDET 1.1
       : Display in minibuffer undermines promptings and my ability to read them.
-      : Symbol reference -- where is a symbol used or called?
-      : Jumping to definition
-         : Type 
-         : Symbol
-         : Function
-      : Backtrack from jumping
-         : Ideally my place would be saved automatically
-         : If not, Emacs and Evil likely offer a manual way to set my location to return to later.
-      : Highlight symbol where point is, and stay highlighted as I move around.
-      : Manage includes
-      : Switch between .h and .cpp
-         : Investigate eassist
-         : semantic-analyze-proto-impl-toggle
-         : Split display the two?
-      : Have function prototype and docs display, whether as tooltip or in other buffer.
-      : UML diagrams
-         : From a set of files, how do I generate:
-            : Dependancy graph
-            : Composition graph
-            : Inheritance graph
+         : Reinstate customization for only when using CEDET 1.1
    : CEDET 2.0 from upstream bzr trunk
+      : Have function prototype and docs display, whether as tooltip or in other buffer.
+      : Highlight symbol where point is, and stay highlighted as I move around.
       : Find a better way to determine which CEDET to load
             : CEDET 1.1 if any of the initial files are .java files
             : CEDET trunk if available
