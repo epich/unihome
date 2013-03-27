@@ -161,9 +161,14 @@ nil in keymap-from."
 (defun my-string-without-last (string n)
   "This function truncates from the STRING last N characters."
   (substring string 0 (max 0(- (length string) n))))
-(defun my-string-ends-with (string end)
-  "Check whether STRING ends with END substring."
-  (string= end (substring string (- (length end)))))
+(defvar my-cxx-source-extensions '("c" "cpp" "cxx" "cc" "C" "CPP" "CXX" "CC")
+  "Possible extensions for C++ source code file extensions, ordered roughly from most common to least. ")
+(defvar my-cxx-header-extensions '("h" "hpp" "hxx" "hh" "H" "HPP" "HXX" "HH")
+  "Possible extensions for C++ header code file extensions, ordered roughly from most common to least. ")
+(defvar my-file-switch-mappings
+  '((my-cxx-header-extensions . my-cxx-source-extensions)
+    (my-cxx-header-extensions . my-cxx-source-extensions))
+  "List of assocations, indicating that members of the left association may map to members of the right association. ")
 (defvar my-header-switches '(("h" . ("cpp" "cc" "c"))
                              ("hpp" . ("cpp" "cc"))
                              ("cpp" . ("h" "hpp"))
