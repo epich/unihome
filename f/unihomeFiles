@@ -16,6 +16,7 @@
 ~/unihome/rc/.emacs.d/play/play.el
 ~/unihome/rc/.emacs.d/init.el
 ~/unihome/rc/.emacs.d/my/my-util.el
+~/unihome/rc/.emacs.d/my/my-proj.el
 ~/unihome/rc/.emacs.d/my/my-config.el
 ~/unihome/rc/.vimrc
 ~/unihome/rc/unihome.csh

@@ -61,6 +61,7 @@ def buildJdee():
 
 def buildMy():
    byteCompile('my/my-util.el')
+   byteCompile('my/my-proj.el')
    byteCompile('my/my-config.el')
 
 def buildEmacsD(buildCedetP):

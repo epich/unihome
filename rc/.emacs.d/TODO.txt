@@ -123,8 +123,6 @@ Issues:
       : Dired doesn't update when a directory is created separately.  Including when Auto Revert is enabled.
       : Would be nice if I could expand and collapse directories inline, rather than at the bottom of the same buffer, and retain same information.
       : The ^ command is inconvenient to reach, find another key binding.
-   : JDEE
-      : Hack to use CEDET in Emacs
    : CEDET 1.1
       : Display in minibuffer undermines promptings and my ability to read them.
       : Symbol reference -- where is a symbol used or called?
@@ -148,10 +146,11 @@ Issues:
             : Composition graph
             : Inheritance graph
    : CEDET 2.0 from upstream bzr trunk
+      : Find a better way to determine which CEDET to load
+            : CEDET 1.1 if any of the initial files are .java files
+            : CEDET trunk if available
+            : Else builtin CEDET
       : Look into some of the other submodes to add to semantic-default-submodes
-      : Make it so as we only call ede-cpp-root-project when actually opening a C or C++ file (remember .h is deemed as C)
-      : Put a version of goesr-dev.el in unihome.
-      : Get CEDET Java working with managing imports and symbol jumping, then rip out cedet-1.1 and jdee altogether
       : How to narrow down the project's include-path based on where the original file is in the project?
       : Find key bindings for:
          : Commands:

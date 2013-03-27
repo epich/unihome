@@ -190,8 +190,9 @@
 ;; Initialize project-specific elisp
 (my-msg "Initializing project-specific elisp.")
 (when my-load-goesr
-  ;; GOESR isn't relevant to all computers I work on, so ignore errors.
-  (load-file "/goesr/user/boreilly/goesr-dev.el"))
+  (require 'my-proj)
+  (load-file "/goesr/user/boreilly/goesr-dev.el")
+  )
 
 ;; Paths for JDEE
 (defvar my-java-classpath (if (boundp 'goesr-classpath)
