@@ -82,7 +82,6 @@
 
 ;;; Initialize CEDET
 ;;;
-(my-msg "Initializing CEDET.")
 (defvar my-enable-cedet-function
   'my-enable-cedet-from-emacs
   "Function to use for loading CEDET.  Determines which CEDET to load. ")
@@ -158,7 +157,7 @@
   )
 
 (defvar my-load-goesr (getenv "LOAD_GOESR_ELISP") "Whether initialization loads GOESR Elisp. ")
-(when my-load-goesr
+(when (and my-load-goesr (file-accessible-directory-p my-bzr-cedet-path))
   (setq my-enable-cedet-function 'my-enable-cedet-from-bzr)
   )
 
@@ -168,6 +167,7 @@
 ;;
 ;; CEDET raises an error if loaded again.
 (unless cedet-loaded
+  (my-msg "Initializing CEDET with %s function." my-enable-cedet-function)
   (funcall my-enable-cedet-function))
 
 ;;; Initialize JDEE
