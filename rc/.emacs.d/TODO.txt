@@ -140,8 +140,9 @@ Issues:
             semantic-c-describe-environment
             semantic-show-summary
             semantic-ia-fast-jump
-            semantic-analyze-proto-impl-toggle
-         : Should I add it to semantic-mode-map so as I can use it with t key translation?
+            semantic-symref
+         : Should I add it to semantic-mode-map and make the keymap available to a key such as O?
+         : Should I map semantic-ia-fast-jump to t and the rest to an o prefix?
       : If a class name is not namespace scoped correctly, semantic-ia-fast-jump won't jump to it.  How to find right namespace using semantic?
       : Request semantic-ia-fast-jump usability enhancement:
          : When doing semantic-ia-fast-jump on a variable, it may take me to eg Namespace::Class with point before Namespace.  I have to move cursor to Class to do another semantic-ia-fast-jump .  Perhaps provide customization that moves point to Class rather than to Namespace.

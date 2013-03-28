@@ -140,9 +140,9 @@ Notes:
       : http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster/779145#779145
    : Vim mapping plan:
       : Vim keys that aren't mapped to anything useful:
-         t mapped
+         t
          , mapped Emacs execution of keyboard macro
-         o mapped
+         o use as prefix key
          [ mapped
          ] mapped
          \ mapped
@@ -157,8 +157,9 @@ Notes:
          J mapped
          K mapped
          O
+         P
          Q
-         T mapped
+         T
          U mapped
          V mapped
          Y
