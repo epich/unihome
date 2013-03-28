@@ -24,15 +24,6 @@ def byteCompile(filesString, loadPathL=[]):
 def buildEvil():
    generalUtil.cmd('make -C %s'%(evilDir_g,), printStdout=True)
 
-def buildGotoChg():
-   byteCompile('evil/lib/goto-chg.el')
-
-def buildUndoTree():
-   byteCompile('evil/lib/undo-tree.el')
-
-def buildRainbowDelimiters():
-   byteCompile('rainbow-delimiters/rainbow-delimiters.el')
-   
 def buildCedet():
    # CEDET contributes to annoying interrogations at Emacs closing time.
    # Create the .semanticdb dir to avoid one interrogation question.
@@ -59,16 +50,17 @@ def buildJdee():
    if not os.path.exists('jdee-%s'%(jdeeVersion_g)):
       generalUtil.cmd('unzip jdee-bin-%s.zip'%(jdeeVersion_g))
 
+def buildMiscElisp():
+   """Build miscellaneous Elisp.  Covers Evil because of Evil's dependency on miscellaneous Elisp. """
+   generalUtil.cmd('make -f misc-elisp.mk', printStdout=True)
+
 def buildMy():
    byteCompile('my/my-util.el')
    byteCompile('my/my-proj.el')
    byteCompile('my/my-config.el')
 
 def buildEmacsD(buildCedetP):
-   buildEvil()
-   buildUndoTree()
-   buildGotoChg()
-   buildRainbowDelimiters()
+   buildMiscElisp()
    if buildCedetP:
       buildCedet()
    buildJdee()
