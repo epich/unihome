@@ -13,6 +13,7 @@
 ~/unihome/notes/subversion.txt
 ~/unihome/notes/emacs.txt
 ~/unihome/rc/.emacs.d/TODO.txt
+~/unihome/rc/.emacs.d/misc-elisp.mk
 ~/unihome/rc/.emacs.d/play/play.el
 ~/unihome/rc/.emacs.d/init.el
 ~/unihome/rc/.emacs.d/my/my-util.el
