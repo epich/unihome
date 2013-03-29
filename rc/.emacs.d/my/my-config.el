@@ -450,11 +450,6 @@
   (my-bind-tab-del-keys)
   )
 
-(defun my-after-change-major-mode-hook ()
-  ;; Force Evil mode in Fundamental mode.
-  (evil-mode 1)
-  )
-
 ;;; Finalizing initialization
 (defun my-term-setup-hook ()
   ;; Apparently some elisp needs to be placed here to work.

@@ -319,7 +319,6 @@
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
 (add-hook 'text-mode-hook 'my-text-mode-hook)
-(add-hook 'after-change-major-mode-hook 'my-after-change-major-mode-hook)
 (add-hook 'term-setup-hook 'my-term-setup-hook)
 
 (my-msg "Finished loading init file. ")
