@@ -6,8 +6,8 @@ SHELL := bash
 EMACS ?= emacs
 # The my- elisp files depend on practically everything, so I always rebuild them from build.py -- for now.
 FILES := \
-  evil/lib/goto-chg.el \
-  evil/lib/undo-tree.el \
+  lisp/goto-chg.el \
+  lisp/undo-tree.el \
   lisp/rainbow-delimiters.el
 LIBS :=
 

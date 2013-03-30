@@ -11,9 +11,9 @@
 ;; (auto-fill-mode 1)
 ;; Disable the auto-save, the #* debris files slow down Emacs startup.
 (setq auto-save-default nil)
-(defvar my-backup-dir "~/emacs-backup")
+(defvar my-emacs-data-dir "~/emacs-data" "Location of runtime data for Emacs. ")
 ;; Don't create debris files next to originals.
-(setq backup-directory-alist '((".*" . my-backup-dir)))
+(setq backup-directory-alist `((".*" . ,(format "%s/backup" my-emacs-data-dir))))
 (global-auto-revert-mode 1)
 (setq revert-without-query (quote (".*")))
 (setq case-replace nil)
@@ -60,26 +60,18 @@
 (add-to-list 'auto-mode-alist '("wscript" . python-mode))
 (add-to-list 'auto-mode-alist '("Makefile.*" . makefile-mode))
 
-;; (add-to-list 'load-path "~/.emacs.d")
-;; Compile .el files if they need to be.
-;;
-;; From: http://stackoverflow.com/questions/1217180/how-do-i-byte-compile-everything-in-my-emacs-d-directory
-;; TODO: When files don't compile, it'll create errors and modest delay everytime Emacs starts.
-;; (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
-
-(my-msg "Initializing Evil.")
-(add-to-list 'load-path "~/.emacs.d/evil")
-(add-to-list 'load-path "~/.emacs.d/evil/lib")
-(require 'undo-tree)
-(require 'goto-chg)
-(require 'evil)
-(evil-mode 1)
-
 (my-msg "Initializing third party lisp. ")
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'rainbow-delimiters)
 ;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+(require 'undo-tree)
+(require 'goto-chg)
+
+(my-msg "Initializing Evil.")
+(add-to-list 'load-path "~/.emacs.d/evil")
+(require 'evil)
+(evil-mode 1)
 
 ;;; Initialize CEDET
 ;;;
@@ -134,7 +126,7 @@
   (semantic-mode 1)
   (global-ede-mode 1)
   (setq cedet-loaded t)
-  (setq semanticdb-default-save-directory (format "%s/semanticdb" my-backup-dir))
+  (setq semanticdb-default-save-directory (format "%s/semanticdb" my-emacs-data-dir))
   )
 
 (defvar my-bzr-cedet-path "/goesr/user/boreilly/sw/cedet" "Path to CEDET")
