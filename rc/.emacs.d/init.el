@@ -11,8 +11,9 @@
 ;; (auto-fill-mode 1)
 ;; Disable the auto-save, the #* debris files slow down Emacs startup.
 (setq auto-save-default nil)
+(defvar my-backup-dir "~/emacs-backup")
 ;; Don't create debris files next to originals.
-(setq backup-directory-alist '((".*" . "~/emacs-backup")))
+(setq backup-directory-alist '((".*" . my-backup-dir)))
 (global-auto-revert-mode 1)
 (setq revert-without-query (quote (".*")))
 (setq case-replace nil)
@@ -133,6 +134,7 @@
   (semantic-mode 1)
   (global-ede-mode 1)
   (setq cedet-loaded t)
+  (setq semanticdb-default-save-directory (format "%s/semanticdb" my-backup-dir))
   )
 
 (defvar my-bzr-cedet-path "/goesr/user/boreilly/sw/cedet" "Path to CEDET")
