@@ -188,10 +188,11 @@ Issues:
             : Profiling reveals that diff-no-select function takes up the time.
             : gnulib might have something useful:
                http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob;f=lib/diffseq.h;hb=HEAD
-      : Bug with inserting redos in wrong place:
-         : Left Emacs sitting for several days, reverted buffer, did redo, redo was inserted into wrong part of buffer
-         : Try to reproduce.  If I can't, remove this TODO item.  If I can, see if bug exists without Undo Tree.
-      : Behaves incorrectly when: unsaved changes, revert-buffer, overrite unsaved changes.  All previous undo states are consequently hosed.
+      : Behaves incorrectly when: unsaved changes, revert-buffer, overrite unsaved changes.
+         : Previous undo states are consequently hosed, seemingly because of wrong offsets into file.
+      : Observed that auto revert inserted contents from disk into buffer at incorrect location!
+         : Outside Emacs: inserted hehe at the end of file
+         : In Emacs: hehe was inserted after point in the middle of the buffer.
    : Learn merging in Git
       : Use magit?
    : Learn about org-mode
