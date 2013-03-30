@@ -74,8 +74,8 @@
 (require 'evil)
 (evil-mode 1)
 
-(my-msg "Initializing Rainbow Delimiters.")
-(add-to-list 'load-path "~/.emacs.d/rainbow-delimiters")
+(my-msg "Initializing third party lisp. ")
+(add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'rainbow-delimiters)
 ;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)

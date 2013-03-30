@@ -8,7 +8,7 @@ EMACS ?= emacs
 FILES := \
   evil/lib/goto-chg.el \
   evil/lib/undo-tree.el \
-  rainbow-delimiters/rainbow-delimiters.el
+  lisp/rainbow-delimiters.el
 LIBS :=
 
 ELCFILES := $(FILES:.el=.elc)
