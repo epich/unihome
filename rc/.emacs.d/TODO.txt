@@ -4,9 +4,6 @@ Issues:
       (define-key evil-normal-state-map "Y" 'evil-yank-line)
       (define-key evil-normal-state-map "gf" 'find-file-at-point)
       (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
-   : Redefine tag navigation to use q and Q instead of t and T
-      : Don't need Evil's keyboard macros, Emacs's keyboard macros seem sufficient.
-      : Will make prefix key navigation with 1q easier than 1t
    : Backspace to tab stop backward-delete-whitespace-to-tab-stop
       : Doesn't correctly handle backspace when there's a selection.
          : Snag with solution:
@@ -24,6 +21,9 @@ Issues:
       : After revert-buffer, the . command doesn't remember
       : Can't do: v /search-term
          : Text doesn't highlight to search term
+      : When I highlight with V, whole line including new line doesn't seem to be included
+         : As evidence by undoing in region with undo-tree
+         : Does work when doing 0v-
    : Editing Lisp
       : Syntax highlighting:
          : Pairs of parens in different colors, bottom up from point
