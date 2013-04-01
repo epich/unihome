@@ -189,10 +189,11 @@ Issues:
             : gnulib might have something useful:
                http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob;f=lib/diffseq.h;hb=HEAD
       : Undos are not correct for a test case
-         : Steps:
+         : Steps on Windows 7:
             : Edit in Emacs and save
             : Outside of Emacs, edit earlier in buffer
-         : Determine if it applies to stock undo
+         : Determine behavior with stock undo.
+         : Could not reproduce on RHEL 5, either with stock undo or undo-tree.
    : Learn merging in Git
       : Use magit?
    : Learn about org-mode
