@@ -1,4 +1,5 @@
 Issues:
+   : Command to paste file basename.
    : Assess which Evil key bindings need to move from evil-normal-state-map to evil-motion-state-map
       (define-key evil-normal-state-map "y" 'evil-yank)
       (define-key evil-normal-state-map "Y" 'evil-yank-line)
@@ -148,6 +149,14 @@ Issues:
          : When doing semantic-ia-fast-jump on a variable, it may take me to eg Namespace::Class with point before Namespace.  I have to move cursor to Class to do another semantic-ia-fast-jump .  Perhaps provide customization that moves point to Class rather than to Namespace.
       : semantic-analyze-proto-impl-toggle
          : Takes 26 minutes
+      : Summary mode is not useful because it obstructs the minibuffer.
+         : If half way through entering a key sequence, the key sequence entered becomes obstructed if idle
+         : Bind to a command and execute manually
+      : Completions
+         : Disable global-semantic-idle-completions-mode and assign an evil-insert-state key binding
+         : semantic-displayor-tooltip seems like the best choice for semantic-complete-inline-analyzer-idle-displayor-class
+      : Some circumstances when I ff-find-other-file and point is at the top of class declaration, instead of where I last left it.
+         : Isolate to a small scale reproduction
    : GNU Global
       : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Is it worth using outside of Semantic commands?

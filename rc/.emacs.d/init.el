@@ -137,6 +137,26 @@
   (add-to-list 'load-path (concat my-bzr-cedet-path "/contrib"))
   (require 'semantic/ia)
   (require 'semantic/bovine/gcc)
+  (setq semantic-default-submodes '(global-semantic-idle-scheduler-mode
+                                    global-semanticdb-minor-mode
+                                    ;; Disabled because it obstructs the minibuffer
+                                    ;;global-semantic-idle-summary-mode
+                                    ;; Disabled in favor of manual invocation
+                                    ;;global-semantic-idle-completions-mode
+                                    ;; Disabled because of annoying tag boundary.  Other decorations seem incomplete
+                                    ;;  : semantic-tag-boundary is annoying
+                                    ;;  : semantic-decoration-on-(private|protected)-members does not decorate uses
+                                    ;;  : semantic-decoration-on-includes highlights system includes in red
+                                    ;;global-semantic-decoration-mode
+                                    global-semantic-highlight-func-mode
+                                    global-semantic-stickyfunc-mode
+                                    global-semantic-mru-bookmark-mode
+                                    global-cedet-m3-minor-mode
+                                    ;; Disabled because:
+                                    ;;  : Bug undermines location of point in header
+                                    ;;  : Font face is too much like region (blue background)
+                                    ;; global-semantic-idle-local-symbol-highlight-mode
+                                    ))
   (semantic-mode 1)
   (require 'eassist)
   (global-ede-mode 1)
@@ -262,6 +282,7 @@
  '(evil-search-module (quote evil-search))
  '(evil-shift-width my-offset)
  '(ff-always-try-to-create nil)
+ '(ff-special-constructs nil)
  '(font-lock-maximum-decoration (quote ((c++-mode . 2))))
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
