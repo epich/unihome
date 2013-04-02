@@ -123,6 +123,10 @@ Notes:
             : semanticdb-project-roots is nil.  Seems to be independent of EDE's project roots.
             : This returns EDE project root:
                (ede-toplevel-project-or-nil "/psd15/linux/boreilly/cc/l0int/vobs/goes_r_dev/Software_Engineering/IPT_PG/Dev/src/L1Processing/SEISS_L1b/SEISS_CommonUtilities/src")
+         : Commands to remember:
+            semantic-c-describe-environment
+            C-x B
+            C-c , C-h
    : JDEE
       : This thread is the latest indication of porting JDEE to use newer CEDET in Emacs
          http://sourceforge.net/mailarchive/forum.php?thread_name=39E62003-1070-494E-8290-2CAE0882E76E%40mailc.net&forum_name=jdee-devel

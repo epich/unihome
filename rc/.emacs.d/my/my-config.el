@@ -149,7 +149,8 @@
 (define-key evil-normal-state-map "s" nil)
 (define-key evil-motion-state-map "t" nil)
 (define-key evil-motion-state-map "T" nil)
-(define-key evil-motion-state-map "t" 'semantic-ia-fast-jump)
+(define-key evil-motion-state-map "t" 'semantic-ia-show-summary)
+(define-key evil-motion-state-map "T" 'semantic-ia-fast-jump)
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
 (define-key evil-normal-state-map "P" 'evil-paste-after)

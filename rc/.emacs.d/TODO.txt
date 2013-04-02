@@ -128,35 +128,24 @@ Issues:
       : Display in minibuffer undermines promptings and my ability to read them.
          : Reinstate customization for only when using CEDET 1.1
    : CEDET 2.0 from upstream bzr trunk
-      : Have function prototype and docs display, whether as tooltip or in other buffer.
-      : Highlight symbol where point is, and stay highlighted as I move around.
       : Find a better way to determine which CEDET to load
             : CEDET 1.1 if any of the initial files are .java files
             : CEDET trunk if available
             : Else builtin CEDET
-      : Look into some of the other submodes to add to semantic-default-submodes
       : How to narrow down the project's include-path based on where the original file is in the project?
-      : Find key bindings for:
-         : Commands:
-            semantic-c-describe-environment
-            semantic-show-summary
-            semantic-ia-fast-jump
-            semantic-symref
-         : Should I add it to semantic-mode-map and make the keymap available to a key such as O?
-         : Should I map semantic-ia-fast-jump to t and the rest to an o prefix?
       : If a class name is not namespace scoped correctly, semantic-ia-fast-jump won't jump to it.  How to find right namespace using semantic?
-      : Request semantic-ia-fast-jump usability enhancement:
+      : Enhancement requests:
          : When doing semantic-ia-fast-jump on a variable, it may take me to eg Namespace::Class with point before Namespace.  I have to move cursor to Class to do another semantic-ia-fast-jump .  Perhaps provide customization that moves point to Class rather than to Namespace.
-      : semantic-analyze-proto-impl-toggle
-         : Takes 26 minutes
-      : Summary mode is not useful because it obstructs the minibuffer.
-         : If half way through entering a key sequence, the key sequence entered becomes obstructed if idle
-         : Bind to a command and execute manually
-      : Completions
-         : Disable global-semantic-idle-completions-mode and assign an evil-insert-state key binding
+         : Show summary mode interferes with minibuffer output.  eg when halfway through inputting Key Sequence
+      : Bug reports:
+         : semantic-analyze-proto-impl-toggle
+            : Takes 26 minutes
+            : Use GNU Global without opening extra files
+            : Without GNU Global, us ff-find-other-file
+         : global-semantic-idle-local-symbol-highlight-mode undermines point location in header
+      : Investigate completions
+         : Disable global-semantic-idle-completions-mode and assign an evil-insert-state or semantic-mode-map key binding
          : semantic-displayor-tooltip seems like the best choice for semantic-complete-inline-analyzer-idle-displayor-class
-      : Some circumstances when I ff-find-other-file and point is at the top of class declaration, instead of where I last left it.
-         : Isolate to a small scale reproduction
    : GNU Global
       : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Is it worth using outside of Semantic commands?
