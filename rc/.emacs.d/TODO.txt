@@ -137,6 +137,8 @@ Issues:
       : Enhancement requests:
          : When doing semantic-ia-fast-jump on a variable, it may take me to eg Namespace::Class with point before Namespace.  I have to move cursor to Class to do another semantic-ia-fast-jump .  Perhaps provide customization that moves point to Class rather than to Namespace.
          : Show summary mode interferes with minibuffer output.  eg when halfway through inputting Key Sequence
+      : semantic-analyze-proto-impl-toggle should use ff-find-other-file when GNU Global is not used.
+      : semantic-ia-fast-jump should use ff-find-other-file and use other file's includes, so as forward declarations work better.
       : Bug reports:
          : semantic-analyze-proto-impl-toggle
             : Takes 26 minutes
@@ -146,6 +148,7 @@ Issues:
       : Investigate completions
          : Disable global-semantic-idle-completions-mode and assign an evil-insert-state or semantic-mode-map key binding
          : semantic-displayor-tooltip seems like the best choice for semantic-complete-inline-analyzer-idle-displayor-class
+      : Is there a package that uses Semantic to generate static call graphs, similar to cflow?
    : GNU Global
       : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Is it worth using outside of Semantic commands?
