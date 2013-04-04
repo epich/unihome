@@ -46,8 +46,9 @@
 
 ;; Set the frame title to the current filename.
 (setq-default frame-title-format
-              '(:eval (format "%s"
-                              (file-name-nondirectory (or (buffer-file-name) default-directory)))))
+  '(:eval (format "%s" (file-name-nondirectory (or (buffer-file-name)
+                                                   (buffer-name)
+                                                   default-directory)))))
 
 ;;; File associations
 ;;

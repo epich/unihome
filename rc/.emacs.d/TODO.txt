@@ -249,9 +249,6 @@ Issues:
    : Syntax tables:
       : Change - and _ so as motion over variable names and such work better.
       : Have double clicking work better (see above).
-   : Frame's title
-      : Set title to include host and directory (after file's basename)
-      : Set title for Untitled buffers.
    : Tabs
       : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
          : Some extensions:
