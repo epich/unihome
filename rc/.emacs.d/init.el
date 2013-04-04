@@ -45,10 +45,7 @@
 (my-toggle-fullscreen)
 
 ;; Set the frame title to the current filename.
-(setq-default frame-title-format
-  '(:eval (format "%s" (file-name-nondirectory (or (buffer-file-name)
-                                                   (buffer-name)
-                                                   default-directory)))))
+(setq-default frame-title-format '(:eval (my-get-buffer-name)))
 
 ;;; File associations
 ;;

@@ -62,6 +62,11 @@
    ((eql system-type 'ms-dos)        (my-msw-toggle-fullscreen))
    ((eql system-type 'usg-unix-v)    (my-x-toggle-fullscreen))
    ((eql system-type 'windows-nt)    (my-msw-toggle-fullscreen))))
+(defun my-get-buffer-name ()
+  "Get the buffer name. "
+  (file-name-nondirectory (or (buffer-file-name)
+                              (buffer-name)
+                              default-directory)))
 
 (defun my-find-file-upwards (file-to-find)
   "Recursively searches each parent directory starting from the default-directory.

@@ -1,5 +1,4 @@
 Issues:
-   : Command to paste file basename.
    : Assess which Evil key bindings need to move from evil-normal-state-map to evil-motion-state-map
       (define-key evil-normal-state-map "y" 'evil-yank)
       (define-key evil-normal-state-map "Y" 'evil-yank-line)
@@ -25,6 +24,9 @@ Issues:
       : When I highlight with V, whole line including new line doesn't seem to be included
          : As evidence by undoing in region with undo-tree
          : Does work when doing 0v-
+      : After a while, search and replace becomes buggy.  These have possibly the same root cause:
+         : Highlight region, search and replace, entire file is changed!
+         : Highlight region, replace foo with foobar, goes into an infinite recursion of inserts (as seen when C-g)
    : Editing Lisp
       : Syntax highlighting:
          : Pairs of parens in different colors, bottom up from point
