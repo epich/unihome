@@ -4,6 +4,7 @@ Issues:
       (define-key evil-normal-state-map "Y" 'evil-yank-line)
       (define-key evil-normal-state-map "gf" 'find-file-at-point)
       (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
+      : Email sent to Evil mailing list asking about this.
    : Backspace to tab stop backward-delete-whitespace-to-tab-stop
       : Doesn't correctly handle backspace when there's a selection.
          : Snag with solution:
