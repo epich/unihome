@@ -151,8 +151,7 @@
                                     global-semantic-mru-bookmark-mode
                                     global-cedet-m3-minor-mode
                                     ;; Disabled because:
-                                    ;;  : Bug undermines location of point in header
-                                    ;;  : Font face is too much like region (blue background)
+                                    ;;  : Need to customize better face for semantic-idle-symbol-highlight-face
                                     ;; global-semantic-idle-local-symbol-highlight-mode
                                     ))
   (semantic-mode 1)
