@@ -19,7 +19,6 @@ Issues:
                : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
    : If I C-c or backspace to beginning of evil-search prompt, I have to wait in order to enter more input.  How to fix?
    : Evil bugs:
-      : After revert-buffer, the . command doesn't remember
       : Can't do: v /search-term
          : Text doesn't highlight to search term
       : When I highlight with V, whole line including new line doesn't seem to be included
@@ -156,6 +155,11 @@ Issues:
       : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Is it worth using outside of Semantic commands?
          : Review http://www.wolinlabs.com/blog/emacs.global.speedbar.html
+   : Java development
+      : Try out emacs-eclim which uses Eclipse as a backend
+         http://www.skybert.net/emacs/java/
+      : Try Java in CEDET
+      : Compare with JDEE features
    : Multi window navigation
       : Set up so as motion commands will go to all windows.
          : Make toggle for on and off.
@@ -332,3 +336,5 @@ Evil bugs (submitted):
    : In Evil motion state, can't mouse click buttons.  RET works however.
    : Selecting only part of line and doing s/  */\n/g replaces whole line, including outside of selection.
       : Vim behaves similarly.
+   : Evil . command repeats wrong commands
+
