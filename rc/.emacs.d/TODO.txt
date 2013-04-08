@@ -140,13 +140,17 @@ Issues:
          : When doing semantic-ia-fast-jump on a variable, it may take me to eg Namespace::Class with point before Namespace.  I have to move cursor to Class to do another semantic-ia-fast-jump .  Perhaps provide customization that moves point to Class rather than to Namespace.
          : Show summary mode interferes with minibuffer output.  eg when halfway through inputting Key Sequence
       : semantic-analyze-proto-impl-toggle should use ff-find-other-file when GNU Global is not used.
-      : semantic-ia-fast-jump should use ff-find-other-file and use other file's includes, so as forward declarations work better.
+      : Cases where semantic-ia-fast-jump doesn't work:
+         : Use of std::tr1::shared_ptr
+            : Confirm whether true for std::shared_ptr
+         : Forward declarations
+            : semantic-ia-fast-jump should use ff-find-other-file and use other file's includes, so as forward declarations work better.
+         : On a Linux system, ^M characters in a file prevented semantic-ia-fast-jump from working.
       : Bug reports:
          : semantic-analyze-proto-impl-toggle
             : Takes 26 minutes
             : Use GNU Global without opening extra files
             : Without GNU Global, us ff-find-other-file
-         : global-semantic-idle-local-symbol-highlight-mode undermines point location in header
       : Investigate completions
          : Disable global-semantic-idle-completions-mode and assign an evil-insert-state or semantic-mode-map key binding
          : semantic-displayor-tooltip seems like the best choice for semantic-complete-inline-analyzer-idle-displayor-class
