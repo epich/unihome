@@ -61,6 +61,7 @@ def buildMy():
 
 def buildEmacsD(buildCedetP):
    buildMiscElisp()
+   buildEvil()
    if buildCedetP:
       buildCedet()
    buildJdee()
