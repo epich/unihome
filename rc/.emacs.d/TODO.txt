@@ -221,6 +221,9 @@ Issues:
          : Sets tabulated-list-sort-key from its default nil value
          : There is then no interactive command I find to set it back to nil
          : However, kill-buffer works
+   : Shell
+      : Set --color flag to ls
+      : Fix dark blue color for directories
    : Being prompted about running Python process is annoying.
       : CEDET starts it for sake of auto completion.
    : Smart editing:
@@ -296,8 +299,6 @@ Issues:
    : Finding location of .emacs.d
       : See thread: http://lists.gnu.org/archive/html/help-gnu-emacs/2012-10/msg00467.html
       : Try: using --eval flag with an ordinary load of init.el .  Verify correct behaviors result.
-   : Would like to pipe output of shell command to Emacs for display
-      : See https://github.com/lewang/e-sink
    : Pick through the elisp of others:
       : Michael Markert's:
          https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-evil.el
