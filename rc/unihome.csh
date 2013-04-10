@@ -73,7 +73,7 @@ alias cd 'chdir \!* && setprompt'
 alias pushd 'pushd \!* && setprompt'
 alias pushd 'pushd \!* && setprompt'
 
-alias cwdcmd title "$hostString : '`pwd`'"
+alias cwdcmd title "$hostString `pwd`"
 
 alias ct cleartool
 alias vim 'vim \!*; echo "Thanks for flying Vim"; cwdcmd'
