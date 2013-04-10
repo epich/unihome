@@ -3,6 +3,7 @@ ulimit -c unlimited
 
 alias v='vim'
 function e() { emacs --reverse-video "$@" & }
+alias ls='ls --color'
 alias l='ls -lart'
 alias c='cat'
 alias m='mplayer -loop 0'
@@ -17,8 +18,17 @@ alias acmd='cmd runas /noprofile /user:Administrator cmd'
 PATH=~/bin:$PATH
 export EDITOR=vim
 export PAGER=less
-#export PS1="\e[0;36m\h \w :\e[m "
-export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\] "
+# Based on advice at: http://tldp.org/HOWTO/Xterm-Title-4.html
+#
+# Also used elements from a default Ubuntu bashrc
+case $TERM in
+    xterm*)
+        export PS1="\[\033]0;\h \w\007\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\h \w :\[\033[00m\] "
+        ;;
+    *)
+        PS1="bash : "
+        ;;
+esac
 
 # Command to make Windows symlinks
 mklink(){
