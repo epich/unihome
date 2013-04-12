@@ -146,7 +146,8 @@
                                     ;;  : semantic-decoration-on-(private|protected)-members does not decorate uses
                                     ;;  : semantic-decoration-on-includes highlights system includes in red
                                     ;;global-semantic-decoration-mode
-                                    global-semantic-highlight-func-mode
+                                    ;; Disabled because I find I just don't rely on on it, and behaves weirdly in .mk files.
+                                    ;; global-semantic-highlight-func-mode
                                     global-semantic-stickyfunc-mode
                                     global-semantic-mru-bookmark-mode
                                     global-cedet-m3-minor-mode

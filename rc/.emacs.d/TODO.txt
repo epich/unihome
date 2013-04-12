@@ -155,6 +155,9 @@ Issues:
          : Disable global-semantic-idle-completions-mode and assign an evil-insert-state or semantic-mode-map key binding
          : semantic-displayor-tooltip seems like the best choice for semantic-complete-inline-analyzer-idle-displayor-class
       : Is there a package that uses Semantic to generate static call graphs, similar to cflow?
+      : Have semantic-ia-fast-jump push the location it left.  MRU isn't quite the same, it returns to last edit.
+      : Why is global-semantic-mru-bookmark-mode off when my init file has it enabled?
+      : Set semantic-idle-symbol-highlight-face to a similar face as global-semantic-highlight-func-mode uses, then enable global-semantic-idle-local-symbol-highlight-mode
    : GNU Global
       : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Is it worth using outside of Semantic commands?
