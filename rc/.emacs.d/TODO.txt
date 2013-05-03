@@ -50,6 +50,7 @@ Issues:
                : o<
                : o"
                : o'
+         : Put point well before {}, delete-pair ("od"), only closing } is deleted
          : Take a step back and look at my commands and their key bindings
       : Notes:
          : List and sexp navigation
@@ -89,6 +90,9 @@ Issues:
                : See http://www.gnu.org/software/emacs/manual/html_node/emacs/Commands-of-GUD.html
             : Compare with Edebug bindings, perhaps mimic key bindings
             : Bind SPC to step when debugger is active.
+            : gud-until is busted.
+               : Opens up source on other buffer when should use current source code buffer
+               : Current execution is steps out, not actually at the until point
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
