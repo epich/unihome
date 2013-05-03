@@ -284,11 +284,12 @@
    "Insert log statement for C and C++. "
    (interactive)
    ;; This is the simplest way I could find to get a proper and complete current time.
-   (insert "{ timespec debug_ts; char debug_dateStr[20]; { ::clock_gettime(CLOCK_REALTIME, &debug_ts); tm mytm; ::localtime_r(&debug_ts.tv_sec, &mytm); ::strftime(debug_dateStr, 20, \"%Y-%m-%dT%H:%M:%S\", &mytm); }")
+   ;; Requires these includes: <pthread.h> <unistd.h> <stdio.h> <time.h>
+   (insert "{ struct timespec debug_ts; char debug_dateStr[20]; { clock_gettime(CLOCK_REALTIME, &debug_ts); struct tm mytm; localtime_r(&debug_ts.tv_sec, &mytm); strftime(debug_dateStr, 20, \"%Y-%m-%dT%H:%M:%S\", &mytm); }")
    (evil-ret)
    (insert "  printf( \"%s.%09ld|pid:%d|tid:%ld|%s|%d| DEBUG: \\n\", // TODO: debugging")
    (evil-ret)
-   (insert "          debug_dateStr, debug_ts.tv_nsec, ::getpid(), ::pthread_self(), __FILE__, __LINE__ ); fflush(stdout); }")
+   (insert "          debug_dateStr, debug_ts.tv_nsec, getpid(), pthread_self(), __FILE__, __LINE__ ); fflush(stdout); }")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
 (defun my-insert-java-log ()
