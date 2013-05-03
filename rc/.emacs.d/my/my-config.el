@@ -133,6 +133,8 @@
 ;; Want RET to use other keymaps' binding sometimes.  Buffer Menu's for example.
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
+;; "y" command defaults to evil-normal-state-map, which prevents it from working in non editing buffers
+(my-move-key evil-normal-state-map evil-visual-state-map "y")
 
 (global-set-key (kbd "C-<down>") 'shrink-window)
 (global-set-key (kbd "C-<up>") 'enlarge-window)
