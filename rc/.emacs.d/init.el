@@ -146,9 +146,10 @@
                                     ;;  : semantic-decoration-on-(private|protected)-members does not decorate uses
                                     ;;  : semantic-decoration-on-includes highlights system includes in red
                                     ;;global-semantic-decoration-mode
-                                    ;; Disabled because I find I just don't rely on on it, and behaves weirdly in .mk files.
+                                    ;; Disabled because don't find it useful.
                                     ;; global-semantic-highlight-func-mode
-                                    global-semantic-stickyfunc-mode
+                                    ;; Disabled because don't find it useful.  Looks weird in .mk files.
+                                    ;; global-semantic-stickyfunc-mode
                                     global-semantic-mru-bookmark-mode
                                     global-cedet-m3-minor-mode
                                     ;; Disabled because:
@@ -266,7 +267,7 @@
  '(Buffer-menu-name-width 64)
  '(ac-delay 1.0)
  '(c-syntactic-indentation nil)
- '(cc-search-directories (quote ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "../../src" "./include" "../include" "./inc" "../inc")))
+ '(cc-search-directories (quote ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "../../src" "./include" "../include" "./inc" "../inc" "../inc/L1aObject")))
  '(delete-by-moving-to-trash t)
  '(dired-auto-revert-buffer t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
