@@ -92,7 +92,7 @@ alias fdate "date '+%Y%m%dT%H%M%S'"
 alias h history
 alias sv 'cleartool setview'
 alias p 'python'
-alias gentags 'etags `find . -name "*.h" -o -name "*.cc" -o -name "*.cpp" -o -name "*.java" -o -name "*.py" -o -name "*.pl" -o -name "*.sh" -o -name "*.mk" -o -name "*akefile*" -o -name "*.f90"`'
+alias gentags 'etags `find . -name "*.h" -o -name "*.c" -o -name "*.cc" -o -name "*.cpp" -o -name "*.java" -o -name "*.py" -o -name "*.pl" -o -name "*.sh" -o -name "*.mk" -o -name "*akefile*" -o -name "*.f90"`'
 alias append_bin_path 'setenv PATH `$unihomeDir/scripts/addpaths_csh $PATH \!*`'
 alias prepend_bin_path 'setenv PATH `$unihomeDir/scripts/addpaths_csh \!* $PATH `'
 alias append_lib_path 'setenv LD_LIBRARY_PATH `$unihomeDir/scripts/addpaths_csh $LD_LIBRARY_PATH \!*`'
