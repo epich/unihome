@@ -22,6 +22,8 @@ Issues:
    : Have F4 work in the mini buffer for inserting a bullet character
       : Define the key binding in more Emacs-mainstream way
    : Evil bugs:
+      : Evil . command repeats wrong commands
+         : Try Frank's advice: https://bitbucket.org/lyro/evil/issue/279/evil-command-repeats-wrong-commands
       : Can't do: v /search-term
          : Text doesn't highlight to search term
       : When I highlight with V, whole line including new line doesn't seem to be included
@@ -351,5 +353,4 @@ Evil bugs (submitted):
    : In Evil motion state, can't mouse click buttons.  RET works however.
    : Selecting only part of line and doing s/  */\n/g replaces whole line, including outside of selection.
       : Vim behaves similarly.
-   : Evil . command repeats wrong commands
 
