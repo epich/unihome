@@ -169,10 +169,20 @@
   ;;   (semanticdb-enable-gnu-global-databases 'c++-mode))
   )
 
+(defvar my-use-jdee
+  ;; Returns t iff we are opening a .java file from CLI args
+  (eval `(or ,@(mapcar (lambda (arg) (string-match "\\.java" arg)) command-line-args)))
+  "Whether to use JDEE. ")
 (defvar my-load-goesr (getenv "LOAD_GOESR_ELISP") "Whether initialization loads GOESR Elisp. ")
-(when (and my-load-goesr (file-accessible-directory-p my-bzr-cedet-path))
-  (setq my-enable-cedet-function 'my-enable-cedet-from-bzr)
-  )
+(cond
+ ;; If we're initially opening a .java file, load CEDET 1.1 which JDEE needs
+ (my-use-jdee
+  (setq my-enable-cedet-function 'my-enable-cedet-1.1))
+ ;; Load CEDET from bzr if available
+ ((file-accessible-directory-p my-bzr-cedet-path)
+  (setq my-enable-cedet-function 'my-enable-cedet-from-bzr))
+ ;; Otherwise load builtin CEDET (my-enable-cedet-function already set)
+ )
 
 ;; CEDET documents loading must occur before other packages load any part of CEDET.
 ;; Especially important since Emacs has a different version builtin, which I can't
@@ -184,25 +194,26 @@
   (funcall my-enable-cedet-function))
 
 ;;; Initialize JDEE
-(my-msg "Initializing JDEE.")
-(defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
-(add-to-list 'load-path (format "%s/lisp" my-jdee-path))
-;; Online posting says these might be necessary for JDEE.
-;; http://forums.fedoraforum.org/showthread.php?t=280711
-;; (defun screen-width nil -1)
-(setq jde-check-version-flag nil)
-(define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
-(unless (fboundp 'semantic-format-prototype-tag-java-mode)
-  (defalias 'semantic-format-prototype-tag-java-mode 'semantic-format-tag-prototype-java-mode))
-;; To prevent an error with hippie-exp variable not being defined.
-(require 'hippie-exp)
-(autoload 'jde-mode "jde" "JDE mode." t)
-(setq auto-mode-alist
-      (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
+(when my-use-jdee
+  (my-msg "Initializing JDEE.")
+  (defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
+  (add-to-list 'load-path (format "%s/lisp" my-jdee-path))
+  ;; Online posting says these might be necessary for JDEE.
+  ;; http://forums.fedoraforum.org/showthread.php?t=280711
+  ;; (defun screen-width nil -1)
+  (setq jde-check-version-flag nil)
+  (define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
+  (unless (fboundp 'semantic-format-prototype-tag-java-mode)
+    (defalias 'semantic-format-prototype-tag-java-mode 'semantic-format-tag-prototype-java-mode))
+  ;; To prevent an error with hippie-exp variable not being defined.
+  (require 'hippie-exp)
+  (autoload 'jde-mode "jde" "JDE mode." t)
+  (setq auto-mode-alist
+        (append '(("\\.java\\'" . jde-mode)) auto-mode-alist)))
 
 ;; Initialize project-specific elisp
-(my-msg "Initializing project-specific elisp.")
 (when my-load-goesr
+  (my-msg "Initializing project-specific elisp.")
   (load-file "/goesr/user/boreilly/goesr-dev.el")
   (require 'my-proj)
   )
