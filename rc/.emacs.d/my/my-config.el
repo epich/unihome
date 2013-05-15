@@ -275,27 +275,6 @@
 (defadvice semantic-change-function (around my-advice-semantic-change-function activate)
   (save-match-data ad-do-it)
   )
-;; Awaiting bug resolution: https://bitbucket.org/lyro/evil/issue/288/patch-evil-ex-search-update-pattern
-(defadvice evil-ex-search-update-pattern (around my-advice-evil-ex-search-update-pattern activate)
-  (save-match-data ad-do-it)
-  )
-
-;;; Possibly unnecessary:
-(defadvice evil-track-last-insertion (around my-advice-evil-track-last-insertion activate)
-  (my-msg "DEBUG: 01a evil-track-last-insertion match-beginning=%s match-end=%s match-data=%s" (match-beginning 0) (match-end 0) (match-data)) 
-  (save-match-data
-    (my-msg "DEBUG: 02a evil-track-last-insertion match-beginning=%s match-end=%s match-data=%s save-match-data-internal=%s" (match-beginning 0) (match-end 0) (match-data) save-match-data-internal) 
-    ad-do-it
-    (my-msg "DEBUG: 02b evil-track-last-insertion match-beginning=%s match-end=%s match-data=%s save-match-data-internal=%s" (match-beginning 0) (match-end 0) (match-data) save-match-data-internal) 
-    )
-  (my-msg "DEBUG: 01b evil-track-last-insertion match-beginning=%s match-end=%s match-data=%s" (match-beginning 0) (match-end 0) (match-data)) 
-  )
-;; (defadvice c-after-change (around my-advice-c-after-change activate)
-;;   (save-match-data ad-do-it)
-;;   )
-;; (defadvice jit-lock-after-change (around my-advice-jit-lock-after-change activate)
-;;   (save-match-data ad-do-it)
-;;   )
 
 ;;; Debug logging
 (defun my-insert-ant-log ()
