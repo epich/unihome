@@ -63,9 +63,16 @@
 (require 'rainbow-delimiters)
 ;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
-(require 'undo-tree)
 (require 'goto-chg)
 
+;;; Undo Tree
+(defvar my-use-undo-tree t)
+(when my-use-undo-tree
+  (my-msg "Initializing Undo Tree. ")
+  (add-to-list 'load-path "~/.emacs.d/undo-tree")
+  (require 'undo-tree))
+
+;;; Evil
 (my-msg "Initializing Evil.")
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)

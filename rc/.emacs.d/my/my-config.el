@@ -234,14 +234,15 @@
 (define-key evil-motion-state-map "or" 'revert-buffer)
 (define-key evil-motion-state-map "os" 'ff-find-other-file)
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (my-toggle-fullscreen)))
-(define-key evil-motion-state-map "ov" 'undo-tree-visualize)
+(when my-use-undo-tree
+  (define-key evil-motion-state-map "ov" 'undo-tree-visualize))
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-normal-state-map "S" 'save-buffer)
 
 ;;; More Evil key bindings
 
 ;; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
-(when (fboundp 'undo-tree-undo)
+(when my-use-undo-tree
    (define-key evil-normal-state-map "U" 'undo-tree-redo))
 
 (define-key evil-normal-state-map ";" nil)
@@ -268,6 +269,33 @@
   (when my-tags-file
     (my-msg "Loading tags file: %s" my-tags-file)
     (visit-tags-table my-tags-file)))
+
+;;; Fixes to use save-match-data
+;; Fixed in CEDET mainline
+(defadvice semantic-change-function (around my-advice-semantic-change-function activate)
+  (save-match-data ad-do-it)
+  )
+;; Awaiting bug resolution: https://bitbucket.org/lyro/evil/issue/288/patch-evil-ex-search-update-pattern
+(defadvice evil-ex-search-update-pattern (around my-advice-evil-ex-search-update-pattern activate)
+  (save-match-data ad-do-it)
+  )
+
+;;; Possibly unnecessary:
+(defadvice evil-track-last-insertion (around my-advice-evil-track-last-insertion activate)
+  (my-msg "DEBUG: 01a evil-track-last-insertion match-beginning=%s match-end=%s match-data=%s" (match-beginning 0) (match-end 0) (match-data)) 
+  (save-match-data
+    (my-msg "DEBUG: 02a evil-track-last-insertion match-beginning=%s match-end=%s match-data=%s save-match-data-internal=%s" (match-beginning 0) (match-end 0) (match-data) save-match-data-internal) 
+    ad-do-it
+    (my-msg "DEBUG: 02b evil-track-last-insertion match-beginning=%s match-end=%s match-data=%s save-match-data-internal=%s" (match-beginning 0) (match-end 0) (match-data) save-match-data-internal) 
+    )
+  (my-msg "DEBUG: 01b evil-track-last-insertion match-beginning=%s match-end=%s match-data=%s" (match-beginning 0) (match-end 0) (match-data)) 
+  )
+;; (defadvice c-after-change (around my-advice-c-after-change activate)
+;;   (save-match-data ad-do-it)
+;;   )
+;; (defadvice jit-lock-after-change (around my-advice-jit-lock-after-change activate)
+;;   (save-match-data ad-do-it)
+;;   )
 
 ;;; Debug logging
 (defun my-insert-ant-log ()
@@ -354,6 +382,9 @@
   ;; just barely out weights the annoyances.
   (define-key evil-insert-state-local-map (kbd "DEL") nil)
   (define-key evil-insert-state-local-map (kbd "TAB") nil)
+  ;; Tweak syntax table
+  ;; (modify-syntax-entry ?- "w" standard-syntax-table)
+  ;; (modify-syntax-entry ?_ "w" standard-syntax-table)
   )
 
 (defun my-c-mode-common-hook ()

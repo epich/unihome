@@ -7,7 +7,7 @@ EMACS ?= emacs
 # The my- elisp files depend on practically everything, so I always rebuild them from build.py -- for now.
 FILES := \
   lisp/goto-chg.el \
-  lisp/undo-tree.el \
+  undo-tree/undo-tree.el \
   lisp/rainbow-delimiters.el
 LIBS :=
 

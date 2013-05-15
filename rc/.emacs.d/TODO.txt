@@ -202,8 +202,8 @@ Issues:
       : Why not refine all diffs during initialization?
       : In the diff file, lines '^Only in .*' are not navigated to by diff-file-next and diff-file-prev.
    : Undo Tree
-      : Update version to see if issues below still exist.
-      : Have a different character in the visual tree indicate the last save point
+      : Undo in region can create inefficiencies so extreme I can't access parts of the undo tree in reasonable time periods.
+      : Even if I don't (require 'undo-tree), I still get undo-tree if it's in my load path.
       : Visual tree is not as compact as it could be
       : Maybe set up undo-tree-auto-save-history to put undo history in ~/emacs-backup
       : Diffing:
