@@ -24,6 +24,8 @@ Issues:
    : Evil bugs:
       : Evil . command repeats wrong commands
          : Try Frank's advice: https://bitbucket.org/lyro/evil/issue/279/evil-command-repeats-wrong-commands
+            : Declare all commands added to evil-motion-state-map by (eg revert-buffer):
+               (evil-declare-ignore-repeat 'revert-buffer)
       : Can't do: v /search-term
          : Text doesn't highlight to search term
       : When I highlight with V, whole line including new line doesn't seem to be included
