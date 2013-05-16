@@ -256,18 +256,6 @@ Issues:
       : Remove ' from pair list.  It's annoying in comments with English contractions.
       : There are circumstances when it is annoying when inserting into existing code.
          : Perhaps: insert the closing pair only when there is only whitespace to the end of line.
-   : Double click select:
-      : Need to be able to double click a file path and have it select all of it.
-      : Double clicking a / char selects up to the . (exclusive).
-      : Hacking syntax tables looks like the canonical and most generalized solution:
-         http://emacswiki.org/emacs/EmacsSyntaxTable
-      : A targetted way to hack this just for mouse clicking:
-         : http://lists.gnu.org/archive/html/help-gnu-emacs/2008-12/msg00015.html
-         : Would be good to pursue if hacking the syntax table is more generalized than I find I want.
-      : Relevant, but not particularly helpful:
-         http://stackoverflow.com/questions/9595277/emacs-xterm-mouse-mode-double-click-to-highlight-word
-      : Double clicking a / char in Evil states no longer works, does work in Emacs state.
-         : Bisect the Evil repo to determine the guilty changeset.
    : Pair matching
       : Need to be able to use % for <> pairs, "" and '' pairs too.
          : forward-sexp seems to have the knowledge match "" chars.  Understand how.
@@ -279,9 +267,6 @@ Issues:
          : Emacs manual states these are ignored if scroll-conservatively is set to non zero.  Fix this?
             http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Scrolling.html
       : Find command for keeping point where it is, but vertically centering it in the display.
-   : Syntax tables:
-      : Change - and _ so as motion over variable names and such work better.
-      : Have double clicking work better (see above).
    : Tabs
       : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
          : Some extensions:

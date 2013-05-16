@@ -130,6 +130,9 @@ Notes:
    : JDEE
       : This thread is the latest indication of porting JDEE to use newer CEDET in Emacs
          http://sourceforge.net/mailarchive/forum.php?thread_name=39E62003-1070-494E-8290-2CAE0882E76E%40mailc.net&forum_name=jdee-devel
+   : Syntax tables:
+      : Useful post: http://lists.gnu.org/archive/html/help-gnu-emacs/2008-12/msg00015.html
+      : Worth keeping in mind: http://stackoverflow.com/questions/9595277/emacs-xterm-mouse-mode-double-click-to-highlight-word
    : Optimization:
       : Use elp Elisp profiler
          : Example:

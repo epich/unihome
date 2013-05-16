@@ -362,8 +362,15 @@
   (define-key evil-insert-state-local-map (kbd "DEL") nil)
   (define-key evil-insert-state-local-map (kbd "TAB") nil)
   ;; Tweak syntax table
-  ;; (modify-syntax-entry ?- "w" standard-syntax-table)
-  ;; (modify-syntax-entry ?_ "w" standard-syntax-table)
+  (modify-syntax-entry ?- "w")
+  (modify-syntax-entry ?_ "w")
+  )
+(defun my-text-mode-hook ()
+  (my-msg "Inside my-text-mode-hook for buffer %s " (buffer-name))
+  (my-bind-tab-del-keys)
+  ;; Tweak syntax table
+  (modify-syntax-entry ?- "w")
+  (modify-syntax-entry ?_ "w")
   )
 
 (defun my-c-mode-common-hook ()
@@ -459,10 +466,6 @@
 (defun my-sh-mode-hook ()
   (my-msg "Inside my-sh-mode-hook for buffer %s " (buffer-name))
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-sh-log)
-  )
-(defun my-text-mode-hook ()
-  (my-msg "Inside my-text-mode-hook for buffer %s " (buffer-name))
-  (my-bind-tab-del-keys)
   )
 
 ;;; Finalizing initialization
