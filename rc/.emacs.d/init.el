@@ -317,8 +317,6 @@
  '(python-indent my-offset)
  '(python-indent-offset my-offset)
  '(scroll-conservatively 1)
- '(scroll-down-aggressively 0.2)
- '(scroll-up-aggressively 0.2)
  '(tags-case-fold-search nil)
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
