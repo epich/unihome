@@ -168,6 +168,12 @@
 (defadvice evil-window-bottom (around my-advice-evil-window-bottom activate)
   (let ((scroll-conservatively 101))
     ad-do-it))
+;; (defadvice evil-ex-search-next (around my-advice-evil-ex-search-next activate)
+;;   (let ((scroll-conservatively 0) (scroll-margin 10))
+;;     ad-do-it))
+;; (defadvice evil-ex-search-previous (around my-advice-evil-ex-search-previous activate)
+;;   (let ((scroll-conservatively 0) (scroll-margin 10))
+;;     ad-do-it))
 
 ;;; Merge Evil's g prefix key with Emacs' C-x prefix key.
 ;; Define key translation to C-x, then add the Evil g bindings to keep.

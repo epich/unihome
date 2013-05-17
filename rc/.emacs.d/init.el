@@ -180,7 +180,8 @@
   ;; Returns t iff we are opening a .java file from CLI args
   (eval `(or ,@(mapcar (lambda (arg) (string-match "\\.java" arg)) command-line-args)))
   "Whether to use JDEE. ")
-(defvar my-load-goesr (getenv "LOAD_GOESR_ELISP") "Whether initialization loads GOESR Elisp. ")
+(defvar my-load-goesr (and (file-accessible-directory-p "/goesr/user/boreilly")
+                           (getenv "LOAD_GOESR_ELISP") "Whether initialization loads GOESR Elisp. "))
 (cond
  ;; If we're initially opening a .java file, load CEDET 1.1 which JDEE needs
  (my-use-jdee
@@ -316,6 +317,8 @@
  '(python-indent my-offset)
  '(python-indent-offset my-offset)
  '(scroll-conservatively 1)
+ '(scroll-down-aggressively 0.2)
+ '(scroll-up-aggressively 0.2)
  '(tags-case-fold-search nil)
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
@@ -342,6 +345,7 @@
 
 (require 'my-config)
 (add-hook 'prog-mode-hook 'my-prog-mode-hook)
+(add-hook 'text-mode-hook 'my-text-mode-hook)
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 (add-hook 'diff-mode-hook 'my-diff-mode-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
@@ -350,7 +354,6 @@
 (add-hook 'nxml-mode-hook 'my-nxml-mode-hook)
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
-(add-hook 'text-mode-hook 'my-text-mode-hook)
 (add-hook 'term-setup-hook 'my-term-setup-hook)
 
 (my-msg "Finished loading init file. ")

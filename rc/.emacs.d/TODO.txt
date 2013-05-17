@@ -261,12 +261,14 @@ Issues:
          : forward-sexp seems to have the knowledge match "" chars.  Understand how.
    : Automatic scrolling:
       : Advised evil-window-top and evil-window-bottom to set scroll-conservatively to 101
-         : Doesn't seem work, even though log-msg in Evil shows scroll-conservatively is set
+         : Doesn't seem work, even though debug statement in Evil shows scroll-conservatively is set
       : scroll-down-aggressively scroll-up-aggressively
          : Look useful
-         : Emacs manual states these are ignored if scroll-conservatively is set to non zero.  Fix this?
+         : Emacs manual states these are ignored if scroll-conservatively is set to non zero. Fix this?
             http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Scrolling.html
-      : Find command for keeping point where it is, but vertically centering it in the display.
+      : Manual sections discussing lines:
+         http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Text-Lines
+         http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Screen-Lines
    : Tabs
       : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
          : Some extensions:
