@@ -166,6 +166,8 @@ Issues:
       : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Is it worth using outside of Semantic commands?
          : Review http://www.wolinlabs.com/blog/emacs.global.speedbar.html
+   : Byte compilation:
+      : Is there a way to have Emacs emit dependency info for GNU Make when compiling .el into .elc files?
    : Java development
       : Try out emacs-eclim which uses Eclipse as a backend
          http://www.skybert.net/emacs/java/
