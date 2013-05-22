@@ -1,0 +1,27 @@
+Index: build.xml
+===================================================================
+--- build.xml	(revision 285)
++++ build.xml	(working copy)
+@@ -6,9 +6,12 @@
+      -->
+ 
+   <!-- add in the contribs (add ant-contrib-VERSION.jar) to CLASSPATH -->
+-  <taskdef resource="net/sf/antcontrib/antlib.xml"/>
++  <taskdef resource="net/sf/antcontrib/antlib.xml">
++    <classpath>
++      <pathelement location="/psd15/linux/boreilly/sw/ant-contrib/lib/ant-contrib.jar" />
++    </classpath>
++  </taskdef>
+ 
+-
+   <!-- basic properties, the rest are taken from ${config.dir}/build. -->
+   <property name="project.dir" location="./"/>
+   <property name="project.version" value="2.4.1"/>
+@@ -22,7 +25,6 @@
+ 	<or>
+ 	    <os family="dos"/>
+ 	    <os family="windows" />
+-	    <os family="winnt" />
+ 	    <os family="win9x" />
+ 	</or>
+     </condition>
