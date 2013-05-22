@@ -9,8 +9,6 @@ sys.path.append( '~/unihome/py' )
 import generalUtil
 
 evilDir_g = 'evil'
-cedetDir_g = 'cedet-1.1'
-jdeeVersion_g = '2.4.0.1'
 
 def byteCompile(filesString, loadPathL=[]):
    """Byte compile the inputted elisp files.
@@ -24,32 +22,6 @@ def byteCompile(filesString, loadPathL=[]):
 def buildEvil():
    generalUtil.cmd('make -C %s'%(evilDir_g,), printStdout=True)
 
-def buildCedet():
-   # CEDET contributes to annoying interrogations at Emacs closing time.
-   # Create the .semanticdb dir to avoid one interrogation question.
-   generalUtil.cmd('mkdir -p ~/.semanticdb')
-   # There was a case where cedet*/semantic/Makefile needed a tender touch.
-   # Might as well touch 'em all.
-   generalUtil.cmd('touch `find %s -name Makefile`'%(cedetDir_g,))
-   generalUtil.cmd('make -C %s'%(cedetDir_g,), printStdout=True)
-   # CEDET seems to pointlessly modify source controlled files.
-   # Revert them for version control convenience.
-   revertL = ['cedet-1.1/cogre/cogre-loaddefs.el',
-              'cedet-1.1/common/cedet-loaddefs.el',
-              'cedet-1.1/contrib/contrib-loaddefs.el',
-              'cedet-1.1/ede/ede-loaddefs.el',
-              'cedet-1.1/eieio/eieio-loaddefs.el',
-              'cedet-1.1/semantic/semantic-loaddefs.el',
-              'cedet-1.1/speedbar/speedbar-loaddefs.el',
-              'cedet-1.1/srecode/srecode-loaddefs.el',
-              ]
-   generalUtil.cmd('hg revert %s'%(' '.join(revertL),), printStdout=True)
-
-def buildJdee():
-   # Simply unzip binary distribution.
-   if not os.path.exists('jdee-%s'%(jdeeVersion_g)):
-      generalUtil.cmd('unzip jdee-bin-%s.zip'%(jdeeVersion_g))
-
 def buildMiscElisp():
    """Build miscellaneous Elisp.  Covers Evil because of Evil's dependency on miscellaneous Elisp. """
    generalUtil.cmd('make -f misc-elisp.mk', printStdout=True)
@@ -59,12 +31,11 @@ def buildMy():
    byteCompile('my/my-proj.el')
    byteCompile('my/my-config.el')
 
-def buildEmacsD(buildCedetP):
+def buildEmacsD():
+   # Create directories Emacs expects
+   generalUtil.cmd('mkdir -p ~/.semanticdb ~/emacs-data ~/emacs-data/backup ~/emacs-data/semanticdb')
    buildMiscElisp()
    buildEvil()
-   if buildCedetP:
-      buildCedet()
-   buildJdee()
    buildMy()
 
 def __MAIN__():
