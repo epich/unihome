@@ -367,14 +367,14 @@
   ;; just barely out weights the annoyances.
   (define-key evil-insert-state-local-map (kbd "DEL") nil)
   (define-key evil-insert-state-local-map (kbd "TAB") nil)
-  ;; Tweak syntax table
-  (modify-syntax-entry ?- "w")
+  ;; Note: Don't modify ?- for all languages because then the
+  ;; evil-ex-search-symbol-forward command will search (for example):
+  ;; "foo-" of foo->method()
   (modify-syntax-entry ?_ "w")
   )
 (defun my-text-mode-hook ()
   (my-msg "Inside my-text-mode-hook for buffer %s " (buffer-name))
   (my-bind-tab-del-keys)
-  ;; Tweak syntax table
   (modify-syntax-entry ?- "w")
   (modify-syntax-entry ?_ "w")
   )
@@ -405,6 +405,7 @@
   (my-msg "Inside my-emacs-lisp-mode-hook for buffer %s " (buffer-name))
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-elisp-log)
   (define-key evil-motion-state-local-map "se" 'eval-last-sexp)
+  (modify-syntax-entry ?- "w")
   )
 (defun my-java-mode-hook ()
   (my-msg "Inside my-java-mode-hook for buffer %s " (buffer-name))
@@ -459,10 +460,12 @@
   (fset 'makefile-warn-continuations (lambda ()))
 
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-makefile-log)
+  (modify-syntax-entry ?- "w")
   )
 (defun my-nxml-mode-hook ()
   (my-msg "Inside my-nxml-mode-hook for buffer %s " (buffer-name))
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-ant-log)
+  (modify-syntax-entry ?- "w")
   )
 (defun my-python-mode-hook ()
   (my-msg "Inside my-python-mode-hook for buffer %s " (buffer-name))
