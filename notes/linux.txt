@@ -129,6 +129,10 @@ or
 Debug symbol notes:
     Post at 29th July 2009, 03:50 PM of http://nixcraft.com/linux-software/12412-segfault-error-4-a.html looks useful for using objdump and the segfault message in /var/log/messages to narrow down the problem.
 
+GDB:
+    Print C++ STL structures in GDB:
+        http://www.yolinux.com/TUTORIALS/src/dbinit_stl_views-1.03.txt
+
 Get a man page as file:
    man ls | col -bx > /tmp/ls.man
 Note that the following seems more natural, but causes weird characters:
