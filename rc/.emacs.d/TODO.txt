@@ -137,14 +137,7 @@ Issues:
       : Dired doesn't update when a directory is created separately.  Including when Auto Revert is enabled.
       : Would be nice if I could expand and collapse directories inline, rather than at the bottom of the same buffer, and retain same information.
       : The ^ command is inconvenient to reach, find another key binding.
-   : CEDET 1.1
-      : Display in minibuffer undermines promptings and my ability to read them.
-         : Reinstate customization for only when using CEDET 1.1
-   : CEDET 2.0 from upstream bzr trunk
-      : Find a better way to determine which CEDET to load
-            : CEDET 1.1 if any of the initial files are .java files
-            : CEDET trunk if available
-            : Else builtin CEDET
+   : CEDET
       : How to narrow down the project's include-path based on where the original file is in the project?
       : If a class name is not namespace scoped correctly, semantic-ia-fast-jump won't jump to it.  How to find right namespace using semantic?
       : Enhancement requests:
@@ -176,8 +169,6 @@ Issues:
    : Java development
       : Try out emacs-eclim which uses Eclipse as a backend
          http://www.skybert.net/emacs/java/
-      : Try Java in CEDET
-      : Compare with JDEE features
    : Multi window navigation
       : Set up so as motion commands will go to all windows.
          : Make toggle for on and off.
@@ -238,8 +229,6 @@ Issues:
    : Shell
       : Set --color flag to ls
       : Fix dark blue color for directories
-   : Being prompted about running Python process is annoying.
-      : CEDET starts it for sake of auto completion.
    : Smart editing:
       : Need to specify how many tabs to continue code lines with.
          : Done for Python (as much as can be)
