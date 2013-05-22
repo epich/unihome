@@ -5,10 +5,6 @@ syntax: glob
 .*.swp
 *~
 rc/.emacs.d/evil/.depend
-# CEDET builds a lot of things, just ignore all new stuff under it.
-rc/.emacs.d/cedet-1.1/*
-# JDEE is unzipped, so ignore the unzipped files
-rc/.emacs.d/jdee-2.4.0.1/*
 
 # CEDET generated files
 rc/.emacs.d/srecode-map.el
