@@ -86,43 +86,6 @@
 (defvar cedet-loaded nil
   "Whether the initialization loaded CEDET explicitly. ")
 
-;; CEDET 1.1 is needed when using JDEE
-(defun my-enable-cedet-1.1 ()
-  "Loads CEDET 1.1. "
-  (defvar my-cedet-path "~/.emacs.d/cedet-1.1" "Path to CEDET")
-  (add-to-list 'load-path (format "%s/common" my-cedet-path))
-  (load-file (format "%s/common/cedet.el" my-cedet-path))
-  
-  ;; Disable Minibuffer info which overwrites other information displaying.
-  ;;
-  ;; Note, this was a customization setting in custom-set-variables
-  ;; for CEDET 1.1, but it is not compatible with newer CEDET.
-  ;; '(global-semantic-idle-summary-mode nil nil (semantic-idle))
-
-  ;;; Enable EDE (Project Management) features
-  (global-ede-mode 1)
-  ;; Enable EDE for a pre-existing C++ project
-  ;; (ede-cpp-root-project "NAME" :file "~/proj/name/Makefile")
-  ;;; Enabling Semantic (code-parsing, smart completion) features
-  ;;; Select one of the following:
-  ;; * This enables the database and idle reparse engines
-  ;;(semantic-load-enable-minimum-features)
-  ;; * This enables some tools useful for coding, such as summary mode,
-  ;;   imenu support, and the semantic navigator
-  (semantic-load-enable-code-helpers)
-  ;; * This enables even more coding tools such as intellisense mode,
-  ;;   decoration mode, and stickyfunc mode (plus regular code helpers)
-  ;; (semantic-load-enable-gaudy-code-helpers)
-  ;;; Based on advice at http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
-  ;; For smart completion
-  ;; (require 'semantic-ia)
-  ;; Solves error when semantic-complete-jump:
-  ;;    Symbol's function definition is void: eieio-build-class-alist
-  (require 'eieio-opt)
-  (require 'eassist)
-  (setq cedet-loaded t)
-  )
-
 (defun my-enable-cedet-from-emacs ()
   "Loads CEDET distrubted with Emacs."
   ;; Note: Apparently eassist is not distributed with Emacs 24.3
@@ -135,7 +98,6 @@
   )
 
 (defvar my-bzr-cedet-path "/goesr/user/boreilly/sw/cedet" "Path to CEDET")
-;; Experimenting with latest CEDET from their bzr repo
 (defun my-enable-cedet-from-bzr ()
   "Loads the latest snapshot of CEDET bzr trunk. "
   (load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
@@ -176,22 +138,8 @@
   ;;   (semanticdb-enable-gnu-global-databases 'c++-mode))
   )
 
-(defvar my-use-jdee
-  ;; Returns t iff we are opening a .java file from CLI args
-  (eval `(or ,@(mapcar (lambda (arg) (string-match "\\.java" arg)) command-line-args)))
-  "Whether to use JDEE. ")
-(defvar my-load-goesr (and (file-accessible-directory-p "/goesr/user/boreilly")
-                           (getenv "LOAD_GOESR_ELISP") "Whether initialization loads GOESR Elisp. "))
-(cond
- ;; If we're initially opening a .java file, load CEDET 1.1 which JDEE needs
- (my-use-jdee
-  (setq my-enable-cedet-function 'my-enable-cedet-1.1))
- ;; Load CEDET from bzr if available
- ((file-accessible-directory-p my-bzr-cedet-path)
+(when (file-accessible-directory-p my-bzr-cedet-path)
   (setq my-enable-cedet-function 'my-enable-cedet-from-bzr))
- ;; Otherwise load builtin CEDET (my-enable-cedet-function already set)
- )
-
 ;; CEDET documents loading must occur before other packages load any part of CEDET.
 ;; Especially important since Emacs has a different version builtin, which I can't
 ;; use when using JDEE.
@@ -202,24 +150,23 @@
   (funcall my-enable-cedet-function))
 
 ;;; Initialize JDEE
+(defvar my-jdee-path
+  "/psd15/linux/boreilly/sw/jdee-trunk/jdee"
+  "Path to JDEE checked out from trunk and built.")
+(defvar my-use-jdee
+  (file-accessible-directory-p my-jdee-path)
+  "Whether to use JDEE. ")
 (when my-use-jdee
   (my-msg "Initializing JDEE.")
-  (defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
-  (add-to-list 'load-path (format "%s/lisp" my-jdee-path))
-  ;; Online posting says these might be necessary for JDEE.
-  ;; http://forums.fedoraforum.org/showthread.php?t=280711
-  ;; (defun screen-width nil -1)
-  (setq jde-check-version-flag nil)
-  (define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
-  (unless (fboundp 'semantic-format-prototype-tag-java-mode)
-    (defalias 'semantic-format-prototype-tag-java-mode 'semantic-format-tag-prototype-java-mode))
-  ;; To prevent an error with hippie-exp variable not being defined.
-  (require 'hippie-exp)
+  (add-to-list 'load-path (format "%s/dist/jdee-2.4.1/lisp" my-jdee-path))
   (autoload 'jde-mode "jde" "JDE mode." t)
   (setq auto-mode-alist
-        (append '(("\\.java\\'" . jde-mode)) auto-mode-alist)))
+        (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
+  )
 
 ;; Initialize project-specific elisp
+(defvar my-load-goesr (and (file-accessible-directory-p "/goesr/user/boreilly")
+                           (getenv "LOAD_GOESR_ELISP") "Whether initialization loads GOESR Elisp. "))
 (when my-load-goesr
   (my-msg "Initializing project-specific elisp.")
   (load-file "/goesr/user/boreilly/goesr-dev.el")
