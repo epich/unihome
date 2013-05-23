@@ -486,7 +486,7 @@
   ;;(setq search-whitespace-regexp nil)
 
   ;; Make the end obvious, since this is a major point in the Emacs runtime
-  (my-msg "Finished with my-term-setup-hook. --------------------------------")
+  (my-msg "-------------------------------- Finished with my-term-setup-hook.")
   )
 
 (provide 'my-config)
