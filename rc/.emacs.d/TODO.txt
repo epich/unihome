@@ -228,6 +228,10 @@ Issues:
          : Sets tabulated-list-sort-key from its default nil value
          : There is then no interactive command I find to set it back to nil
          : However, kill-buffer works
+   : Syntax tables:
+      : Need to have _ and - as word characters:
+         : Buffer Menu
+         : Dired
    : Shell
       : Set --color flag to ls
       : Fix dark blue color for directories
