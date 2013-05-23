@@ -260,6 +260,9 @@ Issues:
       : Manual sections discussing lines:
          http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Text-Lines
          http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Screen-Lines
+      : Could set scroll-conservatively to 101 and dynamically set aggressive scrolling variables around chosen commands.
+   : My match-list
+      : advise Evil function so as I can use evil-ex to search and replace with cycle-match-list
    : Tabs
       : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
          : Some extensions:
