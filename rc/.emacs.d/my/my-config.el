@@ -142,6 +142,9 @@
 (global-set-key (kbd "C-<right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "<f2>") (lambda () (interactive) (insert (my-get-buffer-name))))
 
+;; Rebind j and k so as scroll-conservatively==1 is better behaved
+(define-key evil-motion-state-map "j" 'evil-next-visual-line)
+(define-key evil-motion-state-map "k" 'evil-previous-visual-line)
 ;; ^ in Dired is more useful than Evil's binding.
 (define-key evil-motion-state-map "^" nil)
 (define-key evil-motion-state-map "f" 'buffer-menu)
@@ -161,19 +164,6 @@
 (define-key evil-visual-state-map "u" nil)
 (define-key evil-motion-state-map "," nil)
 (define-key evil-motion-state-map "," 'kmacro-end-and-call-macro)
-;; Need scroll-conservatively to have a different value when using some Evil commands.
-(defadvice evil-window-top (around my-advice-evil-window-top activate)
-  (let ((scroll-conservatively 101))
-    ad-do-it))
-(defadvice evil-window-bottom (around my-advice-evil-window-bottom activate)
-  (let ((scroll-conservatively 101))
-    ad-do-it))
-;; (defadvice evil-ex-search-next (around my-advice-evil-ex-search-next activate)
-;;   (let ((scroll-conservatively 0) (scroll-margin 10))
-;;     ad-do-it))
-;; (defadvice evil-ex-search-previous (around my-advice-evil-ex-search-previous activate)
-;;   (let ((scroll-conservatively 0) (scroll-margin 10))
-;;     ad-do-it))
 
 ;;; Merge Evil's g prefix key with Emacs' C-x prefix key.
 ;; Define key translation to C-x, then add the Evil g bindings to keep.
@@ -194,8 +184,8 @@
 (define-key evil-motion-state-map "\C-xe" 'evil-backward-word-end)
 (define-key evil-motion-state-map "\C-xE" 'evil-backward-WORD-end)
 (define-key evil-motion-state-map "\C-xg" 'evil-goto-first-line)
-(define-key evil-motion-state-map "\C-xj" 'evil-next-visual-line)
-(define-key evil-motion-state-map "\C-xk" 'evil-previous-visual-line)
+(define-key evil-motion-state-map "\C-xj" 'evil-next-line)
+(define-key evil-motion-state-map "\C-xk" 'evil-previous-line)
 (define-key evil-motion-state-map "\C-x_" 'evil-last-non-blank)
 (define-key evil-motion-state-map "\C-x\C-]" 'find-tag)
 (define-key evil-motion-state-map "\C-xv" 'evil-visual-restore)
@@ -443,6 +433,7 @@
   (define-key evil-normal-state-local-map "s." 'jde-complete-in-line)
   ;; My own
   (define-key evil-normal-state-local-map "sa" (lambda () (interactive) (jde-import-all) (jde-import-kill-extra-imports) (jde-import-organize)))
+  (define-key evil-normal-state-local-map "sg" 'jde-open-class-at-point)
   )
 (defun my-makefile-mode-hook ()
   (my-msg "Inside my-makefile-mode-hook for buffer %s " (buffer-name))

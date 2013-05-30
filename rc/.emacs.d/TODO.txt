@@ -255,16 +255,18 @@ Issues:
       : Need to be able to use % for <> pairs, "" and '' pairs too.
          : forward-sexp seems to have the knowledge match "" chars.  Understand how.
    : Automatic scrolling:
-      : Advised evil-window-top and evil-window-bottom to set scroll-conservatively to 101
-         : Doesn't seem work, even though debug statement in Evil shows scroll-conservatively is set
+      : Involves redisplay:
+         : Using around advice to change automatic scrolling variables doesn't work:
+            http://lists.gnu.org/archive/html/help-gnu-emacs/2013-05/msg00722.html
+         : scroll-conservatively==1 fails occasionally for fast navigation up:
+            http://lists.gnu.org/archive/html/help-gnu-emacs/2013-05/msg00731.html
       : scroll-down-aggressively scroll-up-aggressively
          : Look useful
-         : Emacs manual states these are ignored if scroll-conservatively is set to non zero. Fix this?
+         : Emacs manual states these are ignored if scroll-conservatively is set to non zero. Practical to fix this?
             http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Scrolling.html
       : Manual sections discussing lines:
          http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Text-Lines
          http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Screen-Lines
-      : Could set scroll-conservatively to 101 and dynamically set aggressive scrolling variables around chosen commands.
    : My match-list
       : advise Evil function so as I can use evil-ex to search and replace with cycle-match-list
    : Tabs
