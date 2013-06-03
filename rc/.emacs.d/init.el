@@ -263,7 +263,7 @@
  '(python-continuation-offset (my-continuation-offset))
  '(python-indent my-offset)
  '(python-indent-offset my-offset)
- '(scroll-conservatively 1)
+ '(scroll-conservatively 3)
  '(tags-case-fold-search nil)
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
