@@ -186,6 +186,11 @@ moves the cursor."
   :type 'boolean
   :group 'evil)
 
+(defcustom evil-backspace-join-lines t
+  "Whether backward delete in insert state may join lines."
+  :type 'boolean
+  :group 'evil)
+
 (defcustom evil-move-cursor-back t
   "Whether the cursor is moved backwards when exiting Insert state."
   :type 'boolean
@@ -299,7 +304,7 @@ intercept the ESC event in X, too. This variable determines when
 Evil should intercept the event."
   :type '(radio (const :tag "Never" :value nil)
                 (const :tag "In terminal only" :value t)
-                (const :tag "Always" :value 'always))
+                (const :tag "Always" :value always))
   :group 'evil)
 
 (defcustom evil-show-paren-range 0
@@ -845,6 +850,22 @@ list of categories."
   :type '((character . character))
   :group 'evil-cjk)
 
+(defcustom evil-ex-complete-emacs-commands 'in-turn
+  "TAB-completion for Emacs commands in ex command line.
+This variable determines when Emacs commands are considered for
+completion, always, never, or only if no Evil ex command is
+available for completion."
+  :group 'evil
+  :type '(radio (const :tag "Only if no ex-command." :value in-turn)
+                (const :tag "Never" :value nil)
+                (const :tag "Always" :value t)))
+
+(defface evil-ex-commands '(( nil
+                              :underline t
+                              :slant italic))
+  "Face for the evil command in completion in ex mode."
+  :group 'evil)
+
 (defface evil-ex-info '(( ((supports :slant))
                           :slant italic
                           :foreground "red"))
@@ -1199,10 +1220,13 @@ is not restored.")
 
 (defvar evil-last-paste nil
   "Information about the latest paste.
-This should be a list (CMD POINT BEG END) where CMD is the last
-paste-command (either `evil-paste-before' or `evil-paste-after'),
-POINT is the position of point before the paste,
-BEG end END are the region of the inserted text.")
+This should be a list (CMD COUNT POINT BEG END FIRSTVISUAL) where
+CMD is the last paste-command (`evil-paste-before',
+`evil-paste-after' or `evil-visual-paste'), COUNT is the repeat
+count of the paste, POINT is the position of point before the
+paste, BEG end END are the region of the inserted
+text. FIRSTVISUAL is t if and only if the previous command was
+the first visual paste (i.e. before any paste-pop).")
 
 (evil-define-local-var evil-last-undo-entry nil
   "Information about the latest undo entry in the buffer.
@@ -1344,6 +1368,9 @@ See `evil-ex-init-shell-argument-completion'.")
 
 (defvar evil-ex-previous-command nil
   "The previously executed Ex command.")
+
+(defvar evil-ex-point nil
+  "The position of `point' when the ex command has been called.")
 
 (defvar evil-ex-range nil
   "The current range of the Ex command.")

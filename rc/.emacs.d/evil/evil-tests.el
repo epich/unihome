@@ -2077,6 +2077,26 @@ ine3 line3      line3 l\n")))
       ("zm2j3dd")
       "line1\n\n[\n]last line\n")))
 
+(ert-deftest evil-test-delete-backward-word ()
+  "Test `evil-delete-backward-word' in insert state."
+  :tags '(evil)
+  (let ((evil-backspace-join-lines t))
+    (evil-test-buffer
+      "abc def\n   ghi j[k]l\n"
+      ("i" (kbd "C-w"))
+      "abc def\n   ghi [k]l\n"
+      ((kbd "C-w"))
+      "abc def\n   [k]l\n"
+      ((kbd "C-w"))
+      "abc def\n[k]l\n"
+      ((kbd "C-w"))
+      "abc def[k]l\n"))
+  (let (evil-backspace-join-lines)
+    (evil-test-buffer
+      "abc def\n[k]l\n"
+      (should-error (execute-kbd-macro (concat "i" (kbd "C-w"))))
+      "abc def\n[k]l\n")))
+
 (ert-deftest evil-test-change ()
   "Test `evil-change'"
   :tags '(evil operator)
@@ -2655,6 +2675,52 @@ This bufferThis bufferThis buffe[r];; and for Lisp evaluation."))
     ";; This buffer is for notes you don't want to save.
 \[;]; This buffer is for notes you don't want to save."))
 
+(ert-deftest evil-test-visual-paste-pop ()
+  "Test `evil-paste-pop' after visual paste."
+  :tags '(evil paste)
+  (ert-info ("Visual-char paste, char paste")
+    (evil-test-buffer
+      "[w]ord1a word1b word1c\nword2a word2b\nword3a word3b word3c word3d\n"
+      ("yiwyywyiw^jw")
+      "word1a word1b word1c\nword2a [w]ord2b\nword3a word3b word3c word3d\n"
+      ("viwp")
+      "word1a word1b word1c\nword2a word1[b]\nword3a word3b word3c word3d\n"))
+  (ert-info ("Visual-char paste, char paste, line pop")
+    (evil-test-buffer
+      "[w]ord1a word1b word1c\nword2a word2b\nword3a word3b word3c word3d\n"
+      ("yiwyywyiw^jw")
+      "word1a word1b word1c\nword2a [w]ord2b\nword3a word3b word3c word3d\n"
+      ("viwp\C-p")
+      "word1a word1b word1c\nword2a \n[w]ord1a word1b word1c\n\nword3a word3b word3c word3d\n"))
+  (ert-info ("Visual-char paste, char paste, line pop, char pop")
+    (evil-test-buffer
+      "[w]ord1a word1b word1c\nword2a word2b\nword3a word3b word3c word3d\n"
+      ("yiwyywyiw^jw")
+      "word1a word1b word1c\nword2a [w]ord2b\nword3a word3b word3c word3d\n"
+      ("viwp\C-p\C-p")
+      "word1a word1b word1c\nword2a word1[a]\nword3a word3b word3c word3d\n"))
+  (ert-info ("Visual-line paste, char paste")
+    (evil-test-buffer
+      "[w]ord1a word1b word1c\nword2a word2b\nword3a word3b word3c word3d\n"
+      ("yiwyywyiw^j")
+      "word1a word1b word1c\n[w]ord2a word2b\nword3a word3b word3c word3d\n"
+      ("Vp")
+      "word1a word1b word1c\nword1[b]word3a word3b word3c word3d\n"))
+  (ert-info ("Visual-line paste, char paste, line pop")
+    (evil-test-buffer
+      "[w]ord1a word1b word1c\nword2a word2b\nword3a word3b word3c word3d\n"
+      ("yiwyywyiw^j")
+      "word1a word1b word1c\n[w]ord2a word2b\nword3a word3b word3c word3d\n"
+      ("Vp\C-p")
+      "word1a word1b word1c\n[w]ord1a word1b word1c\nword3a word3b word3c word3d\n"))
+  (ert-info ("Visual-line paste, char paste, line pop, char pop")
+    (evil-test-buffer
+      "[w]ord1a word1b word1c\nword2a word2b\nword3a word3b word3c word3d\n"
+      ("yiwyywyiw^j")
+      "word1a word1b word1c\n[w]ord2a word2b\nword3a word3b word3c word3d\n"
+      ("Vp\C-p\C-p")
+      "word1a word1b word1c\nword1[a]word3a word3b word3c word3d\n")))
+
 (ert-deftest evil-test-register ()
   "Test yanking and pasting to and from register."
   :tags '(evil yank paste)
@@ -2697,6 +2763,15 @@ This bufferThis bufferThis buffe[r];; and for Lisp evaluation."))
     (evil-test-buffer
       "[f]oo bar\n"
       (":noh\ni\C-r:"))))
+
+(ert-deftest evil-test-last-insert-register ()
+  "Test last insertion register."
+  (evil-test-buffer
+    "[l]ine 1\n"
+    ("GiABC" [escape])
+    "line 1\nAB[C]"
+    ("gg\".P")
+    "AB[C]line 1\nABC"))
 
 (ert-deftest evil-test-align ()
   "Test `evil-align-left', `evil-align-right' and `evil-align-center'."
@@ -6562,7 +6637,12 @@ if no previous selection")
         (evil-test-buffer
           "ABCABCABC\nABC[A]BCABC\nABCABCABC"
           (":s/BC/XYZ/" (kbd "RET"))
-          "ABCABCABC\n[A]XYZAXYZAXYZ\nABCABCABC")))))
+          "ABCABCABC\n[A]XYZAXYZAXYZ\nABCABCABC"))))
+  (ert-info ("Substitute with empty replacement")
+    (evil-test-buffer
+      "[A]BCABC\n"
+      (":s/B" (kbd "RET"))
+      "[A]CABC\n")))
 
 (ert-deftest evil-test-ex-substitute-replacement ()
   "Test `evil-ex-substitute' with special replacements."
@@ -7034,6 +7114,7 @@ maybe we need one line more with some text\n")
 
 (ert-deftest evil-test-global ()
   "Test `evil-ex-global'."
+  :tags '(evil ex)
   (ert-info ("global delete")
     (evil-test-buffer
       "[n]o 1\nno 2\nno 3\nyes 4\nno 5\nno 6\nno 7\n"
@@ -7049,6 +7130,7 @@ maybe we need one line more with some text\n")
 
 (ert-deftest evil-test-normal ()
   "Test `evil-ex-normal'."
+  :tags '(evil ex)
   (evil-test-buffer
     "[l]ine 1\nline 2\nline 3\nline 4\nline 5\n"
     (":normal lxIABC" [escape] "AXYZ" [return])
@@ -7057,6 +7139,79 @@ maybe we need one line more with some text\n")
     "ABClne 1XYZ\nline 2\nABClne 3XYZ\nABClne 4XY[Z]\nline 5\n"
     ("u")
     "ABClne 1XYZ\nline 2\nl[i]ne 3\nline 4\nline 5\n"))
+
+(ert-deftest evil-test-copy ()
+  :tags '(evil ex)
+  "Test `evil-copy'."
+  (ert-info ("Copy to last line")
+    (evil-test-buffer
+      "[l]ine1\nline2\nline3\nline4\nline5\n"
+      (":2,3copy$")
+      "line1\nline2\nline3\nline4\nline5\nline2\n[l]ine3\n"))
+  (ert-info ("Copy to last incomplete line")
+    (evil-test-buffer
+      "[l]ine1\nline2\nline3\nline4\nline5"
+      (":2,3copy$")
+      "line1\nline2\nline3\nline4\nline5\nline2\n[l]ine3\n"))
+  (ert-info ("Copy incomplete line to last incomplete line")
+    (evil-test-buffer
+      "[l]ine1\nline2\nline3\nline4\nline5"
+      (":4,5copy$")
+      "line1\nline2\nline3\nline4\nline5\nline4\n[l]ine5\n"))
+  (ert-info ("Copy to first line")
+    (evil-test-buffer
+      "[l]ine1\nline2\nline3\nline4\nline5\n"
+      (":2,3copy0")
+      "line2\n[l]ine3\nline1\nline2\nline3\nline4\nline5\n"))
+  (ert-info ("Copy to intermediate line")
+    (evil-test-buffer
+      "[l]ine1\nline2\nline3\nline4\nline5\n"
+      (":2,4copy2")
+      "line1\nline2\nline2\nline3\n[l]ine4\nline3\nline4\nline5\n"))
+  (ert-info ("Copy to current line")
+    (evil-test-buffer
+      "line1\nline2\nline3\nli[n]e4\nline5\n"
+      (":2,4copy.")
+      "line1\nline2\nline3\nline4\nline2\nline3\n[l]ine4\nline5\n")))
+
+(ert-deftest evil-test-move ()
+  :tags '(evil ex)
+  "Test `evil-move'."
+  (ert-info ("Move to last line")
+    (evil-test-buffer
+      "[l]ine1\nline2\nline3\nline4\nline5\n"
+      (":2,3move$")
+      "line1\nline4\nline5\nline2\n[l]ine3\n"))
+  (ert-info ("Move to last incomplete line")
+    (evil-test-buffer
+      "[l]ine1\nline2\nline3\nline4\nline5"
+      (":2,3move$")
+      "line1\nline4\nline5\nline2\n[l]ine3\n"))
+  (ert-info ("Move incomplete line to last incomplete line")
+    (evil-test-buffer
+      "[l]ine1\nline2\nline3\nline4\nline5"
+      (":4,5move$")
+      "line1\nline2\nline3\nline4\n[l]ine5\n"))
+  (ert-info ("Move to first line")
+    (evil-test-buffer
+      "[l]ine1\nline2\nline3\nline4\nline5\n"
+      (":2,3move0")
+      "line2\n[l]ine3\nline1\nline4\nline5\n"))
+  (ert-info ("Move to intermediate line")
+    (evil-test-buffer
+      "[l]ine1\nline2\nline3\nline4\nline5\n"
+      (":2,4move2")
+      "line1\nline2\nline3\n[l]ine4\nline5\n"))
+  (ert-info ("Move to other line")
+    (evil-test-buffer
+      "[l]ine1\nline2\nline3\nline4\nline5\n"
+      (":2,3move4")
+      "line1\nline4\nline2\n[l]ine3\nline5\n"))
+  (ert-info ("Move to current line")
+    (evil-test-buffer
+      "line1\nline2\nline3\nli[n]e4\nline5\n"
+      (":2,4move.")
+      "line1\nline2\nline3\n[l]ine4\nline5\n")))
 
 ;;; Utilities
 
