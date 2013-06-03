@@ -223,6 +223,9 @@
 ;; inverse-video
 ;;    An attempt to get white on black.  For some reason this doesn't work
 ;;    but the --reverse-video CLI arg does.
+;; scroll-conservatively
+;;    Setting is best compromise I've found given the design of automatic
+;;    scrolling in the redisplay processing.
 ;; x-select-enable-clipboard
 ;;    This is necessary to paste into Windows running on qemu-kvm .
 (custom-set-variables
@@ -263,7 +266,7 @@
  '(python-continuation-offset (my-continuation-offset))
  '(python-indent my-offset)
  '(python-indent-offset my-offset)
- '(scroll-conservatively 3)
+ '(scroll-conservatively 5)
  '(tags-case-fold-search nil)
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)

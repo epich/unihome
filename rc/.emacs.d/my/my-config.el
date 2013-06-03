@@ -142,9 +142,6 @@
 (global-set-key (kbd "C-<right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "<f2>") (lambda () (interactive) (insert (my-get-buffer-name))))
 
-;; Rebind j and k so as scroll-conservatively==1 is better behaved
-(define-key evil-motion-state-map "j" 'evil-next-visual-line)
-(define-key evil-motion-state-map "k" 'evil-previous-visual-line)
 ;; ^ in Dired is more useful than Evil's binding.
 (define-key evil-motion-state-map "^" nil)
 (define-key evil-motion-state-map "f" 'buffer-menu)
@@ -184,8 +181,8 @@
 (define-key evil-motion-state-map "\C-xe" 'evil-backward-word-end)
 (define-key evil-motion-state-map "\C-xE" 'evil-backward-WORD-end)
 (define-key evil-motion-state-map "\C-xg" 'evil-goto-first-line)
-(define-key evil-motion-state-map "\C-xj" 'evil-next-line)
-(define-key evil-motion-state-map "\C-xk" 'evil-previous-line)
+(define-key evil-motion-state-map "\C-xj" 'evil-next-visual-line)
+(define-key evil-motion-state-map "\C-xk" 'evil-previous-visual-line)
 (define-key evil-motion-state-map "\C-x_" 'evil-last-non-blank)
 (define-key evil-motion-state-map "\C-x\C-]" 'find-tag)
 (define-key evil-motion-state-map "\C-xv" 'evil-visual-restore)
