@@ -215,7 +215,8 @@
     (call-process "cleartool"
                   nil nil nil
                   "co" "-nc"
-                  (format "%s" (file-name-nondirectory (or (buffer-file-name) default-directory))))
+                  (buffer-file-name))
+    ;; Get the new write permissions
     (revert-buffer)))
 (define-key evil-motion-state-map "o/" 'highlight-phrase)
 (define-key evil-normal-state-map "oa" 'move-past-close-and-reindent)
