@@ -130,6 +130,7 @@
 (define-key evil-motion-state-map (kbd "C--") (lambda ()))
 (define-key evil-normal-state-map (kbd "C--") (lambda ()))
 
+(define-key evil-insert-state-map (kbd "RET") 'evil-ret-and-indent)
 ;; Want RET to use other keymaps' binding sometimes.  Buffer Menu's for example.
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
@@ -289,9 +290,9 @@
    ;; This is the simplest way I could find to get a proper and complete current time.
    ;; Requires these includes: <pthread.h> <unistd.h> <stdio.h> <time.h>
    (insert "{ struct timespec debug_ts; char debug_dateStr[20]; { clock_gettime(CLOCK_REALTIME, &debug_ts); struct tm mytm; localtime_r(&debug_ts.tv_sec, &mytm); strftime(debug_dateStr, 20, \"%Y-%m-%dT%H:%M:%S\", &mytm); }")
-   (evil-ret)
+   (newline-and-indent)
    (insert "  printf( \"%s.%09ld|pid:%d|tid:%ld|%s|%d| DEBUG: \\n\", // TODO: debugging")
-   (evil-ret)
+   (newline-and-indent)
    (insert "          debug_dateStr, debug_ts.tv_nsec, getpid(), pthread_self(), __FILE__, __LINE__ ); fflush(stdout); }")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
@@ -301,9 +302,9 @@
    ;; The vimscript was:
    ;;imap <F3> org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // temporary for debug<Enter><Tab><Tab><Tab>"DEBUG: ",<Enter>new Object[]{} );<Esc>khi
    (insert "org.slf4j.LoggerFactory.getLogger(this.getClass()).warn( // TODO: temporary for debug")
-   (evil-ret)
+   (newline-and-indent)
    (insert "\t\t\t\"DEBUG: \",")
-   (evil-ret)
+   (newline-and-indent)
    (insert "new Object[]{} );")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
@@ -325,7 +326,7 @@
   "Insert log statement for shell. "
   (interactive)
   (insert "# TODO: temporary for debug")
-  (evil-ret)
+  (newline-and-indent)
   (insert "echo \"DEBUG: \"")
   (search-backward "DEBUG: ")
   (goto-char (match-end 0)))
@@ -339,12 +340,12 @@
   "Insert docstring for Python."
   (interactive)
   (insert "\"\"\"")
-  (evil-ret)
-  (evil-ret)
+  (newline-and-indent)
+  (newline-and-indent)
   (insert "Keyword arguments:")
-  (evil-ret)
+  (newline-and-indent)
   (insert "\"\"\"")
-  (evil-ret)
+  (newline-and-indent)
   (search-backward "\"\"\"")
   (search-backward "\"\"\"")
   (goto-char (match-end 0)))
