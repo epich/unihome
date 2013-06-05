@@ -5,18 +5,6 @@ Issues:
       (define-key evil-normal-state-map "gf" 'find-file-at-point)
       (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
       : Email sent to Evil mailing list asking about this.
-   : Backspace to tab stop backward-delete-whitespace-to-tab-stop
-      : Doesn't correctly handle backspace when there's a selection.
-         : Snag with solution:
-            : Go into insert mode
-            : Shift select text
-            : C-h k verifies backspace calls backward-delete-char-untabify
-            : Works:
-               : Hit Backspace key when .emacs bound it to backward-delete-char-untabify
-            : Does not work:
-               : M-x backward-delete-char-untabify
-            : Does not work:
-               : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
    : If I C-c or backspace to beginning of evil-search prompt, I have to wait in order to enter more input.  How to fix?
    : Have my-msg check the varargs for boundp, and handle unbounded vars accordingly.
    : Have F4 work in the mini buffer for inserting a bullet character
@@ -267,6 +255,16 @@ Issues:
       : Manual sections discussing lines:
          http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Text-Lines
          http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Screen-Lines
+      : A possible approach using screen lines:
+         : Program steps:
+            : Save position as orig-pos and save-excursion
+            : Move to my-screen-lines-offset (approximately 5 to 10) from last screen line (see move-to-window-line)
+               : Maybe use count-screen-lines and percentage to calculate my-screen-lines-offset
+            : Determine if orig-pos greater than the new location of point
+               : If so, recenter (after excursion)
+         : Apply similarly to top of screen lines
+         : Should I use cache-long-line-scans?
+         : Compare performance in files with long lines
    : My match-list
       : advise Evil function so as I can use evil-ex to search and replace with cycle-match-list
    : Tabs
@@ -292,6 +290,19 @@ Issues:
                   ;; cc-mode is distributed with Emacs, but using a newer version in order to get 
                   ;; style guessing.
                   (add-to-list 'load-path "~/.emacs.d/cc-mode")
+      : Backspace to tab stop backward-delete-whitespace-to-tab-stop
+         : Doesn't correctly handle backspace when there's a selection.
+            : Snag with solution:
+               : Go into insert mode
+               : Shift select text
+               : C-h k verifies backspace calls backward-delete-char-untabify
+               : Works:
+                  : Hit Backspace key when .emacs bound it to backward-delete-char-untabify
+               : Does not work:
+                  : M-x backward-delete-char-untabify
+               : Does not work:
+                  : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
+      : Try c-indent-line-or-region in C/C++ (maybe already be default)
    : Improve Emacs initialization
       : Learn about emacs as a server and client
       : See if there's a better way to ensure essential commands are available in the presence of other init errors
