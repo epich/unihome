@@ -29,6 +29,10 @@
    (interactive)
    (message "%s %s" (my-get-time-str) (apply 'format msg vargs)))
 
+(defun my-check-range (lhs middle rhs)
+  "Checks if lhs <= middle < rhs"
+  (and (<= lhs middle) (< middle rhs)))
+
 (defun my-insert-bullet ()
   "Insert a Unicode bullet character."
   (interactive)

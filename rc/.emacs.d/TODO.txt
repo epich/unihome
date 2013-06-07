@@ -255,18 +255,26 @@ Issues:
       : Manual sections discussing lines:
          http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Text-Lines
          http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Screen-Lines
+         http://www.gnu.org/software/emacs/manual/html_node/elisp/Window-Start-and-End.html
       : A possible approach using screen lines:
-         : Program steps:
-            : Save position as orig-pos and save-excursion
-            : Move to my-screen-lines-offset (approximately 5 to 10) from last screen line (see move-to-window-line)
-               : Maybe use count-screen-lines and percentage to calculate my-screen-lines-offset
-            : Determine if orig-pos greater than the new location of point
-               : If so, recenter (after excursion)
-         : Apply similarly to top of screen lines
          : Should I use cache-long-line-scans?
          : Compare performance in files with long lines
+         : Need to figure out the functions to advise, looks like several of Evil's search functions are necessary
+         : Need to finish my-scroll-maybe code, and document once working
+         : For end-of-visible-line code, if needed:
+            http://www.emacswiki.org/emacs/VisibleLines
+         : I've found when scroll-down is used when point is outside visible area, it scrolls as though point is recentered
+            : If this is valid, use this to fix my-scroll-maybe to not call (redisplay) explicitly?
+      : Another approach:
+         : Advise move-line to either:
+            : call scroll-up or scroll-down myself to ensure conservative scrolling
+            : dynamically bind scroll-conservatively and then explicitly invoke redisplay
+         : Set scroll aggressively to get desired auto scrolling for non move-line
+         : When I did this, move-line is jumpier -- navigates fast across stetches, slowly across others
    : My match-list
       : advise Evil function so as I can use evil-ex to search and replace with cycle-match-list
+   : Indentation:
+      : Want Shift-Enter to do newline or evil-ret and simply Enter to evil-ret-and-indent or newline-and-indent
    : Tabs
       : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
          : Some extensions:

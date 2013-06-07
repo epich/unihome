@@ -240,24 +240,134 @@
 (when my-use-undo-tree
    (define-key evil-normal-state-map "U" 'undo-tree-redo))
 
+(defvar my-leap-scroll-size 16)
 (define-key evil-normal-state-map ";" nil)
-;; Go down in larger steps
 (define-key evil-motion-state-map ";" 
-   (lambda ()
-      (interactive)
-      (let ((num-times 8))
-        (scroll-up num-times)
-        (evil-next-line num-times))
-      ))
+  (lambda ()
+    (interactive)
+    (scroll-up my-leap-scroll-size)
+    (evil-next-line my-leap-scroll-size)))
 (define-key evil-normal-state-map "'" nil)
-;; Go up in larger steps
 (define-key evil-motion-state-map "'" 
-   (lambda ()
-      (interactive)
-      (let ((num-times 8))
-        (scroll-down num-times)
-        (evil-previous-line num-times))
-      ))
+  (lambda ()
+    (interactive)
+    (scroll-down my-leap-scroll-size)
+    (evil-previous-line my-leap-scroll-size)))
+
+(defvar my-screen-lines-offset 5 
+  "Offset from top or bottom of visible screen lines to keep point within when using my-scroll-maybe. ")
+;; TODO: Clean version:
+;; (defun my-scroll-maybe ()
+;;   (interactive)
+;;   (let ((the-point (point))
+;;         (offset-from-top)
+;;         (offset-from-bottom))
+;;     (if (<= (count-screen-lines) (* 2 my-screen-lines-offset))
+;;         ;; Case where window is too small to do anything but recenter
+;;         (recenter)
+;;       ;; Common case where there's enough screen lines
+;;       (save-excursion
+;;         (move-to-window-line my-screen-lines-offset)
+;;         (setq offset-from-top (point))
+;;         (move-to-window-line (* -1 my-screen-lines-offset))
+;;         (setq offset-from-bottom (point)))
+;;       (cond 
+;;        ;; the-point above offset-from-top
+;;        ((< the-point offset-from-top)
+;;         (scroll-down (count-screen-lines the-point offset-from-top)))
+;;        ;; the-point below offset-from-bottom
+;;        ((<= offset-from-bottom the-point)
+;;         (scroll-up (count-screen-lines offset-from-bottom the-point t)))))))
+;; TODO: Dirty version, no the-bottom no the-top
+;; (defun my-scroll-maybe ()
+;;   (interactive)
+;;   (let ((the-point (point))
+;;         (the-top)
+;;         (offset-from-top)
+;;         (offset-from-bottom)
+;;         (the-bottom)
+;;         )
+;;     (if (<= (count-screen-lines) (* 2 my-screen-lines-offset))
+;;         ;; Case where window is too small to do anything but recenter
+;;         (recenter)
+;;       ;; Common case where there's enough screen lines
+;;       (save-excursion
+;;         (move-to-window-line 0)
+;;         (setq the-top (point))
+;;         (move-to-window-line my-screen-lines-offset)
+;;         (setq offset-from-top (point))
+;;         (move-to-window-line -1)
+;;         (setq the-bottom (point))
+;;         (move-to-window-line (* -1 my-screen-lines-offset))
+;;         (setq offset-from-bottom (point))
+;;         )
+;;       (my-msg "DEBUG: point=%s the-point=%s offset-from-top=%s offset-from-bottom=%s" (point) the-point offset-from-top offset-from-bottom) 
+;;       (let ((line-count (count-screen-lines offset-from-bottom the-point t)))
+;;         (my-msg "DEBUG: After counting, point=%s will scroll line-count=%s" (point) line-count))
+;;       (cond 
+;;        ;; the-point above offset-from-top
+;;        ((< the-point offset-from-top)
+;;         (scroll-down (count-screen-lines the-point offset-from-top)))
+;;        ;; the-point below offset-from-bottom
+;;        ((<= offset-from-bottom the-point)
+;;         (scroll-up (count-screen-lines offset-from-bottom the-point t)))
+;;        )
+;;       (my-msg "DEBUG: End of my-scroll-maybe point=%s " (point)) 
+;;       )))
+;; TODO: with the-bottom and the-top
+;; (defun my-scroll-maybe ()
+;;   (interactive)
+;;   (let ((the-point (point))
+;;         (the-top)
+;;         (offset-from-top)
+;;         (offset-from-bottom)
+;;         (the-bottom))
+;;     (if (<= (count-screen-lines) (* 2 my-screen-lines-offset))
+;;         ;; Case where window is too small to do anything but recenter
+;;         (recenter)
+;;       ;; Common case where there's enough screen lines
+;;       (save-excursion
+;;         (move-to-window-line 0)
+;;         (setq the-top (point))
+;;         (move-to-window-line my-screen-lines-offset)
+;;         (setq offset-from-top (point))
+;;         (move-to-window-line -1)
+;;         (setq the-bottom (point))
+;;         (move-to-window-line (* -1 my-screen-lines-offset))
+;;         (setq offset-from-bottom (point))
+;;         )
+;;       (cond 
+;;        ;; the-point above the-top
+;;        ((< the-point the-top)
+;;         TODO)
+;;        ;; the-point between the-top and offset-from-top
+;;        ((< the-point offset-from-top)
+;;         (scroll-down (count-screen-lines the-point offset-from-top)))
+;;        ;; the-point between offset-from-top and offset-from-bottom (no action)
+;;        (())
+;;        ;; the-point between offset-from-bottom and the-bottom
+;;        ((<= offset-from-bottom the-point)
+;;         (scroll-up (count-screen-lines offset-from-bottom the-point t)))
+;;        ;; the-point below the-bottom
+;;        (())
+;;        )
+;;       )))
+
+;; TODO:
+;; (defadvice evil-search (after my-advice-evil-search activate)
+;;   (my-scroll-maybe))
+;; (defadvice evil-ex-search-next (after my-advice-evil-ex-search-next activate)
+;;   (my-scroll-maybe))
+;; (defadvice evil-ex-start-search (after my-advice-evil-ex-start-search activate)
+;;   (my-scroll-maybe))
+;; (defadvice evil-ex-start-symbol-search (after my-advice-evil-ex-start-symbol-search activate)
+;;   (my-scroll-maybe))
+
+;; TODO:
+;; (defadvice line-move (around my-advice-line-move activate)
+;;   (let ((scroll-conservatively 101))
+;;     ad-do-it
+;;     (redisplay)))
 
 ;;; Load TAGS file, searching upwards from the directory Emacs was launched.
 (let ((my-tags-file (my-find-file-upwards "TAGS")))
