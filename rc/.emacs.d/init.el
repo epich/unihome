@@ -220,9 +220,14 @@
 ;; font-lock-maximum-decoration
 ;;    C++ was behaving way to slow when simply typing comments.  I lowered
 ;;    its font-lock-maximum-decoration to 2 and saw massive improvement.
+;;
+;;    I set jit-lock-defer-time and as able to up font-lock-maximum-decoration
+;;    to t again.
 ;; inverse-video
 ;;    An attempt to get white on black.  For some reason this doesn't work
 ;;    but the --reverse-video CLI arg does.
+;; jit-lock-defer-time
+;;    Set to just longer than the keyboard repetition rate.
 ;; scroll-conservatively
 ;;    Setting is best compromise I've found given the design of automatic
 ;;    scrolling in the redisplay processing.
@@ -236,7 +241,9 @@
  '(Buffer-menu-name-width 64)
  '(ac-delay 1.0)
  '(c-syntactic-indentation nil)
- '(cc-search-directories (quote ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "../../src" "./include" "../include" "./inc" "../inc" "../inc/L1aObject")))
+ '(cc-search-directories
+   (quote
+    ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "../../src" "./include" "../include" "./inc" "../inc" "../inc/L1aObject")))
  '(delete-by-moving-to-trash t)
  '(dired-auto-revert-buffer t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
@@ -251,13 +258,16 @@
  '(evil-shift-width my-offset)
  '(ff-always-try-to-create nil)
  '(ff-special-constructs nil)
- '(font-lock-maximum-decoration (quote ((c++-mode . 2))))
+ '(font-lock-maximum-decoration (quote ((c++-mode . t))))
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(inverse-video t)
  '(jde-global-classpath my-java-classpath)
- '(jde-jdk-registry (quote (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
+ '(jde-jdk-registry
+   (quote
+    (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
  '(jde-sourcepath my-java-sourcepath)
+ '(jit-lock-defer-time 0.1)
  '(large-file-warning-threshold 1000000000.0)
  '(message-log-max 100000)
  '(nxml-attribute-indent (my-continuation-offset))
