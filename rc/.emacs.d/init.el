@@ -267,7 +267,7 @@
    (quote
     (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
  '(jde-sourcepath my-java-sourcepath)
- '(jit-lock-defer-time 0.1)
+ '(jit-lock-defer-time 0.01)
  '(large-file-warning-threshold 1000000000.0)
  '(message-log-max 100000)
  '(nxml-attribute-indent (my-continuation-offset))
