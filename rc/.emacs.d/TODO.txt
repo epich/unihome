@@ -1,4 +1,5 @@
 Issues:
+   : Try emacs-startup-hook instead of term-setup-hook
    : Assess which Evil key bindings need to move from evil-normal-state-map to evil-motion-state-map
       (define-key evil-normal-state-map "y" 'evil-yank)
       (define-key evil-normal-state-map "Y" 'evil-yank-line)
@@ -119,6 +120,7 @@ Issues:
       : Learn Edebug
          : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
       : Consider approaches to put *Messages* buffer to file.
+      : edebug-initial-mode to continue to breakpoint
    : Learn about Dired
       : Is there a notion of finding a set of files based on a criteria (search term, use of symbol), then iteratively visiting just those?
          : Need Dired Plus to visit marked files
@@ -155,7 +157,7 @@ Issues:
       : Is it worth using outside of Semantic commands?
          : Review http://www.wolinlabs.com/blog/emacs.global.speedbar.html
    : Byte compilation:
-      : Is there a way to have Emacs emit dependency info for GNU Make when compiling .el into .elc files?
+      : Is there a way to have Emacs emit dependency info for GNU Make when compiling .el into .elc files, based on calls to require?
    : Java development
       : Try out emacs-eclim which uses Eclipse as a backend
          http://www.skybert.net/emacs/java/
@@ -223,11 +225,6 @@ Issues:
    : Shell
       : Set --color flag to ls
       : Fix dark blue color for directories
-   : Smart editing:
-      : Need to specify how many tabs to continue code lines with.
-         : Done for Python (as much as can be)
-         : Do for C like languages
-         : Do for XML
    : XML editting
       : Surround with tags
          : Some implementations:
@@ -298,6 +295,11 @@ Issues:
                   ;; cc-mode is distributed with Emacs, but using a newer version in order to get 
                   ;; style guessing.
                   (add-to-list 'load-path "~/.emacs.d/cc-mode")
+      : Smart editing:
+         : Need to specify how many tabs to continue code lines with.
+            : Done for Python (as much as can be)
+            : Do for C like languages
+            : Do for XML
       : Backspace to tab stop backward-delete-whitespace-to-tab-stop
          : Doesn't correctly handle backspace when there's a selection.
             : Snag with solution:
@@ -311,6 +313,9 @@ Issues:
                : Does not work:
                   : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
       : Try c-indent-line-or-region in C/C++ (maybe already be default)
+      : Try out using M-i and restoring TAB to its default binding
+      : Experiment with values of tab-always-indent
+      : Try out electric-indent-mode
    : Improve Emacs initialization
       : Learn about emacs as a server and client
       : See if there's a better way to ensure essential commands are available in the presence of other init errors
