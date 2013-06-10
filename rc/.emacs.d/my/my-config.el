@@ -307,49 +307,61 @@
 ;;       (cond 
 ;;        ;; the-point above offset-from-top
 ;;        ((< the-point offset-from-top)
-;;         (scroll-down (count-screen-lines the-point offset-from-top)))
+;;         (scroll-down 1)
+;;         ;; (scroll-down (count-screen-lines the-point offset-from-top))
+;;         ;; (goto-char the-point)
+;;         )
 ;;        ;; the-point below offset-from-bottom
 ;;        ((<= offset-from-bottom the-point)
-;;         (scroll-up (count-screen-lines offset-from-bottom the-point t)))
+;;         (scroll-up 1)
+;;         ;; (scroll-up (count-screen-lines offset-from-bottom the-point t))
+;;         ;; (goto-char the-point)
+;;         )
 ;;        )
 ;;       (my-msg "DEBUG: End of my-scroll-maybe point=%s " (point)) 
 ;;       )))
 ;; TODO: with the-bottom and the-top
+;; TODO: Note: recenter puts point just below center when there's an odd number of visible lines
 ;; (defun my-scroll-maybe ()
 ;;   (interactive)
-;;   (let ((the-point (point))
-;;         (the-top)
-;;         (offset-from-top)
-;;         (offset-from-bottom)
-;;         (the-bottom))
-;;     (if (<= (count-screen-lines) (* 2 my-screen-lines-offset))
+;;   (let* ((the-point (point))
+;;          (the-top (window-start))
+;;          (offset-from-top)
+;;          (offset-from-bottom)
+;;          (the-bottom (window-end nil t))
+;;          (num-lines (count-screen-lines the-top the-bottom)))
+;;     (if (<= num-lines (* 2 my-screen-lines-offset))
 ;;         ;; Case where window is too small to do anything but recenter
 ;;         (recenter)
 ;;       ;; Common case where there's enough screen lines
 ;;       (save-excursion
-;;         (move-to-window-line 0)
-;;         (setq the-top (point))
+;;         ;; (move-to-window-line 0)
+;;         ;; (setq the-top (point))
 ;;         (move-to-window-line my-screen-lines-offset)
 ;;         (setq offset-from-top (point))
-;;         (move-to-window-line -1)
-;;         (setq the-bottom (point))
+;;         ;; (move-to-window-line -1)
+;;         ;; (setq the-bottom (point))
 ;;         (move-to-window-line (* -1 my-screen-lines-offset))
 ;;         (setq offset-from-bottom (point))
 ;;         )
+;;       (my-msg "DEBUG: point=%s the-point=%s the-top=%s offset-from-top=%s offset-from-bottom=%s the-bottom=%s num-lines=%s" (point) the-point the-top offset-from-top offset-from-bottom the-bottom num-lines) 
 ;;       (cond 
 ;;        ;; the-point above the-top
 ;;        ((< the-point the-top)
-;;         TODO)
+;;         (my-msg "DEBUG: over top") 
+;;         (scroll-up (- (/ num-lines 2) my-screen-lines-offset)))
 ;;        ;; the-point between the-top and offset-from-top
 ;;        ((< the-point offset-from-top)
+;;         (my-msg "DEBUG: top margin") 
 ;;         (scroll-down (count-screen-lines the-point offset-from-top)))
-;;        ;; the-point between offset-from-top and offset-from-bottom (no action)
-;;        (())
+;;        ;; the-point below the-bottom
+;;        ((<= the-bottom the-point)
+;;         (my-msg "DEBUG: below bottom scroll-up")
+;;         (scroll-down (- (car (cl-ceiling num-lines 2)) my-screen-lines-offset 1)))
 ;;        ;; the-point between offset-from-bottom and the-bottom
 ;;        ((<= offset-from-bottom the-point)
+;;         (my-msg "DEBUG: bottom margin") 
 ;;         (scroll-up (count-screen-lines offset-from-bottom the-point t)))
-;;        ;; the-point below the-bottom
-;;        (())
 ;;        )
 ;;       )))
 
