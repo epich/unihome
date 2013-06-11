@@ -248,6 +248,30 @@ Notes:
          Y Prefix key for version control
 
 Retired issues with residual notes:
+   : Automatic scrolling:
+      : Emacs manual:
+         http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Scrolling.html
+      : Email threads
+         : Using around advice to change automatic scrolling variables doesn't work:
+            http://lists.gnu.org/archive/html/help-gnu-emacs/2013-05/msg00722.html
+         : scroll-conservatively==1 fails occasionally for fast navigation up:
+            http://lists.gnu.org/archive/html/help-gnu-emacs/2013-05/msg00731.html
+      : Programming:
+         : Elisp manual sections:
+            http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Text-Lines
+            http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Screen-Lines
+            http://www.gnu.org/software/emacs/manual/html_node/elisp/Window-Start-and-End.html
+         : For end-of-visible-line code, if needed:
+            http://www.emacswiki.org/emacs/VisibleLines
+         : Tried advising move-line, resulted in jumpier navigation -- faster and slower across stretches
+         : Tried implementing my-scroll-maybe for use in advising evil-search functions and others
+            : Should I use cache-long-line-scans?
+            : Compare performance in files with long lines
+            : Need to figure out the functions to advise, looks like several of Evil's search functions are necessary
+            : Need to finish my-scroll-maybe code, and document once working
+            : I've found when scroll-down is used when point is outside visible area, it scrolls as though point is recentered
+               : If this is valid, use this to fix my-scroll-maybe to not call (redisplay) explicitly?
+               : Note: recenter puts point just below center when there's an odd number of visible lines
    : All things C-g does C-c should do.
       : Mapping to keyboard-escape-quit appears to cover most cases, except for quiting with unsaved mods.
       : Try keyboard-translate or key-translation-map

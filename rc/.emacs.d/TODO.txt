@@ -239,35 +239,6 @@ Issues:
    : Pair matching
       : Need to be able to use % for <> pairs, "" and '' pairs too.
          : forward-sexp seems to have the knowledge match "" chars.  Understand how.
-   : Automatic scrolling:
-      : Involves redisplay:
-         : Using around advice to change automatic scrolling variables doesn't work:
-            http://lists.gnu.org/archive/html/help-gnu-emacs/2013-05/msg00722.html
-         : scroll-conservatively==1 fails occasionally for fast navigation up:
-            http://lists.gnu.org/archive/html/help-gnu-emacs/2013-05/msg00731.html
-      : scroll-down-aggressively scroll-up-aggressively
-         : Look useful
-         : Emacs manual states these are ignored if scroll-conservatively is set to non zero. Practical to fix this?
-            http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Scrolling.html
-      : Manual sections discussing lines:
-         http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Text-Lines
-         http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Screen-Lines
-         http://www.gnu.org/software/emacs/manual/html_node/elisp/Window-Start-and-End.html
-      : A possible approach using screen lines:
-         : Should I use cache-long-line-scans?
-         : Compare performance in files with long lines
-         : Need to figure out the functions to advise, looks like several of Evil's search functions are necessary
-         : Need to finish my-scroll-maybe code, and document once working
-         : For end-of-visible-line code, if needed:
-            http://www.emacswiki.org/emacs/VisibleLines
-         : I've found when scroll-down is used when point is outside visible area, it scrolls as though point is recentered
-            : If this is valid, use this to fix my-scroll-maybe to not call (redisplay) explicitly?
-      : Another approach:
-         : Advise move-line to either:
-            : call scroll-up or scroll-down myself to ensure conservative scrolling
-            : dynamically bind scroll-conservatively and then explicitly invoke redisplay
-         : Set scroll aggressively to get desired auto scrolling for non move-line
-         : When I did this, move-line is jumpier -- navigates fast across stetches, slowly across others
    : My match-list
       : advise Evil function so as I can use evil-ex to search and replace with cycle-match-list
    : Indentation:
