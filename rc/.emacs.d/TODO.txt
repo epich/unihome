@@ -241,8 +241,9 @@ Issues:
          : forward-sexp seems to have the knowledge match "" chars.  Understand how.
    : My match-list
       : advise Evil function so as I can use evil-ex to search and replace with cycle-match-list
-   : Indentation:
-      : Want Shift-Enter to do newline or evil-ret and simply Enter to evil-ret-and-indent or newline-and-indent
+   : Shift-Enter either:
+      : Do a newline or evil-ret while simply Enter to evil-ret-and-indent or newline-and-indent
+      : Shift-Enter for escaping Evil insert
    : Tabs
       : Is there a way to dynamically determine tab stops based on analyzing how indentation is used in file?
          : Some extensions:
@@ -260,17 +261,6 @@ Issues:
                   : Doesn't work: calling c-guess from the c-mode-common-hook
                   : Does work: M-x c-guess
                   : c-guess does a lot of other things I think, which makes it run long.
-               : elisp initialization:
-                  ;;; Initialize cc-mode
-                  ;;
-                  ;; cc-mode is distributed with Emacs, but using a newer version in order to get 
-                  ;; style guessing.
-                  (add-to-list 'load-path "~/.emacs.d/cc-mode")
-      : Smart editing:
-         : Need to specify how many tabs to continue code lines with.
-            : Done for Python (as much as can be)
-            : Do for C like languages
-            : Do for XML
       : Backspace to tab stop backward-delete-whitespace-to-tab-stop
          : Doesn't correctly handle backspace when there's a selection.
             : Snag with solution:
@@ -283,10 +273,9 @@ Issues:
                   : M-x backward-delete-char-untabify
                : Does not work:
                   : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
-      : Try c-indent-line-or-region in C/C++ (maybe already be default)
+      : Perhaps rebind M-DEL to DEL to last tab stop
       : Try out using M-i and restoring TAB to its default binding
-      : Experiment with values of tab-always-indent
-      : Try out electric-indent-mode
+      : Using M-<n*my-offset> then SPACE or DEL might be a viable approach
    : Improve Emacs initialization
       : Learn about emacs as a server and client
       : See if there's a better way to ensure essential commands are available in the presence of other init errors

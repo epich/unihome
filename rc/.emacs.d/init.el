@@ -240,7 +240,6 @@
  ;; If there is more than one, they won't work right.
  '(Buffer-menu-name-width 64)
  '(ac-delay 1.0)
- '(c-syntactic-indentation nil)
  '(cc-search-directories
    (quote
     ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "../../src" "./include" "../include" "./inc" "../inc" "../inc/L1aObject")))
