@@ -25,7 +25,7 @@
 (setq enable-recursive-minibuffers t)
 ;; Emacs stupidly formats curly braces in neither of the two most common ways.
 ;; This fixes that.
-(setq c-default-style "linux")
+(setq c-default-style "k&r")
 ;; Font size (multiplied by 10)
 (set-face-attribute 'default nil :height 80)
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -276,7 +276,7 @@
  '(python-indent my-offset)
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)
- '(scroll-margin 5)
+ '(scroll-margin 4)
  '(tags-case-fold-search nil)
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
