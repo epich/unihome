@@ -1,28 +1,18 @@
 Issues:
-   : Try emacs-startup-hook instead of term-setup-hook
-   : Assess which Evil key bindings need to move from evil-normal-state-map to evil-motion-state-map
-      (define-key evil-normal-state-map "y" 'evil-yank)
-      (define-key evil-normal-state-map "Y" 'evil-yank-line)
-      (define-key evil-normal-state-map "gf" 'find-file-at-point)
-      (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
-      : Email sent to Evil mailing list asking about this.
-   : If I C-c or backspace to beginning of evil-search prompt, I have to wait in order to enter more input.  How to fix?
    : Have my-msg check the varargs for boundp, and handle unbounded vars accordingly.
    : Have F4 work in the mini buffer for inserting a bullet character
       : Define the key binding in more Emacs-mainstream way
-   : Evil bugs:
-      : Evil . command repeats wrong commands
-         : Try Frank's advice: https://bitbucket.org/lyro/evil/issue/279/evil-command-repeats-wrong-commands
-            : Declare all commands added to evil-motion-state-map by (eg revert-buffer):
-               (evil-declare-ignore-repeat 'revert-buffer)
-      : Can't do: v /search-term
-         : Text doesn't highlight to search term
-      : When I highlight with V, whole line including new line doesn't seem to be included
-         : As evidence by undoing in region with undo-tree
-         : Does work when doing 0v-
-      : After a while, search and replace becomes buggy.  These have possibly the same root cause:
-         : Highlight region, search and replace, entire file is changed!
-         : Highlight region, replace foo with foobar, goes into an infinite recursion of inserts (as seen when C-g)
+   : Evil
+      : If I C-c or backspace to beginning of evil-search prompt, I have to wait in order to enter more input.  How to fix?
+      : Try Frank's advice: https://bitbucket.org/lyro/evil/issue/279/evil-command-repeats-wrong-commands
+         : Declare all commands added to evil-motion-state-map by (eg revert-buffer):
+            (evil-declare-ignore-repeat 'revert-buffer)
+      : Assess which Evil key bindings need to move from evil-normal-state-map to evil-motion-state-map
+         (define-key evil-normal-state-map "y" 'evil-yank)
+         (define-key evil-normal-state-map "Y" 'evil-yank-line)
+         (define-key evil-normal-state-map "gf" 'find-file-at-point)
+         (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
+         : Email sent to Evil mailing list asking about this.
    : Editing Lisp
       : Syntax highlighting:
          : Pairs of parens in different colors, bottom up from point
@@ -48,6 +38,8 @@ Issues:
                : o'
          : Put point well before {}, delete-pair ("od"), only closing } is deleted
          : Take a step back and look at my commands and their key bindings
+         : Idea for lisp-indent-line to behave somewhat like python-indent-line-function:
+            : Tab cycles through possible indentation levels and deletions of ')' of the the previous line
       : Notes:
          : List and sexp navigation
             forward-list
@@ -89,6 +81,7 @@ Issues:
             : gud-until is busted.
                : Opens up source on other buffer when should use current source code buffer
                : Current execution is steps out, not actually at the until point
+   : Why don't < <= >= > functions take var args?
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
@@ -139,7 +132,6 @@ Issues:
             : Confirm whether true for std::shared_ptr
          : Forward declarations
             : semantic-ia-fast-jump should use ff-find-other-file and use other file's includes, so as forward declarations work better.
-         : On a Linux system, ^M characters in a file prevented semantic-ia-fast-jump from working.
       : Bug reports:
          : semantic-analyze-proto-impl-toggle
             : Takes 26 minutes
@@ -152,6 +144,11 @@ Issues:
       : Have semantic-ia-fast-jump push the location it left.  MRU isn't quite the same, it returns to last edit.
       : Why is global-semantic-mru-bookmark-mode off when my init file has it enabled?
       : Set semantic-idle-symbol-highlight-face to a similar face as global-semantic-highlight-func-mode uses, then enable global-semantic-idle-local-symbol-highlight-mode
+      : While editing code, sometimes (probably but unconfirmed) Semantic will go elsewhere and screw up scroll position
+         : Try turning on Semantic debugging submode?
+         : Figure out whether semantic-fetch-tags travels (semantic-parse-tree-needs-update-p) path or (semantic-parse-tree-needs-rebuild-p) or other
+      : Does MRU duplicate goto-chg?
+      : Does not find tags when 'using namespace' in function scope
    : GNU Global
       : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Is it worth using outside of Semantic commands?

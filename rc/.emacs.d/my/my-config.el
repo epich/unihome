@@ -463,7 +463,7 @@
   )
 
 ;;; Finalizing initialization
-(defun my-term-setup-hook ()
+(defun my-emacs-startup-hook ()
   ;; Apparently some elisp needs to be placed here to work.
 
   (delete-other-windows)
@@ -471,7 +471,7 @@
   ;;(setq search-whitespace-regexp nil)
 
   ;; Make the end obvious, since this is a major point in the Emacs runtime
-  (my-msg "-------------------------------- Finished with my-term-setup-hook.")
+  (my-msg "---------------- Finished with my-emacs-startup-hook. ----------------")
   )
 
 (provide 'my-config)

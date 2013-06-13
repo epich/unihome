@@ -312,7 +312,7 @@
 (add-hook 'nxml-mode-hook 'my-nxml-mode-hook)
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
-(add-hook 'term-setup-hook 'my-term-setup-hook)
+(add-hook 'emacs-startup-hook 'my-emacs-startup-hook)
 
 (my-msg "Finished loading init file. ")
 
