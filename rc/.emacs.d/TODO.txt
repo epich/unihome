@@ -200,11 +200,6 @@ Issues:
             : Outside of Emacs, edit earlier in buffer
          : Determine behavior with stock undo.
          : Could not reproduce on RHEL 5, either with stock undo or undo-tree.
-   : Undo in general
-      : revert-buffer wipes out undo history
-         : See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=18
-         : See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=8447
-      : Perhaps ask for Stefan's private patch mentioned in the bug report above
    : Learn merging in Git
       : Use magit?
    : Learn about org-mode
