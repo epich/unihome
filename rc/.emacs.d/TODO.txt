@@ -149,6 +149,7 @@ Issues:
          : Figure out whether semantic-fetch-tags travels (semantic-parse-tree-needs-update-p) path or (semantic-parse-tree-needs-rebuild-p) or other
       : Does MRU duplicate goto-chg?
       : Does not find tags when 'using namespace' in function scope
+      : I found a case in Java (with JDEE) where calling semantic-symref seemed to permanently change point in other Java source files
    : GNU Global
       : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Is it worth using outside of Semantic commands?
