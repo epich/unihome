@@ -270,6 +270,8 @@ Issues:
       : Perhaps rebind M-DEL to DEL to last tab stop
       : Try out using M-i and restoring TAB to its default binding
       : Using M-<n*my-offset> then SPACE or DEL might be a viable approach
+   : Consider Stefan's settings for anything useful
+      https://lists.gnu.org/archive/html/bug-gnu-emacs/2013-06/msg00539.html
    : Improve Emacs initialization
       : Learn about emacs as a server and client
       : See if there's a better way to ensure essential commands are available in the presence of other init errors
