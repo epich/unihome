@@ -183,6 +183,7 @@ Issues:
       : When navigating hunks, top of hunk displays in the middle of display, even if all of the hunk doesn't show.
          : Can use zt zb commands for now
       : Why not refine all diffs during initialization?
+      : Try diff-auto-refine-mode
       : In the diff file, lines '^Only in .*' are not navigated to by diff-file-next and diff-file-prev.
    : Undo Tree
       : Undo in region can create inefficiencies so extreme I can't access parts of the undo tree in reasonable time periods.
