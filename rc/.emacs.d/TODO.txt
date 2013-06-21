@@ -13,6 +13,8 @@ Issues:
          (define-key evil-normal-state-map "gf" 'find-file-at-point)
          (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
          : Email sent to Evil mailing list asking about this.
+   : Emacs bug:
+      : With my font lock settings, auto revert of source code does not cause font lock update until move point
    : Editing Lisp
       : Syntax highlighting:
          : Pairs of parens in different colors, bottom up from point
@@ -162,6 +164,8 @@ Issues:
    : Multi window navigation
       : Set up so as motion commands will go to all windows.
          : Make toggle for on and off.
+   : Pretty printing or formatting
+      : How to format code with the potential to change across file lines. The = doesn't.
    : Ediff
       : Deficiencies
          : When navigating in non changed regions, other window should navigate automatically in sync.

@@ -89,6 +89,7 @@ Notes:
           '(evil-overriding-maps nil)
           )
    : nxml-mode for XML editing.
+      : To pretty-print a region: "C-u M-| xmllint --format -" or to preview exclude C-u
    : F keys:
       (define-key python-mode-map (kbd "<f12>") 'python-switch-to-python)
    : Eval:
