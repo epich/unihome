@@ -124,6 +124,11 @@
                                     ;; Disabled because:
                                     ;;  : Need to customize better face for semantic-idle-symbol-highlight-face
                                     ;; global-semantic-idle-local-symbol-highlight-mode
+
+                                    ;;; For debugging Semantic
+                                    ;; global-semantic-show-unmatched-syntax-mode
+                                    ;; global-semantic-show-parser-state-mode
+                                    ;; global-semantic-highlight-edits-mode
                                     ))
   (semantic-mode 1)
   (require 'eassist)
@@ -138,8 +143,10 @@
   ;;   (semanticdb-enable-gnu-global-databases 'c++-mode))
   )
 
-(when (file-accessible-directory-p my-bzr-cedet-path)
-  (setq my-enable-cedet-function 'my-enable-cedet-from-bzr))
+;; CEDET in Emacs trunk is sufficient right now
+;; (when (file-accessible-directory-p my-bzr-cedet-path)
+;;   (setq my-enable-cedet-function 'my-enable-cedet-from-bzr))
+
 ;; CEDET documents loading must occur before other packages load any part of CEDET.
 ;; Especially important since Emacs has a different version builtin, which I can't
 ;; use when using JDEE.
@@ -233,6 +240,7 @@
 ;;    scrolling in the redisplay processing.
 ;; x-select-enable-clipboard
 ;;    This is necessary to paste into Windows running on qemu-kvm .
+;; TODO: Change semantic-idle-scheduler-verbose-flag to nil when finished debugging undesired scrolling
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -277,6 +285,7 @@
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)
  '(scroll-margin 4)
+ '(semantic-idle-scheduler-verbose-flag t)
  '(tags-case-fold-search nil)
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
@@ -298,7 +307,7 @@
  '(rainbow-delimiters-depth-7-face ((t (:foreground "white"))))
  '(rainbow-delimiters-depth-8-face ((t (:foreground "MediumOrchid2"))))
  '(rainbow-delimiters-depth-9-face ((t (:foreground "orange"))))
- '(whitespace-tab ((((class color) (background dark)) (:background "grey50" :foreground "darkgray"))))
+ '(whitespace-tab ((((class color) (background dark)) (:background "grey30" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
 (require 'my-config)
