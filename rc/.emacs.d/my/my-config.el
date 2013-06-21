@@ -260,11 +260,15 @@
     (my-msg "Loading tags file: %s" my-tags-file)
     (visit-tags-table my-tags-file)))
 
-;;; Fixes to use save-match-data
-;; Fixed in CEDET mainline
+;; TODO: Fixed in CEDET mainline and Emacs trunk, so delete this when in a formal Emacs release
 (defadvice semantic-change-function (around my-advice-semantic-change-function activate)
-  (save-match-data ad-do-it)
-  )
+  (save-match-data ad-do-it))
+
+;; TODO: For debugging undesired scrolling, delete when done
+(defadvice semantic-idle-core-handler (around my-advice-semantic-idle-core-handler activate)
+  (let ((window-start-prior (window-start)))
+    ad-do-it
+    (my-msg "DEBUG: During semantic-idle-core-handler, window-start change:%s,%s" window-start-prior (window-start))))
 
 ;;; Debug logging
 (defun my-insert-ant-log ()
