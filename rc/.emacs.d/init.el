@@ -53,8 +53,7 @@
 ;; Ruby rake build files
 (add-to-list 'auto-mode-alist '("Rakefile" . ruby-mode))
 ;; Conjure uses these extensions for Scheme code, for unknown reason
-(add-to-list 'auto-mode-alist '("\\.sls\\'" . scheme-mode))
-(add-to-list 'auto-mode-alist '("\\.sps\\'" . scheme-mode))
+(add-to-list 'auto-mode-alist '("\\.rkt\\'" . scheme-mode))
 (add-to-list 'auto-mode-alist '("wscript" . python-mode))
 (add-to-list 'auto-mode-alist '("Makefile.*" . makefile-mode))
 
