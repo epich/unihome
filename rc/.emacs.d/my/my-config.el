@@ -321,6 +321,12 @@
   (insert "print( \"DEBUG: \"%() ) ; sys.stdout.flush() # TODO: temporary for debug")
   (search-backward "DEBUG: ")
   (goto-char (match-end 0)))
+(defun my-insert-ruby-log ()
+  "Insert log statement for Ruby. "
+  (interactive)
+  (insert "printf( \"DEBUG: \" ) # TODO: temporary for debug")
+  (search-backward "DEBUG: ")
+  (goto-char (match-end 0)))
 (defun my-insert-sh-log ()
   "Insert log statement for shell. "
   (interactive)
@@ -460,6 +466,10 @@
   (my-msg "Inside my-python-mode-hook for buffer %s " (buffer-name))
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-python-log)
   (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-python-doc)
+  )
+(defun my-ruby-mode-hook ()
+  (my-msg "Inside my-ruby-mode-hook for buffer %s " (buffer-name))
+  (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-ruby-log)
   )
 (defun my-sh-mode-hook ()
   (my-msg "Inside my-sh-mode-hook for buffer %s " (buffer-name))

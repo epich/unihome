@@ -51,9 +51,9 @@
 ;;
 (add-to-list 'auto-mode-alist '("README.*" . text-mode))
 ;; Ruby rake build files
+(add-to-list 'auto-mode-alist '("\\.clj" . lisp-mode))
 (add-to-list 'auto-mode-alist '("Rakefile" . ruby-mode))
-;; Conjure uses these extensions for Scheme code, for unknown reason
-(add-to-list 'auto-mode-alist '("\\.rkt\\'" . scheme-mode))
+(add-to-list 'auto-mode-alist '("\\.rkt" . scheme-mode))
 (add-to-list 'auto-mode-alist '("wscript" . python-mode))
 (add-to-list 'auto-mode-alist '("Makefile.*" . makefile-mode))
 
@@ -61,7 +61,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'rainbow-delimiters)
 ;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
 (require 'goto-chg)
 
 ;;; Undo Tree
@@ -192,7 +192,7 @@
 ;;; Relating to tabs
 ;; I would prefer automatic guessing of my-offset based on the offset in use for the
 ;; surrounding code.
-(defvar my-offset 3 "My indentation offset. ")
+(defvar my-offset 2 "My indentation offset. ")
 (defun my-continuation-offset ()
   "Determine the offset for line continuations."
   (* 3 my-offset))
@@ -319,6 +319,7 @@
 (add-hook 'makefile-mode-hook 'my-makefile-mode-hook)
 (add-hook 'nxml-mode-hook 'my-nxml-mode-hook)
 (add-hook 'python-mode-hook 'my-python-mode-hook)
+(add-hook 'ruby-mode-hook 'my-ruby-mode-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
 (add-hook 'emacs-startup-hook 'my-emacs-startup-hook)
 
