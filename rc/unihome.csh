@@ -32,7 +32,8 @@ set ignoreeof=1
 # Allow core files, sys default is 0.  No particular reason for chosen value.
 limit coredumpsize unlimited
 # Vi bindings when arrowing up to previous commands
-bindkey -v
+# Unfortunately, csh vi binding is buggy
+#bindkey -v
 
 #alias title 'echo -n "\033]0;\!*\007"'
 alias title 'echo -n "]2;\!*"'
