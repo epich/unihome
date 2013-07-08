@@ -1,12 +1,14 @@
 ;;; evil.el --- extensible vi layer
 
-;; Author: Vegard Øye <vegard_oye at hotmail.com>
+;; Authors:
+;;      Alessandro Piras <laynor@gmail.com>
 ;;      Antono Vasiljev <antono.vasiljev at gmail.com>
 ;;      Barry O'Reilly <gundaetiapo at gmail.com>
 ;;      Christoph Lange <langec at web.de>
 ;;      Frank Fischer <frank.fischer at mathematik.tu-chemnitz.de>
 ;;      Frank Terbeck <ft at bewatermyfriend.org>
 ;;      Jonathan Claggett <jclaggett at lonocloud.com>
+;;      José A. Romero L. <escherdragon@gmail.com>
 ;;      Lars Andersen <mrgrandmother at gmail.com>
 ;;      Lintaro Ina <tarao.gnn at gmail.com>
 ;;      Marian Schubert <maio@netsafe.cz>
@@ -19,6 +21,7 @@
 ;;      Thomas Hisch <thomas at opentech.at>
 ;;      Trevor Murphy <trevor.m.murphy at gmail.com>
 ;;      Ulrich Müller <ulm at gentoo.org>
+;;      Vegard Øye <vegard_oye at hotmail.com>
 ;;      Winfred Lu <winfred.lu@gmail.com>
 ;;      Wolfgang Jenkner <wjenkner at inode.at>
 ;;      York Zhao <yzhao at telecor.com>
@@ -27,7 +30,7 @@
 ;;      To get in touch, please use the bug tracker or the
 ;;      mailing list (see below).
 ;; Created: 2011-03-01
-;; Version: 1.0-dev
+;; Version: 1.0.6
 ;; Keywords: emulation, vim
 ;; URL: http://gitorious.org/evil
 ;;      Repository: git://gitorious.org/evil/evil.git
