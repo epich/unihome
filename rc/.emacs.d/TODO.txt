@@ -13,6 +13,12 @@ Issues:
          (define-key evil-normal-state-map "gf" 'find-file-at-point)
          (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
          : Email sent to Evil mailing list asking about this.
+   : M-q problems
+      : Highlight Java comment paragraph with V from top to bottom, M-q doesn't work.
+         : Do it from bottom to top and it does.
+      : Puts two spaces after period. Should do one.
+   : Kbd macros:
+      : So many ways to get an error (sexp navigation commands for example) that abort the kbd macro. How to improve this?
    : Emacs bug:
       : With my font lock settings, auto revert of source code does not cause font lock update until move point
    : Editing Lisp
@@ -83,6 +89,8 @@ Issues:
             : gud-until is busted.
                : Opens up source on other buffer when should use current source code buffer
                : Current execution is steps out, not actually at the until point
+      : See here for how to rebind keys that are indistinguishable in the tty:
+         http://lists.gnu.org/archive/html/help-gnu-emacs/2013-06/msg00300.html
    : Why don't < <= >= > functions take var args?
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
@@ -111,6 +119,9 @@ Issues:
          : evil-ex-make-hl makes a highlight object
          : evil-ex-delete-hl to clear them?
       : Submit RFE to Evil for a function analogous to highlight-regexp and highlight-phrase .
+   : CLI args:
+      : Experiment with specifying either a project name and/or an indentation offset via a command line option
+         ;;(cl-pushnew '("offset" . (lambda (option-name) (my-msg "DEBUG: command-line-args-left=%s" command-line-args-left) ) command-switch-alist)
    : Debugging
       : Learn Edebug
          : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
@@ -152,6 +163,7 @@ Issues:
       : Does MRU duplicate goto-chg?
       : Does not find tags when 'using namespace' in function scope
       : I found a case in Java (with JDEE) where calling semantic-symref seemed to permanently change point in other Java source files
+      : A variable was defined in a named namespace, then anonymous namespace within that, in a .h file. A user in a .cc file did not find it via semantic-ia-fast-jump, even though .h file was included.
    : GNU Global
       : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Is it worth using outside of Semantic commands?

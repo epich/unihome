@@ -239,7 +239,6 @@
 ;;    scrolling in the redisplay processing.
 ;; x-select-enable-clipboard
 ;;    This is necessary to paste into Windows running on qemu-kvm .
-;; TODO: Change semantic-idle-scheduler-verbose-flag to nil when finished debugging undesired scrolling
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -264,7 +263,7 @@
  '(evil-shift-width my-offset)
  '(ff-always-try-to-create nil)
  '(ff-special-constructs nil)
- '(font-lock-maximum-decoration (quote ((c++-mode . t))))
+ '(font-lock-maximum-decoration (quote ((c++-mode . 2))))
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(inverse-video t)
@@ -284,7 +283,6 @@
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)
  '(scroll-margin 4)
- '(semantic-idle-scheduler-verbose-flag t)
  '(tags-case-fold-search nil)
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
