@@ -264,12 +264,6 @@
 (defadvice semantic-change-function (around my-advice-semantic-change-function activate)
   (save-match-data ad-do-it))
 
-;; TODO: For debugging undesired scrolling, delete when done
-(defadvice semantic-idle-core-handler (around my-advice-semantic-idle-core-handler activate)
-  (let ((window-start-prior (window-start)))
-    ad-do-it
-    (my-msg "DEBUG: During semantic-idle-core-handler, window-start change:%s,%s" window-start-prior (window-start))))
-
 ;;; Debug logging
 (defun my-insert-ant-log ()
   "Insert log statement for Ant build files. "
@@ -359,6 +353,7 @@
   ;; evil-ex-search-symbol-forward command will search (for example):
   ;; "foo-" of foo->method()
   (modify-syntax-entry ?_ "w")
+  (outline-minor-mode 1)
   )
 (defun my-text-mode-hook ()
   (my-msg "Inside my-text-mode-hook for buffer %s " (buffer-name))
