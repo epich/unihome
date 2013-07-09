@@ -55,7 +55,6 @@
 ;; Conjure uses these extensions for Scheme code, for unknown reason
 (add-to-list 'auto-mode-alist '("\\.rkt\\'" . scheme-mode))
 (add-to-list 'auto-mode-alist '("wscript" . python-mode))
-(add-to-list 'auto-mode-alist '("Makefile.*" . makefile-mode))
 
 (my-msg "Initializing third party lisp. ")
 (add-to-list 'load-path "~/.emacs.d/lisp")
