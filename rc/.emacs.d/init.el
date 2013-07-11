@@ -55,7 +55,6 @@
 (add-to-list 'auto-mode-alist '("Rakefile" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.rkt" . scheme-mode))
 (add-to-list 'auto-mode-alist '("wscript" . python-mode))
-(add-to-list 'auto-mode-alist '("Makefile.*" . makefile-mode))
 
 (my-msg "Initializing third party lisp. ")
 (add-to-list 'load-path "~/.emacs.d/lisp")
@@ -192,7 +191,7 @@
 ;;; Relating to tabs
 ;; I would prefer automatic guessing of my-offset based on the offset in use for the
 ;; surrounding code.
-(defvar my-offset 2 "My indentation offset. ")
+(defvar my-offset 3 "My indentation offset. ")
 (defun my-continuation-offset ()
   "Determine the offset for line continuations."
   (* 3 my-offset))
@@ -239,7 +238,6 @@
 ;;    scrolling in the redisplay processing.
 ;; x-select-enable-clipboard
 ;;    This is necessary to paste into Windows running on qemu-kvm .
-;; TODO: Change semantic-idle-scheduler-verbose-flag to nil when finished debugging undesired scrolling
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -247,7 +245,9 @@
  ;; If there is more than one, they won't work right.
  '(Buffer-menu-name-width 64)
  '(ac-delay 1.0)
- '(cc-search-directories (quote ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "../../src" "./include" "../include" "./inc" "../inc" "../inc/L1aObject")))
+ '(cc-search-directories
+   (quote
+    ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "../../src" "./include" "../include" "./inc" "../inc" "../inc/L1aObject")))
  '(delete-by-moving-to-trash t)
  '(dired-auto-revert-buffer t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
@@ -262,12 +262,14 @@
  '(evil-shift-width my-offset)
  '(ff-always-try-to-create nil)
  '(ff-special-constructs nil)
- '(font-lock-maximum-decoration (quote ((c++-mode . t))))
+ '(font-lock-maximum-decoration (quote ((c++-mode . 2))))
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(inverse-video t)
  '(jde-global-classpath my-java-classpath)
- '(jde-jdk-registry (quote (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
+ '(jde-jdk-registry
+   (quote
+    (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
  '(jde-sourcepath my-java-sourcepath)
  '(jit-lock-defer-time 0.01)
  '(large-file-warning-threshold 1000000000.0)
@@ -280,7 +282,6 @@
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)
  '(scroll-margin 4)
- '(semantic-idle-scheduler-verbose-flag t)
  '(sentence-end-double-space nil)
  '(tags-case-fold-search nil)
  '(undo-tree-visualizer-diff nil)
