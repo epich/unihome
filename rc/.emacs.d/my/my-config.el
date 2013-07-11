@@ -4,6 +4,13 @@
 
 (require 'cl)
 
+;;; Packaging
+(require 'package)
+(push '("marmalade" . "http://marmalade-repo.org/packages/")
+      'package-archives )
+(push '("melpa" . "http://melpa.milkbox.net/packages/")
+      'package-archives)
+
 ;;; Configure default Evil states for chosen major modes.
 ;;
 ;; Change modes that come up in Emacs state to come up in motion state instead.
