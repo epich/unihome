@@ -159,6 +159,8 @@ Notes:
          ; mapped
          ' mapped
          c map as prefix key to various C- keys eg ch map to C-h
+         SPACE
+         RET
       : Vim shift- keys that aren't mapped to anything useful:
          C
          F

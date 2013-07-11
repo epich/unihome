@@ -3,7 +3,7 @@
 ;; Author: Vegard Øye <vegard_oye at hotmail.com>
 ;; Maintainer: Vegard Øye <vegard_oye at hotmail.com>
 
-;; Version: 1.0-dev
+;; Version: 1.0.6
 
 ;;
 ;; This file is NOT part of GNU Emacs.
@@ -27,6 +27,9 @@
 
 (require 'evil-maps)
 (require 'evil-core)
+(require 'evil-macros)
+(require 'evil-types)
+(require 'evil-repeat)
 
 ;;; Code:
 
@@ -164,10 +167,12 @@
                 (narrow-to-region narrow (point-max)))
               ad-do-it))
         ;; prevent the preceding pair from being highlighted
-        (when (overlayp show-paren-overlay)
-          (delete-overlay show-paren-overlay))
-        (when (overlayp show-paren-overlay-1)
-          (delete-overlay show-paren-overlay-1))))))
+        (dolist (ov '(show-paren--overlay
+                      show-paren--overlay-1
+                      show-paren-overlay
+                      show-paren-overlay-1))
+          (let ((ov (and (boundp ov) (symbol-value ov))))
+            (when (overlayp ov) (delete-overlay ov))))))))
 
 ;;; Speedbar
 
@@ -266,63 +271,90 @@
   "Temporarily go to Emacs state"
   (evil-with-state emacs ad-do-it))
 
-(eval-after-load 'ace-jump-mode
-  '(progn
-     (defmacro evil-enclose-ace-jump-for-motion (&rest body)
-       "Enclose ace-jump to make it suitable for motions.
+;; ace-jump-mode
+(declare-function 'ace-jump-char-mode "ace-jump-mode")
+(declare-function 'ace-jump-word-mode "ace-jump-mode")
+(declare-function 'ace-jump-line-mode "ace-jump-mode")
+
+(defvar evil-ace-jump-active nil)
+
+(defmacro evil-enclose-ace-jump-for-motion (&rest body)
+  "Enclose ace-jump to make it suitable for motions.
 This includes restricting `ace-jump-mode' to the current window
 in visual and operator state, deactivating visual updates, saving
 the mark and entering `recursive-edit'."
-       `(let ((old-mark (mark))
-              (ace-jump-mode-scope (if (member evil-state '(visual operator))
-                                       'window
-                                     ace-jump-mode-scope)))
-          (remove-hook 'pre-command-hook #'evil-visual-pre-command t)
-          (remove-hook 'post-command-hook #'evil-visual-post-command t)
-          (unwind-protect
-              (progn
-                ,@body
-                (add-hook 'ace-jump-mode-end-hook #'evil-ace-jump-exit-recursive-edit)
-                (recursive-edit))
-            (if (evil-visual-state-p)
-                (progn
-                  (add-hook 'pre-command-hook #'evil-visual-pre-command nil t)
-                  (add-hook 'post-command-hook #'evil-visual-post-command nil t)
-                  (set-mark old-mark))
-              (push-mark old-mark)))))
+  `(let ((old-mark (mark))
+         (ace-jump-mode-scope (if (and (not (memq evil-state '(visual operator)))
+                                       (boundp 'ace-jump-mode-scope))
+                                  ace-jump-mode-scope
+                                'window)))
+     (remove-hook 'pre-command-hook #'evil-visual-pre-command t)
+     (remove-hook 'post-command-hook #'evil-visual-post-command t)
+     (unwind-protect
+         (let ((evil-ace-jump-active 'prepare)
+               (ace-jump-mode-end-hook
+                (cons #'evil-ace-jump-exit-recursive-edit
+                      ace-jump-mode-end-hook)))
+           ,@body
+           (when evil-ace-jump-active
+             (setq evil-ace-jump-active t)
+             (recursive-edit)))
+       (remove-hook 'post-command-hook #'evil-ace-jump-exit-recursive-edit)
+       (if (evil-visual-state-p)
+           (progn
+             (add-hook 'pre-command-hook #'evil-visual-pre-command nil t)
+             (add-hook 'post-command-hook #'evil-visual-post-command nil t)
+             (set-mark old-mark))
+         (push-mark old-mark)))))
 
-     (evil-define-motion evil-ace-jump-char-mode (count)
-       "Jump visually directly to a char using ace-jump."
-       :type inclusive
-       (evil-enclose-ace-jump-for-motion
-        (call-interactively #'ace-jump-char-mode)))
+(eval-after-load 'ace-jump-mode
+  `(defadvice ace-jump-done (after evil activate)
+     (when evil-ace-jump-active
+       (add-hook 'post-command-hook #'evil-ace-jump-exit-recursive-edit))))
 
-     (evil-define-motion evil-ace-jump-line-mode (count)
-       "Jump visually to the beginning of a line using ace-jump."
-       :type line
-       (evil-enclose-ace-jump-for-motion
-        (call-interactively #'ace-jump-line-mode)))
+(defun evil-ace-jump-exit-recursive-edit ()
+  "Exit a recursive edit caused by an evil jump."
+  (cond
+   ((eq evil-ace-jump-active 'prepare)
+    (setq evil-ace-jump-active nil))
+   (evil-ace-jump-active
+    (remove-hook 'post-command-hook #'evil-ace-jump-exit-recursive-edit)
+    (exit-recursive-edit))))
 
-     (evil-define-motion evil-ace-jump-word-mode (count)
-       "Jump visually to the beginning of a word using ace-jump."
-       :type exclusive
-       (evil-enclose-ace-jump-for-motion
-        (call-interactively #'ace-jump-word-mode)))
+(evil-define-motion evil-ace-jump-char-mode (count)
+  "Jump visually directly to a char using ace-jump."
+  :type inclusive
+  (evil-without-repeat
+    (evil-enclose-ace-jump-for-motion
+     (call-interactively #'ace-jump-char-mode))))
 
-     (evil-define-motion evil-ace-jump-char-to-mode (count)
-       "Jump visually to the char in front of a char using ace-jump."
-       :type exclusive
-       (evil-enclose-ace-jump-for-motion
-        (call-interactively #'ace-jump-char-mode)))
+(evil-define-motion evil-ace-jump-line-mode (count)
+  "Jump visually to the beginning of a line using ace-jump."
+  :type line
+  :repeat abort
+  (evil-without-repeat
+    (evil-enclose-ace-jump-for-motion
+     (call-interactively #'ace-jump-line-mode))))
 
-     (defun evil-ace-jump-exit-recursive-edit ()
-       "Exit a recursive edit caused by an evil jump."
-       (remove-hook 'ace-jump-mode-end-hook #'evil-ace-jump-exit-recursive-edit)
-       (exit-recursive-edit))
+(evil-define-motion evil-ace-jump-word-mode (count)
+  "Jump visually to the beginning of a word using ace-jump."
+  :type exclusive
+  :repeat abort
+  (evil-without-repeat
+    (evil-enclose-ace-jump-for-motion
+     (call-interactively #'ace-jump-word-mode))))
 
-     (define-key evil-motion-state-map [remap ace-jump-char-mode] #'evil-ace-jump-char-mode)
-     (define-key evil-motion-state-map [remap ace-jump-line-mode] #'evil-ace-jump-line-mode)
-     (define-key evil-motion-state-map [remap ace-jump-word-mode] #'evil-ace-jump-word-mode)))
+(evil-define-motion evil-ace-jump-char-to-mode (count)
+  "Jump visually to the char in front of a char using ace-jump."
+  :type exclusive
+  :repeat abort
+  (evil-without-repeat
+    (evil-enclose-ace-jump-for-motion
+     (call-interactively #'ace-jump-char-mode))))
+
+(define-key evil-motion-state-map [remap ace-jump-char-mode] #'evil-ace-jump-char-mode)
+(define-key evil-motion-state-map [remap ace-jump-line-mode] #'evil-ace-jump-line-mode)
+(define-key evil-motion-state-map [remap ace-jump-word-mode] #'evil-ace-jump-word-mode)
 
 (provide 'evil-integration)
 

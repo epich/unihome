@@ -4,6 +4,13 @@
 
 (require 'cl)
 
+;;; Packaging
+(require 'package)
+(push '("marmalade" . "http://marmalade-repo.org/packages/")
+      'package-archives )
+(push '("melpa" . "http://melpa.milkbox.net/packages/")
+      'package-archives)
+
 ;;; Configure default Evil states for chosen major modes.
 ;;
 ;; Change modes that come up in Emacs state to come up in motion state instead.
@@ -130,7 +137,7 @@
 (define-key evil-motion-state-map (kbd "C--") (lambda ()))
 (define-key evil-normal-state-map (kbd "C--") (lambda ()))
 
-(define-key evil-insert-state-map (kbd "RET") 'evil-ret-and-indent)
+(global-set-key (kbd "RET") 'newline-and-indent)
 ;; Want RET to use other keymaps' binding sometimes.  Buffer Menu's for example.
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
@@ -264,12 +271,6 @@
 (defadvice semantic-change-function (around my-advice-semantic-change-function activate)
   (save-match-data ad-do-it))
 
-;; TODO: For debugging undesired scrolling, delete when done
-(defadvice semantic-idle-core-handler (around my-advice-semantic-idle-core-handler activate)
-  (let ((window-start-prior (window-start)))
-    ad-do-it
-    (my-msg "DEBUG: During semantic-idle-core-handler, window-start change:%s,%s" window-start-prior (window-start))))
-
 ;;; Debug logging
 (defun my-insert-ant-log ()
   "Insert log statement for Ant build files. "
@@ -365,6 +366,7 @@
   ;; evil-ex-search-symbol-forward command will search (for example):
   ;; "foo-" of foo->method()
   (modify-syntax-entry ?_ "w")
+  (outline-minor-mode 1)
   )
 (defun my-text-mode-hook ()
   (my-msg "Inside my-text-mode-hook for buffer %s " (buffer-name))
