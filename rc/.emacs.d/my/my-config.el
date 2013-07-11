@@ -130,7 +130,7 @@
 (define-key evil-motion-state-map (kbd "C--") (lambda ()))
 (define-key evil-normal-state-map (kbd "C--") (lambda ()))
 
-(define-key evil-insert-state-map (kbd "RET") 'evil-ret-and-indent)
+(global-set-key (kbd "RET") 'newline-and-indent)
 ;; Want RET to use other keymaps' binding sometimes.  Buffer Menu's for example.
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
