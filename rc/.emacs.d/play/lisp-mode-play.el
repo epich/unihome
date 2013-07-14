@@ -4,12 +4,15 @@
 ;;     parens around accordingly.
 ;;   - Provide an editing experience more like Python.
 
-;; If there is non whitespace before point on the same line:
+;; If there is non whitespace before point on the same line (see back-to-indentation):
 ;;   Resort to whatever TAB would normally do instead (indent-for-tab-command ?)
 ;; Else if the end of previous line does not end with a close paren:
 ;;   Resort to whatever TAB would normally do instead (indent-for-tab-command ?)
 ;; Else:
 ;;   - Delete last close paren and move it after point
+;;     - Find close paren:
+;;       - Go to beginning of next line so as not in a comment
+;;       - backward-list forward-list
 ;;   - If the char after point is not one of:
 ;;       ) ] } whitespace end-of-line
 ;;     then put a space between the close paren and it
@@ -19,12 +22,18 @@
   (interactive "P")
   )
 
-;; If there is non whitespace before point on the same line:
+;; If there is non whitespace before point on the same line (see back-to-indentation):
 ;;   Resort to whatever DEL would normally do instead
 ;; Else if at the beginning of line already:
 ;;   Resort to whatever DEL would normally do instead
 ;; Else find last close paren on same line as point
 ;;   - Delete close paren and move to end of previous line
+;;     - Find close paren:
+;;       - Use parse-partial-sexp to parse from beginning to end of line
+;;         - Reference how move-past-close-and-reindent does it
+;;       - parse-partial-sexp returns information about beginning of comment, navigate there
+;;       - From there, if no error, backward-list forward-list I think will take me to the desired close paren
+;;         - But before forward-list, verify backward-list took us to the previous line, not the current one
 ;;   - Indent (indent-for-tab-command ?)
 (defun backward-and-adjust-sexp (&optional prefix-arg)
   (interactive "P")
