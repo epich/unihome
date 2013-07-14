@@ -4,23 +4,70 @@
 ;;     parens around accordingly.
 ;;   - Provide an editing experience more like Python.
 
+;; TODO: Hook into lisp-indent-command instead of calling indent-for-tab-command
+;; (The latter calls the former.)
+
+;; TODO: If the line being indented has an open paren with close on a subsequent line,
+;; should I indent multiple lines up to its close?
+
 ;; If there is non whitespace before point on the same line (see back-to-indentation):
-;;   Resort to whatever TAB would normally do instead (indent-for-tab-command ?)
+;;   Resort to whatever TAB would normally do instead
 ;; Else if the end of previous line does not end with a close paren:
-;;   Resort to whatever TAB would normally do instead (indent-for-tab-command ?)
+;;   Resort to whatever TAB would normally do instead
 ;; Else:
-;;   - Delete last close paren and move it after point
+;;   - Delete last close paren and move it
 ;;     - Find close paren:
-;;       - Go to beginning of next line so as not in a comment
+;;       - Go to beginning of line so as not in a comment
 ;;       - backward-list forward-list
 ;;   - If the char after point is not one of:
 ;;       ) ] } whitespace end-of-line
 ;;     then put a space between the close paren and it
 ;;     TODO: Look at insert-parentheses to see what it does for inserting space
-;;   - Indent (indent-for-tab-command ?)
-(defun forward-and-adjust-sexp (&optional prefix-arg)
+;;   - Indent
+(defun forward-indent-adjust-sexp (&optional prefix-arg)
+  ;; TODO: Document. Include the return of a region that needs reindentation
   (interactive "P")
-  )
+  (save-excursion
+    (if (> (point) (progn (back-to-indentation) (point)))
+        nil ; Point is after indentation on the line, do nothing
+      (let (;; Position of deleted close paren or nil
+            (pos-of-deletion (save-excursion
+                               (beginning-of-line)
+                               (backward-sexp)
+                               ;; If the sexp at point is a list,
+                               ;; delete its closing paren
+                               (when (eq (scan-lists (point) 1 0)
+                                         (scan-sexps (point) 1))
+                                 (forward-sexp)
+                                 (delete-char -1)
+                                 (point)))))
+        (when pos-of-deletion
+          (let* (
+                 ;; Now "back to indentation", parse from here to end of
+                 ;; line to find where to place the deleted close paren
+                 (pos-of-indent (point))
+                 (end-of-line (progn (end-of-line) (point)))
+                 ;; Parse the current line. Mimics how
+                 ;; move-past-close-and-reindent does it.
+                 (parse-state
+                  (parse-partial-sexp pos-of-indent
+                                      end-of-line
+                                      nil nil
+                                      '(0 nil nil
+                                          (null (calculate-lisp-indent))
+                                          nil nil nil nil nil)))
+                 ;; TODO: Figure out why the comment start is -1 when there's
+                 ;; no comment or string, contradicting doc whichs says nil
+                 (comment-start (nth 8 parse-state)))
+            (when (and comment-start (< 0 comment-start))
+              (goto-char comment-start))
+            ;; Navigate to right after last sexp
+            (backward-sexp)
+            (forward-sexp)
+            ;; TODO: Generalize by saving off what was deleted and inserting it here
+            (insert ")")))))))
+
+;; TODO: Create a new indent-for-del-command?
 
 ;; If there is non whitespace before point on the same line (see back-to-indentation):
 ;;   Resort to whatever DEL would normally do instead
@@ -35,7 +82,7 @@
 ;;       - From there, if no error, backward-list forward-list I think will take me to the desired close paren
 ;;         - But before forward-list, verify backward-list took us to the previous line, not the current one
 ;;   - Indent (indent-for-tab-command ?)
-(defun backward-and-adjust-sexp (&optional prefix-arg)
+(defun backward-indent-adjust-sexp (&optional prefix-arg)
   (interactive "P")
   )
 
