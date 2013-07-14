@@ -61,6 +61,7 @@
 (require 'rainbow-delimiters)
 ;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
 (require 'goto-chg)
 
 ;;; Undo Tree
