@@ -23,8 +23,8 @@
 ;;   Resort to whatever DEL would normally do instead
 ;; Else if at the beginning of line already:
 ;;   Resort to whatever DEL would normally do instead
-;; Else find next close paren on same line as point whose open paren is on a previous line
-;;   - Delete close paren and move to close same sexp on previous line
+;; Else find last close paren on same line as point
+;;   - Delete close paren and move to end of previous line
 ;;   - Indent (indent-for-tab-command ?)
 (defun backward-and-adjust-sexp (&optional prefix-arg)
   (interactive "P")
@@ -42,22 +42,39 @@
   (defun func ()
     (let ((x 10) (y (some-func 20)))
       (message (format "Inside func")
-               |(format "foo") "bar") (progn)))
+               "abc"
+               |(format "foo") "bar") (progn))) ; NB: (progn) is outside of message, but formatting suggests otherwise
 ;; Possibility 1: violates invariant, see NB
   (defun func ()
     (let ((x 10) (y (some-func 20)))
-      (message (format "Inside func"))
-      (format "foo" "bar") (progn))) ; NB: Violates principle of only deleting close parens whose opening is not on the same line
-;; Possibility 2: leads to misleading formatting, see NB
+      (message (format "Inside func")
+               "abc")
+      |(format "foo" "bar") (progn))) ; NB: Violates principle of only deleting close parens whose opening is not on the same line
+;; Possibility 2: allows TAB to be an inverse
   (defun func ()
     (let ((x 10) (y (some-func 20)))
-      (message (format "Inside func"))
-      (format "foo") "bar") (progn)) ; NB: (progn) is outside of let, but formatting suggests otherwise
-;; Possibility 3: Do this
+      (message (format "Inside func")
+               "abc")
+      |(format "foo") "bar") (progn)) ; NB: (progn) is outside of let, but formatting suggests otherwise
+;; Possibility 3: TAB is not an inverse
   (defun func ()
     (let ((x 10) (y (some-func 20)))
-      (message (format "Inside func"))
-      (format "foo") "bar" (progn))) ; NB: Take the close paren that matches to the first open paren of the previous line
+      (message (format "Inside func")
+               "abc")
+      |(format "foo") "bar" (progn))) ; NB: Take the close paren that matches to the first open paren of the previous line
+;; TODO: Possibility 2 and TAB
+  (defun func ()
+    (let ((x 10) (y (some-func 20)))
+      (message (format "Inside func")
+               "abc"
+               |(format "foo") "bar") (progn))) ; NB: Back to previous state
+;; TODO: Possibility 3 and TAB
+  (defun func ()
+    (let ((x 10) (y (some-func 20)))
+      (message (format "Inside func")
+               "abc"
+               |(format "foo") "bar" (progn)))) ; NB: Now (progn) is inside message form when it wasn't before
+                                                ; (The price paid for badly placed (progn))?
 
 ;; Note: When | point
 (if cond
@@ -88,17 +105,17 @@
             ) (expr-2))
   else)
 
-;; TODO: Account for this case. Specifically:
-;;   - Take the close paren of (x 10), not from (My comment)
-;;   - Reindent the comment too
+;; TODO: Account for this case. Ensure:
+;;   - Take the outer close paren of (x (some-func 10)), not from within comments
+;;   - Reindent the ;; comment too
 ;; | indicates point.
   (defun func ()
-    (let ((x (some-func 10))
-          ;; (My comment)
+    (let ((x (some-func 10)) ; (First comment)
+          ;; (Second comment)
           |(y (some-func 20)))))
 ;; After 2 TAB :
   (defun func ()
-    (let ((x (some-func 10
-                        ;; (My comment)
+    (let ((x (some-func 10 ; (First comment)
+                        ;; (Second comment)
                         |)) (y (some-func 20)))))
 
