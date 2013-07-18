@@ -7,18 +7,47 @@
 ;; TODO: Hook into lisp-indent-command instead of calling indent-for-tab-command
 ;; (The latter calls the former.)
 
-;; TODO: If the line being indented has an open paren with close on a subsequent line,
-;; should I indent multiple lines up to its close?
+(defun last-sexp-with-relative-depth (from-pos to-pos rel-depth)
+  "Parsing sexps from FROM-POS to TO-POS, return the position of the
+last sexp with depth REL-DEPTH relative to the first sexp.
+
+Returns nil if rel-depth is not reached."
+  (save-excursion
+    (goto-char from-pos)
+    (let (the-last-sexp
+          (parse-state `(0 nil nil
+                           ,(null (calculate-lisp-indent))
+                           nil nil nil nil nil)))
+      (while (< (point) to-pos)
+        (when (eq (car parse-state) rel-depth)
+          (setq the-last-sexp (point)))
+        (setq parse-state
+              (parse-partial-sexp (point)
+                                  (1+ (point))
+                                  nil
+                                  nil
+                                  parse-state)))
+      the-last-sexp)))
+
+;; TODO: Testing
+;;a (b c (d)) e (f g (h i)) (j)
+;;(last-sexp-with-relative-depth 6884 6913 0)
 
 ;; If there is non whitespace before point on the same line (see back-to-indentation):
 ;;   Resort to whatever TAB would normally do instead
 ;; Else if the end of previous line does not end with a close paren:
 ;;   Resort to whatever TAB would normally do instead
 ;; Else:
-;;   - Delete last close paren and move it
+;;   - Delete last close paren
 ;;     - Find close paren:
 ;;       - Go to beginning of line so as not in a comment
 ;;       - backward-list forward-list
+;;   - Place close paren after last sexp on the line with depth 0 relative to start of line
+;;     (could be several lines later if sexp is a list)
+;;   - Or: Place close paren in new location
+;;     - Parse the current line
+;;       - If ends with depth 0 or less, place close paren at end of last sexp on line
+;;       - Else, backup the opening of a list with depth 0
 ;;   - If the char after point is not one of:
 ;;       ) ] } whitespace end-of-line
 ;;     then put a space between the close paren and it
@@ -28,6 +57,7 @@
   ;; TODO: Document. Include the return of a region that needs reindentation
   (interactive "P")
   (save-excursion
+    ;; TODO: Maybe don't worry about this case, just go to beginning of line anyway and proceed
     (if (> (point) (progn (back-to-indentation) (point)))
         nil ; Point is after indentation on the line, do nothing
       (let (;; Position of deleted close paren or nil
@@ -53,14 +83,11 @@
                   (parse-partial-sexp pos-of-indent
                                       end-of-line
                                       nil nil
-                                      '(0 nil nil
-                                          (null (calculate-lisp-indent))
+                                      `(0 nil nil
+                                          ,(null (calculate-lisp-indent))
                                           nil nil nil nil nil)))
-                 ;; TODO: Figure out why the comment start is -1 when there's
-                 ;; no comment or string, contradicting doc whichs says nil
                  (comment-start (nth 8 parse-state)))
-            (when (and comment-start (< 0 comment-start))
-              (goto-char comment-start))
+            (when comment-start (goto-char comment-start))
             ;; Navigate to right after last sexp
             (backward-sexp)
             (forward-sexp)
@@ -160,6 +187,14 @@
    |
             ) (expr-2))
   else)
+
+;; If TAB, what to do?
+(if cond
+    (progn (lambda () x)
+           |foo) bar
+  y)
+;; We know we want foo to indent to the right. Whether the close
+;; paren is after 'foo)' or after 'bar' is of no significance.
 
 ;; TODO: Account for this case. Ensure:
 ;;   - Take the outer close paren of (x (some-func 10)), not from within comments
