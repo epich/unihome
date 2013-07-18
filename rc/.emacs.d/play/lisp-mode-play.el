@@ -66,13 +66,15 @@ If no close parens were moved, returns nil."
                                (delete-char -1)
                                (point)))))
       (when pos-of-deletion
-        (let ((pos-of-indent (point))
-              (end-of-line (progn (end-of-line) (point))))
-          ;; Move to the sexp whose end will get the close paren
-          (goto-char (last-sexp-with-relative-depth pos-of-indent
-                                                    end-of-line
-                                                    0))
-          (forward-sexp)
+        (let ((sexp-to-close
+              (last-sexp-with-relative-depth (point)
+                                             (progn (end-of-line) (point))
+                                             0)))
+          (when sexp-to-close
+            (goto-char sexp-to-close)
+            (forward-sexp))
+          ;; Note: when no sexp-to-close found, line is empty. So put
+          ;; close paren after point.
           (prog1
               ;; Return where close paren moved from and to
               (list pos-of-deletion (point))
