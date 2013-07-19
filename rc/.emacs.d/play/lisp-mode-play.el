@@ -4,6 +4,11 @@
 ;;     parens around accordingly.
 ;;   - Provide an editing experience more like Python.
 
+
+
+
+
+
 (defun last-sexp-with-relative-depth (from-pos to-pos rel-depth)
   "Parsing sexps from FROM-POS (inclusive) to TO-POS (exclusive),
 return the position of the last sexp that had depth REL-DEPTH relative
@@ -49,39 +54,66 @@ lisp-indent-adjust-sexps can indent that many levels.
 
  [TODO: Reword paragraph when num-close-parens implemented.]
 If a close paren was moved, returns a two element list of positions:
-where the close paren was moved from and moved to. This allows the
-caller to know what region potentially needs reindentation.
+where the close paren was moved from and the position following where
+it moved to. This allows the caller to know what region potentially
+needs reindentation.
 
 If no close parens were moved, returns nil."
   (save-excursion
-    (let (;; Position of deleted close paren or nil
-          (pos-of-deletion (save-excursion
-                             (beginning-of-line)
-                             (backward-sexp)
-                             ;; If the sexp at point is a list,
-                             ;; delete its closing paren
-                             (when (eq (scan-lists (point) 1 0)
-                                       (scan-sexps (point) 1))
-                               (forward-sexp)
-                               (delete-char -1)
-                               (point)))))
-      (when pos-of-deletion
+    (let ((deleted-paren-pos
+           (save-excursion
+             (beginning-of-line)
+             (backward-sexp)
+             ;; If the sexp at point is a list,
+             ;; delete its closing paren
+             (when (eq (scan-lists (point) 1 0)
+                       (scan-sexps (point) 1))
+               (forward-sexp)
+               (delete-char -1)
+               (point)))))
+      (when deleted-paren-pos
         (let ((sexp-to-close
-              (last-sexp-with-relative-depth (point)
-                                             (progn (end-of-line) (point))
-                                             0)))
+               (last-sexp-with-relative-depth (point)
+                                              (progn (end-of-line)
+                                                     (point))
+                                              0)))
           (when sexp-to-close
             (goto-char sexp-to-close)
             (forward-sexp))
           ;; Note: when no sexp-to-close found, line is empty. So put
           ;; close paren after point.
-          (prog1
-              ;; Return where close paren moved from and to
-              (list pos-of-deletion (point))
-            (insert ")")))))))
+          (insert ")")
+          (list deleted-paren-pos (point)))))))
 
-;; TODO: How to hook into indent-for-tab-command?
-;; TODO: Take a region interactively: Example of expected region behavior ({} indicates region boundaries)
+;; TODO: When the code settles, consider consolidating with
+;; adjust-close-paren-for-indent
+(defun adjust-close-paren-for-dedent (num-close-parens)
+  (save-excursion
+    (let ((deleted-paren-pos
+           (save-excursion
+             (when (< (point)
+                      (progn (up-list)
+                             (point)))
+               (delete-char -1)
+               (point)))))
+      (when deleted-paren-pos
+        (let ((sexp-to-close
+               (progn
+                 (backward-sexp)
+                 (point))))
+          (when sexp-to-close
+            (goto-char sexp-to-close)
+            (forward-sexp))
+          ;; Note: when no sexp-to-close found, line is empty. So put
+          ;; close paren after point.
+          (insert ")")
+          ;; The insertion makes deleted-paren-pos off by 1
+          (list (1+ deleted-paren-pos)
+                (point)))))))
+
+;; TODO: Look into how to hook into indent-for-tab-command
+;; TODO: Take a region interactively: Example of expected region
+;; behavior ({} indicates region boundaries)
 ;;     (let ((x 10) (y (some-func 20)))
 ;; {     (a 1)
 ;;       (b 2))}
@@ -89,7 +121,8 @@ If no close parens were moved, returns nil."
 ;;     (let ((x 10) (y (some-func 20))
 ;;           (a 1)
 ;;           (b 2)))
-;; TODO: Process the prefix arg: indent that many levels, negative to mean dedent
+;; TODO: Process the prefix arg: indent that many levels, negative to
+;; mean dedent
 ;; TODO: Write tests
 (defun lisp-indent-adjust-sexps (&optional prefix-arg)
   "Indent Lisp code to the next level while adjusting sexp balanced
@@ -100,9 +133,11 @@ Not intended for assignment to the indent-line-function variable. "
   (let ((orig-pos (point)))
     (back-to-indentation)
     (if (> orig-pos (point))
-        ;; Effectively don't do anything so as to not obstruct completion
+        ;; Effectively don't do anything so as to not obstruct TAB
+        ;; completion
         (goto-char orig-pos)
-      (let ((close-paren-movement (adjust-close-paren-for-indent prefix-arg)))
+      (let ((close-paren-movement
+             (adjust-close-paren-for-indent prefix-arg)))
         (when close-paren-movement
           (apply 'indent-region close-paren-movement)
           ;; Like indent-for-tab-command, this command will leave
@@ -111,6 +146,32 @@ Not intended for assignment to the indent-line-function variable. "
           ;; moved to the beginning of line due to how the indentation
           ;; whitespace is inserted.
           (back-to-indentation))))))
+
+;; TODO: Investigate how to invoke this with DEL key and get old DEL
+;; behavior when not dedenting (ie not in the indentation). Introduce
+;; a dedent-for-del-command?
+;; Note: Dedent will not take a region because:
+;;   - Don't want to conflict with delete-selection-mode
+;;   - Doesn't need it as much as indent with TAB does
+;; TODO: Fix duplication when the code settles more
+(defun lisp-dedent-adjust-sexps (&optional prefix-arg)
+  (interactive "P")
+  (let ((orig-pos (point)))
+    (back-to-indentation)
+    (if (> orig-pos (point))
+        ;; Effectively don't do anything, hope to allow ordinary DEL
+        (goto-char orig-pos)
+      (let ((close-paren-movement
+             (adjust-close-paren-for-dedent prefix-arg)))
+        (when close-paren-movement
+          (apply 'indent-region (nreverse close-paren-movement))
+          (back-to-indentation))))))
+
+
+
+
+
+
 
 ;; TODO: Create a new indent-for-del-command?
 
@@ -127,7 +188,7 @@ Not intended for assignment to the indent-line-function variable. "
 ;;       - From there, if no error, backward-list forward-list I think will take me to the desired close paren
 ;;         - But before forward-list, verify backward-list took us to the previous line, not the current one
 ;;   - Indent (indent-for-tab-command ?)
-(defun adjust-close-paren-for-dedent (&optional prefix-arg)
+(defun adjust-close-paren-for-dedent (num-close-parens)
   (interactive "P")
   )
 
