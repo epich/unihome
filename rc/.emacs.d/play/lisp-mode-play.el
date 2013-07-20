@@ -167,111 +167,53 @@ Not intended for assignment to the indent-line-function variable. "
           (apply 'indent-region (nreverse close-paren-movement))
           (back-to-indentation))))))
 
+;; TODO: Doc
+;; TODO: Consider whether to consolidate with indent-for-tab-command
+;; or keep separate?
+(defun lisp-indent-for-tab-command (&optional arg)
+  (interactive "P")
+  (cond
+   ;; The region is active, indent it.
+   ((use-region-p)
+    (indent-region (region-beginning) (region-end)))
+   ((or ;; indent-to-left-margin is only meant for indenting,
+	;; so we force it to always insert a tab here.
+	(eq indent-line-function 'indent-to-left-margin)
+	(and (not tab-always-indent)
+	     (or (> (current-column) (current-indentation))
+		 (eq this-command last-command))))
+    (insert-tab arg))
+   (t
+    (let ((old-tick (buffer-chars-modified-tick))
+          (old-point (point))
+	  (old-indent (current-indentation)))
 
+      ;; Indent the line.
+      (funcall indent-line-function)
 
+      (cond
+       ;; If the text was already indented right, try completion.
+       ((and (eq tab-always-indent 'complete)
+             (eq old-point (point))
+             (eq old-tick (buffer-chars-modified-tick)))
+        (completion-at-point))
 
-
-
+       ;; If a prefix argument was given, rigidly indent the following
+       ;; sexp to match the change in the current line's indentation.
+       (arg
+        (let ((end-marker
+               (save-excursion
+                 (forward-line 0) (forward-sexp) (point-marker)))
+              (indentation-change (- (current-indentation) old-indent)))
+          (save-excursion
+            (forward-line 1)
+            (when (and (not (zerop indentation-change))
+                       (< (point) end-marker))
+              (indent-rigidly (point) end-marker indentation-change))))))))))
 
 ;; TODO: Create a new indent-for-del-command?
-
-;; If there is non whitespace before point on the same line (see back-to-indentation):
-;;   Resort to whatever DEL would normally do instead
-;; Else if at the beginning of line already:
-;;   Resort to whatever DEL would normally do instead
-;; Else find last close paren on same line as point
-;;   - Delete close paren and move to end of previous line
-;;     - Find close paren:
-;;       - Use parse-partial-sexp to parse from beginning to end of line
-;;         - Reference how move-past-close-and-reindent does it
-;;       - parse-partial-sexp returns information about beginning of comment, navigate there
-;;       - From there, if no error, backward-list forward-list I think will take me to the desired close paren
-;;         - But before forward-list, verify backward-list took us to the previous line, not the current one
-;;   - Indent (indent-for-tab-command ?)
-(defun adjust-close-paren-for-dedent (num-close-parens)
-  (interactive "P")
-  )
-
-;; Note: When | point, what to do when DEL?
-  (defun func ()
-    (let ((x 10) (y (some-func 20)))
-      (message (format "Inside func")
-               |(format "foo") "bar"
-               "baz")))
-;; Proposition: For simplicity, have rule that if multi-line close paren not on same line as point, do ordinary DEL
-
-;; TODO: Account for this case when | point, then DEL
-  (defun func ()
-    (let ((x 10) (y (some-func 20)))
-      (message (format "Inside func")
-               "abc"
-               |(format "foo") "bar") (progn))) ; NB: (progn) is outside of message, but formatting suggests otherwise
-;; Possibility 1: violates invariant, see NB
-  (defun func ()
-    (let ((x 10) (y (some-func 20)))
-      (message (format "Inside func")
-               "abc")
-      |(format "foo" "bar") (progn))) ; NB: Violates principle of only deleting close parens whose opening is not on the same line
-;; Possibility 2: allows TAB to be an inverse
-  (defun func ()
-    (let ((x 10) (y (some-func 20)))
-      (message (format "Inside func")
-               "abc")
-      |(format "foo") "bar") (progn)) ; NB: (progn) is outside of let, but formatting suggests otherwise
-;; Possibility 3: TAB is not an inverse
-  (defun func ()
-    (let ((x 10) (y (some-func 20)))
-      (message (format "Inside func")
-               "abc")
-      |(format "foo") "bar" (progn))) ; NB: Take the close paren that matches to the first open paren of the previous line
-;; TODO: Possibility 2 and TAB
-  (defun func ()
-    (let ((x 10) (y (some-func 20)))
-      (message (format "Inside func")
-               "abc"
-               |(format "foo") "bar") (progn))) ; NB: Back to previous state
-;; TODO: Possibility 3 and TAB
-  (defun func ()
-    (let ((x 10) (y (some-func 20)))
-      (message (format "Inside func")
-               "abc"
-               |(format "foo") "bar" (progn)))) ; NB: Now (progn) is inside message form when it wasn't before
-                                                ; (The price paid for badly placed (progn))?
-
-;; Note: When | point
-(if cond
-    (progn (expr-1
-            |) (expr-2))
-  else)
-;; Then DEL :
-(if cond
-    (progn (expr-1)
-           (expr-2))
-  else)
-
-;; Note: When | point, what to do when DEL?
-(if cond
-    (progn (expr-1
-    |
-            ) (expr-2))
-  else)
-;; Possibility 1:
-(if cond
-    (progn (expr-1)
-           |(expr-2))
-  else)
-;; Possibility 2: Do as DEL would otherwise do
-(if cond
-    (progn (expr-1
-   |
-            ) (expr-2))
-  else)
-
-;; If TAB, what to do?
-(if cond
-    (progn (lambda () x)
-           |foo) bar
-  y)
-;; We know we want foo to indent to the right. Whether the close
-;; paren is after 'foo)' or after 'bar' is of no significance.
+;; It should decide between functions like:
+;;   lisp-dedent-adjust-sexps
+;;   del-whitespace-to-tab-stop
+;;   backward-delete-char-untabify
 
