@@ -46,8 +46,19 @@ Issues:
                : o'
          : Put point well before {}, delete-pair ("od"), only closing } is deleted
          : Take a step back and look at my commands and their key bindings
-         : Idea for lisp-indent-line to behave somewhat like python-indent-line-function:
-            : Tab cycles through possible indentation levels and deletions of ')' of the the previous line
+         : lisp-indent-adjust-sexps
+            : indent-for-tab-command
+               : Create indent-line method
+                  : Takes region, calls indent-region if use-region-p
+                  : Calls indent-line-function
+                  : Processes prefix arg to indent-rigidly
+               : New variable indent-for-tab-function:
+                  : Function to take region and prefix arg
+                  : default: 'indent-line
+               : indent-for-tab-command will: (funcall 'indent-for-tab-function ...)
+         : Perhaps to use adjust-sexps, indent-line-function is assigned a different value. The indent-line-function returns the region that needs reindenting, using prefix arg to do so. Perhaps have the adjust-sexps let-bound the indent-line-function when calling indent-region -- Or if responsibility for indent-region is moved to indent-for-tab-command, this wouldn't be necessary.
+         : lisp-dedent-adjust-sexps
+            : Perhaps create dedent-for-del-command?
       : Notes:
          : List and sexp navigation
             forward-list
@@ -272,6 +283,7 @@ Issues:
                   : Does work: M-x c-guess
                   : c-guess does a lot of other things I think, which makes it run long.
       : Backspace to tab stop backward-delete-whitespace-to-tab-stop
+         : Perhaps create dedent-for-del-command
          : Doesn't correctly handle backspace when there's a selection.
             : Snag with solution:
                : Go into insert mode
@@ -286,6 +298,8 @@ Issues:
       : Perhaps rebind M-DEL to DEL to last tab stop
       : Try out using M-i and restoring TAB to its default binding
       : Using M-<n*my-offset> then SPACE or DEL might be a viable approach
+      : Try binding tab-to-tab-stop to indent-line-function.
+         : Could obstruct completion with current indent.el code.
    : Consider Stefan's settings for anything useful
       https://lists.gnu.org/archive/html/bug-gnu-emacs/2013-06/msg00539.html
    : Improve Emacs initialization
