@@ -1,9 +1,67 @@
-;; Note: When | point, what to do when DEL?
+;;; lisp-tests.el --- Test suite for lisp.el
+
+;; Copyright (C) 2013 Free Software Foundation, Inc.
+
+;; This file is part of GNU Emacs.
+
+;; GNU Emacs is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; GNU Emacs is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;;; Code:
+
+(require 'ert)
+
+(defmacro lisp-tests-with-temp-buffer (contents &rest body)
+  "Create a `lisp-mode' enabled temp buffer with CONTENTS.
+BODY is code to be executed within the temp buffer.  Point is
+always located at the beginning of buffer."
+  (declare (indent 1) (debug t))
+  `(with-temp-buffer
+     (emacs-lisp-mode)
+     (insert ,contents)
+     (goto-char (point-min))
+     ,@body))
+
+(defun lisp-tests-look-at (search-string)
+  (re-search-forward string)
+  (forward-char (- (length (match-string-no-properties 0)))))
+
+(ert-deftest lisp-test-indent-line ()
+  (lisp-tests-with-temp-buffer
+   "
   (defun func ()
-    (let ((x 10) (y (some-func 20)))
-      (message (format "Inside func")
-               |(format "foo") "bar"
-               "baz")))
+    (let ((x 10))
+          ;; Next line at wrong indentation
+    (y (some-func 20))))
+"
+   (lisp-tests-look-at "(y ")
+   (indent-for-tab-command)
+   (should (string= (buffer-string)
+                    "
+  (defun func ()
+    (let ((x 10))
+          ;; Next line at wrong indentation
+          (y (some-func 20))))
+"))))
+
+;; Note: When | point, what to do when DEL?
+(defun func ()
+  (let ((x 10) (y (some-func 20)))
+    (message (format "Inside func")
+             |(format "foo") "bar"
+             "baz")))
 ;; Proposition: For simplicity, have rule that if multi-line close paren not on same line as point, do ordinary DEL
 
 ;; TODO: Account for this case when | point, then DEL

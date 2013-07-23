@@ -57,6 +57,8 @@ Issues:
                   : default: 'indent-line
                : indent-for-tab-command will: (funcall 'indent-for-tab-function ...)
          : Perhaps to use adjust-sexps, indent-line-function is assigned a different value. The indent-line-function returns the region that needs reindenting, using prefix arg to do so. Perhaps have the adjust-sexps let-bound the indent-line-function when calling indent-region -- Or if responsibility for indent-region is moved to indent-for-tab-command, this wouldn't be necessary.
+         : Perhaps create a list of functions for indent-for-tab-command to call, stopping at the first one to do something.
+            : First would be 
          : lisp-dedent-adjust-sexps
             : Perhaps create dedent-for-del-command?
       : Notes:

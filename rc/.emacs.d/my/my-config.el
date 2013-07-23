@@ -402,6 +402,8 @@
   )
 (defun my-emacs-lisp-mode-hook ()
   (my-msg "Inside my-emacs-lisp-mode-hook for buffer %s " (buffer-name))
+  (local-set-key (kbd "TAB") 'lisp-indent-adjust-sexps)
+  (local-set-key (kbd "DEL") 'lisp-dedent-adjust-sexps)
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-elisp-log)
   (define-key evil-motion-state-local-map "se" 'eval-last-sexp)
   (modify-syntax-entry ?- "w")

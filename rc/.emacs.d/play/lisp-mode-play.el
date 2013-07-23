@@ -154,62 +154,22 @@ Not intended for assignment to the indent-line-function variable. "
 ;;   - Don't want to conflict with delete-selection-mode
 ;;   - Doesn't need it as much as indent with TAB does
 ;; TODO: Fix duplication when the code settles more
+;; TODO: Doesn't behave well when point is before highest open paren
 (defun lisp-dedent-adjust-sexps (&optional prefix-arg)
   (interactive "P")
   (let ((orig-pos (point)))
     (back-to-indentation)
     (if (> orig-pos (point))
-        ;; Effectively don't do anything, hope to allow ordinary DEL
-        (goto-char orig-pos)
+        ;; Instead of dedent, ordinary backspace instead
+        (progn (goto-char orig-pos)
+               ;; TODO: Hook into customization of DEL behavior when
+               ;; not dedenting.
+               (backward-delete-char-untabify 1))
       (let ((close-paren-movement
              (adjust-close-paren-for-dedent prefix-arg)))
         (when close-paren-movement
           (apply 'indent-region (nreverse close-paren-movement))
           (back-to-indentation))))))
-
-;; TODO: Doc
-;; TODO: Consider whether to consolidate with indent-for-tab-command
-;; or keep separate?
-(defun lisp-indent-for-tab-command (&optional arg)
-  (interactive "P")
-  (cond
-   ;; The region is active, indent it.
-   ((use-region-p)
-    (indent-region (region-beginning) (region-end)))
-   ((or ;; indent-to-left-margin is only meant for indenting,
-	;; so we force it to always insert a tab here.
-	(eq indent-line-function 'indent-to-left-margin)
-	(and (not tab-always-indent)
-	     (or (> (current-column) (current-indentation))
-		 (eq this-command last-command))))
-    (insert-tab arg))
-   (t
-    (let ((old-tick (buffer-chars-modified-tick))
-          (old-point (point))
-	  (old-indent (current-indentation)))
-
-      ;; Indent the line.
-      (funcall indent-line-function)
-
-      (cond
-       ;; If the text was already indented right, try completion.
-       ((and (eq tab-always-indent 'complete)
-             (eq old-point (point))
-             (eq old-tick (buffer-chars-modified-tick)))
-        (completion-at-point))
-
-       ;; If a prefix argument was given, rigidly indent the following
-       ;; sexp to match the change in the current line's indentation.
-       (arg
-        (let ((end-marker
-               (save-excursion
-                 (forward-line 0) (forward-sexp) (point-marker)))
-              (indentation-change (- (current-indentation) old-indent)))
-          (save-excursion
-            (forward-line 1)
-            (when (and (not (zerop indentation-change))
-                       (< (point) end-marker))
-              (indent-rigidly (point) end-marker indentation-change))))))))))
 
 ;; TODO: Create a new indent-for-del-command?
 ;; It should decide between functions like:
