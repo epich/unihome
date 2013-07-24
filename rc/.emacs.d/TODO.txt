@@ -1,8 +1,6 @@
 Issues:
    : Logging with my-msg
       : Have my-msg check the varargs for boundp, and handle unbounded vars accordingly.
-      : Include the calling function. Tried using backtrace-frame, but returns gibberish for byte compiled functions
-         : How does edebug do it?
       : Have it work in Emacs batch run
    : Have F4 work in the mini buffer for inserting a bullet character
       : Define the key binding in more Emacs-mainstream way
