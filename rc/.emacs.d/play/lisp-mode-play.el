@@ -147,33 +147,22 @@ Not intended for assignment to the indent-line-function variable. "
           ;; whitespace is inserted.
           (back-to-indentation))))))
 
-;; TODO: Investigate how to invoke this with DEL key and get old DEL
-;; behavior when not dedenting (ie not in the indentation). Introduce
-;; a dedent-for-del-command?
-;; Note: Dedent will not take a region because:
+;; TODO: Bind to (kbd "<backtab>") in lisp-mode
+;; TODO: Doc
+;; Note (in doc): Dedent will not take a region because:
 ;;   - Don't want to conflict with delete-selection-mode
 ;;   - Doesn't need it as much as indent with TAB does
 ;; TODO: Fix duplication when the code settles more
-;; TODO: Doesn't behave well when point is before highest open paren
 (defun lisp-dedent-adjust-sexps (&optional prefix-arg)
   (interactive "P")
   (let ((orig-pos (point)))
     (back-to-indentation)
     (if (> orig-pos (point))
-        ;; Instead of dedent, ordinary backspace instead
-        (progn (goto-char orig-pos)
-               ;; TODO: Hook into customization of DEL behavior when
-               ;; not dedenting.
-               (backward-delete-char-untabify 1))
+        ;; Instead of dedent, do nothing
+        (goto-char orig-pos)
       (let ((close-paren-movement
              (adjust-close-paren-for-dedent prefix-arg)))
         (when close-paren-movement
           (apply 'indent-region (nreverse close-paren-movement))
           (back-to-indentation))))))
-
-;; TODO: Create a new indent-for-del-command?
-;; It should decide between functions like:
-;;   lisp-dedent-adjust-sexps
-;;   del-whitespace-to-tab-stop
-;;   backward-delete-char-untabify
 

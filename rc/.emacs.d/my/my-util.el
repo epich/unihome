@@ -25,9 +25,9 @@
 ;; misbehaves under some conditions.  The message function is a C primitive
 ;; anyway, which doesn't always combine with defadvice.
 (defun my-msg (msg &rest vargs)
-   "Log a message, with prepended information.  Used for debugging. "
-   (interactive)
-   (message "%s %s" (my-get-time-str) (apply 'format msg vargs)))
+  "Log a message, with prepended information.  Used for debugging. "
+  (interactive)
+  (message "%s %s" (my-get-time-str) (apply 'format msg vargs)))
 
 (defun my-check-range (lhs middle rhs)
   "Checks if lhs <= middle < rhs"

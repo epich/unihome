@@ -142,6 +142,8 @@
   ;;   (semanticdb-enable-gnu-global-databases 'c++-mode))
   )
 
+(load-file "~/.emacs.d/play/lisp-mode-play.el")
+
 ;; CEDET in Emacs trunk is sufficient right now
 ;; (when (file-accessible-directory-p my-bzr-cedet-path)
 ;;   (setq my-enable-cedet-function 'my-enable-cedet-from-bzr))
