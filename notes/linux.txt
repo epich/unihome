@@ -131,11 +131,15 @@ Debug symbol notes:
 
 Terminal:
     If terminal gets garbled (eg after 'cat' on a binary file) then paste into terminal:
-        echo -e '\017'
+        echo -e '\017' or '\x0f'
 
 GDB:
     Print C++ STL structures in GDB:
         http://www.yolinux.com/TUTORIALS/src/dbinit_stl_views-1.03.txt
+
+Backtraces:
+    When using backtrace calls in C, if only the executable name and hex addresses are printed, use:
+        addr2line -f -e <exec> <hex>
 
 Get a man page as file:
    man ls | col -bx > /tmp/ls.man
