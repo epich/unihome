@@ -153,6 +153,9 @@ Not intended for assignment to the indent-line-function variable. "
 ;;   - Don't want to conflict with delete-selection-mode
 ;;   - Doesn't need it as much as indent with TAB does
 ;; TODO: Fix duplication when the code settles more
+;; TODO: Doesn't behave well in this situation:
+;;   (
+;;    |)
 (defun lisp-dedent-adjust-sexps (&optional prefix-arg)
   (interactive "P")
   (let ((orig-pos (point)))
