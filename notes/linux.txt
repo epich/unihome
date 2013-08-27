@@ -132,6 +132,8 @@ Debug symbol notes:
 Terminal:
     If terminal gets garbled (eg after 'cat' on a binary file) then paste into terminal:
         echo -e '\017' or '\x0f'
+    From C:
+        printf("\017");
 
 GDB:
     Print C++ STL structures in GDB:
