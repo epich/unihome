@@ -151,7 +151,6 @@
 (global-set-key (kbd "C-<up>") 'enlarge-window)
 (global-set-key (kbd "C-<left>") 'shrink-window-horizontally)
 (global-set-key (kbd "C-<right>") 'enlarge-window-horizontally)
-(global-set-key (kbd "<f2>") (lambda () (interactive) (insert (my-get-buffer-name))))
 
 ;; ^ in Dired is more useful than Evil's binding.
 (define-key evil-motion-state-map "^" nil)
@@ -273,6 +272,11 @@
 ;; TODO: Fixed in CEDET mainline and Emacs trunk, so delete this when in a formal Emacs release
 (defadvice semantic-change-function (around my-advice-semantic-change-function activate)
   (save-match-data ad-do-it))
+;; TODO: for debugging empty backtrace string
+;; (defadvice redisplay (before my-advice-redisplay activate)
+;;   (when (equal "" (backtrace-frame 0))
+;;     (my-msg "DEBUG: 0th backtrace-frame was the empty string")
+;;     (backtrace)))
 
 ;;; Debug logging
 (defun my-insert-ant-log ()
@@ -376,6 +380,7 @@
   (my-bind-tab-del-keys)
   (modify-syntax-entry ?- "w")
   (modify-syntax-entry ?_ "w")
+  (modify-syntax-entry ?\" "$")
   )
 
 (defun my-c-mode-common-hook ()
