@@ -248,7 +248,9 @@
  ;; If there is more than one, they won't work right.
  '(Buffer-menu-name-width 64)
  '(ac-delay 1.0)
- '(cc-search-directories (quote ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "../../src" "./include" "../include" "./inc" "../inc" "../inc/L1aObject")))
+ '(cc-search-directories
+   (quote
+    ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "../../src" "./include" "../include" "./inc" "../inc" "../inc/L1aObject")))
  '(delete-by-moving-to-trash t)
  '(dired-auto-revert-buffer t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
@@ -268,7 +270,9 @@
  '(inhibit-startup-screen t)
  '(inverse-video t)
  '(jde-global-classpath my-java-classpath)
- '(jde-jdk-registry (quote (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
+ '(jde-jdk-registry
+   (quote
+    (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
  '(jde-sourcepath my-java-sourcepath)
  '(jit-lock-defer-time 0.01)
  '(large-file-warning-threshold 1000000000.0)
