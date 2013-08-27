@@ -35,6 +35,9 @@ Viewing mounting
 Used the following to determine directory changes after date.
     cleartool find . -version "brtype(main) && created_since(16-Feb.23:00)" -print
 
+List branches:
+    cleartool lstype -kind brtype
+
 Files added after a TimeDate:
     cleartool find <vobtag> -version "{created_since(target-data-time)}" -print
 
