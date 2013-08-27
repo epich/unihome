@@ -17,6 +17,14 @@ Notes:
               set-local-key key macroname 	binds the key name to the macro for this session
       C-uC-xq		Insert a pause into a macro definition
       ESC C-c 	Continue in the macro after a pause
+   : Debugging tips
+      : In Emacs C code
+         : Printing Lisp_Object from C
+            : Try Fprin1_to_string, then look into SBYTES, SCHARS, SDATA, print_object, print_string.
+         : Print backtrace from C
+            : assign global noninteractive to true, Fbacktrace(), assign back to old value
+         : int: primitive to Lisp_Object: make_number
+         : int: Lisp_Object to primitive: XINT
    : C-z cycles between <N> and <E> evil states.
    : Buffer menu notes:
       : To see it:
