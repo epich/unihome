@@ -23,6 +23,7 @@ Issues:
       : So many ways to get an error (sexp navigation commands for example) that abort the kbd macro. How to improve this?
    : Emacs bug:
       : With my font lock settings, auto revert of source code does not cause font lock update until move point
+      : Fbacktrace() returned empty string at times
    : Editing Lisp
       : Syntax highlighting:
          : Pairs of parens in different colors, bottom up from point
@@ -58,11 +59,30 @@ Issues:
                   : Function to take region and prefix arg
                   : default: 'indent-line
                : indent-for-tab-command will: (funcall 'indent-for-tab-function ...)
-         : Perhaps to use adjust-sexps, indent-line-function is assigned a different value. The indent-line-function returns the region that needs reindenting, using prefix arg to do so. Perhaps have the adjust-sexps let-bound the indent-line-function when calling indent-region -- Or if responsibility for indent-region is moved to indent-for-tab-command, this wouldn't be necessary.
-         : Perhaps create a list of functions for indent-for-tab-command to call, stopping at the first one to do something.
-            : First would be 
-         : lisp-dedent-adjust-sexps
-            : Perhaps create dedent-for-del-command?
+            : Perhaps to use adjust-sexps, indent-line-function is assigned a different value. The indent-line-function returns the region that needs reindenting, using prefix arg to do so. Perhaps have the adjust-sexps let-bound the indent-line-function when calling indent-region -- Or if responsibility for indent-region is moved to indent-for-tab-command, this wouldn't be necessary.
+            : Perhaps create a list of functions for indent-for-tab-command to call, stopping at the first one to do something.
+               : First would be 
+            : lisp-dedent-adjust-sexps
+               : Perhaps create dedent-for-del-command?
+            : Balancing parens when moving code fragments around
+               : Example:
+                  (if abc
+                      def
+                    ghi)
+               : I want to exclude ghi from the copy, but I want to paste with balanced parens:
+                  (if abc
+                      def)
+               : What should adjust-sexps do for good usability?
+                  : Should the close parens be added at the time of copy or paste?
+                     : Leaning towards at time of paste, for minimal confusing behavior (if they copy to text buffer let's say)
+            : Perhaps: lisp-indent-adjust-sexps command to call indent-for-tab-command
+               : Update lisp-dedent-adjust-sexps to indent-rigidly similarly
+               : Add internal documentation about the impl choice between indent-region on close-paren-movement region vs indent-rigidly
+            : Bug:
+               Buffer (| is point):
+                  (
+                   |)
+               lisp-dedent-adjust-sexps leads to error and unbalanced parens
       : Notes:
          : List and sexp navigation
             forward-list
@@ -141,6 +161,8 @@ Issues:
       : Learn Edebug
          : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
       : Consider approaches to put *Messages* buffer to file.
+         : standard-output variable can be a function that takes one argument: the char to print
+         : See also with-output-to-temp-buffer
       : edebug-initial-mode to continue to breakpoint
    : Learn about Dired
       : Is there a notion of finding a set of files based on a criteria (search term, use of symbol), then iteratively visiting just those?
@@ -250,6 +272,7 @@ Issues:
    : Shell
       : Set --color flag to ls
       : Fix dark blue color for directories
+      : See if eshell-command is useful for one-off commands
    : XML editting
       : Surround with tags
          : Some implementations:
@@ -305,6 +328,14 @@ Issues:
       : Using M-<n*my-offset> then SPACE or DEL might be a viable approach
       : Try binding tab-to-tab-stop to indent-line-function.
          : Could obstruct completion with current indent.el code.
+   : Indentation:
+      : Given (| indicates point):
+            foo, // blah
+            a, |
+        Shouldn't M-; result in:
+            foo, // blah
+            a,   // |
+        (// is aligned)
    : Consider Stefan's settings for anything useful
       https://lists.gnu.org/archive/html/bug-gnu-emacs/2013-06/msg00539.html
    : Improve Emacs initialization
