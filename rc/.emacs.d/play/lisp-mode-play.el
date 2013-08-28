@@ -64,13 +64,16 @@ scan-error to propogate up."
            (save-excursion
              (beginning-of-line)
              (backward-sexp)
-             ;; If the sexp at point is a list,
-             ;; delete its closing paren
-             (when (eq (scan-lists (point) 1 0)
-                       (scan-sexps (point) 1))
-               (forward-sexp)
-               (delete-char -1)
-               (point)))))
+             ;; Account for edge case when point has no sexp before it
+             (if (bobp)
+                 nil
+               ;; If the sexp at point is a list,
+               ;; delete its closing paren
+               (when (eq (scan-lists (point) 1 0)
+                         (scan-sexps (point) 1))
+                 (forward-sexp)
+                 (delete-char -1)
+                 (point))))))
       (when deleted-paren-pos
         (let ((sexp-to-close
                (last-sexp-with-relative-depth (point)
