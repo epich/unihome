@@ -38,70 +38,25 @@ Issues:
                : Uses font lock
                   : Presumably because it highlights parens throughout the buffer
                   : Perhaps also because coloring doesn't change when point moves
-      : Editing:
-         : How to make insert-pair useful?
-            : Iterate through insert-pair-alist and define eg:
-               : o(
-               : o[
-               : o{
-               : o<
-               : o"
-               : o'
-         : Put point well before {}, delete-pair ("od"), only closing } is deleted
-         : Take a step back and look at my commands and their key bindings
-         : lisp-indent-adjust-sexps
-            : indent-for-tab-command
-               : Create indent-line method
-                  : Takes region, calls indent-region if use-region-p
-                  : Calls indent-line-function
-                  : Processes prefix arg to indent-rigidly
-               : New variable indent-for-tab-function:
-                  : Function to take region and prefix arg
-                  : default: 'indent-line
-               : indent-for-tab-command will: (funcall 'indent-for-tab-function ...)
-            : Perhaps to use adjust-sexps, indent-line-function is assigned a different value. The indent-line-function returns the region that needs reindenting, using prefix arg to do so. Perhaps have the adjust-sexps let-bound the indent-line-function when calling indent-region -- Or if responsibility for indent-region is moved to indent-for-tab-command, this wouldn't be necessary.
-            : Perhaps create a list of functions for indent-for-tab-command to call, stopping at the first one to do something.
-               : First would be 
-            : lisp-dedent-adjust-sexps
-               : Perhaps create dedent-for-del-command?
-            : Balancing parens when moving code fragments around
-               : Example:
-                  (if abc
-                      def
-                    ghi)
-               : I want to exclude ghi from the copy, but I want to paste with balanced parens:
-                  (if abc
-                      def)
-               : What should adjust-sexps do for good usability?
-                  : Should the close parens be added at the time of copy or paste?
-                     : Leaning towards at time of paste, for minimal confusing behavior (if they copy to text buffer let's say)
-            : Perhaps: lisp-indent-adjust-sexps command to call indent-for-tab-command
-               : Update lisp-dedent-adjust-sexps to indent-rigidly similarly
-               : Add internal documentation about the impl choice between indent-region on close-paren-movement region vs indent-rigidly
-            : Bug:
-               Buffer (| is point):
-                  (
-                   |)
-               lisp-dedent-adjust-sexps leads to error and unbalanced parens
-      : Notes:
-         : List and sexp navigation
-            forward-list
-               It is bound to C-M-n.
-            backward-list
-               It is bound to C-M-p.
-            down-list
-               It is bound to <C-M-down>, C-M-d.
-            backward-up-list
-               It is bound to <C-M-up>, C-M-u.
-            up-list
-               No binding.
-            forward-sexp
-               It is bound to <C-M-right>, C-M-f.
-            backward-sexp
-               It is bound to <C-M-left>, C-M-b.
-         : Editing:
-            : 1oj to surround the next 1 sexp
-      : Automatically balance space between parens.
+      : How to make insert-pair useful?
+         : Iterate through insert-pair-alist and define eg:
+            : o(
+            : o[
+            : o{
+            : o<
+            : o"
+            : o'
+      : Put point well before {}, delete-pair ("od"), only closing } is deleted
+      : Take a step back and look at my commands and their key bindings
+      : adjust-parens:
+         : Consider writing adjust-parens-yank function
+            : Would do like yank but add close parens to the pasted Lisp code to balance it
+            : For example, Copy "(if abc", paste "(if abc)":
+               (if abc
+                   def
+                 ghi)
+      : Try evil-paredit
+      : Go through ParEdit reference guide and identify the alternatives
       : How to stop Emacs loading Lisp files when visiting them.
    : Keymapping
       : Edebug comes up in normal state.
@@ -323,6 +278,8 @@ Issues:
                : Does not work:
                   : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
          : Create del-whitespace-to-tab-stop function for core Emacs?
+         : Do third party packages provide a better backspace?
+            : Try sackspace
       : Perhaps rebind M-DEL to DEL to last tab stop
       : Try out using M-i and restoring TAB to its default binding
       : Using M-<n*my-offset> then SPACE or DEL might be a viable approach
