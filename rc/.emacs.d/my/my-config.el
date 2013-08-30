@@ -13,6 +13,8 @@
       package-archives )
 (push '("melpa" . "http://melpa.milkbox.net/packages/")
       package-archives)
+;; (push '("local-elpa" . "/psd15/linux/boreilly/sw/elpa/packages")
+;;       package-archives)
 
 ;;; Configure default Evil states for chosen major modes.
 ;;
@@ -407,8 +409,6 @@
   )
 (defun my-emacs-lisp-mode-hook ()
   (my-msg "Inside my-emacs-lisp-mode-hook for buffer %s " (buffer-name))
-  (local-set-key (kbd "TAB") 'lisp-indent-adjust-parens)
-  (local-set-key (kbd "<backtab>") 'lisp-dedent-adjust-parens)
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-elisp-log)
   (define-key evil-motion-state-local-map "se" 'eval-last-sexp)
   (modify-syntax-entry ?- "w")

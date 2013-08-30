@@ -63,6 +63,7 @@
 (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
 (require 'goto-chg)
+(require 'adjust-parens)
 
 ;;; Undo Tree
 (defvar my-use-undo-tree t)
@@ -141,8 +142,6 @@
   ;;   (semanticdb-enable-gnu-global-databases 'c-mode)
   ;;   (semanticdb-enable-gnu-global-databases 'c++-mode))
   )
-
-(load-file "~/.emacs.d/play/lisp-mode-play.el")
 
 ;; CEDET in Emacs trunk is sufficient right now
 ;; (when (file-accessible-directory-p my-bzr-cedet-path)
