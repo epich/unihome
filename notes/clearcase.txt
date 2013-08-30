@@ -22,10 +22,8 @@ Get a list of files that have changed amongst checkouts
 Make script executable when in source control
     cleartool protect -chmod +x <file>
 
-Create ISIS view:
-    Karl:
-        /home/tools/bin/makeviews_netapp isis <view_name>
-        send me the view names you just created and I will make them available for export.
+Config specs:
+    Time stamp: -time 27-Nov.15:00
 
 Viewing mounting
     : To get slpcc4's /view/<viewname> to appear, setview on the slpcc4 host.
