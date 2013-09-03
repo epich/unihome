@@ -5,6 +5,14 @@ Issues:
    : Have F4 work in the mini buffer for inserting a bullet character
       : Define the key binding in more Emacs-mainstream way
    : Evil
+      : Bug reports: https://bitbucket.org/lyro/evil/issues?reported_by=~epich
+         : Updating of highlighted search
+            : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
+               1: [Fixed] Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
+               2: Search for foo: {{{/foo}}}.  Put point over "f", {{{x}}} to delete it.  oo remains highlighted.  Moving around with {{{j}}}, {{{k}}} doesn't update the highlighting.
+               3: Similarly, inserting text before "foo" creates incorrect highlighting.  {{{i}}}, type "baz", now "bazfoo" is highlighted.
+               4: In Vim, if I search and replace (with {{{:1,$s/old/new/g}}}), then undo, the "old" string is highlighted.  Evil doesn't do that.  In Vim I liked this for verifying complex search and replace operations.
+               5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
       : If I C-c or backspace to beginning of evil-search prompt, I have to wait in order to enter more input.  How to fix?
       : Try Frank's advice: https://bitbucket.org/lyro/evil/issue/279/evil-command-repeats-wrong-commands
          : Declare all commands added to evil-motion-state-map by (eg revert-buffer):
@@ -15,10 +23,6 @@ Issues:
          (define-key evil-normal-state-map "gf" 'find-file-at-point)
          (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
          : Email sent to Evil mailing list asking about this.
-   : M-q problems
-      : Highlight Java comment paragraph with v from top to bottom, M-q doesn't work.
-         : Do it from bottom to top and it does.
-         : Seems to be an Evil problem because it works in evil-emacs-state
    : Kbd macros:
       : So many ways to get an error (sexp navigation commands for example) that abort the kbd macro. How to improve this?
    : Emacs bug:
@@ -316,17 +320,4 @@ Issues:
          <?xml version="1.0" encoding="UTF-16"?>
       : Displays gibberish because of UTF-16, even in fundamental mode.  I could maybe understand this in nxml mode.
 
-Evil bugs (submitted):
-   : Updating of highlighted search
-      : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
-         1: Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
-         2: Search for foo: {{{/foo}}}.  Put point over "f", {{{x}}} to delete it.  oo remains highlighted.  Moving around with {{{j}}}, {{{k}}} doesn't update the highlighting.
-         3: Similarly, inserting text before "foo" creates incorrect highlighting.  {{{i}}}, type "baz", now "bazfoo" is highlighted.
-         4: In Vim, if I search and replace (with {{{:1,$s/old/new/g}}}), then undo, the "old" string is highlighted.  Evil doesn't do that.  In Vim I liked this for verifying complex search and replace operations.
-         5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
-      : Bug submitted to Evil project.
-         : Issue 1 was solved with a defcustom.
-   : In Evil motion state, can't mouse click buttons.  RET works however.
-   : Selecting only part of line and doing s/  */\n/g replaces whole line, including outside of selection.
-      : Vim behaves similarly.
 
