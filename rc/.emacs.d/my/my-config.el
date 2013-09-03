@@ -133,7 +133,7 @@
                                                  (kbd (format "C-M-%c" ascii-code-i))
                                                  'my-translate-keys-p))))
 
-(define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
+(global-set-key (kbd "<f4>") 'my-insert-bullet)
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
 (define-key evil-insert-state-map (kbd "C-y") nil)
 ;; Disable C-0 and C-- since I hit them alot unintentionally.
