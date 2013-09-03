@@ -254,6 +254,7 @@
  '(dired-auto-revert-buffer t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
  '(evil-ex-hl-update-delay 0.01)
+ '(evil-ex-visual-char-range t)
  '(evil-highlight-closing-paren-at-point-states nil)
  '(evil-intercept-maps nil)
  '(evil-kbd-macro-suppress-motion-error t)
