@@ -3,7 +3,7 @@
 ;; Author: Vegard Øye <vegard_oye at hotmail.com>
 ;; Maintainer: Vegard Øye <vegard_oye at hotmail.com>
 
-;; Version: 1.0.6
+;; Version: 1.0-dev
 
 ;;
 ;; This file is NOT part of GNU Emacs.
@@ -99,10 +99,7 @@
 
 ;; undo
 (define-key evil-normal-state-map "u" 'undo)
-
-(when (fboundp 'undo-tree-undo)
-  (define-key evil-normal-state-map "u" 'undo-tree-undo)
-  (define-key evil-normal-state-map "\C-r" 'undo-tree-redo))
+(define-key evil-normal-state-map "\C-r" 'redo)
 
 ;; window commands
 (define-prefix-command 'evil-window-map)
