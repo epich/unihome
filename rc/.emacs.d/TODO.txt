@@ -53,6 +53,7 @@ Issues:
                : Uses font lock
                   : Presumably because it highlights parens throughout the buffer
                   : Perhaps also because coloring doesn't change when point moves
+         : Instead, perhaps parse for parens inconsistent with indentation and make them red, all others usual white
       : Put point well before {}, delete-pair ("od"), only closing } is deleted
          : Perhaps write a safe-delete-pair?
       : Take a step back and look at my commands and their key bindings
@@ -92,7 +93,6 @@ Issues:
                : Current execution is steps out, not actually at the until point
       : See here for how to rebind keys that are indistinguishable in the tty:
          http://lists.gnu.org/archive/html/help-gnu-emacs/2013-06/msg00300.html
-   : Why don't < <= >= > functions take var args?
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
