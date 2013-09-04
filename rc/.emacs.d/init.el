@@ -58,12 +58,14 @@
 
 (my-msg "Initializing third party lisp. ")
 (add-to-list 'load-path "~/.emacs.d/lisp")
+(require 'adjust-parens)
+(require 'evil-numbers)
+(require 'goto-chg)
 (require 'rainbow-delimiters)
 ;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
-(require 'goto-chg)
-(require 'adjust-parens)
 
 ;;; Undo Tree
 (defvar my-use-undo-tree t)
@@ -77,9 +79,6 @@
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
-
-;; More third party Elisp
-(require 'evil-numbers)
 
 ;;; Initialize CEDET
 ;;;
