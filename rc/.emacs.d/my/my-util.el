@@ -166,29 +166,25 @@ nil in keymap-from."
       (define-key keymap-to key keyval)
       (define-key keymap-from key nil))))
 
-;; For binding to backspace.
-;;
-;; Taken from: http://stackoverflow.com/questions/1450169/how-do-i-emulate-vims-softtabstop-in-emacs
-;;
-;; Doesn't correctly handle backspace when there's a selection.
+;; Adapted from: http://stackoverflow.com/questions/1450169/how-do-i-emulate-vims-softtabstop-in-emacs
 (defun backspace-whitespace-to-tab-stop ()
   "Delete whitespace backwards to the next tab-stop, otherwise delete one character."
   (interactive)
-  (cond
-    (indent-tabs-mode
-      (call-interactively 'backward-delete-char-untabify))
-    ((region-active-p)
-      (call-interactively 'backward-delete-char-untabify))
-    (t
-       (let ((movement (% (current-column) my-offset))
-            (p (point)))
-        (when (= movement 0) (setq movement my-offset))
-        ;; Account for edge case near beginning of buffer
-        (setq movement (min (- p 1) movement))
-        (save-match-data
-          (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
-              (backward-delete-char (- (match-end 1) (match-beginning 1)))
-            (call-interactively 'backward-delete-char)))))))
+  (if (or indent-tabs-mode
+          (region-active-p)
+          (save-excursion
+            (> (point) (progn (back-to-indentation)
+                              (point)))))
+      (call-interactively 'backward-delete-char-untabify)
+    (let ((movement (% (current-column) my-offset))
+          (p (point)))
+      (when (= movement 0) (setq movement my-offset))
+      ;; Account for edge case near beginning of buffer
+      (setq movement (min (- p 1) movement))
+      (save-match-data
+        (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
+            (backward-delete-char (- (match-end 1) (match-beginning 1)))
+          (call-interactively 'backward-delete-char))))))
 
 (defun my-bind-tab-del-keys ()
   "Bind the TAB and DEL keys because default behaviors are shitty. "

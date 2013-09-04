@@ -42,15 +42,8 @@ Issues:
                : Uses font lock
                   : Presumably because it highlights parens throughout the buffer
                   : Perhaps also because coloring doesn't change when point moves
-      : How to make insert-pair useful?
-         : Iterate through insert-pair-alist and define eg:
-            : o(
-            : o[
-            : o{
-            : o<
-            : o"
-            : o'
       : Put point well before {}, delete-pair ("od"), only closing } is deleted
+         : Perhaps write a safe-delete-pair?
       : Take a step back and look at my commands and their key bindings
       : adjust-parens:
          : Consider writing adjust-parens-yank function
@@ -59,6 +52,9 @@ Issues:
                (if abc
                    def
                  ghi)
+         : Consider if user deletes misbalanced parens, only the balanced portion is actually deleted
+            : Maybe the close parens that survived would move to the end of previous line if necessary?
+            : Maybe use after change hooks?
       : Try evil-paredit
       : Go through ParEdit reference guide and identify the alternatives
       : How to stop Emacs loading Lisp files when visiting them.

@@ -322,6 +322,7 @@
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 (add-hook 'ruby-mode-hook 'my-ruby-mode-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
+;; Use emacs-startup-hook or eval-after-load?
 (add-hook 'emacs-startup-hook 'my-emacs-startup-hook)
 
 (my-msg "Finished loading init file. ")
