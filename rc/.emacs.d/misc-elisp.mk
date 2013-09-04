@@ -6,9 +6,11 @@ SHELL := bash
 EMACS ?= emacs
 # The my- elisp files depend on practically everything, so I always rebuild them from build.py -- for now.
 FILES := \
+  lisp/adjust-parens.el \
+  lisp/evil-numbers.el \
   lisp/goto-chg.el \
-  undo-tree/undo-tree.el \
-  lisp/rainbow-delimiters.el
+  lisp/rainbow-delimiters.el \
+  undo-tree/undo-tree.el
 LIBS :=
 
 ELCFILES := $(FILES:.el=.elc)

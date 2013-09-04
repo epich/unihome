@@ -78,6 +78,9 @@
 (require 'evil)
 (evil-mode 1)
 
+;; More third party Elisp
+(require 'evil-numbers)
+
 ;;; Initialize CEDET
 ;;;
 (defvar my-enable-cedet-function

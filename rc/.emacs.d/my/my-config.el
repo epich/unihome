@@ -239,6 +239,8 @@
 (my-define-insert-pair-key-binding ?\[ ?\])
 (my-define-insert-pair-key-binding ?\{ ?\})
 (my-define-insert-pair-key-binding ?\< ?\>)
+(define-key evil-motion-state-map "o-" 'evil-numbers/dec-at-pt)
+(define-key evil-motion-state-map "o=" 'evil-numbers/inc-at-pt)
 (define-key evil-motion-state-map "o/" 'highlight-phrase)
 (define-key evil-normal-state-map "oa" 'move-past-close-and-reindent)
 (define-key evil-normal-state-map "o\"" (lambda (arg) (interactive "P")
