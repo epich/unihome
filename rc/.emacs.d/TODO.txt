@@ -23,6 +23,17 @@ Issues:
          (define-key evil-normal-state-map "gf" 'find-file-at-point)
          (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
          : Email sent to Evil mailing list asking about this.
+   : Emacs bug reports:
+      : http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14892
+         : Enhance Elisp compare functions (< <= > >=) to take var args
+            : In Clojure, these are functions (args are evalled before passing)
+            : What does Arc do?
+            : Does Arc accept (apply and ...)?
+         : Byte compilation
+            : When calling with standard number of args, a specific byte code is emitted
+               (disassemble (byte-compile (lambda () (< x y))))
+            : When calling with different number of args, the byte code emitted is like an ordinary function call
+            : So it doesn't seem to require changing byte compilation
    : Kbd macros:
       : So many ways to get an error (sexp navigation commands for example) that abort the kbd macro. How to improve this?
    : Emacs bug:
@@ -287,6 +298,9 @@ Issues:
    : Finding location of .emacs.d
       : See thread: http://lists.gnu.org/archive/html/help-gnu-emacs/2012-10/msg00467.html
       : Try: using --eval flag with an ordinary load of init.el .  Verify correct behaviors result.
+   : Automated tests
+      : Run individual tests
+         : Followup on Kenichi Handa's patch: http://lists.gnu.org/archive/html/emacs-devel/2013-08/msg00731.html
    : Pick through the elisp of others:
       : Michael Markert's:
          https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-evil.el
@@ -311,9 +325,3 @@ Issues:
          : Convert Evil regexp to Emacs regexp
          : Evil does not call replace-regexp, so need to also defadvice the appropriate Evil function.
          : Note: Evil's search and replace supports the \, feature.
-   : Emacs encoding bug:
-      : Put in file:
-         <?xml version="1.0" encoding="UTF-16"?>
-      : Displays gibberish because of UTF-16, even in fundamental mode.  I could maybe understand this in nxml mode.
-
-

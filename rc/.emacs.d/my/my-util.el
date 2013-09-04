@@ -7,6 +7,10 @@
 
 (require 'cl)
 
+(defmacro apply-macro (macro-arg list-arg)
+  "Like apply but for applying macros."
+  `(eval ,`(,macro-arg ,@list-arg)))
+
 ;;; Functions to facilitate elisp debug logging.
 (defvar my-date-time-format "%Y-%m-%dT%H:%M:%S"
   "Format for date string. ")
