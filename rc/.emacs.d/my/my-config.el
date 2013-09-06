@@ -293,6 +293,12 @@
 ;;     (my-msg "DEBUG: 0th backtrace-frame was the empty string")
 ;;     (backtrace)))
 
+;; Want the behavior of (toggle-c-auto-newline 1) for braces, but not for semicolon
+(defadvice c-electric-brace (around my-advice-c-electric-brace activate)
+  ;; Dynamic let
+  (let ((c-electric-flag t) (c-auto-newline))
+    ad-do-it))
+
 ;;; Debug logging
 (defun my-insert-ant-log ()
   "Insert log statement for Ant build files. "
@@ -402,8 +408,7 @@
   (my-msg "Inside my-c-mode-common-hook for buffer %s " (buffer-name))
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
   (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
-  (my-bind-tab-del-keys)
-  )
+  (my-bind-tab-del-keys))
 
 (defun my-diff-mode-hook ()
   (my-msg "Inside my-diff-mode-hook for buffer %s " (buffer-name))
