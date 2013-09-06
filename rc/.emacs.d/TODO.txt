@@ -26,19 +26,14 @@ Issues:
    : Emacs bug reports:
       : http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14892
          : Enhance Elisp compare functions (< <= > >=) to take var args
-            : In Clojure, these are functions (args are evalled before passing)
-            : What does Arc do?
-            : Does Arc accept (apply and ...)?
-         : Byte compilation
-            : When calling with standard number of args, a specific byte code is emitted
-               (disassemble (byte-compile (lambda () (< x y))))
-            : When calling with different number of args, the byte code emitted is like an ordinary function call
-            : So it doesn't seem to require changing byte compilation
+   : Increment and decrement numbers in buffer
+      : Using evil-numbers, but why should it have anything to do with Evil? Is there a generic package? Perhaps adapt evil-numbers for myself.
    : Kbd macros:
       : So many ways to get an error (sexp navigation commands for example) that abort the kbd macro. How to improve this?
    : Emacs bug:
       : With my font lock settings, auto revert of source code does not cause font lock update until move point
       : Fbacktrace() returned empty string at times
+   : delete-pair doesn't work for <> pairs
    : Editing Lisp
       : Syntax highlighting:
          : Pairs of parens in different colors, bottom up from point
@@ -148,6 +143,7 @@ Issues:
             : Confirm whether true for std::shared_ptr
          : Forward declarations
             : semantic-ia-fast-jump should use ff-find-other-file and use other file's includes, so as forward declarations work better.
+      : Even if the real class is included, if a forward declaration is found first, Semantic finds it.
       : Bug reports:
          : semantic-analyze-proto-impl-toggle
             : Takes 26 minutes
@@ -167,6 +163,9 @@ Issues:
       : Does not find tags when 'using namespace' in function scope
       : I found a case in Java (with JDEE) where calling semantic-symref seemed to permanently change point in other Java source files
       : A variable was defined in a named namespace, then anonymous namespace within that, in a .h file. A user in a .cc file did not find it via semantic-ia-fast-jump, even though .h file was included.
+   : How to manage includes in C and C++?
+      : Ask on mailing list
+      : Consider whether CEDET could do it or at least help another package do it
    : GNU Global
       : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Is it worth using outside of Semantic commands?
