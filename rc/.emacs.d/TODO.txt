@@ -131,6 +131,8 @@ Issues:
       : Dired doesn't update when a directory is created separately.  Including when Auto Revert is enabled.
       : Would be nice if I could expand and collapse directories inline, rather than at the bottom of the same buffer, and retain same information.
       : The ^ command is inconvenient to reach, find another key binding.
+   : Abolish ChangeLog in Emacs
+      : See Stefan's post: http://lists.gnu.org/archive/html/emacs-devel/2013-03/msg00889.html
    : CEDET
       : How to narrow down the project's include-path based on where the original file is in the project?
       : If a class name is not namespace scoped correctly, semantic-ia-fast-jump won't jump to it.  How to find right namespace using semantic?
@@ -148,11 +150,16 @@ Issues:
          : semantic-analyze-proto-impl-toggle
             : Takes 26 minutes
             : Use GNU Global without opening extra files
-            : Without GNU Global, us ff-find-other-file
+            : Without GNU Global, use ff-find-other-file
+      : Finding headers from source and vice versa:
+         : Use ff-find-other-file
+         : Also look amongst open buffers for match?
       : Investigate completions
          : Disable global-semantic-idle-completions-mode and assign an evil-insert-state or semantic-mode-map key binding
          : semantic-displayor-tooltip seems like the best choice for semantic-complete-inline-analyzer-idle-displayor-class
       : Is there a package that uses Semantic to generate static call graphs, similar to cflow?
+      : If header files becomes read only, then Emacs prompts the user y/n for each header it visits
+         : It ought to be more transparent to the user when Semantic visits header files
       : Have semantic-ia-fast-jump push the location it left.  MRU isn't quite the same, it returns to last edit.
       : Why is global-semantic-mru-bookmark-mode off when my init file has it enabled?
       : Set semantic-idle-symbol-highlight-face to a similar face as global-semantic-highlight-func-mode uses, then enable global-semantic-idle-local-symbol-highlight-mode
