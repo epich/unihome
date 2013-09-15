@@ -3,18 +3,7 @@
 ;; My high level config, which can assume other Elisp is loaded.
 
 (require 'cl)
-
-;;; Packaging
-;;
-;; Use M-x list-packages to manage installed packages
-(require 'package)
-(setq package-user-dir (format "%s/packages" my-emacs-data-dir))
-(push '("marmalade" . "http://marmalade-repo.org/packages/")
-      package-archives )
-(push '("melpa" . "http://melpa.milkbox.net/packages/")
-      package-archives)
-;; (push '("local-elpa" . "/psd15/linux/boreilly/sw/elpa/packages")
-;;       package-archives)
+(require 'my-util)
 
 ;;; Configure default Evil states for chosen major modes.
 ;;
