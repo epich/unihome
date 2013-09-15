@@ -11,6 +11,7 @@
 ;;      José A. Romero L. <escherdragon@gmail.com>
 ;;      Lars Andersen <mrgrandmother at gmail.com>
 ;;      Lintaro Ina <tarao.gnn at gmail.com>
+;;      Lukasz Wrzosek <wrzoski@gmail.com>
 ;;      Marian Schubert <maio@netsafe.cz>
 ;;      Michael Markert <markert.michael at googlemail.com>
 ;;      Nikolai Weibull <now at bitwi.se>
@@ -30,7 +31,7 @@
 ;;      To get in touch, please use the bug tracker or the
 ;;      mailing list (see below).
 ;; Created: 2011-03-01
-;; Version: 1.0.6
+;; Version: 1.0-dev
 ;; Keywords: emulation, vim
 ;; URL: http://gitorious.org/evil
 ;;      Repository: git://gitorious.org/evil/evil.git

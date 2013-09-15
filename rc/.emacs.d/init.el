@@ -58,12 +58,14 @@
 
 (my-msg "Initializing third party lisp. ")
 (add-to-list 'load-path "~/.emacs.d/lisp")
+(require 'adjust-parens)
+(require 'evil-numbers)
+(require 'goto-chg)
 (require 'rainbow-delimiters)
 ;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
-(require 'goto-chg)
-(require 'adjust-parens)
 
 ;;; Undo Tree
 (defvar my-use-undo-tree t)
@@ -266,6 +268,7 @@
  '(dired-auto-revert-buffer t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
  '(evil-ex-hl-update-delay 0.01)
+ '(evil-ex-visual-char-range t)
  '(evil-highlight-closing-paren-at-point-states nil)
  '(evil-intercept-maps nil)
  '(evil-kbd-macro-suppress-motion-error t)
@@ -333,6 +336,7 @@
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 (add-hook 'ruby-mode-hook 'my-ruby-mode-hook)
 (add-hook 'sh-mode-hook 'my-sh-mode-hook)
+;; Use emacs-startup-hook or eval-after-load?
 (add-hook 'emacs-startup-hook 'my-emacs-startup-hook)
 
 (my-msg "Finished loading init file. ")

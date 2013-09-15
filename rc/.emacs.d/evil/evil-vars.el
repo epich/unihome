@@ -3,7 +3,7 @@
 ;; Author: Vegard Øye <vegard_oye at hotmail.com>
 ;; Maintainer: Vegard Øye <vegard_oye at hotmail.com>
 
-;; Version: 1.0.6
+;; Version: 1.0-dev
 
 ;;
 ;; This file is NOT part of GNU Emacs.
@@ -193,6 +193,11 @@ moves the cursor."
 
 (defcustom evil-move-cursor-back t
   "Whether the cursor is moved backwards when exiting Insert state."
+  :type 'boolean
+  :group 'evil)
+
+(defcustom evil-repeat-find-to-skip-next t
+  "Whether a repeat of t or T should skip an adjacent character."
   :type 'boolean
   :group 'evil)
 
@@ -699,6 +704,10 @@ intercepted."
     beginning-of-visual-line
     c-beginning-of-defun
     c-end-of-defun
+    diff-file-next
+    diff-file-prev
+    diff-hunk-next
+    diff-hunk-prev
     down-list
     end-of-buffer
     end-of-defun
@@ -765,14 +774,12 @@ intercepted."
     pop-to-mark-command
     previous-error
     previous-line
-    redo
     right-char
     right-word
     scroll-down
     scroll-up
-    undo
-    undo-tree-redo
-    undo-tree-undo
+    sgml-skip-tag-backward
+    sgml-skip-tag-forward
     up-list)
   "Non-Evil commands to initialize to motions."
   :type  '(repeat symbol)
@@ -873,6 +880,16 @@ available for completion."
                           :foreground "red"))
   "Face for the info message in ex mode."
   :group 'evil)
+
+(defcustom evil-ex-visual-char-range nil
+  "Type of default ex range in visual char state.
+If non-nil the default range when starting an ex command from
+character visual state is `<,`> otherwise it is '<,'>. In the
+first case the ex command will be passed a region covering only
+the visual selection. In the second case the passed region will
+be extended to contain full lines."
+  :group 'evil
+  :type 'boolean)
 
 ;; Searching
 (defcustom evil-magic t
@@ -1452,7 +1469,7 @@ Otherwise the previous command is assumed as substitute.")
   "Keymap used in ex-search-mode.")
 (set-keymap-parent evil-ex-search-keymap minibuffer-local-map)
 
-(defconst evil-version "1.0.6"
+(defconst evil-version "1.0-dev"
   "The current version of Evil")
 
 (defun evil-version ()

@@ -2,9 +2,17 @@ Issues:
    : Logging with my-msg
       : Have my-msg check the varargs for boundp, and handle unbounded vars accordingly.
       : Have it work in Emacs batch run
-   : Have F4 work in the mini buffer for inserting a bullet character
-      : Define the key binding in more Emacs-mainstream way
+      : Include backtrace in prefix
+         : How to do it when caller is byte compiled?
    : Evil
+      : Bug reports: https://bitbucket.org/lyro/evil/issues?reported_by=~epich
+         : Updating of highlighted search
+            : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
+               1: [Fixed] Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
+               2: Search for foo: {{{/foo}}}.  Put point over "f", {{{x}}} to delete it.  oo remains highlighted.  Moving around with {{{j}}}, {{{k}}} doesn't update the highlighting.
+               3: Similarly, inserting text before "foo" creates incorrect highlighting.  {{{i}}}, type "baz", now "bazfoo" is highlighted.
+               4: In Vim, if I search and replace (with {{{:1,$s/old/new/g}}}), then undo, the "old" string is highlighted.  Evil doesn't do that.  In Vim I liked this for verifying complex search and replace operations.
+               5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
       : If I C-c or backspace to beginning of evil-search prompt, I have to wait in order to enter more input.  How to fix?
       : Try Frank's advice: https://bitbucket.org/lyro/evil/issue/279/evil-command-repeats-wrong-commands
          : Declare all commands added to evil-motion-state-map by (eg revert-buffer):
@@ -15,15 +23,17 @@ Issues:
          (define-key evil-normal-state-map "gf" 'find-file-at-point)
          (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
          : Email sent to Evil mailing list asking about this.
-   : M-q problems
-      : Highlight Java comment paragraph with V from top to bottom, M-q doesn't work.
-         : Do it from bottom to top and it does.
-      : Puts two spaces after period. Should do one.
+   : Emacs bug reports:
+      : http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14892
+         : Enhance Elisp compare functions (< <= > >=) to take var args
+   : Increment and decrement numbers in buffer
+      : Using evil-numbers, but why should it have anything to do with Evil? Is there a generic package? Perhaps adapt evil-numbers for myself.
    : Kbd macros:
       : So many ways to get an error (sexp navigation commands for example) that abort the kbd macro. How to improve this?
    : Emacs bug:
       : With my font lock settings, auto revert of source code does not cause font lock update until move point
       : Fbacktrace() returned empty string at times
+   : delete-pair doesn't work for <> pairs
    : Editing Lisp
       : Syntax highlighting:
          : Pairs of parens in different colors, bottom up from point
@@ -38,15 +48,9 @@ Issues:
                : Uses font lock
                   : Presumably because it highlights parens throughout the buffer
                   : Perhaps also because coloring doesn't change when point moves
-      : How to make insert-pair useful?
-         : Iterate through insert-pair-alist and define eg:
-            : o(
-            : o[
-            : o{
-            : o<
-            : o"
-            : o'
+         : Instead, perhaps parse for parens inconsistent with indentation and make them red, all others usual white
       : Put point well before {}, delete-pair ("od"), only closing } is deleted
+         : Perhaps write a safe-delete-pair?
       : Take a step back and look at my commands and their key bindings
       : adjust-parens:
          : Consider writing adjust-parens-yank function
@@ -55,6 +59,9 @@ Issues:
                (if abc
                    def
                  ghi)
+         : Consider if user deletes misbalanced parens, only the balanced portion is actually deleted
+            : Maybe the close parens that survived would move to the end of previous line if necessary?
+            : Maybe use after change hooks?
       : Try evil-paredit
       : Go through ParEdit reference guide and identify the alternatives
       : How to stop Emacs loading Lisp files when visiting them.
@@ -81,7 +88,6 @@ Issues:
                : Current execution is steps out, not actually at the until point
       : See here for how to rebind keys that are indistinguishable in the tty:
          http://lists.gnu.org/archive/html/help-gnu-emacs/2013-06/msg00300.html
-   : Why don't < <= >= > functions take var args?
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
@@ -125,6 +131,8 @@ Issues:
       : Dired doesn't update when a directory is created separately.  Including when Auto Revert is enabled.
       : Would be nice if I could expand and collapse directories inline, rather than at the bottom of the same buffer, and retain same information.
       : The ^ command is inconvenient to reach, find another key binding.
+   : Abolish ChangeLog in Emacs
+      : See Stefan's post: http://lists.gnu.org/archive/html/emacs-devel/2013-03/msg00889.html
    : CEDET
       : How to narrow down the project's include-path based on where the original file is in the project?
       : If a class name is not namespace scoped correctly, semantic-ia-fast-jump won't jump to it.  How to find right namespace using semantic?
@@ -137,15 +145,21 @@ Issues:
             : Confirm whether true for std::shared_ptr
          : Forward declarations
             : semantic-ia-fast-jump should use ff-find-other-file and use other file's includes, so as forward declarations work better.
+      : Even if the real class is included, if a forward declaration is found first, Semantic finds it.
       : Bug reports:
          : semantic-analyze-proto-impl-toggle
             : Takes 26 minutes
             : Use GNU Global without opening extra files
-            : Without GNU Global, us ff-find-other-file
+            : Without GNU Global, use ff-find-other-file
+      : Finding headers from source and vice versa:
+         : Use ff-find-other-file
+         : Also look amongst open buffers for match?
       : Investigate completions
          : Disable global-semantic-idle-completions-mode and assign an evil-insert-state or semantic-mode-map key binding
          : semantic-displayor-tooltip seems like the best choice for semantic-complete-inline-analyzer-idle-displayor-class
       : Is there a package that uses Semantic to generate static call graphs, similar to cflow?
+      : If header files becomes read only, then Emacs prompts the user y/n for each header it visits
+         : It ought to be more transparent to the user when Semantic visits header files
       : Have semantic-ia-fast-jump push the location it left.  MRU isn't quite the same, it returns to last edit.
       : Why is global-semantic-mru-bookmark-mode off when my init file has it enabled?
       : Set semantic-idle-symbol-highlight-face to a similar face as global-semantic-highlight-func-mode uses, then enable global-semantic-idle-local-symbol-highlight-mode
@@ -156,6 +170,9 @@ Issues:
       : Does not find tags when 'using namespace' in function scope
       : I found a case in Java (with JDEE) where calling semantic-symref seemed to permanently change point in other Java source files
       : A variable was defined in a named namespace, then anonymous namespace within that, in a .h file. A user in a .cc file did not find it via semantic-ia-fast-jump, even though .h file was included.
+   : How to manage includes in C and C++?
+      : Ask on mailing list
+      : Consider whether CEDET could do it or at least help another package do it
    : GNU Global
       : Based on FAQ, might need to set GTAGSFORCECPP to force .h files to be parsed as C++ instead of C.
       : Is it worth using outside of Semantic commands?
@@ -264,22 +281,6 @@ Issues:
                   : Doesn't work: calling c-guess from the c-mode-common-hook
                   : Does work: M-x c-guess
                   : c-guess does a lot of other things I think, which makes it run long.
-      : Backspace to tab stop backward-delete-whitespace-to-tab-stop
-         : Perhaps create dedent-for-del-command
-         : Doesn't correctly handle backspace when there's a selection.
-            : Snag with solution:
-               : Go into insert mode
-               : Shift select text
-               : C-h k verifies backspace calls backward-delete-char-untabify
-               : Works:
-                  : Hit Backspace key when .emacs bound it to backward-delete-char-untabify
-               : Does not work:
-                  : M-x backward-delete-char-untabify
-               : Does not work:
-                  : Hit backspace key when .emacs bound it to backspace-whitespace-to-tab-stop
-         : Create del-whitespace-to-tab-stop function for core Emacs?
-         : Do third party packages provide a better backspace?
-            : Try sackspace
       : Perhaps rebind M-DEL to DEL to last tab stop
       : Try out using M-i and restoring TAB to its default binding
       : Using M-<n*my-offset> then SPACE or DEL might be a viable approach
@@ -303,6 +304,9 @@ Issues:
    : Finding location of .emacs.d
       : See thread: http://lists.gnu.org/archive/html/help-gnu-emacs/2012-10/msg00467.html
       : Try: using --eval flag with an ordinary load of init.el .  Verify correct behaviors result.
+   : Automated tests
+      : Run individual tests
+         : Followup on Kenichi Handa's patch: http://lists.gnu.org/archive/html/emacs-devel/2013-08/msg00731.html
    : Pick through the elisp of others:
       : Michael Markert's:
          https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-evil.el
@@ -327,22 +331,3 @@ Issues:
          : Convert Evil regexp to Emacs regexp
          : Evil does not call replace-regexp, so need to also defadvice the appropriate Evil function.
          : Note: Evil's search and replace supports the \, feature.
-   : Emacs encoding bug:
-      : Put in file:
-         <?xml version="1.0" encoding="UTF-16"?>
-      : Displays gibberish because of UTF-16, even in fundamental mode.  I could maybe understand this in nxml mode.
-
-Evil bugs (submitted):
-   : Updating of highlighted search
-      : I find the highlights for my searches with evil-search don't update as I'd expect.  Examples:
-         1: Search on a term that appears throughout file.  Hold {{{j}}}.  Search terms will scroll in and out of view without becoming highlighted.
-         2: Search for foo: {{{/foo}}}.  Put point over "f", {{{x}}} to delete it.  oo remains highlighted.  Moving around with {{{j}}}, {{{k}}} doesn't update the highlighting.
-         3: Similarly, inserting text before "foo" creates incorrect highlighting.  {{{i}}}, type "baz", now "bazfoo" is highlighted.
-         4: In Vim, if I search and replace (with {{{:1,$s/old/new/g}}}), then undo, the "old" string is highlighted.  Evil doesn't do that.  In Vim I liked this for verifying complex search and replace operations.
-         5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
-      : Bug submitted to Evil project.
-         : Issue 1 was solved with a defcustom.
-   : In Evil motion state, can't mouse click buttons.  RET works however.
-   : Selecting only part of line and doing s/  */\n/g replaces whole line, including outside of selection.
-      : Vim behaves similarly.
-

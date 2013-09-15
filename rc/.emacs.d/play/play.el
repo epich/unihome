@@ -254,3 +254,16 @@ gogogo
   (setq my-list '(1 2 3))
   (setq my-list (nreverse my-list))
   my-list)
+
+
+
+(defmacro apply-macro (macro-arg list-arg)
+  `(eval ,`(,macro-arg ,@list-arg)))
+(list
+ (apply-macro and (t t))
+ (apply-macro + (1 2 3)))
+(byte-compile (lambda (arg-list) (apply-macro + arg-list))) ; TODO: Why does this error?
+(list
+  (fset 'myadd (byte-compile '(lambda (arg-list) (apply-macro + arg-list))))
+  (myadd '(1 2 3))
+  (disassemble #'myadd))

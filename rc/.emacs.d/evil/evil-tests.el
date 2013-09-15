@@ -3,7 +3,7 @@
 ;; Author: Vegard Øye <vegard_oye at hotmail.com>
 ;; Maintainer: Vegard Øye <vegard_oye at hotmail.com>
 
-;; Version: 1.0.6
+;; Version: 1.0-dev
 
 ;;
 ;; This file is NOT part of GNU Emacs.
@@ -197,6 +197,7 @@ then the test fails unless an error of type SYMBOL is raised.
                ;; necessary for keyboard macros to work
                (switch-to-buffer-other-window (current-buffer))
                (buffer-enable-undo)
+               (undo-tree-mode 1)
                ;; parse remaining forms
                ,@(mapcar
                   #'(lambda (form)
@@ -5179,6 +5180,24 @@ Below some empty line."))
       "[;]; This buffer is for notes."
       ("2te,")
       ";; This buffe[r] is for notes."))
+  (ert-info ("Repeat should skip adjacent character")
+    (let ((evil-repeat-find-to-skip-next t))
+      (evil-test-buffer
+        "[a]aaxaaaxaaaxaaa"
+        ("tx;")
+        "aaaxaa[a]xaaaxaaa"
+        (";")
+        "aaaxaaaxaa[a]xaaa"
+        (",")
+        "aaaxaaax[a]aaxaaa"
+        (",")
+        "aaax[a]aaxaaaxaaa")))
+  (ert-info ("Repeat should NOT skip adjacent character")
+    (let ((evil-repeat-find-to-skip-next nil))
+      (evil-test-buffer
+        "[a]aaxaaaxaaaxaaa"
+        ("tx;")
+        "aa[a]xaaaxaaaxaaa")))
   (ert-info ("No match")
     (evil-test-buffer
       "[;]; This buffer is for notes."
@@ -5215,6 +5234,24 @@ Below some empty line."))
       ";; This buffer is for notes[.]"
       ("2Te,")
       ";; This buffer is for no[t]es."))
+  (ert-info ("Repeat should skip adjacent character")
+    (let ((evil-repeat-find-to-skip-next t))
+      (evil-test-buffer
+        "aaaxaaaxaaaxaa[a]"
+        ("Tx;")
+        "aaaxaaax[a]aaxaaa"
+        (";")
+        "aaax[a]aaxaaaxaaa"
+        (",")
+        "aaaxaa[a]xaaaxaaa"
+        (",")
+        "aaaxaaaxaa[a]xaaa")))
+  (ert-info ("Repeat should NOT skip adjacent character")
+    (let ((evil-repeat-find-to-skip-next nil))
+      (evil-test-buffer
+        "aaaxaaaxaaaxaa[a]"
+        ("Tx;")
+        "aaaxaaaxaaax[a]aa")))
   (ert-info ("No match")
     (evil-test-buffer
       ";; This buffer is for notes[.]"
@@ -6462,6 +6499,8 @@ if no previous selection")
                  '(evil-ex-range
                    (evil-ex-line (string-to-number "5") nil)
                    (evil-ex-line (evil-ex-marker "x") nil))))
+  (should (equal (evil-ex-parse "`x,`y" nil 'range)
+                 '(evil-ex-char-marker-range "x" "y")))
   (should (equal (evil-ex-parse "5,+" nil 'range)
                  '(evil-ex-range
                    (evil-ex-line (string-to-number "5") nil)
@@ -6560,89 +6599,38 @@ if no previous selection")
         ("jj:@:" [return] ":1@:" [return])
         "[a]XcdXf\nabcdef\naXcdef"))))
 
-;; search
-(ert-deftest evil-test-ex-substitute ()
-  "Test `evil-ex-substitute'"
-  :tags '(evil ex search)
-  (let (evil-ex-substitute-global)
-    (evil-without-display
-      (ert-info ("Substitute on current line")
+(ert-deftest evil-test-ex-visual-char-range ()
+  "Test visual character ranges in ex state."
+  :tags '(evil ex visual)
+  (evil-without-display
+    (ert-info ("No character range, inclusive")
+      (let ((evil-visual-char 'inclusive)
+            evil-ex-visual-char-range)
         (evil-test-buffer
-          "ABCABCABC\nABCA[B]CABC\nABCABCABC"
-          (":s/BC/XYZ/" (kbd "RET"))
-          "ABCABCABC\n[A]XYZABCABC\nABCABCABC"))
-      (ert-info ("Substitute on whole current line")
+          "li[n]e 1\nline 2\nline 3\nline 4\n"
+          ("vjll:d" [return])
+          "line 3\nline 4\n")))
+    (ert-info ("No character range, exclusive")
+      (let ((evil-visual-char 'inclusive)
+            evil-ex-visual-char-range)
         (evil-test-buffer
-          "ABCABCABC\nABC[A]BCABC\nABCABCABC"
-          (":s/BC/XYZ/g" (kbd "RET"))
-          "ABCABCABC\n[A]XYZAXYZAXYZ\nABCABCABC"))
-      (ert-info ("Substitute on last line")
+          "li[n]e 1\nline 2\nline 3\nline 4\n"
+          ("vjll:d" [return])
+          "line 3\nline 4\n")))
+    (ert-info ("Character range, inclusive")
+      (let ((evil-visual-char 'inclusive)
+            (evil-ex-visual-char-range t))
         (evil-test-buffer
-          "ABCABCABC\nABCABCABC\nABCABC[A]BC"
-          (":s/BC/XYZ/" (kbd "RET"))
-          "ABCABCABC\nABCABCABC\n[A]XYZABCABC"))
-      (ert-info ("Substitute on whole last line")
+          "li[n]e 1\nline 2\nline 3\nline 4\n"
+          ("vjll:d" [return])
+          "li2\nline 3\nline 4\n")))
+    (ert-info ("Character range, exclusive")
+      (let ((evil-visual-char 'exclusive)
+            (evil-ex-visual-char-range t))
         (evil-test-buffer
-          "ABCABCABC\nABCABCABC\nABCABC[A]BC"
-          (":s/BC/XYZ/g" (kbd "RET"))
-          "ABCABCABC\nABCABCABC\n[A]XYZAXYZAXYZ"))
-      (ert-info ("Substitute on range")
-        (evil-test-buffer
-          "ABCABCABC\nQRT\nABC[A]BCABC\nABCABCABC"
-          (":1,3s/BC/XYZ/" (kbd "RET"))
-          "AXYZABCABC\nQRT\n[A]XYZABCABC\nABCABCABC"))
-      (ert-info ("Substitute whole lines on range")
-        (evil-test-buffer
-          "ABCABCABC\nQRT\nABC[A]BCABC\nABCABCABC"
-          (":1,3s/BC/XYZ/g" (kbd "RET"))
-          "AXYZAXYZAXYZ\nQRT\n[A]XYZAXYZAXYZ\nABCABCABC"))
-      (ert-info ("Substitute on whole current line confirm")
-        (evil-test-buffer
-          "ABCABCABC\nABC[A]BCABC\nABCABCABC"
-          (":s/BC/XYZ/gc" (kbd "RET") "yny")
-          "ABCABCABC\n[A]XYZABCAXYZ\nABCABCABC"))
-      (ert-info ("Substitute on range confirm")
-        (evil-test-buffer
-          "ABCABCABC\nQRT\nABC[A]BCABC\nABCABCABC"
-          (":1,3s/BC/XYZ/c" (kbd "RET") "yn")
-          "[A]XYZABCABC\nQRT\nABCABCABC\nABCABCABC"))
-      (ert-info ("Substitute whole lines on range with other delim")
-        (evil-test-buffer
-          "A/CA/CA/C\nQRT\nA/C[A]/CA/C\nA/CA/CA/C"
-          (":1,3s,/C,XYZ,g" (kbd "RET"))
-          "AXYZAXYZAXYZ\nQRT\n[A]XYZAXYZAXYZ\nA/CA/CA/C"))
-      (ert-info ("Substitute on whole buffer, smart case")
-        (evil-test-buffer
-          "[A]bcAbcAbc\naBcaBcaBc\nABCABCABC\nabcabcabc"
-          (":%s/bc/xy/g" (kbd "RET"))
-          "AxyAxyAxy\naXyaXyaXy\nAXYAXYAXY\n[a]xyaxyaxy"))
-      (ert-info ("Substitute zero range on whole line")
-        (evil-test-buffer
-          "no 1\nno 2\nno 3\n[y]es 4\nno 5\nno 6\nno 7\n"
-          (":s/^/# /g")
-          "no 1\nno 2\nno 3\n[#] yes 4\nno 5\nno 6\nno 7\n"))
-      (ert-info ("Substitute with empty")
-        (evil-test-buffer
-          "[a]bc def abc jkl"
-          (":s/b//g")
-          "[a]c def ac jkl"))))
-  (let ((evil-ex-substitute-global t))
-    (evil-without-display
-      (ert-info ("Substitute on current line with gdefault")
-        (evil-test-buffer
-          "ABCABCABC\nABCA[B]CABC\nABCABCABC"
-          (":s/BC/XYZ/g" (kbd "RET"))
-          "ABCABCABC\n[A]XYZABCABC\nABCABCABC"))
-      (ert-info ("Substitute on whole current line with gdefault")
-        (evil-test-buffer
-          "ABCABCABC\nABC[A]BCABC\nABCABCABC"
-          (":s/BC/XYZ/" (kbd "RET"))
-          "ABCABCABC\n[A]XYZAXYZAXYZ\nABCABCABC"))))
-  (ert-info ("Substitute with empty replacement")
-    (evil-test-buffer
-      "[A]BCABC\n"
-      (":s/B" (kbd "RET"))
-      "[A]CABC\n")))
+          "li[n]e 1\nline 2\nline 3\nline 4\n"
+          ("vjll:d" [return])
+          "li 2\nline 3\nline 4\n")))))
 
 (ert-deftest evil-test-ex-substitute-replacement ()
   "Test `evil-ex-substitute' with special replacements."
@@ -6691,7 +6679,12 @@ if no previous selection")
     (evil-test-buffer
       "[a]bcXdefXghiXjkl\n"
       (":s/X/\\|\\/\\|/g" [return])
-      "[a]bc|/|def|/|ghi|/|jkl\n")))
+      "[a]bc|/|def|/|ghi|/|jkl\n"))
+  (ert-info ("Substitute with register")
+    (evil-test-buffer
+      "[a]bc\niiiXiiiXiiiXiii\n"
+      ("\"ayiwj:s/X/\\=@a/g" [return])
+      "abc\n[i]iiabciiiabciiiabciii\n")))
 
 (ert-deftest evil-test-ex-repeat-substitute-replacement ()
   "Test `evil-ex-substitute' with repeating of previous substitutions."

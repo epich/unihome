@@ -122,7 +122,7 @@
                                                  (kbd (format "C-M-%c" ascii-code-i))
                                                  'my-translate-keys-p))))
 
-(define-key evil-insert-state-map (kbd "<f4>") 'my-insert-bullet)
+(global-set-key (kbd "<f4>") 'my-insert-bullet)
 ;; Will use Emacs C-y for paste rather than Evil's evil-scroll-line-up.
 (define-key evil-insert-state-map (kbd "C-y") nil)
 ;; Disable C-0 and C-- since I hit them alot unintentionally.
@@ -216,12 +216,25 @@
                   (buffer-file-name))
     ;; Get the new write permissions
     (revert-buffer)))
+(defmacro my-define-insert-pair-key-binding (open-char close-char)
+  "Define key binding for inserting a pair."
+  `(define-key evil-normal-state-map ,(format "o%c" open-char)
+     (lambda (&optional prefix-arg)
+       (interactive "*P")
+       (insert-pair prefix-arg ,open-char ,close-char))))
+(my-define-insert-pair-key-binding ?\" ?\")
+(my-define-insert-pair-key-binding ?\' ?\')
+(my-define-insert-pair-key-binding ?\( ?\))
+(my-define-insert-pair-key-binding ?\[ ?\])
+(my-define-insert-pair-key-binding ?\{ ?\})
+(my-define-insert-pair-key-binding ?\< ?\>)
+(define-key evil-motion-state-map "o-" 'evil-numbers/dec-at-pt)
+(define-key evil-motion-state-map "o=" 'evil-numbers/inc-at-pt)
 (define-key evil-motion-state-map "o/" 'highlight-phrase)
 (define-key evil-normal-state-map "oa" 'move-past-close-and-reindent)
 (define-key evil-normal-state-map "o\"" (lambda (arg) (interactive "P")
                                           (insert-pair arg ?\")))
 (define-key evil-normal-state-map "od" 'delete-pair)
-(define-key evil-motion-state-map "oF" 'eassist-list-methods)
 (define-key evil-normal-state-map "oj" 'insert-parentheses)
 (define-key evil-normal-state-map "ok" 'raise-sexp)
 (define-key evil-normal-state-map "oh" (lambda () (interactive) (transpose-sexps -1)))
@@ -268,6 +281,12 @@
 ;;   (when (equal "" (backtrace-frame 0))
 ;;     (my-msg "DEBUG: 0th backtrace-frame was the empty string")
 ;;     (backtrace)))
+
+;; Want the behavior of (toggle-c-auto-newline 1) for braces, but not for semicolon
+(defadvice c-electric-brace (around my-advice-c-electric-brace activate)
+  ;; Dynamic let
+  (let ((c-electric-flag t) (c-auto-newline))
+    ad-do-it))
 
 ;;; Debug logging
 (defun my-insert-ant-log ()
@@ -378,8 +397,7 @@
   (my-msg "Inside my-c-mode-common-hook for buffer %s " (buffer-name))
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
   (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
-  (my-bind-tab-del-keys)
-  )
+  (my-bind-tab-del-keys))
 
 (defun my-diff-mode-hook ()
   (my-msg "Inside my-diff-mode-hook for buffer %s " (buffer-name))

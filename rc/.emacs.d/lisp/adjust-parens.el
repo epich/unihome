@@ -102,6 +102,13 @@
 ;;     its siblings in the region. Dedenting would not take a region.
 ;;   - Write tests
 
+;; TODO: Bug:
+;;   ()
+;;   |;
+;; TAB yields:
+;;   (
+;;     ;)
+
 (require 'cl)
 
 (defun last-sexp-with-relative-depth (from-pos to-pos rel-depth)
@@ -143,6 +150,18 @@ This function assumes FROM-POS is not in a string or comment."
                                   parse-state)))
       the-last-pos)))
 
+
+(defun adjust-parens-check-prior-sexp ()
+  "Returns true if there is a full sexp before point, else false.
+
+May change point."
+  (let ((pos1 (progn (backward-sexp)
+                      (point)))
+        (pos2 (progn (forward-sexp)
+                     (backward-sexp)
+                     (point))))
+    (>= pos1 pos2)))
+
 (defun adjust-close-paren-for-indent ()
   "Adjust a close parentheses of a sexp so as
 lisp-indent-adjust-parens can indent that many levels.
@@ -157,9 +176,11 @@ scan-error to propogate up."
     (let ((deleted-paren-pos
            (save-excursion
              (beginning-of-line)
-             (backward-sexp)
              ;; Account for edge case when point has no sexp before it
-             (if (bobp)
+             ;;
+             ;; This is primarily to avoid funny behavior when there
+             ;; is no sexp between bob and point.
+             (if (not (adjust-parens-check-prior-sexp))
                  nil
                ;; If the sexp at point is a list,
                ;; delete its closing paren
@@ -231,7 +252,7 @@ scan-error to propogate up."
   "Adjust close parens and indent the region over which the parens
 moved."
   (let ((region-of-change (list (point) (point))))
-    (cl-loop for i from 1 to (or prefix-arg 1)
+    (cl-loop for _ from 1 to (or prefix-arg 1)
              with finished = nil
              while (not finished)
              do
