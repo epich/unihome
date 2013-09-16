@@ -16,7 +16,6 @@
   "Format for date string. ")
 (defun my-get-time-str ()
    "Get the current time as a string. "
-   (interactive)
    (let ((cur-time (current-time)))
       (format "%s.%s" 
          (format-time-string my-date-time-format)
