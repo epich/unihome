@@ -1,9 +1,10 @@
 Issues:
    : Logging with my-msg
-      : Have my-msg check the varargs for boundp, and handle unbounded vars accordingly.
+      : Using backtrace-frame is not useful for two reasons:
+         : Isn't necessarily the name of the top level function, but a widely used subform calling my-msg
+         : Can be a bytecode
+      : Could file and line number info go in each backtrace frame?
       : Have it work in Emacs batch run
-      : Include backtrace in prefix
-         : How to do it when caller is byte compiled?
    : Evil
       : Bug reports: https://bitbucket.org/lyro/evil/issues?reported_by=~epich
          : Updating of highlighted search
@@ -23,9 +24,6 @@ Issues:
          (define-key evil-normal-state-map "gf" 'find-file-at-point)
          (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
          : Email sent to Evil mailing list asking about this.
-   : Emacs bug reports:
-      : http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14892
-         : Enhance Elisp compare functions (< <= > >=) to take var args
    : Increment and decrement numbers in buffer
       : Using evil-numbers, but why should it have anything to do with Evil? Is there a generic package? Perhaps adapt evil-numbers for myself.
    : Kbd macros:

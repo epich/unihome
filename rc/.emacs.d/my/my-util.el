@@ -12,26 +12,26 @@
   `(eval ,`(,macro-arg ,@list-arg)))
 
 ;;; Functions to facilitate elisp debug logging.
-(defvar my-date-time-format "%Y-%m-%dT%H:%M:%S"
+(defconst my-date-time-format "%Y-%m-%dT%H:%M:%S"
   "Format for date string. ")
-(defun my-get-usec-str (cur-time)
-   "Get the microseconds as string. "
-   (format "%06d"
-      (nth 2 cur-time)))
 (defun my-get-time-str ()
    "Get the current time as a string. "
    (interactive)
    (let ((cur-time (current-time)))
       (format "%s.%s" 
          (format-time-string my-date-time-format)
-         (my-get-usec-str cur-time))))
-;; I attempted to use defadvice on the message function, but the minibuffer
-;; misbehaves under some conditions.  The message function is a C primitive
-;; anyway, which doesn't always combine with defadvice.
-(defun my-msg (msg &rest vargs)
-  "Log a message, with prepended information.  Used for debugging. "
-  (interactive)
-  (message "%s %s" (my-get-time-str) (apply 'format msg vargs)))
+         (format "%06d" (nth 2 cur-time)))))
+(defmacro my-msg (msg &rest vargs)
+  "Log a message, with prepended information. Used for debugging. "
+  `(message "%s %s"
+            (my-get-time-str)
+            (format ,msg
+                    ;; Prevent references to unbound vars from
+                    ;; undermining the rest of the my-msg
+                    ,@(mapcar (lambda (arg)
+                                (list 'with-demoted-errors
+                                      arg))
+                              vargs))))
 
 (defun my-check-range (lhs middle rhs)
   "Checks if lhs <= middle < rhs"
