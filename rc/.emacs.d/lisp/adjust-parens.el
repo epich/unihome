@@ -102,12 +102,17 @@
 ;;     its siblings in the region. Dedenting would not take a region.
 ;;   - Write tests
 
-;; TODO: Bug:
+;; TODO: Bug: [SOLVED, test it]
 ;;   ()
 ;;   |;
 ;; TAB yields:
 ;;   (
 ;;     ;)
+;; TODO: Bug: [SOLVED, test it]
+;;   ()
+;;   |[EOB]
+;; Leads to error: last-sexp-with-relative-depth: Args out of range: 195, 196
+;; TODO: Better account for usage in strings, either document restriction or detect it
 
 (require 'cl)
 
@@ -115,6 +120,8 @@
   "Parsing sexps from FROM-POS (inclusive) to TO-POS (exclusive),
 return the position of the last sexp that had depth REL-DEPTH relative
 to FROM-POS. Returns nil if REL-DEPTH is not reached.
+
+May change point.
 
 Examples:
   Region:   a (b c (d)) e (f g (h i)) j
@@ -126,29 +133,29 @@ Examples:
   Returns:  position of (h i)
 
 This function assumes FROM-POS is not in a string or comment."
-  (save-excursion
-    (goto-char from-pos)
-    (let (the-last-pos
-          (parse-state '(0 nil nil nil nil nil nil nil nil)))
-      (while (< (point) to-pos)
-        (setq parse-state
-              (parse-partial-sexp (point)
-                                  to-pos
-                                  nil
-                                  t ; Stop before sexp
-                                  parse-state))
-        (and (not (eq (point) to-pos))
-             (eq (car parse-state) rel-depth)
-             (setq the-last-pos (point)))
-        ;; The previous parse may not advance. To advance and maintain
-        ;; correctness of depth, we parse over the next char.
+  (goto-char from-pos)
+  (let (the-last-pos
+        (parse-state '(0 nil nil nil nil nil nil nil nil)))
+    (while (< (point) to-pos)
+      (setq parse-state
+            (parse-partial-sexp (point)
+                                to-pos
+                                nil
+                                t ; Stop before sexp
+                                parse-state))
+      (and (not (eq (point) to-pos))
+           (eq (car parse-state) rel-depth)
+           (setq the-last-pos (point)))
+      ;; The previous parse may not advance. To advance and maintain
+      ;; correctness of depth, we parse over the next char.
+      (when (< (point) to-pos)
         (setq parse-state
               (parse-partial-sexp (point)
                                   (1+ (point))
                                   nil
                                   nil
-                                  parse-state)))
-      the-last-pos)))
+                                  parse-state))))
+    the-last-pos))
 
 
 (defun adjust-parens-check-prior-sexp ()
@@ -191,10 +198,11 @@ scan-error to propogate up."
                  (point))))))
       (when deleted-paren-pos
         (let ((sexp-to-close
-               (last-sexp-with-relative-depth (point)
-                                              (progn (end-of-line)
-                                                     (point))
-                                              0)))
+               (save-excursion
+                 (last-sexp-with-relative-depth (point)
+                                                (progn (end-of-line)
+                                                       (point))
+                                                0))))
           (when sexp-to-close
             (goto-char sexp-to-close)
             (forward-sexp))
