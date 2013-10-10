@@ -7,6 +7,7 @@
 (setq visible-bell t) 
 (tool-bar-mode 0)
 (column-number-mode 1)
+(setq print-circle t)
 ;; TODO: auto-fill-mode doesn't work right for debug statement insert commands
 ;; (auto-fill-mode 1)
 ;; Disable the auto-save, the #* debris files slow down Emacs startup.
