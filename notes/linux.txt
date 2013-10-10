@@ -138,6 +138,7 @@ Terminal:
 GDB:
     Print C++ STL structures in GDB:
         http://www.yolinux.com/TUTORIALS/src/dbinit_stl_views-1.03.txt
+    To stop the process wherever it is, send SIGSTOP, eg: kill -s STOP <pid>
 
 Backtraces:
     When using backtrace calls in C, if only the executable name and hex addresses are printed, use:

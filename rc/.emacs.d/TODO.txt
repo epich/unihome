@@ -33,6 +33,7 @@ Issues:
    : Emacs bug:
       : With my font lock settings, auto revert of source code does not cause font lock update until move point
       : Fbacktrace() returned empty string at times
+      : #15045 Point jumps inappropriately around time of Semantic lexing
    : delete-pair doesn't work for <> pairs
    : Editing Lisp
       : Syntax highlighting:
@@ -125,6 +126,10 @@ Issues:
          : standard-output variable can be a function that takes one argument: the char to print
          : See also with-output-to-temp-buffer
       : edebug-initial-mode to continue to breakpoint
+      : How to send SIGSTOP from the gdb window
+      : There are serious bugs when using GDB and there's process output
+         : The GDB window inappropriately switches to where execution breaks
+         : C-x o buffer-menu then opens buffer-menu in the wrong window
    : Learn about Dired
       : Is there a notion of finding a set of files based on a criteria (search term, use of symbol), then iteratively visiting just those?
          : Need Dired Plus to visit marked files

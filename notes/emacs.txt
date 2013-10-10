@@ -29,6 +29,19 @@ Notes:
             : assign global noninteractive to true, Fbacktrace(), assign back to old value
          : int: primitive to Lisp_Object: make_number
          : int: Lisp_Object to primitive: XINT
+         : string: primitive to Lisp_Object: build_string
+      : In GDB:
+         : M-x gdb
+            : Use provided -i=mi flag then executable to debug
+         : run <args>
+         : cccc ie C-c C-c will send SIGINT to child.
+         : SIGSTOP can be sent from a separate terminal: kill -s STOP <pid>
+         : C-x SPC to add breakpoint
+         : gud-remove to remove breakpoint
+         : gud-until to run until current line is reached
+         : noninteractive = true
+         : p Fprint1(lisp_object, Qnil)
+         : p fflush(stdout)
    : C-z cycles between <N> and <E> evil states.
    : Buffer menu notes:
       : To see it:
