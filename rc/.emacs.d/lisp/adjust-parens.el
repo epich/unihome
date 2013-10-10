@@ -3,7 +3,7 @@
 ;; Copyright (C) 2013  Free Software Foundation, Inc.
 
 ;; Author: Barry O'Reilly <gundaetiapo@gmail.com>
-;; Version: 1.0
+;; Version: 1.1
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -100,19 +100,6 @@
 ;; Future work:
 ;;   - Consider taking a region as input in order to indent a sexp and
 ;;     its siblings in the region. Dedenting would not take a region.
-;;   - Write tests
-
-;; TODO: Bug: [SOLVED, test it]
-;;   ()
-;;   |;
-;; TAB yields:
-;;   (
-;;     ;)
-;; TODO: Bug: [SOLVED, test it]
-;;   ()
-;;   |[EOB]
-;; Leads to error: last-sexp-with-relative-depth: Args out of range: 195, 196
-;; TODO: Better account for usage in strings, either document restriction or detect it
 
 (require 'cl)
 
@@ -256,11 +243,11 @@ scan-error to propogate up."
       (and (not (use-region-p))
            (<= orig-pos (point))))))
 
-(defun adjust-parens-and-indent (adjust-function prefix-arg)
+(defun adjust-parens-and-indent (adjust-function parg)
   "Adjust close parens and indent the region over which the parens
 moved."
   (let ((region-of-change (list (point) (point))))
-    (cl-loop for _ from 1 to (or prefix-arg 1)
+    (cl-loop for i from 1 to (or parg 1)
              with finished = nil
              while (not finished)
              do
@@ -280,7 +267,7 @@ moved."
     (apply 'indent-region region-of-change))
   (back-to-indentation))
 
-(defun lisp-indent-adjust-parens (&optional prefix-arg)
+(defun lisp-indent-adjust-parens (&optional parg)
   "Indent Lisp code to the next level while adjusting sexp balanced
 expressions to be consistent.
 
@@ -289,10 +276,10 @@ potentially calls the latter."
   (interactive "P")
   (if (adjust-parens-p)
       (adjust-parens-and-indent 'adjust-close-paren-for-indent
-                                prefix-arg)
-    (indent-for-tab-command prefix-arg)))
+                                parg)
+    (indent-for-tab-command parg)))
 
-(defun lisp-dedent-adjust-parens (&optional prefix-arg)
+(defun lisp-dedent-adjust-parens (&optional parg)
   "Dedent Lisp code to the previous level while adjusting sexp
 balanced expressions to be consistent.
 
@@ -300,7 +287,7 @@ Binding to <backtab> (ie Shift-Tab) is a sensible choice."
   (interactive "P")
   (when (adjust-parens-p)
     (adjust-parens-and-indent 'adjust-close-paren-for-dedent
-                              prefix-arg)))
+                              parg)))
 
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
