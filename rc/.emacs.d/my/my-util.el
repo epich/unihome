@@ -58,6 +58,7 @@
   (interactive)
   ;; When cl-case is available, use that for a bit more cleanliness.
   (cond
+   ((not (display-graphic-p))        nil)
    ((eql system-type 'aix)           (my-x-toggle-fullscreen))
    ((eql system-type 'berkeley-unix) (my-x-toggle-fullscreen))
    ((eql system-type 'cygwin)        (my-msw-toggle-fullscreen))
