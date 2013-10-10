@@ -175,6 +175,7 @@ Issues:
    : Byte compilation:
       : Is there a way to have Emacs emit dependency info for GNU Make when compiling .el into .elc files, based on calls to require?
       : Determine exactly what a .elc pulls from another .elc. defmacro? defsubst? defconst? autoloads?
+      : If a variable changes name, a new warning may be necessary in another .elc, even if no byte code difference is necessary
    : Java development
       : Try out emacs-eclim which uses Eclipse as a backend
          http://www.skybert.net/emacs/java/

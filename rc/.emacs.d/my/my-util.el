@@ -5,7 +5,7 @@
 ;; Lexical binding is necessary for make-conditional-key-translation
 ;; to create a clojure object correctly.
 
-(require 'cl)
+(require 'cl-lib)
 
 (defmacro apply-macro (macro-arg list-arg)
   "Like apply but for applying macros."
@@ -31,6 +31,8 @@
                                 (list 'with-demoted-errors
                                       arg))
                               vargs))))
+
+(defvar my-offset 3 "My indentation offset. ")
 
 (defun my-check-range (lhs middle rhs)
   "Checks if lhs <= middle < rhs"
@@ -188,14 +190,6 @@ nil in keymap-from."
         (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
             (backward-delete-char (- (match-end 1) (match-beginning 1)))
           (call-interactively 'backward-delete-char))))))
-
-(defun my-bind-tab-del-keys ()
-  "Bind the TAB and DEL keys because default behaviors are shitty. "
-     ;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
-     (define-key evil-insert-state-local-map (kbd "DEL") 'backspace-whitespace-to-tab-stop)
-     ;; Tab behavior is too retarded in several major modes.  Either it is unncessarily
-     ;; restrictive about allowing tabbing, or it aligns with the line above in the wrong cases.
-     (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop))
 
 (defun surround-region-with-tag (tag-name beg end)
   "Insert XML tag named tag-name around region defined by beg end. "
