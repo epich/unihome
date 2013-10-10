@@ -91,7 +91,6 @@ Issues:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
       : Is there a way to disable electric-pair-mode in the minibuffer?
    : Consider freeing up the m key for something like the % command.
-   : How is emacs-startup-hook different from term-setup-hook?
    : How to automatically wrap text and code at 80 columns?
       : Auto fill mode?
          : Thought I turned it on, but "Fill" not in modeline.
@@ -99,8 +98,6 @@ Issues:
       : This is consistent with Emacs minibuffer in general.  Investigate
       : Can I use an Evil ex hook for this?  See:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
-   : C-c bug:
-      : Occasionally I get to a state which looks like insert, but has a C-c mapping for keyboard-quit.
    : How to mark search terms with different colors?
       : Leverage highlight-regexp or highlight-phrase:
          : Implementation:
@@ -177,6 +174,7 @@ Issues:
          : Review http://www.wolinlabs.com/blog/emacs.global.speedbar.html
    : Byte compilation:
       : Is there a way to have Emacs emit dependency info for GNU Make when compiling .el into .elc files, based on calls to require?
+      : Determine exactly what a .elc pulls from another .elc. defmacro? defsubst? defconst? autoloads?
    : Java development
       : Try out emacs-eclim which uses Eclipse as a backend
          http://www.skybert.net/emacs/java/
@@ -229,6 +227,7 @@ Issues:
       : Use magit?
    : Learn about org-mode
    : Buffer Menu
+      : Many different buffer menus in core Emacs: buff-menu.el, bs.el, ebuff-menu.el ibuffer.el
       : What's the difference between Buffer Menu and BS?
       : If accidentally his S key:
          : tabulated-list-sort is called to sort by the column at point.
@@ -301,7 +300,6 @@ Issues:
    : Figure out how to (setq-default major-mode 'text-mode) with out conflicting with Evil's (setq-default major-mode 'turn-on-evil-mode)
    : Finding location of .emacs.d
       : See thread: http://lists.gnu.org/archive/html/help-gnu-emacs/2012-10/msg00467.html
-      : Try: using --eval flag with an ordinary load of init.el .  Verify correct behaviors result.
    : Automated tests
       : Run individual tests
          : Followup on Kenichi Handa's patch: http://lists.gnu.org/archive/html/emacs-devel/2013-08/msg00731.html
