@@ -173,9 +173,16 @@ Issues:
       : Is it worth using outside of Semantic commands?
          : Review http://www.wolinlabs.com/blog/emacs.global.speedbar.html
    : Byte compilation:
-      : Is there a way to have Emacs emit dependency info for GNU Make when compiling .el into .elc files, based on calls to require?
-      : Determine exactly what a .elc pulls from another .elc. defmacro? defsubst? defconst? autoloads?
-      : If a variable changes name, a new warning may be necessary in another .elc, even if no byte code difference is necessary
+      : Is there a way to have Emacs emit dependency info for GNU Make when compiling .el into .elc files?
+      : If a.el changes and a.elc rebuilt, when does dependent b.el need to rebuild?
+         : Y: macro changes definition
+         : Y: defsubst changes definition
+         : Y/N: defun changes to defsubst (Y for performance, N to correct behavior)
+         : N: defconst value changes
+         : Y: b.el eval-when-compile clauses use anything from a.el
+         : ?: b requires a
+            : If a variable in a.el changes name, a new warning may surface compiling b.el, but otherwise byte code stays the same.
+      : load-history may be useful, see eg bytecomp.el's use in byte-compile-file-form-require to find requires of cl
    : Java development
       : Try out emacs-eclim which uses Eclipse as a backend
          http://www.skybert.net/emacs/java/
