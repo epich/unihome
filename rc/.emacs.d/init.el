@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;;
 
-(require 'cl)
+(require 'cl-lib)
 
 ;;; General emacs settings
 (setq visible-bell t) 
@@ -194,13 +194,6 @@
   "Sourcepaths for Java. ")
 
 ;;; Relating to tabs
-;; I would prefer automatic guessing of my-offset based on the offset in use for the
-;; surrounding code.
-(defvar my-offset 3 "My indentation offset. ")
-(defun my-continuation-offset ()
-  "Determine the offset for line continuations."
-  (* 3 my-offset))
-
 ;; Permanently force Emacs to indent with spaces, never with TABs:
 (setq-default indent-tabs-mode nil)
 (setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
@@ -213,6 +206,18 @@
 ;;(setq tab-width my-offset)
 ;; Disable weird auto formatting
 (setq-default c-electric-flag nil)
+
+;;; Packaging
+;;
+;; Use M-x list-packages to manage installed packages
+(require 'package)
+(setq package-user-dir (format "%s/packages" my-emacs-data-dir))
+(push '("marmalade" . "http://marmalade-repo.org/packages/")
+      package-archives )
+(push '("melpa" . "http://melpa.milkbox.net/packages/")
+      package-archives)
+;; (push '("local-elpa" . "/psd15/linux/boreilly/sw/elpa/packages")
+;;       package-archives)
 
 ;;; Customizations
 ;;
@@ -280,10 +285,8 @@
  '(jit-lock-defer-time 0.01)
  '(large-file-warning-threshold 1000000000.0)
  '(message-log-max 100000)
- '(nxml-attribute-indent (my-continuation-offset))
  '(nxml-child-indent my-offset)
  '(nxml-sexp-element-flag t)
- '(python-continuation-offset (my-continuation-offset))
  '(python-indent my-offset)
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)

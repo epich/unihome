@@ -17,7 +17,11 @@ def byteCompile(filesString, loadPathL=[]):
    filesString -- string which is passed to command line.  Example: '*.el'
    """
    loadPathOpts = ['-L '+loadPathI+' ' for loadPathI in loadPathL]
-   generalUtil.cmd( 'emacs --batch -Q %s -f batch-byte-compile %s'%(''.join(loadPathOpts), filesString,), printDebug=True, printStdout=True )
+   generalUtil.cmd( 'emacs --batch -Q %s -f batch-byte-compile %s'%(''.join(loadPathOpts),
+                                                                    filesString,),
+                    printDebug=True,
+                    printStdout=True,
+                    printStderr=True )
 
 def buildEvil():
    generalUtil.cmd('make -C %s'%(evilDir_g,), printStdout=True)
@@ -29,7 +33,7 @@ def buildMiscElisp():
 def buildMy():
    byteCompile('my/my-util.el')
    byteCompile('my/my-proj.el')
-   byteCompile('my/my-config.el')
+   byteCompile('my/my-config.el', loadPathL=['my'])
 
 def buildEmacsD():
    # Create directories Emacs expects

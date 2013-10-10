@@ -2,19 +2,8 @@
 ;;
 ;; My high level config, which can assume other Elisp is loaded.
 
-(require 'cl)
-
-;;; Packaging
-;;
-;; Use M-x list-packages to manage installed packages
-(require 'package)
-(setq package-user-dir (format "%s/packages" my-emacs-data-dir))
-(push '("marmalade" . "http://marmalade-repo.org/packages/")
-      package-archives )
-(push '("melpa" . "http://melpa.milkbox.net/packages/")
-      package-archives)
-;; (push '("local-elpa" . "/psd15/linux/boreilly/sw/elpa/packages")
-;;       package-archives)
+(require 'cl-lib)
+(require 'my-util)
 
 ;;; Configure default Evil states for chosen major modes.
 ;;
@@ -24,6 +13,14 @@
 ;; Use Dired in motion state instead of the keymap created in evil-integration.el .
 (setq evil-motion-state-modes (cons 'dired-mode evil-motion-state-modes))
 (setq evil-motion-state-modes (cons 'eassist-mode evil-motion-state-modes))
+
+(defun my-bind-tab-del-keys ()
+  "Bind the TAB and DEL keys because default behaviors are shitty. "
+     ;; (define-key evil-insert-state-map (kbd "DEL") 'backward-delete-char-untabify)
+     (define-key evil-insert-state-local-map (kbd "DEL") 'backspace-whitespace-to-tab-stop)
+     ;; Tab behavior is too retarded in several major modes.  Either it is unncessarily
+     ;; restrictive about allowing tabbing, or it aligns with the line above in the wrong cases.
+     (define-key evil-insert-state-local-map (kbd "TAB") 'tab-to-tab-stop))
 
 ;;; Evil key bindings
 ;;
@@ -231,9 +228,9 @@
 (defmacro my-define-insert-pair-key-binding (open-char close-char)
   "Define key binding for inserting a pair."
   `(define-key evil-normal-state-map ,(format "o%c" open-char)
-     (lambda (&optional prefix-arg)
+     (lambda (&optional parg)
        (interactive "*P")
-       (insert-pair prefix-arg ,open-char ,close-char))))
+       (insert-pair parg ,open-char ,close-char))))
 (my-define-insert-pair-key-binding ?\" ?\")
 (my-define-insert-pair-key-binding ?\' ?\')
 (my-define-insert-pair-key-binding ?\( ?\))
