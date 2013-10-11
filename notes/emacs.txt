@@ -42,6 +42,12 @@ Notes:
          : noninteractive = true
          : p Fprint1(lisp_object, Qnil)
          : p fflush(stdout)
+         : According to Emacs Manual Checklist section:
+            : Start GDB in src directory in order to load .gdbinit
+            : Use pr from .gdbinit to print Lisp_Objects
+               : Only works in running process, not with core dump
+            : xbacktrace
+            : See also etc/DEBUG
    : C-z cycles between <N> and <E> evil states.
    : Buffer menu notes:
       : To see it:
