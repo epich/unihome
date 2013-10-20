@@ -193,6 +193,7 @@ Issues:
          : For CEDET, you have to know which .elc, or delete them all
          : Evil greps for require calls
          : In Emacs core, cc-*.el dependencies are listed explicitly
+      : See also: http://www.emacswiki.org/emacs/LibraryDependencies
    : Java development
       : Try out emacs-eclim which uses Eclipse as a backend
          http://www.skybert.net/emacs/java/

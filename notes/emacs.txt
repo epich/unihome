@@ -48,7 +48,13 @@ Notes:
                : Only works in running process, not with core dump
             : xbacktrace
             : See also etc/DEBUG
+   : Committing to Emacs
+      : vc-dir
+      : vc-next-action
+      : log-edit-insert-changelog (again or with prefix)
+      : vc-next-action
    : C-z cycles between <N> and <E> evil states.
+   : Increment numbers: see http://www.emacswiki.org/emacs/NumbersInRegisters
    : Buffer menu notes:
       : To see it:
          : C-x C-b 
