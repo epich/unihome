@@ -52,6 +52,7 @@ Issues:
          : Perhaps write a safe-delete-pair?
       : Take a step back and look at my commands and their key bindings
       : adjust-parens:
+         : In Clojure, [] manipulation almost works
          : Consider writing adjust-parens-yank function
             : Would do like yank but add close parens to the pasted Lisp code to balance it
             : For example, Copy "(if abc", paste "(if abc)":

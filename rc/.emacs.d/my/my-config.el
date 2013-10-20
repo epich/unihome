@@ -101,7 +101,7 @@
    ;; Evil's 'r' command doesn't change evil-state, but we don't want key translations to take effect, otherwise
    ;; replacing a char with g (translated to Ctrl-x) would replace the char with ^X instead.  This check is
    ;; a somewhat hackish way of inferring Evil is in the middle of an evil-read-key call.
-   (not (eq overriding-terminal-local-map evil-read-key-map))
+   (not (eq overriding-local-map evil-read-key-map))
    (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))))
 (defun my-translate-keys-initial-p (key-from)
   "Returns whether conditional key translations should be active; nil if not the initial key of a Key Sequence.  See make-conditional-key-translation function. "
@@ -407,7 +407,11 @@
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
   (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
   (my-bind-tab-del-keys))
-
+(defun my-clojure-mode-hook ()
+  (my-msg "Inside my-clojure-mode-hook for buffer %s " (buffer-name))
+  (define-key evil-motion-state-local-map "se" 'nrepl-eval-last-expression)
+  (local-set-key (kbd "TAB") 'lisp-indent-adjust-parens)
+  (local-set-key (kbd "<backtab>") 'lisp-dedent-adjust-parens))
 (defun my-diff-mode-hook ()
   (my-msg "Inside my-diff-mode-hook for buffer %s " (buffer-name))
   (define-key evil-motion-state-local-map "sj" 'diff-file-next)
