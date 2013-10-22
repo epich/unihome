@@ -12,17 +12,17 @@
 ~/unihome/notes/sql.txt
 ~/unihome/notes/subversion.txt
 ~/unihome/notes/emacs.txt
-~/unihome/rc/.emacs.d/TODO.txt
-~/unihome/rc/.emacs.d/misc-elisp.mk
-~/unihome/rc/.emacs.d/play/play.el
-~/unihome/rc/.emacs.d/init.el
-~/unihome/rc/.emacs.d/my/my-util.el
-~/unihome/rc/.emacs.d/my/my-proj.el
-~/unihome/rc/.emacs.d/my/my-config.el
+~/unihome/emacs/TODO.txt
+~/unihome/emacs/misc-elisp.mk
+~/unihome/emacs/play/play.el
+~/unihome/emacs/init.el
+~/unihome/emacs/my/my-util.el
+~/unihome/emacs/my/my-proj.el
+~/unihome/emacs/my/my-config.el
 ~/unihome/rc/.vimrc
 ~/unihome/rc/unihome.csh
 ~/unihome/rc/unihome.sh
-~/unihome/rc/.emacs.d/emacsUtil.py
+~/unihome/emacs/emacsUtil.py
 ~/unihome/py/generalUtil.py
 ~/unihome/build.py
 
