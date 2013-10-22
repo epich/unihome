@@ -135,6 +135,9 @@ Terminal:
     From C:
         printf("\017");
 
+Rsync:
+    rsync -av --progress sourcefolder /destinationfolder --exclude thefoldertoexclude
+
 GDB:
     Print C++ STL structures in GDB:
         http://www.yolinux.com/TUTORIALS/src/dbinit_stl_views-1.03.txt
