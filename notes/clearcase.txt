@@ -52,6 +52,10 @@ Create view:
 Merge arrow:
     cleartool mkhlink -unidir Merge FROM_VERSION TO_VERSION
 
+Undo bad merge:
+    Example:
+    ct find . -type f -branch 'version(.../tmcleod_pm_r1a_ptr8030/LATEST) && merge(.../lex_pm_r1a_int, .../tmcleod_pm_r1a_ptr8030) && created_since(22-Oct-2013)' -exec '/opt/ibm/RationalSDLC/clearcase/linux_x86/bin/cleartool rmbranch -f $CLEARCASE_XPN'
+
 View versions:
    In dynamic view:
       cd /view/MyView/vobs/myVobs/myPath/myFile@@/main/[...]/maBranch
