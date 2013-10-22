@@ -113,9 +113,13 @@ Issues:
          : evil-ex-make-hl makes a highlight object
          : evil-ex-delete-hl to clear them?
       : Submit RFE to Evil for a function analogous to highlight-regexp and highlight-phrase .
-   : CLI args:
-      : Experiment with specifying either a project name and/or an indentation offset via a command line option
-         ;;(cl-pushnew '("offset" . (lambda (option-name) (my-msg "DEBUG: command-line-args-left=%s" command-line-args-left) ) command-switch-alist)
+   : Configure by project
+      : Find project and set my-project-root
+      : unihome is not found correctly because of unihome/emacs
+      : Set Emacs settings:
+         : C coding style
+         : Two spaces after period
+         : my-offset
    : Debugging
       : Learn Edebug
          : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
@@ -348,8 +352,3 @@ Issues:
          : Convert Evil regexp to Emacs regexp
          : Evil does not call replace-regexp, so need to also defadvice the appropriate Evil function.
          : Note: Evil's search and replace supports the \, feature.
-   : Create settings for editing Emacs sources:
-      : C coding style
-      : Two spaces after period
-      : my-offset
-

@@ -20,15 +20,20 @@
 ;;           "path/to/java/src"
 ;;           )) "Path for project .java files.")
 
-
-
 (defvar my-rhel-release 5 "Major release of RHEL. ")
 (defvar goesr-sdf-ots-path
         (let (sdf-ots-path (getenv "SDF_OTS_PATH")) (if sdf-ots-path sdf-ots-path "/goesr/user/build/3rdparty/OTS"))
         "Path to GOESR OTS (Off the Shelf) software. ")
 (defvar my-project-root
-        (or (my-find-file-upwards "IPT_MM/Dev") (my-find-file-upwards "IPT_PG/Dev") "OTS" "trunk" "sw" "unihome")
+        (or (my-find-file-upwards "IPT_MM/Dev")
+            (my-find-file-upwards "IPT_PG/Dev")
+            ;; TODO: Do better: find if emacs/COPYING exists to reduce false positives, find emacs-* dirs
+            ;; TODO: Find root based on .git, .hg, .bzr
+            (my-find-file-upwards "emacs")
+            "unihome" "OTS" "trunk" "sw")
         "Path to current project. " )
+
+(defun my-proj-emacs-init ())
 
 ;; Inside ede-expand-filename-impl name=BasicStatistics.h 
 ;; Inside ede-expand-filename-impl string dir=(void) 
@@ -68,8 +73,10 @@ NAME is the name of the file to find, basename including extension.  DIR is the 
       (with-current-buffer includes-buffer
         (split-string (buffer-string) "\\s-+")))))
 ;; Excludes system, which causes quite a bit of delay when there are a lot of Boost includes
-(setq-default semanticdb-find-default-throttle '(local project unloaded recursive))
-(defvar goesr-cxx-project
+
+(defun my-proj-goesr-cxx-init ()
+  "Initialize GOESR C++ project"
+  (load-file "/goesr/user/boreilly/goesr-dev.el")
   (let ((my-root-file (format "%s/Makefile" my-project-root)))
     (when (file-exists-p my-root-file)
       (ede-cpp-root-project "goesr-cxx"
@@ -79,10 +86,18 @@ NAME is the name of the file to find, basename including extension.  DIR is the 
                             :include-path goesr-cxx-include-path
                             ;; The sheer number of Boost header dependency files makes it impractical to use
                             ;; :system-include-path (list (format "%s/rhel%sx/gnu/local/boost-1.48.0-x86_64/include" goesr-sdf-ots-path my-rhel-release))
-                          )))
-  "GOESR C++ project. ")
+                            )))
+  (setq-default semanticdb-find-default-throttle '(local project unloaded recursive)))
+
 ;; TODO: Have not tested Java in the new CEDET, may need to set other properties
 ;;(ede-java-root-project "goesr-java" :file (format "%s/Makefile" my-project-root))
+
+(cond
+ ((string= my-project-root "emacs")
+  (my-proj-emacs-init))
+ ((and (file-accessible-directory-p "/goesr/user/boreilly")
+       (getenv "LOAD_GOESR_ELISP"))
+  (my-proj-goesr-cxx-init)))
 
 (provide 'my-proj)
 

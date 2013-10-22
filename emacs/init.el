@@ -173,13 +173,8 @@
   )
 
 ;; Initialize project-specific elisp
-(defvar my-load-goesr (and (file-accessible-directory-p "/goesr/user/boreilly")
-                           (getenv "LOAD_GOESR_ELISP") "Whether initialization loads GOESR Elisp. "))
-(when my-load-goesr
-  (my-msg "Initializing project-specific elisp.")
-  (load-file "/goesr/user/boreilly/goesr-dev.el")
-  (require 'my-proj)
-  )
+(my-msg "Initializing project-specific elisp.")
+(require 'my-proj)
 
 ;; Paths for JDEE
 (defvar my-java-classpath (if (boundp 'goesr-classpath)
