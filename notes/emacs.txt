@@ -42,10 +42,22 @@ Notes:
          : noninteractive = true
          : p Fprint1(lisp_object, Qnil)
          : p fflush(stdout)
+         : According to Emacs Manual Checklist section:
+            : Start GDB in src directory in order to load .gdbinit
+            : Use pr from .gdbinit to print Lisp_Objects
+               : Only works in running process, not with core dump
+            : xbacktrace
+            : See also etc/DEBUG
          : To debug Emacs in a terminal, see https://lists.gnu.org/archive/html/bug-gnu-emacs/2013-10/msg00353.html
       : If Emacs hangs, set debug-on-quit to t
    : Run Emacs generally with --enable-checking as noted: --enable-checking or CFLAGS='-DENABLE_CHECKING'
+   : Committing to Emacs
+      : vc-dir
+      : vc-next-action
+      : log-edit-insert-changelog (again or with prefix)
+      : vc-next-action
    : C-z cycles between <N> and <E> evil states.
+   : Increment numbers: see http://www.emacswiki.org/emacs/NumbersInRegisters
    : Buffer menu notes:
       : To see it:
          : C-x C-b 

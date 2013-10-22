@@ -320,6 +320,7 @@
 (add-hook 'prog-mode-hook 'my-prog-mode-hook)
 (add-hook 'text-mode-hook 'my-text-mode-hook)
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+(add-hook 'clojure-mode-hook 'my-clojure-mode-hook)
 (add-hook 'diff-mode-hook 'my-diff-mode-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
 (add-hook 'java-mode-hook 'my-java-mode-hook)

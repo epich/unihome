@@ -53,6 +53,7 @@ Issues:
          : Perhaps write a safe-delete-pair?
       : Take a step back and look at my commands and their key bindings
       : adjust-parens:
+         : In Clojure, [] manipulation almost works
          : Consider writing adjust-parens-yank function
             : Would do like yank but add close parens to the pasted Lisp code to balance it
             : For example, Copy "(if abc", paste "(if abc)":
@@ -188,7 +189,13 @@ Issues:
          : Y: b.el eval-when-compile clauses use anything from a.el
          : ?: b requires a
             : If a variable in a.el changes name, a new warning may surface compiling b.el, but otherwise byte code stays the same.
+      : Emacs signals error if a circular require is encountered
       : load-history may be useful, see eg bytecomp.el's use in byte-compile-file-form-require to find requires of cl
+      : How existing Elisp build systems make do:
+         : For CEDET, you have to know which .elc, or delete them all
+         : Evil greps for require calls
+         : In Emacs core, cc-*.el dependencies are listed explicitly
+      : See also: http://www.emacswiki.org/emacs/LibraryDependencies
    : Java development
       : Try out emacs-eclim which uses Eclipse as a backend
          http://www.skybert.net/emacs/java/
