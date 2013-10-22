@@ -33,6 +33,7 @@ Issues:
       : Fbacktrace() returned empty string at times
       : #15045 Point jumps inappropriately around time of Semantic lexing
    : delete-pair doesn't work for <> pairs
+   : Bind C-g to keyboard-quit but with debug-on-quit set to t?
    : Editing Lisp
       : Syntax highlighting:
          : Pairs of parens in different colors, bottom up from point
@@ -340,3 +341,8 @@ Issues:
          : Convert Evil regexp to Emacs regexp
          : Evil does not call replace-regexp, so need to also defadvice the appropriate Evil function.
          : Note: Evil's search and replace supports the \, feature.
+   : Create settings for editing Emacs sources:
+      : C coding style
+      : Two spaces after period
+      : my-offset
+
