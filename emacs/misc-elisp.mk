@@ -10,7 +10,7 @@ FILES := \
   lisp/evil-numbers.el \
   lisp/goto-chg.el \
   lisp/rainbow-delimiters.el \
-  undo-tree/undo-tree.el
+  lisp/undo-tree.el
 LIBS :=
 
 ELCFILES := $(FILES:.el=.elc)

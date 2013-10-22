@@ -12,7 +12,7 @@
 ;; (auto-fill-mode 1)
 ;; Disable the auto-save, the #* debris files slow down Emacs startup.
 (setq auto-save-default nil)
-(defvar my-emacs-data-dir "~/emacs-data" "Location of runtime data for Emacs. ")
+(defvar my-emacs-data-dir "~/.emacs.d" "Location of runtime data for Emacs. ")
 ;; Don't create debris files next to originals.
 (setq backup-directory-alist `((".*" . ,(format "%s/backup" my-emacs-data-dir))))
 (global-auto-revert-mode 1)
@@ -40,7 +40,7 @@
        (electric-pair-mode 0)))
 
 ;; Load my stuff
-(add-to-list 'load-path "~/.emacs.d/my")
+(add-to-list 'load-path "~/unihome/emacs/my")
 (require 'my-util)
 
 (my-toggle-fullscreen)
@@ -58,7 +58,7 @@
 (add-to-list 'auto-mode-alist '("wscript" . python-mode))
 
 (my-msg "Initializing third party lisp. ")
-(add-to-list 'load-path "~/.emacs.d/lisp")
+(add-to-list 'load-path "~/unihome/emacs/lisp")
 (require 'adjust-parens)
 (require 'evil-numbers)
 (require 'goto-chg)
@@ -72,12 +72,11 @@
 (defvar my-use-undo-tree t)
 (when my-use-undo-tree
   (my-msg "Initializing Undo Tree. ")
-  (add-to-list 'load-path "~/.emacs.d/undo-tree")
   (require 'undo-tree))
 
 ;;; Evil
 (my-msg "Initializing Evil.")
-(add-to-list 'load-path "~/.emacs.d/evil")
+(add-to-list 'load-path "~/unihome/emacs/evil")
 (require 'evil)
 (evil-mode 1)
 
@@ -97,8 +96,7 @@
   (semantic-mode 1)
   (global-ede-mode 1)
   (setq cedet-loaded t)
-  (setq semanticdb-default-save-directory (format "%s/semanticdb" my-emacs-data-dir))
-  )
+  (setq semanticdb-default-save-directory (format "%s/semanticdb" my-emacs-data-dir)))
 
 (defvar my-bzr-cedet-path "/goesr/user/boreilly/sw/cedet" "Path to CEDET")
 (defun my-enable-cedet-from-bzr ()
@@ -211,7 +209,6 @@
 ;;
 ;; Use M-x list-packages to manage installed packages
 (require 'package)
-(setq package-user-dir (format "%s/packages" my-emacs-data-dir))
 (push '("marmalade" . "http://marmalade-repo.org/packages/")
       package-archives )
 (push '("melpa" . "http://melpa.milkbox.net/packages/")

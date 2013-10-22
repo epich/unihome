@@ -37,7 +37,7 @@ def buildMy():
 
 def buildEmacsD():
    # Create directories Emacs expects
-   generalUtil.cmd('mkdir -p ~/.semanticdb ~/emacs-data ~/emacs-data/backup ~/emacs-data/semanticdb')
+   generalUtil.cmd('mkdir -p ~/.emacs.d ~/.emacs.d/semanticdb ~/.emacs.d/backup')
    buildMiscElisp()
    buildEvil()
    buildMy()

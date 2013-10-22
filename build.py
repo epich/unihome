@@ -7,7 +7,7 @@ import os
 import sys
 sys.path.append(sys.path[0]+'/py')
 import generalUtil
-sys.path.append(sys.path[0]+'/rc/.emacs.d')
+sys.path.append(sys.path[0]+'/emacs')
 import emacsUtil
 
 scriptHelp_g = """Usage: %s [options]

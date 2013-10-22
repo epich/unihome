@@ -1,0 +1,18 @@
+commit 6b4e55533495efb5e8021cea4c6ffbcb8ef352dc
+Author: Barry O'Reilly <gundaetiapo@gmail.com>
+Date:   Wed Oct 10 18:48:13 2012 -0400
+
+    Ding when search wraps.
+
+diff --git a/evil-commands.el b/evil-commands.el
+index 54be320..d6304dd 100644
+--- a/evil-commands.el
++++ b/evil-commands.el
+@@ -2742,6 +2742,7 @@ Change to `%s'? "
+          ((eq res 'wrapped) (setq wrapped t)))))
+     (if wrapped
+         (let (message-log-max)
++          (ding t)
+           (message "Search wrapped")))
+     (goto-char (match-beginning 0))
+     (setq evil-ex-search-match-beg (match-beginning 0)
