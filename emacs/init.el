@@ -82,27 +82,17 @@
 
 ;;; Initialize CEDET
 ;;;
-(defvar my-enable-cedet-function
-  'my-enable-cedet-from-emacs
-  "Function to use for loading CEDET.  Determines which CEDET to load. ")
 (defvar cedet-loaded nil
   "Whether the initialization loaded CEDET explicitly. ")
-
-(defun my-enable-cedet-from-emacs ()
-  "Loads CEDET distrubted with Emacs."
-  ;; Note: Apparently eassist is not distributed with Emacs 24.3
-  (require 'semantic/ia)
-  (require 'semantic/bovine/gcc)
-  (semantic-mode 1)
-  (global-ede-mode 1)
-  (setq cedet-loaded t)
-  (setq semanticdb-default-save-directory (format "%s/semanticdb" my-emacs-data-dir)))
-
-(defvar my-bzr-cedet-path "/goesr/user/boreilly/sw/cedet" "Path to CEDET")
-(defun my-enable-cedet-from-bzr ()
-  "Loads the latest snapshot of CEDET bzr trunk. "
-  (load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
-  (add-to-list 'load-path (concat my-bzr-cedet-path "/contrib"))
+;; CEDET documents loading must occur before other packages load any part of CEDET.
+;; Especially important since Emacs has a different version builtin, which I can't
+;; use when using JDEE.
+;;
+;; CEDET raises an error if loaded again.
+(unless cedet-loaded
+  (my-msg "Initializing CEDET.")
+  ;; When using CEDET source distributed separately from Emacs
+  ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
   (require 'semantic/ia)
   (require 'semantic/bovine/gcc)
   (setq semantic-default-submodes '(global-semantic-idle-scheduler-mode
@@ -117,14 +107,16 @@
                                     ;;  : semantic-decoration-on-includes highlights system includes in red
                                     ;;global-semantic-decoration-mode
                                     ;; Disabled because don't find it useful.
-                                    ;; global-semantic-highlight-func-mode
+                                    ;;global-semantic-highlight-func-mode
                                     ;; Disabled because don't find it useful.  Looks weird in .mk files.
-                                    ;; global-semantic-stickyfunc-mode
-                                    global-semantic-mru-bookmark-mode
-                                    global-cedet-m3-minor-mode
+                                    ;;global-semantic-stickyfunc-mode
+                                    ;; There are alternatives for navigating to previous edits
+                                    ;;global-semantic-mru-bookmark-mode
+                                    ;; Doesn't appear to offer anything currently
+                                    ;;global-cedet-m3-minor-mode
                                     ;; Disabled because:
                                     ;;  : Need to customize better face for semantic-idle-symbol-highlight-face
-                                    ;; global-semantic-idle-local-symbol-highlight-mode
+                                    ;;global-semantic-idle-local-symbol-highlight-mode
 
                                     ;;; For debugging Semantic
                                     ;; global-semantic-show-unmatched-syntax-mode
@@ -132,10 +124,9 @@
                                     ;; global-semantic-highlight-edits-mode
                                     ))
   (semantic-mode 1)
-  (require 'eassist)
   (global-ede-mode 1)
   (setq cedet-loaded t)
-  (setq semanticdb-default-save-directory "/goesr/user/boreilly/semanticdb")
+  (setq semanticdb-default-save-directory (format "%s/semanticdb" my-emacs-data-dir))
 
   ;; Configure GNU Global
   ;; (if (not (cedet-gnu-global-version-check t))
@@ -143,19 +134,6 @@
   ;;   (semanticdb-enable-gnu-global-databases 'c-mode)
   ;;   (semanticdb-enable-gnu-global-databases 'c++-mode))
   )
-
-;; CEDET in Emacs trunk is sufficient right now
-;; (when (file-accessible-directory-p my-bzr-cedet-path)
-;;   (setq my-enable-cedet-function 'my-enable-cedet-from-bzr))
-
-;; CEDET documents loading must occur before other packages load any part of CEDET.
-;; Especially important since Emacs has a different version builtin, which I can't
-;; use when using JDEE.
-;;
-;; CEDET raises an error if loaded again.
-(unless cedet-loaded
-  (my-msg "Initializing CEDET with %s function." my-enable-cedet-function)
-  (funcall my-enable-cedet-function))
 
 ;;; Initialize JDEE
 (defvar my-jdee-path
