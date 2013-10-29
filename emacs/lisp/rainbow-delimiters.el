@@ -283,29 +283,32 @@ Nil disables brace highlighting."
 
 Determines depth at which to cycle through faces again.")
 
+(defvar rainbow-delimiters-outermost-only-face-count 0
+  "Number of faces to be used only for N outermost delimiter levels.
+
+This should be smaller than `rainbow-delimiters-max-face-count'.")
+
 ;;; Face utility functions
 
 (defsubst rainbow-delimiters-depth-face (depth)
   "Return face-name for DEPTH as a string 'rainbow-delimiters-depth-DEPTH-face'.
 
 For example: 'rainbow-delimiters-depth-1-face'."
-  (concat "rainbow-delimiters-depth-"
-          (number-to-string
-           (or
-            ;; Our nesting depth has a face defined for it.
-            (and (< depth rainbow-delimiters-max-face-count)
-                 depth)
-            ;; Deeper than # of defined faces; cycle back through to beginning.
-            ;; Depth 1 face is only applied to the outermost delimiter pair.
-            ;; Cycles infinitely through faces 2-9.
-            (let ((cycled-depth (mod depth rainbow-delimiters-max-face-count)))
-              (if (/= cycled-depth 0)
-                  ;; Return face # that corresponds to current nesting level.
-                  (mod depth rainbow-delimiters-max-face-count)
-                ;; Special case: depth divides evenly into max, correct face # is max.
-                rainbow-delimiters-max-face-count))))
-          "-face"))
-
+  (intern-soft
+   (concat "rainbow-delimiters-depth-"
+           (number-to-string
+            (or
+             ;; Our nesting depth has a face defined for it.
+             (and (<= depth rainbow-delimiters-max-face-count)
+                  depth)
+             ;; Deeper than # of defined faces; cycle back through to
+             ;; `rainbow-delimiters-outermost-only-face-count' + 1.
+             ;; Return face # that corresponds to current nesting level.
+             (+ 1 rainbow-delimiters-outermost-only-face-count
+                (mod (- depth rainbow-delimiters-max-face-count 1)
+                     (- rainbow-delimiters-max-face-count
+                        rainbow-delimiters-outermost-only-face-count)))))
+           "-face")))
 
 ;;; Nesting level
 
@@ -386,7 +389,7 @@ Sets text properties:
 `rear-nonsticky' to prevent color from bleeding into subsequent characters typed by the user."
   (with-silent-modifications
     (let ((delim-face (if (<= depth 0)
-                          "rainbow-delimiters-unmatched-face"
+                          'rainbow-delimiters-unmatched-face
                         (rainbow-delimiters-depth-face depth))))
       ;; (when (eq depth -1) (message "Unmatched delimiter at char %s." loc))
       (add-text-properties loc (1+ loc)
@@ -401,8 +404,8 @@ Sets text properties:
                             '(font-lock-face nil
                               rear-nonsticky nil))))
 
-(make-local-variable 'rainbow-delimiters-escaped-char-predicate)
-(setq rainbow-delimiters-escaped-char-predicate nil)
+(defvar rainbow-delimiters-escaped-char-predicate nil)
+(make-variable-buffer-local 'rainbow-delimiters-escaped-char-predicate)
 
 (defvar rainbow-delimiters-escaped-char-predicate-list
   '((emacs-lisp-mode . rainbow-delimiters-escaped-char-predicate-emacs-lisp)
@@ -414,11 +417,11 @@ Sets text properties:
     ))
 
 (defun rainbow-delimiters-escaped-char-predicate-emacs-lisp (loc)
-  (and (eq (char-before loc) ?\\)  ; escaped char, e.g. ?\) - not counted
-       (and (not (eq (char-before (1- loc)) ?\\)) ; special-case: ignore ?\\
-            (eq (char-before (1- loc)) ?\?))))
-;; NOTE: standard char read syntax '?)' is not tested for because emacs manual
-;; states punctuation such as delimiters should _always_ use escaped '?\)' form.
+  (or (and (eq (char-before loc) ?\?) ; e.g. ?) - deprecated, but people use it
+           (not (and (eq (char-before (1- loc)) ?\\) ; special case: ignore ?\?
+                     (eq (char-before (- loc 2)) ?\?))))
+      (and (eq (char-before loc) ?\\) ; escaped char, e.g. ?\) - not counted
+           (eq (char-before (1- loc)) ?\?))))
 
 (defun rainbow-delimiters-escaped-char-predicate-lisp (loc)
   (eq (char-before loc) ?\\))
