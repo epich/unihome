@@ -38,6 +38,8 @@ def buildMy():
 def buildEmacsD():
    # Create directories Emacs expects
    generalUtil.cmd('mkdir -p ~/.emacs.d ~/.emacs.d/semanticdb ~/.emacs.d/backup')
+   # Make sure abbrev_defs exists or I'll get an annoying prompt
+   generalUtil.cmd('touch ~/.emacs.d/abbrev_defs')
    buildMiscElisp()
    buildEvil()
    buildMy()
