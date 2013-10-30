@@ -116,7 +116,7 @@
                                     ;;global-cedet-m3-minor-mode
                                     ;; Disabled because:
                                     ;;  : Need to customize better face for semantic-idle-symbol-highlight-face
-                                    ;;global-semantic-idle-local-symbol-highlight-mode
+                                    global-semantic-idle-local-symbol-highlight-mode
 
                                     ;;; For debugging Semantic
                                     ;; global-semantic-show-unmatched-syntax-mode
@@ -283,6 +283,7 @@
  '(rainbow-delimiters-depth-7-face ((t (:foreground "white"))))
  '(rainbow-delimiters-depth-8-face ((t (:foreground "MediumOrchid2"))))
  '(rainbow-delimiters-depth-9-face ((t (:foreground "orange"))))
+ '(semantic-idle-symbol-highlight ((t (:background "gray20"))))
  '(whitespace-tab ((((class color) (background dark)) (:background "grey30" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
