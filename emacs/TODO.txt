@@ -140,43 +140,33 @@ Issues:
    : Abolish ChangeLog in Emacs
       : See Stefan's post: http://lists.gnu.org/archive/html/emacs-devel/2013-03/msg00889.html
    : CEDET
-      : How to narrow down the project's include-path based on where the original file is in the project?
-      : If a class name is not namespace scoped correctly, semantic-ia-fast-jump won't jump to it.  How to find right namespace using semantic?
-      : Enhancement requests:
-         : When doing semantic-ia-fast-jump on a variable, it may take me to eg Namespace::Class with point before Namespace.  I have to move cursor to Class to do another semantic-ia-fast-jump .  Perhaps provide customization that moves point to Class rather than to Namespace.
-         : Show summary mode interferes with minibuffer output.  eg when halfway through inputting Key Sequence
-      : semantic-analyze-proto-impl-toggle should use ff-find-other-file when GNU Global is not used.
       : Cases where semantic-ia-fast-jump doesn't work:
          : Use of std::tr1::shared_ptr
             : Confirm whether true for std::shared_ptr
          : Forward declarations
             : semantic-ia-fast-jump should use ff-find-other-file and use other file's includes, so as forward declarations work better.
-      : Even if the real class is included, if a forward declaration is found first, Semantic finds it.
-      : Bug reports:
-         : semantic-analyze-proto-impl-toggle
-            : Takes 26 minutes
-            : Use GNU Global without opening extra files
-            : Without GNU Global, use ff-find-other-file
-      : Finding headers from source and vice versa:
-         : Use ff-find-other-file
-         : Also look amongst open buffers for match?
+         : A variable was defined in a named namespace, then anonymous namespace within that, in a .h file. A user in a .cc file did not find it via semantic-ia-fast-jump, even though .h file was included.
+         : In C++, Semantic finds a forward declaration even if the real class is included
+         : Does not find tags when 'using namespace' in function scope
       : Investigate completions
          : Disable global-semantic-idle-completions-mode and assign an evil-insert-state or semantic-mode-map key binding
          : semantic-displayor-tooltip seems like the best choice for semantic-complete-inline-analyzer-idle-displayor-class
       : Is there a package that uses Semantic to generate static call graphs, similar to cflow?
-      : If header files becomes read only, then Emacs prompts the user y/n for each header it visits
-         : It ought to be more transparent to the user when Semantic visits header files
-      : Have semantic-ia-fast-jump push the location it left.  MRU isn't quite the same, it returns to last edit.
-      : Why is global-semantic-mru-bookmark-mode off when my init file has it enabled?
+      : If header files becomes read only, but the buffer permissions aren't up to date, then Semantic prompts the user y/n for each header it visits
+      : Have semantic-ia-fast-jump push the location it left
+         : See bug#15641: 24.3; [PATCH] Add find-definition for M-.
       : Set semantic-idle-symbol-highlight-face to a similar face as global-semantic-highlight-func-mode uses, then enable global-semantic-idle-local-symbol-highlight-mode
-         : Bug and patch submitted
-      : While editing code, sometimes (probably but unconfirmed) Semantic will go elsewhere and screw up scroll position
-         : Try turning on Semantic debugging submode?
-         : Figure out whether semantic-fetch-tags travels (semantic-parse-tree-needs-update-p) path or (semantic-parse-tree-needs-rebuild-p) or other
-      : Does MRU duplicate goto-chg?
-      : Does not find tags when 'using namespace' in function scope
+         : Commit my patch to trunk
       : I found a case in Java (with JDEE) where calling semantic-symref seemed to permanently change point in other Java source files
-      : A variable was defined in a named namespace, then anonymous namespace within that, in a .h file. A user in a .cc file did not find it via semantic-ia-fast-jump, even though .h file was included.
+      : [cedet-semantic] How does EDE find C++ implementation files
+         : http://sourceforge.net/mailarchive/forum.php?thread_name=515CE95C.8010803%40siege-engine.com&forum_name=cedet-semantic
+         : Pertains to semantic-analyze-proto-impl-toggle finding the definition from declaration
+      : [cedet-semantic] Enhancement request: semantic-ia-fast-jump usability
+         : http://sourceforge.net/mailarchive/forum.php?thread_name=CAFM41H0D5rb%3DRGGsR5Bui1B4EQjcznsC-3g4vK324419yngrww%40mail.gmail.com&forum_name=cedet-semantic
+         : Followup on Eric's advice for possible solution
+      : [cedet-semantic] semantic-ia-fast-jump poor performance in C++ project
+         : http://sourceforge.net/mailarchive/forum.php?thread_name=CAFM41H07q7Ek%3D2JgnF%2BBKzyu-Pxpwg9jqvLP2vXafO20SQyDcQ%40mail.gmail.com&forum_name=cedet-semantic
+         : Investigate Eric's suggestions for getting EDE to work when calling locate-fcn to get a narrower list of include paths
    : How to manage includes in C and C++?
       : Ask on mailing list
       : Consider whether CEDET could do it or at least help another package do it
