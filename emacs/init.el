@@ -60,6 +60,7 @@
 (my-msg "Initializing third party lisp. ")
 (add-to-list 'load-path "~/unihome/emacs/lisp")
 (require 'adjust-parens)
+(require 'color-parens)
 (require 'evil-numbers)
 (require 'goto-chg)
 (require 'rainbow-delimiters)
