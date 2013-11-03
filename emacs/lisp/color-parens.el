@@ -24,51 +24,60 @@
 
 (require 'cl-lib)
 
-;; An open paren struct to facilitate an efficient implementation
+;; An open paren and algorithmic data about it. Instances are placed
+;; on a stack as this packages parses a buffer region.
 ;;
 ;; position is the position in the buffer of the open paren
 ;;
-;; column is the column of the open paren in its logical line of the
-;; buffer
+;; column is the displayed column of the open paren in its logical
+;; line of the buffer
 ;;
 ;; inconsistent is whether the open paren's close paren is inconsistent
 ;; with the indentation within the list defined by the parens.
 ;;
 ;;   nil means unknown
+;;
 ;;   t means inconsistent
 ;;
-;; NB: once it is known to be consistent, the struct instance is no
-;; longer used
-(cl-defstruct color-parens-Open position column inconsistent)
+;; NB: There's no value for "consistent" because once it is known, the
+;; struct instance is popped and no longer used.
+(cl-defstruct color-parens--Open position column inconsistent)
 
 (defun color-parens-propertize-region (start end)
   (save-excursion
     (goto-char start)
     (beginning-of-line)
-    (let (
-          ;; Push at open parens, pop at close parens
+    ;; To start each iteration of a line, start char at end of previous line
+    ;;
+    ;; This is one way to facilitate the edge case of an end of line
+    ;; being EOB.
+    (unless (bob) (forward-char -1))
+    (let (;; Push at open parens, pop at close parens
           (paren-stack)
           (parse-state '(0 nil nil nil nil nil nil nil nil)))
       (while (< (point) end)
+        ;; Advance from end of line to beginning of next line
+        (forward-char 1)
         (let ((line-start (point))
-              (first-text (progn (back-to-indentation)
-                                 (point)))
+              ;; Column at which text starts on the line
+              (text-column (progn (back-to-indentation)
+                                  (current-column)))
               (line-end (progn (end-of-line)
                                (point))))
           ;; Mark open parens on the paren-stack that become
           ;; inconsistent because of the current line.
           ;;
-          ;; Loop invariant: All close-parens-Open which are marked
+          ;; Loop invariant: All close-parens--Open which are marked
           ;; inconsistent are contiugous on the stack. This follows
           ;; from the fact that marking one inconsistent causes all
           ;; others below it to become inconsistent too.
           (unless (and paren-stack
-                       (< (color-parens-Open-column paren-stack)
-                          first-text))
+                       (< (color-parens--Open-column paren-stack)
+                          text-column))
             (let ((paren-stack-i paren-stack))
               (while (and paren-stack-i
-                          (not (color-parens-Open-inconsistent paren-stack-i)))
-                (setf (color-parens-Open-inconsistent paren-stack-i)
+                          (not (color-parens--Open-inconsistent paren-stack-i)))
+                (setf (color-parens--Open-inconsistent paren-stack-i)
                       t)
                 (setq paren-stack-i (cdr paren-stack-i)))))
           (goto-char line-start)
@@ -88,14 +97,13 @@
                     ((< depth-change 0)
                      ;; Push
                      (setq paren-stack
-                           (cons (make-color-parens-Open :position (1- (point))
-                                                         :column (- first-text
-                                                                    line-start))
+                           (cons (make-color-parens--Open :position (1- (point))
+                                                          :column text-column)
                                  paren-stack)))
                     ;; Stopped at close paren
                     ((< 0 depth-change)
                      ;; Change font lock color of close paren and it's open paren
-                     ;; TODO: close paren: (1- (point)) and open paren: (color-parens-Open-position (car paren-stack))
+                     ;; TODO: close paren: (1- (point)) and open paren: (color-parens--Open-position (car paren-stack))
                      ;; Pop
                      ;; TODO: Handle case of popping nil paren-stack
                      (setq paren-stack
