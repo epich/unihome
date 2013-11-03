@@ -68,18 +68,21 @@
           ;; inconsistent because of the current line.
           ;;
           ;; Loop invariant: All close-parens--Open which are marked
-          ;; inconsistent are contiugous on the stack. This follows
-          ;; from the fact that marking one inconsistent causes all
-          ;; others below it to become inconsistent too.
+          ;; inconsistent are contiugous on the stack to the bottom.
+          ;; This follows from the fact that marking one inconsistent
+          ;; causes all others below it to become inconsistent too.
           (unless (and paren-stack
-                       (< (color-parens--Open-column paren-stack)
+                       (< (color-parens--Open-column (car paren-stack))
                           text-column))
-            (let ((paren-stack-i paren-stack))
-              (while (and paren-stack-i
-                          (not (color-parens--Open-inconsistent paren-stack-i)))
-                (setf (color-parens--Open-inconsistent paren-stack-i)
+            (let ((open-i paren-stack))
+              (while (and open-i
+                          ;; Because of the loop invariant, only go
+                          ;; down the stack until the first not
+                          ;; inconsistent
+                          (not (color-parens--Open-inconsistent (car open-i))))
+                (setf (color-parens--Open-inconsistent (car open-i))
                       t)
-                (setq paren-stack-i (cdr paren-stack-i)))))
+                (setq open-i (cdr open-i)))))
           (goto-char line-start)
           (while (and (< (point) line-end))
             (let ((depth-change
