@@ -51,7 +51,7 @@
     ;;
     ;; This is one way to facilitate the edge case of an end of line
     ;; being EOB.
-    (unless (bob) (forward-char -1))
+    (unless (bobp) (forward-char -1))
     (let (;; Push at open parens, pop at close parens
           (paren-stack)
           (parse-state '(0 nil nil nil nil nil nil nil nil)))
