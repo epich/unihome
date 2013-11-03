@@ -24,6 +24,38 @@
 
 (require 'cl-lib)
 
+(defgroup color-parens nil
+  "Color unbalanced parentheses and parentheses inconsistent with indentation."
+  :prefix "color-parens-"
+  :group 'paren-matching)
+
+(defgroup color-parens-faces nil
+  "Faces for color-parens package. "
+  :group 'color-parens
+  :group 'faces)
+
+(defface color-parens-inconsistent-open
+  ;; TODO: Fix colors: something orange to red-orange, no background
+  '((((class color) (background light))
+     :background "turquoise")		; looks OK on tty (becomes cyan)
+    (((class color) (background dark))
+     :background "steelblue3")		; looks OK on tty (becomes blue)
+    (((background dark))
+     :background "grey50")
+    (t
+     :background "gray"))
+  "Face to use for an open paren whose close paren is
+inconsistent with the indentation within."
+  :group 'color-parens-faces)
+
+(defface color-parens-inconsistent-close
+  '((t :inherit color-parens-inconsistent-open))
+  "Face to use for a close paren inconsistent with the
+indentation within it."
+  :group 'color-parens-faces)
+
+;; TODO: Faces for mismatched open and close
+
 ;; An open paren and algorithmic data about it. Instances are placed
 ;; on a stack as this packages parses a buffer region.
 ;;
@@ -88,6 +120,8 @@
             (let ((depth-change
                    (- (car parse-state)
                       (car (setq parse-state
+                                 ;; TODO: Will it perform better not
+                                 ;; parsing 1 char at a time?
                                  (parse-partial-sexp (point)
                                                      (1+ (point))
                                                      nil
@@ -96,17 +130,30 @@
               (cond ((= 0 depth-change)
                      ;; Keep parsing
                      nil)
-                    ;; Stopped at open paren
+                    ;; Case: stopped at open paren
                     ((< depth-change 0)
                      ;; Push
                      (setq paren-stack
                            (cons (make-color-parens--Open :position (1- (point))
                                                           :column text-column)
                                  paren-stack)))
-                    ;; Stopped at close paren
+                    ;; Case: stopped at close paren
                     ((< 0 depth-change)
-                     ;; Change font lock color of close paren and it's open paren
-                     ;; TODO: close paren: (1- (point)) and open paren: (color-parens--Open-position (car paren-stack))
+                     (with-silent-modifications
+                       ;; Change font lock color: close paren
+                       (add-text-properties (1- (point))
+                                            (point)
+                                            '(font-lock-face
+                                              color-parens-inconsistent-close
+                                              rear-nonsticky
+                                              t))
+                       ;; Change font lock color: open paren
+                       (add-text-properties (color-parens--Open-position (car paren-stack))
+                                            (1+ (color-parens--Open-position (car paren-stack)))
+                                            '(font-lock-face
+                                              color-parens-inconsistent-close
+                                              rear-nonsticky
+                                              t)))
                      ;; Pop
                      ;; TODO: Handle case of popping nil paren-stack
                      (setq paren-stack
