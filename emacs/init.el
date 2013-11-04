@@ -30,6 +30,7 @@
 ;; Font size (multiplied by 10)
 (set-face-attribute 'default nil :height 80)
 (fset 'yes-or-no-p 'y-or-n-p)
+(prefer-coding-system 'utf-8)
 ;;(setq truncate-lines nil)
 
 ;;; Version specific elisp
@@ -146,6 +147,7 @@
 (when my-use-jdee
   (my-msg "Initializing JDEE.")
   (add-to-list 'load-path (format "%s/dist/jdee-2.4.1/lisp" my-jdee-path))
+  (require 'jde)
   (autoload 'jde-mode "jde" "JDE mode." t)
   (setq auto-mode-alist
         (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))

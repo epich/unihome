@@ -33,7 +33,7 @@ def buildMiscElisp():
 def buildMy():
    byteCompile('my/my-util.el')
    byteCompile('my/my-proj.el')
-   byteCompile('my/my-config.el', loadPathL=['my'])
+   byteCompile('my/my-config.el', loadPathL=['my', 'evil',])
 
 def buildEmacsD():
    # Create directories Emacs expects
