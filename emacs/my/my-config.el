@@ -4,6 +4,7 @@
 
 (require 'cl-lib)
 (require 'my-util)
+(require 'evil)
 
 ;;; Configure default Evil states for chosen major modes.
 ;;
@@ -285,11 +286,6 @@
 ;; TODO: Fixed in CEDET mainline and Emacs trunk, so delete this when in a formal Emacs release
 (defadvice semantic-change-function (around my-advice-semantic-change-function activate)
   (save-match-data ad-do-it))
-;; TODO: for debugging empty backtrace string
-;; (defadvice redisplay (before my-advice-redisplay activate)
-;;   (when (equal "" (backtrace-frame 0))
-;;     (my-msg "DEBUG: 0th backtrace-frame was the empty string")
-;;     (backtrace)))
 
 ;; Want the behavior of (toggle-c-auto-newline 1) for braces, but not for semicolon
 (defadvice c-electric-brace (around my-advice-c-electric-brace activate)
@@ -468,9 +464,13 @@
   (define-key evil-normal-state-local-map "sc." 'jde-complete)
   (define-key evil-normal-state-local-map "s." 'jde-complete-in-line)
   ;; My own
-  (define-key evil-normal-state-local-map "sa" (lambda () (interactive) (jde-import-all) (jde-import-kill-extra-imports) (jde-import-organize)))
-  (define-key evil-normal-state-local-map "sg" 'jde-open-class-at-point)
-  )
+  (define-key evil-normal-state-local-map "sa" (lambda ()
+                                                 (interactive)
+                                                 (jde-import-all)
+                                                 (jde-import-kill-extra-imports)
+                                                 (jde-import-organize)))
+  (define-key evil-normal-state-local-map "sg" 'jde-open-class-at-point))
+
 (defun my-makefile-mode-hook ()
   (my-msg "Inside my-makefile-mode-hook for buffer %s " (buffer-name))
   ;; Tabs are important in makefiles
