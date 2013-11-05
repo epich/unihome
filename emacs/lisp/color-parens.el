@@ -100,7 +100,7 @@ indentation within it."
           ;; inconsistent because of the current line.
           ;;
           ;; Loop invariant: All close-parens--Open which are marked
-          ;; inconsistent are contiugous on the stack to the bottom.
+          ;; inconsistent are contiguous on the stack to the bottom.
           ;; This follows from the fact that marking one inconsistent
           ;; causes all others below it to become inconsistent too.
           (unless (and paren-stack

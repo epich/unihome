@@ -150,7 +150,11 @@ Issues:
       : Investigate completions
          : Disable global-semantic-idle-completions-mode and assign an evil-insert-state or semantic-mode-map key binding
          : semantic-displayor-tooltip seems like the best choice for semantic-complete-inline-analyzer-idle-displayor-class
-      : With semantic-idle-symbol-highlight, "std" is highlighted when point is on a std namespace token. Seems silly to highlight these.
+      : Silly semantic-idle-symbol-highlight highlighting
+         : "std" is highlighted when point is on a std namespace token
+         : Iff using namespace std, string types are highlighted. But other types like long are not.
+         : Perhaps highlight only variables, not namespaces and types?
+      : Investigate highlighting symbols with Semantic via command instead of via semantic-idle-symbol-highlight
       : Is there a package that uses Semantic to generate static call graphs, similar to cflow?
       : If header files becomes read only, but the buffer permissions aren't up to date, then Semantic prompts the user y/n for each header it visits
       : Semantic is a global minor mode, but what if I don't want it in a particular major mode, such as Python?

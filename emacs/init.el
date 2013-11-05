@@ -97,34 +97,10 @@
   ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
   (require 'semantic/ia)
   (require 'semantic/bovine/gcc)
-  (setq semantic-default-submodes '(global-semantic-idle-scheduler-mode
-                                    global-semanticdb-minor-mode
-                                    ;; Disabled because it obstructs the minibuffer
-                                    ;;global-semantic-idle-summary-mode
-                                    ;; Disabled in favor of manual invocation
-                                    ;;global-semantic-idle-completions-mode
-                                    ;; Disabled because of annoying tag boundary.  Other decorations seem incomplete
-                                    ;;  : semantic-tag-boundary is annoying
-                                    ;;  : semantic-decoration-on-(private|protected)-members does not decorate uses
-                                    ;;  : semantic-decoration-on-includes highlights system includes in red
-                                    ;;global-semantic-decoration-mode
-                                    ;; Disabled because don't find it useful.
-                                    ;;global-semantic-highlight-func-mode
-                                    ;; Disabled because don't find it useful.  Looks weird in .mk files.
-                                    ;;global-semantic-stickyfunc-mode
-                                    ;; There are alternatives for navigating to previous edits
-                                    ;;global-semantic-mru-bookmark-mode
-                                    ;; Doesn't appear to offer anything currently
-                                    ;;global-cedet-m3-minor-mode
-                                    ;; Disabled because:
-                                    ;;  : Need to customize better face for semantic-idle-symbol-highlight-face
-                                    global-semantic-idle-local-symbol-highlight-mode
-
-                                    ;;; For debugging Semantic
-                                    ;; global-semantic-show-unmatched-syntax-mode
-                                    ;; global-semantic-show-parser-state-mode
-                                    ;; global-semantic-highlight-edits-mode
-                                    ))
+  ;; Note: Instead of defining semantic-default-submodes prior to
+  ;; starting semantic-mode, the "submodes" (really minor modes) are
+  ;; started in major mode hooks. This is because some of the Semantic
+  ;; minor modes are not useful or even annoying in other major modes.
   (semantic-mode 1)
   (global-ede-mode 1)
   (setq cedet-loaded t)

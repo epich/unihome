@@ -207,7 +207,7 @@ nil in keymap-from."
 key-from translates to key-to, else key-from translates to itself.  translate-keys-p
 takes key-from as an argument. "
   (define-key key-translation-map key-from
-    (lambda (prompt)
+    (lambda (_prompt)
       (if (funcall translate-keys-p key-from) key-to key-from))))
 
 (provide 'my-util)

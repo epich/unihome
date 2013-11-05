@@ -69,7 +69,7 @@
 (define-key evil-motion-state-map "cu" 'universal-argument)
 ;;; C-c as general purpose escape key sequence.
 ;;;
-(defun my-esc (prompt)
+(defun my-esc (_prompt)
   "Functionality for escaping generally.  Includes exiting Evil insert state and C-g binding. "
   (cond
    ;; If we're in one of the Evil states that defines [escape] key, return [escape] so as
@@ -96,7 +96,7 @@
 (define-key key-translation-map (kbd "om.") (kbd "M-."))
 (define-key key-translation-map (kbd "om;") (kbd "M-;"))
 
-(defun my-translate-keys-p (key-from)
+(defun my-translate-keys-p (_key-from)
   "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
   (and
    ;; Evil's 'r' command doesn't change evil-state, but we don't want key translations to take effect, otherwise
@@ -402,7 +402,38 @@
   (my-msg "Inside my-c-mode-common-hook for buffer %s " (buffer-name))
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
   (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
-  (my-bind-tab-del-keys))
+  (my-bind-tab-del-keys)
+
+  ;; Semantic minor modes
+  ;;
+  ;; So far, I have only found Semantic useful in C, C++, Java
+  (global-semantic-idle-scheduler-mode 1)
+  (global-semanticdb-minor-mode 1)
+  ;; Disabled because it obstructs the minibuffer
+  ;;global-semantic-idle-summary-mode
+  ;; Disabled in favor of manual invocation
+  ;;global-semantic-idle-completions-mode
+  ;; Disabled because of annoying tag boundary.  Other decorations seem incomplete
+  ;;  : semantic-tag-boundary is annoying
+  ;;  : semantic-decoration-on-(private|protected)-members does not decorate uses
+  ;;  : semantic-decoration-on-includes highlights system includes in red
+  ;;global-semantic-decoration-mode
+  ;; Disabled because don't find it useful.
+  ;;global-semantic-highlight-func-mode
+  ;; Disabled because don't find it useful.  Looks weird in .mk files.
+  ;;global-semantic-stickyfunc-mode
+  ;; There are alternatives for navigating to previous edits
+  ;;global-semantic-mru-bookmark-mode
+  ;; Doesn't appear to offer anything currently
+  ;;global-cedet-m3-minor-mode
+  ;; Disabled because:
+  ;;  : Need to customize better face for semantic-idle-symbol-highlight-face
+  (global-semantic-idle-local-symbol-highlight-mode 1)
+  ;; For debugging Semantic
+  ;; global-semantic-show-unmatched-syntax-mode
+  ;; global-semantic-show-parser-state-mode
+  ;; global-semantic-highlight-edits-mode
+  )
 (defun my-clojure-mode-hook ()
   (my-msg "Inside my-clojure-mode-hook for buffer %s " (buffer-name))
   (define-key evil-motion-state-local-map "se" 'nrepl-eval-last-expression)
