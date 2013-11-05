@@ -403,6 +403,8 @@
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
   (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
   (my-bind-tab-del-keys)
+  ;; Set to just longer than the keyboard repetition rate.
+  (setq jit-lock-defer-time 0.01)
 
   ;; Semantic minor modes
   ;;
@@ -426,9 +428,9 @@
   ;;global-semantic-mru-bookmark-mode
   ;; Doesn't appear to offer anything currently
   ;;global-cedet-m3-minor-mode
-  ;; Disabled because:
-  ;;  : Need to customize better face for semantic-idle-symbol-highlight-face
-  (global-semantic-idle-local-symbol-highlight-mode 1)
+  ;; Disabled because it causes point to move in header files. The fact that
+  ;; it highlights namespaces, particularly std, is also annoying.
+  ;;(global-semantic-idle-local-symbol-highlight-mode 1)
   ;; For debugging Semantic
   ;; global-semantic-show-unmatched-syntax-mode
   ;; global-semantic-show-parser-state-mode

@@ -155,6 +155,7 @@ Issues:
          : Iff using namespace std, string types are highlighted. But other types like long are not.
          : Perhaps highlight only variables, not namespaces and types?
       : Investigate highlighting symbols with Semantic via command instead of via semantic-idle-symbol-highlight
+      : I have found point moves in header files after enabling semantic-idle-symbol-highlight (as of 2013-11-05)
       : Is there a package that uses Semantic to generate static call graphs, similar to cflow?
       : If header files becomes read only, but the buffer permissions aren't up to date, then Semantic prompts the user y/n for each header it visits
       : Semantic is a global minor mode, but what if I don't want it in a particular major mode, such as Python?

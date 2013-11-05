@@ -185,13 +185,11 @@
 ;;    C++ was behaving way to slow when simply typing comments.  I lowered
 ;;    its font-lock-maximum-decoration to 2 and saw massive improvement.
 ;;
-;;    I set jit-lock-defer-time and as able to up font-lock-maximum-decoration
+;;    I set jit-lock-defer-time and was able to up font-lock-maximum-decoration
 ;;    to t again.
 ;; inverse-video
 ;;    An attempt to get white on black.  For some reason this doesn't work
 ;;    but the --reverse-video CLI arg does.
-;; jit-lock-defer-time
-;;    Set to just longer than the keyboard repetition rate.
 ;; scroll-conservatively
 ;;    Setting is best compromise I've found given the design of automatic
 ;;    scrolling in the redisplay processing.
@@ -231,7 +229,6 @@
    (quote
     (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
  '(jde-sourcepath my-java-sourcepath)
- '(jit-lock-defer-time 0.01)
  '(large-file-warning-threshold 1000000000.0)
  '(message-log-max 100000)
  '(nxml-child-indent my-offset)
