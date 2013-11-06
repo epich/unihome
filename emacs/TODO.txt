@@ -130,6 +130,8 @@ Issues:
       : There are serious bugs when using GDB and there's process output
          : The GDB window inappropriately switches to where execution breaks
          : C-x o buffer-menu then opens buffer-menu in the wrong window
+   : Error handling in Elisp
+      : Why don't errors have the original backtrace available in some form?
    : Learn about Dired
       : Is there a notion of finding a set of files based on a criteria (search term, use of symbol), then iteratively visiting just those?
          : Need Dired Plus to visit marked files
@@ -171,6 +173,10 @@ Issues:
       : [cedet-semantic] semantic-ia-fast-jump poor performance in C++ project
          : http://sourceforge.net/mailarchive/forum.php?thread_name=CAFM41H07q7Ek%3D2JgnF%2BBKzyu-Pxpwg9jqvLP2vXafO20SQyDcQ%40mail.gmail.com&forum_name=cedet-semantic
          : Investigate Eric's suggestions for getting EDE to work when calling locate-fcn to get a narrower list of include paths
+   : Explore Clang alternatives for C and C++
+      : See David Engster's post http://lists.gnu.org/archive/html/emacs-devel/2012-11/msg00528.html
+         : https://github.com/Andersbakken/rtags
+         : https://github.com/Golevka/emacs-clang-complete-async
    : How to manage includes in C and C++?
       : Ask on mailing list
       : Consider whether CEDET could do it or at least help another package do it
@@ -180,6 +186,8 @@ Issues:
          : Review http://www.wolinlabs.com/blog/emacs.global.speedbar.html
    : Byte compilation:
       : Is there a way to have Emacs emit dependency info for GNU Make when compiling .el into .elc files?
+      : Some discussion at: http://lists.gnu.org/archive/html/emacs-devel/2011-05/msg01060.html
+      : Related: http://debbugs.gnu.org/cgi/bugreport.cgi?bug=2061
       : If a.el changes and a.elc rebuilt, when does dependent b.el need to rebuild?
          : Y: macro changes definition
          : Y: defsubst changes definition

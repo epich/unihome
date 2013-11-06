@@ -139,7 +139,8 @@ indentation within it."
                                  paren-stack)))
                     ;; Case: stopped at close paren
                     ((< 0 depth-change)
-                     (when (color-parens--Open-inconsistent (car paren-stack))
+                     (when (and paren-stack
+                                (color-parens--Open-inconsistent (car paren-stack)))
                        (with-silent-modifications
                          ;; Change font lock color: close paren
                          (add-text-properties (1- (point))

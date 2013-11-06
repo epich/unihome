@@ -98,10 +98,11 @@
   ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
   (require 'semantic/ia)
   (require 'semantic/bovine/gcc)
-  ;; Note: Instead of defining semantic-default-submodes prior to
+  ;; Note: Instead of setting any semantic-default-submodes prior to
   ;; starting semantic-mode, the "submodes" (really minor modes) are
   ;; started in major mode hooks. This is because some of the Semantic
   ;; minor modes are not useful or even annoying in other major modes.
+  (setq semantic-default-submodes nil)
   (semantic-mode 1)
   (global-ede-mode 1)
   (setq cedet-loaded t)
