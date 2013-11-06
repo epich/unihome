@@ -139,21 +139,22 @@ indentation within it."
                                  paren-stack)))
                     ;; Case: stopped at close paren
                     ((< 0 depth-change)
-                     (with-silent-modifications
-                       ;; Change font lock color: close paren
-                       (add-text-properties (1- (point))
-                                            (point)
-                                            '(font-lock-face
-                                              color-parens-inconsistent-close
-                                              rear-nonsticky
-                                              t))
-                       ;; Change font lock color: open paren
-                       (add-text-properties (color-parens--Open-position (car paren-stack))
-                                            (1+ (color-parens--Open-position (car paren-stack)))
-                                            '(font-lock-face
-                                              color-parens-inconsistent-close
-                                              rear-nonsticky
-                                              t)))
+                     (when (color-parens--Open-inconsistent (car paren-stack))
+                       (with-silent-modifications
+                         ;; Change font lock color: close paren
+                         (add-text-properties (1- (point))
+                                              (point)
+                                              '(font-lock-face
+                                                color-parens-inconsistent-close
+                                                rear-nonsticky
+                                                t))
+                         ;; Change font lock color: open paren
+                         (add-text-properties (color-parens--Open-position (car paren-stack))
+                                              (1+ (color-parens--Open-position (car paren-stack)))
+                                              '(font-lock-face
+                                                color-parens-inconsistent-close
+                                                rear-nonsticky
+                                                t))))
                      ;; Pop
                      ;; TODO: Handle case of popping nil paren-stack
                      (setq paren-stack

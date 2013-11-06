@@ -62,6 +62,7 @@
 (add-to-list 'load-path "~/unihome/emacs/lisp")
 (require 'adjust-parens)
 (require 'color-parens)
+;; TODO (add-hook 'emacs-lisp-mode-hook (lambda () (color-parens-mode 1)))
 (require 'evil-numbers)
 (require 'goto-chg)
 (require 'rainbow-delimiters)
