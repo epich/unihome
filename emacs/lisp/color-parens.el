@@ -45,6 +45,8 @@ is inconsistent with indentation."
 
 ;; TODO: Faces for mismatched open and close
 
+;; TODO: Remove debugging message statements
+
 ;; TODO: Algorithm doesn't account for:
 ;;
 ;; (abc
@@ -98,8 +100,8 @@ POSITIONS is a list of positions in the buffer to colorize."
                                     '(font-lock-face
                                       nil
                                       rear-nonsticky
-                                      nil))
-          positions))))
+                                      nil)))
+          positions)))
 
 (defun color-parens-propertize-region (start end)
   (save-excursion
@@ -128,11 +130,12 @@ POSITIONS is a list of positions in the buffer to colorize."
             ;; inconsistent because of the current line.
             (let ((open-i paren-stack))
               ;; If one considers only the inconsistent==nil Opens on
-              ;; the paren-stack, their columns are strictly decreasing
-              ;; moving down the stack (towards the tail). Since we're
-              ;; only interested in marking Open instances inconsistent,
-              ;; that allows the iteration to stop at the first
-              ;; inconsistent=nil Open with small enough column.
+              ;; the paren-stack, their columns are strictly
+              ;; decreasing moving down the stack (towards the tail).
+              ;; Since we're only interested in marking Opens
+              ;; inconsistent, that allows the iteration to stop at
+              ;; the first inconsistent=nil Open with small enough
+              ;; column.
               (while (and open-i
                           (or (<= text-column
                                   (color-parens--Open-column (car open-i)))
