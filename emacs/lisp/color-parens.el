@@ -51,6 +51,14 @@ indentation within it."
 
 ;; TODO: Faces for mismatched open and close
 
+;; TODO: Algorithm doesn't account for:
+;;
+;; (abc
+;;   (def))
+;;  (ghi)
+;;
+;; (abc ...) are inconsistent parens because (ghi) is indented too far
+
 ;; An open paren and algorithmic data about it. Instances are placed
 ;; on a stack as this packages parses a buffer region.
 ;;
@@ -93,23 +101,20 @@ indentation within it."
                                (point))))
           ;; Mark open parens on the paren-stack that become
           ;; inconsistent because of the current line.
-          ;;
-          ;; Loop invariant: All close-parens--Open which are marked
-          ;; inconsistent are contiguous on the stack to the bottom.
-          ;; This follows from the fact that marking one inconsistent
-          ;; causes all others below it to become inconsistent too.
-          (unless (and paren-stack
-                       (< (color-parens--Open-column (car paren-stack))
-                          text-column))
-            (let ((open-i paren-stack))
-              (while (and open-i
-                          ;; Because of the loop invariant, only go
-                          ;; down the stack until the first not
-                          ;; inconsistent
-                          (not (color-parens--Open-inconsistent (car open-i))))
-                (setf (color-parens--Open-inconsistent (car open-i))
-                      t)
-                (setq open-i (cdr open-i)))))
+          (let ((open-i paren-stack))
+            ;; If one considers only the inconsistent==nil Opens on
+            ;; the paren-stack, their columns are strictly decreasing
+            ;; moving down the stack (towards the tail). Since we're
+            ;; only interested in marking Open instances inconsistent,
+            ;; that allows the iteration to stop at the first
+            ;; inconsistent=nil Open with small enough column.
+            (while (and open-i
+                        (or (<= text-column
+                                (color-parens--Open-column (car open-i)))
+                            (color-parens--Open-inconsistent (car open-i))))
+              (setf (color-parens--Open-inconsistent (car open-i))
+                    t)
+              (setq open-i (cdr open-i))))
           (goto-char line-start)
           (while (and (< (point) line-end))
             (let ((depth-change
@@ -133,24 +138,41 @@ indentation within it."
                                                           :column text-column)
                                  paren-stack)))
                     ;; Case: stopped at close paren
-                    ((< 0 depth-change)
-                     (when (and paren-stack
-                                (color-parens--Open-inconsistent (car paren-stack)))
+                    ((and (< 0 depth-change)
+                          paren-stack)
+                     (if (color-parens--Open-inconsistent (car paren-stack))
+                           ;; Parens inconsistent, change font lock
+                           (with-silent-modifications
+                             ;; Close paren
+                             (add-text-properties (1- (point))
+                                                  (point)
+                                                  '(font-lock-face
+                                                    color-parens-inconsistent-close
+                                                    rear-nonsticky
+                                                    t))
+                             ;; Open paren
+                             (add-text-properties (color-parens--Open-position (car paren-stack))
+                                                  (1+ (color-parens--Open-position (car paren-stack)))
+                                                  '(font-lock-face
+                                                    color-parens-inconsistent-close
+                                                    rear-nonsticky
+                                                    t)))
+                         ;; Parens consistent, restore normal font lock
                        (with-silent-modifications
-                         ;; Change font lock color: close paren
-                         (add-text-properties (1- (point))
-                                              (point)
-                                              '(font-lock-face
-                                                color-parens-inconsistent-close
-                                                rear-nonsticky
-                                                t))
-                         ;; Change font lock color: open paren
-                         (add-text-properties (color-parens--Open-position (car paren-stack))
-                                              (1+ (color-parens--Open-position (car paren-stack)))
-                                              '(font-lock-face
-                                                color-parens-inconsistent-close
-                                                rear-nonsticky
-                                                t))))
+                         ;; Close paren
+                         (remove-text-properties (1- (point))
+                                                 (point)
+                                                 '(font-lock-face
+                                                   nil
+                                                   rear-nonsticky
+                                                   nil))
+                         ;; Open paren
+                         (remove-text-properties (color-parens--Open-position (car paren-stack))
+                                                 (1+ (color-parens--Open-position (car paren-stack)))
+                                                 '(font-lock-face
+                                                   nil
+                                                   rear-nonsticky
+                                                   nil))))
                      ;; Pop
                      ;; TODO: Handle case of popping nil paren-stack
                      (setq paren-stack
