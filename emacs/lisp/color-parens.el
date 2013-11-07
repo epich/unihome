@@ -35,15 +35,10 @@
   :group 'faces)
 
 (defface color-parens-inconsistent-open
-  ;; TODO: Fix colors: something orange to red-orange, no background
   '((((class color) (background light))
-     :background "turquoise")		; looks OK on tty (becomes cyan)
+     :foreground "dark orange")
     (((class color) (background dark))
-     :background "steelblue3")		; looks OK on tty (becomes blue)
-    (((background dark))
-     :background "grey50")
-    (t
-     :background "gray"))
+     :foreground "orange"))
   "Face to use for an open paren whose close paren is
 inconsistent with the indentation within."
   :group 'color-parens-faces)
