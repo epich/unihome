@@ -34,19 +34,13 @@
   :group 'color-parens
   :group 'faces)
 
-(defface color-parens-inconsistent-open
+(defface color-parens-inconsistent
   '((((class color) (background light))
      :foreground "dark orange")
     (((class color) (background dark))
      :foreground "orange"))
-  "Face to use for an open paren whose close paren is
-inconsistent with the indentation within."
-  :group 'color-parens-faces)
-
-(defface color-parens-inconsistent-close
-  '((t :inherit color-parens-inconsistent-open))
-  "Face to use for a close paren inconsistent with the
-indentation within it."
+  "Face to use for matching open and close parens whose placement
+is inconsistent with indentation."
   :group 'color-parens-faces)
 
 ;; TODO: Faces for mismatched open and close
@@ -78,6 +72,35 @@ indentation within it."
 ;; struct instance is popped and no longer used.
 (cl-defstruct color-parens--Open position column inconsistent)
 
+(defsubst color-parens--colorize (positions face-arg)
+  "Colorize chars in the buffer to the specified FACE-ARG with
+Font Lock.
+
+POSITIONS is a list of positions in the buffer to colorize."
+  (with-silent-modifications
+    (mapc (lambda (pos-i)
+            (add-text-properties pos-i
+                                 (1+ pos-i)
+                                 `(font-lock-face
+                                   ,face-arg
+                                   rear-nonsticky
+                                   t)))
+          positions)))
+
+(defsubst color-parens--decolorize (positions)
+  "Decolorize chars in the buffer colored with Font Lock.
+
+POSITIONS is a list of positions in the buffer to colorize."
+  (with-silent-modifications
+    (mapc (lambda (pos-i)
+            (remove-text-properties pos-i
+                                    (1+ pos-i)
+                                    '(font-lock-face
+                                      nil
+                                      rear-nonsticky
+                                      nil))
+          positions))))
+
 (defun color-parens-propertize-region (start end)
   (save-excursion
     (goto-char start)
@@ -99,84 +122,67 @@ indentation within it."
                                   (current-column)))
               (line-end (progn (end-of-line)
                                (point))))
-          ;; Mark open parens on the paren-stack that become
-          ;; inconsistent because of the current line.
-          (let ((open-i paren-stack))
-            ;; If one considers only the inconsistent==nil Opens on
-            ;; the paren-stack, their columns are strictly decreasing
-            ;; moving down the stack (towards the tail). Since we're
-            ;; only interested in marking Open instances inconsistent,
-            ;; that allows the iteration to stop at the first
-            ;; inconsistent=nil Open with small enough column.
-            (while (and open-i
-                        (or (<= text-column
-                                (color-parens--Open-column (car open-i)))
-                            (color-parens--Open-inconsistent (car open-i))))
-              (setf (color-parens--Open-inconsistent (car open-i))
-                    t)
-              (setq open-i (cdr open-i))))
-          (goto-char line-start)
-          (while (and (< (point) line-end))
-            (let ((depth-change
-                   (- (car parse-state)
-                      (car (setq parse-state
-                                 ;; TODO: Will it perform better not
-                                 ;; parsing 1 char at a time?
-                                 (parse-partial-sexp (point)
-                                                     (1+ (point))
-                                                     nil
-                                                     nil
-                                                     parse-state))))))
-              (cond ((= 0 depth-change)
-                     ;; Keep parsing
-                     nil)
-                    ;; Case: stopped at open paren
-                    ((< depth-change 0)
-                     ;; Push
-                     (setq paren-stack
-                           (cons (make-color-parens--Open :position (1- (point))
-                                                          :column text-column)
-                                 paren-stack)))
-                    ;; Case: stopped at close paren
-                    ((and (< 0 depth-change)
-                          paren-stack)
-                     (if (color-parens--Open-inconsistent (car paren-stack))
+          ;; Skip whitespace only lines
+          (unless (eq text-column line-end)
+            ;; Mark open parens on the paren-stack that become
+            ;; inconsistent because of the current line.
+            (let ((open-i paren-stack))
+              ;; If one considers only the inconsistent==nil Opens on
+              ;; the paren-stack, their columns are strictly decreasing
+              ;; moving down the stack (towards the tail). Since we're
+              ;; only interested in marking Open instances inconsistent,
+              ;; that allows the iteration to stop at the first
+              ;; inconsistent=nil Open with small enough column.
+              (while (and open-i
+                          (or (<= text-column
+                                  (color-parens--Open-column (car open-i)))
+                              (color-parens--Open-inconsistent (car open-i))))
+                (setf (color-parens--Open-inconsistent (car open-i))
+                      t)
+                (setq open-i (cdr open-i))))
+            (goto-char line-start)
+            (while (and (< (point) line-end))
+              (let ((depth-change
+                     (- (car parse-state)
+                        (car (setq parse-state
+                                   ;; TODO: Will it perform better not
+                                   ;; parsing 1 char at a time?
+                                   (parse-partial-sexp (point)
+                                                       (1+ (point))
+                                                       nil
+                                                       nil
+                                                       parse-state))))))
+                (cond ((= 0 depth-change)
+                       ;; Keep parsing
+                       nil)
+                      ;; Case: stopped at open paren
+                      ((< depth-change 0)
+                       ;; Push
+                       (setq paren-stack
+                             (cons (make-color-parens--Open :position (1- (point))
+                                                            :column text-column)
+                                   paren-stack))
+                       (message "Pushed %s" (car paren-stack)))
+                      ;; Case: stopped at close paren
+                      ((and (< 0 depth-change)
+                            paren-stack)
+                       (if (color-parens--Open-inconsistent (car paren-stack))
                            ;; Parens inconsistent, change font lock
-                           (with-silent-modifications
-                             ;; Close paren
-                             (add-text-properties (1- (point))
-                                                  (point)
-                                                  '(font-lock-face
-                                                    color-parens-inconsistent-close
-                                                    rear-nonsticky
-                                                    t))
-                             ;; Open paren
-                             (add-text-properties (color-parens--Open-position (car paren-stack))
-                                                  (1+ (color-parens--Open-position (car paren-stack)))
-                                                  '(font-lock-face
-                                                    color-parens-inconsistent-close
-                                                    rear-nonsticky
-                                                    t)))
-                         ;; Parens consistent, restore normal font lock
-                       (with-silent-modifications
-                         ;; Close paren
-                         (remove-text-properties (1- (point))
-                                                 (point)
-                                                 '(font-lock-face
-                                                   nil
-                                                   rear-nonsticky
-                                                   nil))
-                         ;; Open paren
-                         (remove-text-properties (color-parens--Open-position (car paren-stack))
-                                                 (1+ (color-parens--Open-position (car paren-stack)))
-                                                 '(font-lock-face
-                                                   nil
-                                                   rear-nonsticky
-                                                   nil))))
-                     ;; Pop
-                     ;; TODO: Handle case of popping nil paren-stack
-                     (setq paren-stack
-                           (cdr paren-stack)))))))))))
+                           ;; for close and open paren
+                           (color-parens--colorize
+                            (list (1- (point))
+                                  (color-parens--Open-position (car paren-stack)))
+                            'color-parens-inconsistent)
+                         ;; Parens consistent, restore normal font
+                         ;; lock to close and open paren
+                         (color-parens--decolorize
+                          (list (1- (point))
+                                (color-parens--Open-position (car paren-stack)))))
+                       ;; Pop
+                       ;; TODO: Handle case of popping nil paren-stack
+                       (message "Pushing %s" (car paren-stack))
+                       (setq paren-stack
+                             (cdr paren-stack))))))))))))
 
 (defun color-parens-unpropertize-region (start end)
   ;; TODO: remove-text-properties
