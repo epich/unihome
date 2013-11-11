@@ -114,6 +114,8 @@ POSITIONS is a list of positions in the buffer to colorize."
     (unless (bobp) (forward-char -1))
     (let (;; Push at open parens, pop at close parens
           (paren-stack)
+          ;; Paren outside the region formally being propertized
+          (outside-paren start)
           (parse-state '(0 nil nil nil nil nil nil nil nil)))
       (while (< (point) end)
         ;; Advance from end of line to beginning of next line
@@ -155,37 +157,53 @@ POSITIONS is a list of positions in the buffer to colorize."
                                                        nil
                                                        nil
                                                        parse-state))))))
-                (cond ((= 0 depth-change)
-                       ;; Keep parsing
-                       nil)
-                      ;; Case: stopped at open paren
-                      ((< depth-change 0)
-                       ;; Push
-                       (setq paren-stack
-                             (cons (make-color-parens--Open :position (1- (point))
-                                                            :column text-column)
-                                   paren-stack))
-                       (message "Pushed %s" (car paren-stack)))
-                      ;; Case: stopped at close paren
-                      ((and (< 0 depth-change)
-                            paren-stack)
-                       (if (color-parens--Open-inconsistent (car paren-stack))
-                           ;; Parens inconsistent, change font lock
-                           ;; for close and open paren
-                           (color-parens--colorize
-                            (list (1- (point))
-                                  (color-parens--Open-position (car paren-stack)))
-                            'color-parens-inconsistent)
-                         ;; Parens consistent, restore normal font
-                         ;; lock to close and open paren
-                         (color-parens--decolorize
-                          (list (1- (point))
-                                (color-parens--Open-position (car paren-stack)))))
-                       ;; Pop
-                       ;; TODO: Handle case of popping nil paren-stack
-                       (message "Pushing %s" (car paren-stack))
-                       (setq paren-stack
-                             (cdr paren-stack))))))))))))
+                (cond
+                 ((= 0 depth-change) nil) ; Keep parsing
+                 ;; Case: stopped at open paren
+                 ((< depth-change 0)
+                  ;; Push
+                  (setq paren-stack
+                        (cons (make-color-parens--Open :position (1- (point))
+                                                       :column text-column)
+                              paren-stack))
+                  (message "Pushed %s" (car paren-stack)))
+                 ;; Case: stopped at close paren
+                 ((< 0 depth-change)
+                  (if paren-stack
+                      (progn
+                        (if (color-parens--Open-inconsistent (car paren-stack))
+                            ;; Parens inconsistent, change font lock
+                            ;; for close and open paren
+                            (color-parens--colorize
+                             (list (1- (point))
+                                   (color-parens--Open-position (car paren-stack)))
+                             'color-parens-inconsistent)
+                          ;; Parens consistent, restore normal font
+                          ;; lock to close and open paren
+                          (color-parens--decolorize
+                           (list (1- (point))
+                                 (color-parens--Open-position (car paren-stack)))))
+                        ;; Pop
+                        (message "Pushing %s" (car paren-stack))
+                        (setq paren-stack
+                              (cdr paren-stack)))
+                    ;; A close paren was encountered whose pair is
+                    ;; outside the region being propertized.
+                    ;; Propertize it. Because the children lists that
+                    ;; lie entirely outside the region are not also
+                    ;; propertized, this is not an expansion of the
+                    ;; JIT lock region.
+                    (let ((close-paren (1- point))
+                          (prev-outside-paren outside-paren))
+                      (save-excursion
+                        (goto-char outside-paren)
+                        (backward-up-list)
+                        (setq outside-paren (point))
+                          ;; TODO: Need to save off minimum column for
+                          ;; all lines scanned, reuse with each
+                          ;; outside-paren
+                          ;;(while (< (point) prev-outside-paren))
+                        )))))))))))))
 
 (defun color-parens-unpropertize-region (start end)
   ;; TODO: remove-text-properties
