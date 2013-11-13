@@ -56,6 +56,14 @@ is inconsistent with indentation."
 
 ;; TODO: Look over syntax.el, especially syntax-ppss
 
+;; TODO: Threshold column for `() to be inconsistent is off. This is
+;; parsed as consistent:
+;;
+;;   `()
+;;   foo
+;;
+;; Similarly, ,@() is off by two, `() is off by one, () is correct
+
 ;; TODO: For code simplicity, look into expanding JIT region either at
 ;; start or end until there are balanced parens in the region.
 
@@ -205,12 +213,32 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   ;; TODO: remove-text-properties
   )
 
+;; TODO: This won't work for initial fontification, because it's not called
+(defun color-parens-extend-region (beg end old-len)
+  "Extend region for JIT lock to fontify."
+  (save-excursion
+    (let ((top-level (syntax-ppss-toplevel-pos (syntax-ppss beg))))
+      (when top-level
+        (setq jit-lock-start (min jit-lock-start beg top-level))
+        (message "DEBUG: top-level=%s p=%s" top-level (number-or-marker-p top-level)) 
+        (goto-char top-level)
+        (setq jit-lock-end (max jit-lock-end
+                                end
+                                (or (scan-lists (point) 1 0)
+                                    (point-max)))))))
+  (message "color-parens-extend-region beg=%s end=%s jit-lock-start=%s jit-lock-end=%s" beg end jit-lock-start jit-lock-end))
+
 (define-minor-mode color-parens-mode
   "Color unbalanced parentheses and parentheses inconsistent with
   indentation."
   nil nil nil
   (if color-parens-mode
-      (jit-lock-register 'color-parens-propertize-region t)
+      (progn
+        (jit-lock-register 'color-parens-propertize-region t)
+        (add-hook 'jit-lock-after-change-extend-region-functions
+                  'color-parens-extend-region
+                  nil
+                  t))
     (jit-lock-unregister 'color-parens-propertize-region)
     (color-parens-unpropertize-region (point-min) (point-max))))
 
