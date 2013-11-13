@@ -121,6 +121,9 @@ Zip files:
     To extract:
     7za e filename.zip
 
+System summary:
+    strace -c time <cmd>
+
 Convert files with spaces (more robust than simpler forms):
    ls | while read -r FILE ;do mv -v "$FILE" `echo $FILE | tr ' ' '_'` ;done
 or

@@ -228,12 +228,17 @@ Issues:
             : Ediff manual suggests ediff-patch-file is the only way.
             : ediff-patch-buffer doesn't work for multi file diffs.
          : Is there a way to forego having another window at all, and I can simply bind useful Ediff commands myself.
+   : Try diff-hl in ELPA, highlights changes in VCS
    : Diff mode
       : When navigating hunks, top of hunk displays in the middle of display, even if all of the hunk doesn't show.
          : Can use zt zb commands for now
       : Why not refine all diffs during initialization?
       : Try diff-auto-refine-mode
       : In the diff file, lines '^Only in .*' are not navigated to by diff-file-next and diff-file-prev.
+      : bug#15875: 24.3.50; diff-mode counts first column when determining tab width
+      : Diff idea threads:
+         : http://lists.gnu.org/archive/html/emacs-devel/2013-11/msg00263.html
+         : http://lists.gnu.org/archive/html/emacs-devel/2013-11/msg00274.html
    : Undo Tree
       : Undo in region can create inefficiencies so extreme I can't access parts of the undo tree in reasonable time periods.
       : Even if I don't (require 'undo-tree), I still get undo-tree if it's in my load path.
