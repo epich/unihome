@@ -47,6 +47,26 @@ is inconsistent with indentation."
 
 ;; TODO: Remove debugging message statements
 
+;; TODO: Apparently JIT lock can pass a region that is entirely in a
+;; Lisp string in the buffer, can lead to scan-error, eg close parens
+;; of c-beginning-of-statement-1
+
+;; TODO: Lisp strings can legitimately be at first column without
+;; impacting parens. Use syntax-ppss
+
+;; TODO: Look over syntax.el, especially syntax-ppss
+
+;; TODO: Threshold column for `() to be inconsistent is off. This is
+;; parsed as consistent:
+;;
+;;   `()
+;;   foo
+;;
+;; Similarly, ,@() is off by two, `() is off by one, () is correct
+
+;; TODO: For code simplicity, look into expanding JIT region either at
+;; start or end until there are balanced parens in the region.
+
 ;; TODO: Algorithm doesn't account for:
 ;;
 ;; (abc
@@ -103,7 +123,18 @@ POSITIONS is a list of positions in the buffer to colorize."
                                       nil)))
           positions)))
 
+(defsubst color-parens--update-inconsistency-colors (inconsistentp
+                                                     open-paren
+                                                     close-paren)
+  "Update inconsistency Font Lock colors for OPEN-PAREN and
+CLOSE-PAREN as buffer positions based on INCONSISTENTP."
+  (if inconsistentp
+      (color-parens--colorize (list open-paren close-paren)
+                              'color-parens-inconsistent)
+    (color-parens--decolorize (list open-paren close-paren))))
+
 (defun color-parens-propertize-region (start end)
+  (message "Starting start=%s end=%s" start end)
   (save-excursion
     (goto-char start)
     (beginning-of-line)
@@ -155,48 +186,59 @@ POSITIONS is a list of positions in the buffer to colorize."
                                                        nil
                                                        nil
                                                        parse-state))))))
-                (cond ((= 0 depth-change)
-                       ;; Keep parsing
-                       nil)
-                      ;; Case: stopped at open paren
-                      ((< depth-change 0)
-                       ;; Push
-                       (setq paren-stack
-                             (cons (make-color-parens--Open :position (1- (point))
-                                                            :column text-column)
-                                   paren-stack))
-                       (message "Pushed %s" (car paren-stack)))
-                      ;; Case: stopped at close paren
-                      ((and (< 0 depth-change)
-                            paren-stack)
-                       (if (color-parens--Open-inconsistent (car paren-stack))
-                           ;; Parens inconsistent, change font lock
-                           ;; for close and open paren
-                           (color-parens--colorize
-                            (list (1- (point))
-                                  (color-parens--Open-position (car paren-stack)))
-                            'color-parens-inconsistent)
-                         ;; Parens consistent, restore normal font
-                         ;; lock to close and open paren
-                         (color-parens--decolorize
-                          (list (1- (point))
-                                (color-parens--Open-position (car paren-stack)))))
-                       ;; Pop
-                       ;; TODO: Handle case of popping nil paren-stack
-                       (message "Pushing %s" (car paren-stack))
-                       (setq paren-stack
-                             (cdr paren-stack))))))))))))
+                (cond
+                 ((= 0 depth-change) nil) ; Keep parsing
+                 ;; Case: stopped at open paren
+                 ((< depth-change 0)
+                  ;; Push
+                  (setq paren-stack
+                        (cons (make-color-parens--Open :position (1- (point))
+                                                       :column text-column)
+                              paren-stack)))
+                 ;; Case: stopped at close paren
+                 ((< 0 depth-change)
+                  (if paren-stack
+                      (progn
+                        (color-parens--update-inconsistency-colors
+                         (color-parens--Open-inconsistent (car paren-stack))
+                         (color-parens--Open-position (car paren-stack))
+                         (1- (point)))
+                        ;; Pop
+                        (setq paren-stack
+                              (cdr paren-stack)))
+                    ;; TODO: Handle close paren when nil paren-stack
+                    )))))))))))
 
 (defun color-parens-unpropertize-region (start end)
   ;; TODO: remove-text-properties
   )
+
+;; TODO: This won't work for initial fontification, because it's not called
+(defun color-parens-extend-region (beg end old-len)
+  "Extend region for JIT lock to fontify."
+  (save-excursion
+    (let ((top-level (syntax-ppss-toplevel-pos (syntax-ppss beg))))
+      (when top-level
+        (setq jit-lock-start (min jit-lock-start beg top-level))
+        (message "DEBUG: top-level=%s p=%s" top-level (number-or-marker-p top-level)) 
+        (goto-char top-level)
+        (setq jit-lock-end (max jit-lock-end
+                                end
+                                (or (scan-lists (point) 1 0)
+                                    (point-max)))))))
+  (message "color-parens-extend-region beg=%s end=%s jit-lock-start=%s jit-lock-end=%s" beg end jit-lock-start jit-lock-end))
 
 (define-minor-mode color-parens-mode
   "Color unbalanced parentheses and parentheses inconsistent with
   indentation."
   nil nil nil
   (if color-parens-mode
-      (jit-lock-register 'color-parens-propertize-region t)
+      (progn
+        (jit-lock-register 'color-parens-propertize-region t)
+        (add-hook 'jit-lock-after-change-extend-region-functions
+                  'color-parens-extend-region
+                  nil
+                  t))
     (jit-lock-unregister 'color-parens-propertize-region)
     (color-parens-unpropertize-region (point-min) (point-max))))
 
