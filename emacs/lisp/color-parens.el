@@ -47,6 +47,18 @@ is inconsistent with indentation."
 
 ;; TODO: Remove debugging message statements
 
+;; TODO: Apparently JIT lock can pass a region that is entirely in a
+;; Lisp string in the buffer, can lead to scan-error, eg close parens
+;; of c-beginning-of-statement-1
+
+;; TODO: Lisp strings can legitimately be at first column without
+;; impacting parens. Use syntax-ppss
+
+;; TODO: Look over syntax.el, especially syntax-ppss
+
+;; TODO: For code simplicity, look into expanding JIT region either at
+;; start or end until there are balanced parens in the region.
+
 ;; TODO: Algorithm doesn't account for:
 ;;
 ;; (abc
@@ -103,7 +115,18 @@ POSITIONS is a list of positions in the buffer to colorize."
                                       nil)))
           positions)))
 
+(defsubst color-parens--update-inconsistency-colors (inconsistentp
+                                                     open-paren
+                                                     close-paren)
+  "Update inconsistency Font Lock colors for OPEN-PAREN and
+CLOSE-PAREN as buffer positions based on INCONSISTENTP."
+  (if inconsistentp
+      (color-parens--colorize (list open-paren close-paren)
+                              'color-parens-inconsistent)
+    (color-parens--decolorize (list open-paren close-paren))))
+
 (defun color-parens-propertize-region (start end)
+  (message "Starting start=%s end=%s" start end)
   (save-excursion
     (goto-char start)
     (beginning-of-line)
@@ -114,8 +137,6 @@ POSITIONS is a list of positions in the buffer to colorize."
     (unless (bobp) (forward-char -1))
     (let (;; Push at open parens, pop at close parens
           (paren-stack)
-          ;; Paren outside the region formally being propertized
-          (outside-paren start)
           (parse-state '(0 nil nil nil nil nil nil nil nil)))
       (while (< (point) end)
         ;; Advance from end of line to beginning of next line
@@ -165,45 +186,20 @@ POSITIONS is a list of positions in the buffer to colorize."
                   (setq paren-stack
                         (cons (make-color-parens--Open :position (1- (point))
                                                        :column text-column)
-                              paren-stack))
-                  (message "Pushed %s" (car paren-stack)))
+                              paren-stack)))
                  ;; Case: stopped at close paren
                  ((< 0 depth-change)
                   (if paren-stack
                       (progn
-                        (if (color-parens--Open-inconsistent (car paren-stack))
-                            ;; Parens inconsistent, change font lock
-                            ;; for close and open paren
-                            (color-parens--colorize
-                             (list (1- (point))
-                                   (color-parens--Open-position (car paren-stack)))
-                             'color-parens-inconsistent)
-                          ;; Parens consistent, restore normal font
-                          ;; lock to close and open paren
-                          (color-parens--decolorize
-                           (list (1- (point))
-                                 (color-parens--Open-position (car paren-stack)))))
+                        (color-parens--update-inconsistency-colors
+                         (color-parens--Open-inconsistent (car paren-stack))
+                         (color-parens--Open-position (car paren-stack))
+                         (1- (point)))
                         ;; Pop
-                        (message "Pushing %s" (car paren-stack))
                         (setq paren-stack
                               (cdr paren-stack)))
-                    ;; A close paren was encountered whose pair is
-                    ;; outside the region being propertized.
-                    ;; Propertize it. Because the children lists that
-                    ;; lie entirely outside the region are not also
-                    ;; propertized, this is not an expansion of the
-                    ;; JIT lock region.
-                    (let ((close-paren (1- point))
-                          (prev-outside-paren outside-paren))
-                      (save-excursion
-                        (goto-char outside-paren)
-                        (backward-up-list)
-                        (setq outside-paren (point))
-                          ;; TODO: Need to save off minimum column for
-                          ;; all lines scanned, reuse with each
-                          ;; outside-paren
-                          ;;(while (< (point) prev-outside-paren))
-                        )))))))))))))
+                    ;; TODO: Handle close paren when nil paren-stack
+                    )))))))))))
 
 (defun color-parens-unpropertize-region (start end)
   ;; TODO: remove-text-properties
