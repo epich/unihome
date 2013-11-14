@@ -50,13 +50,19 @@ is inconsistent with indentation."
 ;; TODO: Test close parens in doc of c-beginning-of-statement-1 in
 ;; cc-engine.el
 
-;; TODO: Threshold column for `() to be inconsistent is off. This is
-;; parsed as consistent:
+;; TODO: Threshold column for `() is off.
 ;;
+;; Consistent:
+;;   `()
+;;    foo
+;;
+;; Inconsistent:
 ;;   `()
 ;;   foo
 ;;
-;; Similarly, ,@() is off by two, `() is off by one, () is correct
+;; (But font lock is on the open paren, not the backtick)
+;;
+;; Similarly, ,@() is off by two
 
 ;; TODO: Algorithm doesn't account for:
 ;;
