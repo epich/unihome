@@ -66,6 +66,21 @@ is inconsistent with indentation."
 ;;
 ;; (abc ...) are inconsistent parens because (ghi) is indented too far
 
+;; TODO: How to handle:
+;;
+;; (abc a-symbol (a-func-call "word_a
+;; word_b" (def ghi
+;;         jkl)
+;;
+;; (abc a-symbol (a-func-call "word_a
+;; word_b" (def)
+;;                            jkl))
+;;
+;; And the inputted region is only the jkl lines.
+;;
+;; Probably doesn't matter significantly, as long as it's consistent
+;; regardless of how JIT inputs the regions.
+
 ;; An open paren and algorithmic data about it. Instances are placed
 ;; on a stack as this packages parses a buffer region.
 ;;
@@ -131,33 +146,42 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
     (beginning-of-line)
     (let (;; Push at open parens, pop at close parens
           (paren-stack)
+          ;; Minimum text-column encountered, including when scanning
+          ;; outside the inputted region.
+          (min-column most-positive-fixnum)
           (parse-state (syntax-ppss)))
       (while (< (point) end)
         (let ((line-start (point))
-              ;; Column at which text starts on the line
+              ;; Column at which text starts on the line, except if
+              ;; inside a string. Text doesn't start in a comment,
+              ;; since ; is text.
               (text-column (progn (back-to-indentation)
                                   (current-column)))
               (line-end (save-excursion (end-of-line)
                                         (point))))
           ;; Skip whitespace only lines
-          (unless (eq text-column line-end)
-            ;; Mark open parens on the paren-stack that become
-            ;; inconsistent because of the current line.
-            (let ((open-i paren-stack))
-              ;; If one considers only the inconsistent==nil Opens on
-              ;; the paren-stack, their columns are strictly
-              ;; decreasing moving down the stack (towards the tail).
-              ;; Since we're only interested in marking Opens
-              ;; inconsistent, that allows the iteration to stop at
-              ;; the first inconsistent=nil Open with small enough
-              ;; column.
-              (while (and open-i
-                          (or (<= text-column
-                                  (color-parens--Open-column (car open-i)))
-                              (color-parens--Open-inconsistent (car open-i))))
-                (setf (color-parens--Open-inconsistent (car open-i))
-                      t)
-                (setq open-i (cdr open-i))))
+          (unless (eq (point) line-end)
+            (unless (nth 3 parse-state) ; Whether inside string
+              ;; The text-column implicates inconsistency of
+              ;; containing lists.
+              (setq min-column (min min-column text-column))
+              ;; Mark open parens on the paren-stack that become
+              ;; inconsistent because of the current line.
+              (let ((open-i paren-stack))
+                ;; If one considers only the inconsistent==nil Opens on
+                ;; the paren-stack, their columns are strictly
+                ;; decreasing moving down the stack (towards the tail).
+                ;; Since we're only interested in marking Opens
+                ;; inconsistent, that allows the iteration to stop at
+                ;; the first inconsistent=nil Open with small enough
+                ;; column.
+                (while (and open-i
+                            (or (<= text-column
+                                    (color-parens--Open-column (car open-i)))
+                                (color-parens--Open-inconsistent (car open-i))))
+                  (setf (color-parens--Open-inconsistent (car open-i))
+                        t)
+                  (setq open-i (cdr open-i)))))
             ;; Note: point is at indentation
             (while (and (< (point) line-end))
               (let ((depth-change
@@ -171,8 +195,8 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                                                        nil
                                                        parse-state))))))
                 (cond
-                 ((or (= 0 depth-change) ; Didn't cross a paren
-                      (nth 3 parse-state) ; Inside a string
+                 ((or (= 0 depth-change)   ; Didn't cross a paren
+                      (nth 3 parse-state)  ; Inside a string
                       (nth 4 parse-state)) ; Inside a comment
                   nil) ; Keep parsing
                  ;; Case: stopped at open paren
