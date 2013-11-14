@@ -31,7 +31,6 @@ Issues:
       : So many ways to get an error (sexp navigation commands for example) that abort the kbd macro. How to improve this?
    : Emacs bug:
       : With my font lock settings, auto revert of source code does not cause font lock update until move point
-      : #15045 Point jumps inappropriately around time of Semantic lexing
    : delete-pair doesn't work for <> pairs
    : Bind C-g to keyboard-quit but with debug-on-quit set to t?
    : Editing Lisp
@@ -161,6 +160,7 @@ Issues:
       : Have semantic-ia-fast-jump push the location it left
          : See bug#15641: 24.3; [PATCH] Add find-definition for M-.
       : I found a case in Java (with JDEE) where calling semantic-symref seemed to permanently change point in other Java source files
+      : bug#15045 Point jumps inappropriately around time of Semantic lexing
       : [cedet-semantic] How does EDE find C++ implementation files
          : http://sourceforge.net/mailarchive/forum.php?thread_name=515CE95C.8010803%40siege-engine.com&forum_name=cedet-semantic
          : Pertains to semantic-analyze-proto-impl-toggle finding the definition from declaration
