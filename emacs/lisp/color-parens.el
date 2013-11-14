@@ -49,10 +49,10 @@ is inconsistent with indentation."
 
 ;; TODO: Apparently JIT lock can pass a region that is entirely in a
 ;; Lisp string in the buffer, can lead to scan-error, eg close parens
-;; of c-beginning-of-statement-1
+;; of c-beginning-of-statement-1 documentation
 
 ;; TODO: Lisp strings can legitimately be at first column without
-;; impacting parens. Use syntax-ppss
+;; impacting parens consistency
 
 ;; TODO: Look over syntax.el, especially syntax-ppss
 
@@ -63,9 +63,6 @@ is inconsistent with indentation."
 ;;   foo
 ;;
 ;; Similarly, ,@() is off by two, `() is off by one, () is correct
-
-;; TODO: For code simplicity, look into expanding JIT region either at
-;; start or end until there are balanced parens in the region.
 
 ;; TODO: Algorithm doesn't account for:
 ;;
@@ -213,32 +210,26 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   ;; TODO: remove-text-properties
   )
 
-;; TODO: This won't work for initial fontification, because it's not called
-(defun color-parens-extend-region (beg end old-len)
+;; TODO: Delete this if approach becomes abandoned
+(defun color-parens-extend-region ()
   "Extend region for JIT lock to fontify."
+  (message "DEBUG: Start color-parens-extend-region font-lock-beg=%s font-lock-end=%s" font-lock-beg font-lock-end) 
   (save-excursion
-    (let ((top-level (syntax-ppss-toplevel-pos (syntax-ppss beg))))
+    (let ((top-level (syntax-ppss-toplevel-pos (syntax-ppss font-lock-beg))))
       (when top-level
-        (setq jit-lock-start (min jit-lock-start beg top-level))
-        (message "DEBUG: top-level=%s p=%s" top-level (number-or-marker-p top-level)) 
+        (setq font-lock-beg (min font-lock-beg top-level))
         (goto-char top-level)
-        (setq jit-lock-end (max jit-lock-end
-                                end
+        (setq font-lock-end (max font-lock-end
                                 (or (scan-lists (point) 1 0)
                                     (point-max)))))))
-  (message "color-parens-extend-region beg=%s end=%s jit-lock-start=%s jit-lock-end=%s" beg end jit-lock-start jit-lock-end))
+  (message "color-parens-extend-region font-lock-beg=%s font-lock-end=%s" font-lock-beg font-lock-end))
 
 (define-minor-mode color-parens-mode
   "Color unbalanced parentheses and parentheses inconsistent with
   indentation."
   nil nil nil
   (if color-parens-mode
-      (progn
-        (jit-lock-register 'color-parens-propertize-region t)
-        (add-hook 'jit-lock-after-change-extend-region-functions
-                  'color-parens-extend-region
-                  nil
-                  t))
+      (jit-lock-register 'color-parens-propertize-region t)
     (jit-lock-unregister 'color-parens-propertize-region)
     (color-parens-unpropertize-region (point-min) (point-max))))
 
