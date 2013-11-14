@@ -146,9 +146,6 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
     (beginning-of-line)
     (let (;; Push at open parens, pop at close parens
           (paren-stack)
-          ;; Minimum text-column encountered, including when scanning
-          ;; outside the inputted region.
-          (min-column most-positive-fixnum)
           (parse-state (syntax-ppss)))
       (while (< (point) end)
         (let ((line-start (point))
@@ -162,9 +159,6 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
           ;; Skip whitespace only lines
           (unless (eq (point) line-end)
             (unless (nth 3 parse-state) ; Whether inside string
-              ;; The text-column implicates inconsistency of
-              ;; containing lists.
-              (setq min-column (min min-column text-column))
               ;; Mark open parens on the paren-stack that become
               ;; inconsistent because of the current line.
               (let ((open-i paren-stack))
