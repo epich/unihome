@@ -47,14 +47,8 @@ is inconsistent with indentation."
 
 ;; TODO: Remove debugging message statements
 
-;; TODO: Apparently JIT lock can pass a region that is entirely in a
-;; Lisp string in the buffer, can lead to scan-error, eg close parens
-;; of c-beginning-of-statement-1 documentation
-
-;; TODO: Lisp strings can legitimately be at first column without
-;; impacting parens consistency
-
-;; TODO: Look over syntax.el, especially syntax-ppss
+;; TODO: Test close parens in doc of c-beginning-of-statement-1 in
+;; cc-engine.el
 
 ;; TODO: Threshold column for `() to be inconsistent is off. This is
 ;; parsed as consistent:
@@ -135,23 +129,16 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   (save-excursion
     (goto-char start)
     (beginning-of-line)
-    ;; To start each iteration of a line, start char at end of previous line
-    ;;
-    ;; This is one way to facilitate the edge case of an end of line
-    ;; being EOB.
-    (unless (bobp) (forward-char -1))
     (let (;; Push at open parens, pop at close parens
           (paren-stack)
-          (parse-state '(0 nil nil nil nil nil nil nil nil)))
+          (parse-state (syntax-ppss)))
       (while (< (point) end)
-        ;; Advance from end of line to beginning of next line
-        (forward-char 1)
         (let ((line-start (point))
               ;; Column at which text starts on the line
               (text-column (progn (back-to-indentation)
                                   (current-column)))
-              (line-end (progn (end-of-line)
-                               (point))))
+              (line-end (save-excursion (end-of-line)
+                                        (point))))
           ;; Skip whitespace only lines
           (unless (eq text-column line-end)
             ;; Mark open parens on the paren-stack that become
@@ -171,7 +158,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                 (setf (color-parens--Open-inconsistent (car open-i))
                       t)
                 (setq open-i (cdr open-i))))
-            (goto-char line-start)
+            ;; Note: point is at indentation
             (while (and (< (point) line-end))
               (let ((depth-change
                      (- (car parse-state)
@@ -184,14 +171,18 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                                                        nil
                                                        parse-state))))))
                 (cond
-                 ((= 0 depth-change) nil) ; Keep parsing
+                 ((or (= 0 depth-change) ; Didn't cross a paren
+                      (nth 3 parse-state) ; Inside a string
+                      (nth 4 parse-state)) ; Inside a comment
+                  nil) ; Keep parsing
                  ;; Case: stopped at open paren
                  ((< depth-change 0)
                   ;; Push
                   (setq paren-stack
                         (cons (make-color-parens--Open :position (1- (point))
                                                        :column text-column)
-                              paren-stack)))
+                              paren-stack))
+                  (message "Pushed: %s" (car paren-stack)))
                  ;; Case: stopped at close paren
                  ((< 0 depth-change)
                   (if paren-stack
@@ -201,10 +192,20 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                          (color-parens--Open-position (car paren-stack))
                          (1- (point)))
                         ;; Pop
+                        (message "Popping: %s" (car paren-stack))
                         (setq paren-stack
                               (cdr paren-stack)))
                     ;; TODO: Handle close paren when nil paren-stack
-                    )))))))))))
+                    ))))))
+          ;; Go forward to beginning of next line, keeping parse-state
+          ;; up to date
+          (unless (eobp)
+            (setq parse-state
+                  (parse-partial-sexp (point)
+                                      (1+ (point))
+                                      nil
+                                      nil
+                                      parse-state))))))))
 
 (defun color-parens-unpropertize-region (start end)
   ;; TODO: remove-text-properties
