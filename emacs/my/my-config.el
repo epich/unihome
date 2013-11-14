@@ -409,33 +409,34 @@
   ;; Semantic minor modes
   ;;
   ;; So far, I have only found Semantic useful in C, C++, Java
-  (global-semantic-idle-scheduler-mode 1)
-  (global-semanticdb-minor-mode 1)
-  ;; Disabled because it obstructs the minibuffer
-  ;;global-semantic-idle-summary-mode
-  ;; Disabled in favor of manual invocation
-  ;;global-semantic-idle-completions-mode
-  ;; Disabled because of annoying tag boundary.  Other decorations seem incomplete
-  ;;  : semantic-tag-boundary is annoying
-  ;;  : semantic-decoration-on-(private|protected)-members does not decorate uses
-  ;;  : semantic-decoration-on-includes highlights system includes in red
-  ;;global-semantic-decoration-mode
-  ;; Disabled because don't find it useful.
-  ;;global-semantic-highlight-func-mode
-  ;; Disabled because don't find it useful.  Looks weird in .mk files.
-  ;;global-semantic-stickyfunc-mode
-  ;; There are alternatives for navigating to previous edits
-  ;;global-semantic-mru-bookmark-mode
-  ;; Doesn't appear to offer anything currently
-  ;;global-cedet-m3-minor-mode
-  ;; Disabled because it causes point to move in header files. The fact that
-  ;; it highlights namespaces, particularly std, is also annoying.
-  ;;(global-semantic-idle-local-symbol-highlight-mode 1)
-  ;; For debugging Semantic
-  ;; global-semantic-show-unmatched-syntax-mode
-  ;; global-semantic-show-parser-state-mode
-  ;; global-semantic-highlight-edits-mode
-  )
+  (when cedet-loaded
+    (global-semantic-idle-scheduler-mode 1)
+    (global-semanticdb-minor-mode 1)
+    ;; Disabled because it obstructs the minibuffer
+    ;;global-semantic-idle-summary-mode
+    ;; Disabled in favor of manual invocation
+    ;;global-semantic-idle-completions-mode
+    ;; Disabled because of annoying tag boundary.  Other decorations seem incomplete
+    ;;  : semantic-tag-boundary is annoying
+    ;;  : semantic-decoration-on-(private|protected)-members does not decorate uses
+    ;;  : semantic-decoration-on-includes highlights system includes in red
+    ;;global-semantic-decoration-mode
+    ;; Disabled because don't find it useful.
+    ;;global-semantic-highlight-func-mode
+    ;; Disabled because don't find it useful.  Looks weird in .mk files.
+    ;;global-semantic-stickyfunc-mode
+    ;; There are alternatives for navigating to previous edits
+    ;;global-semantic-mru-bookmark-mode
+    ;; Doesn't appear to offer anything currently
+    ;;global-cedet-m3-minor-mode
+    ;; Disabled because it causes point to move in header files. The fact that
+    ;; it highlights namespaces, particularly std, is also annoying.
+    ;;(global-semantic-idle-local-symbol-highlight-mode 1)
+    ;; For debugging Semantic
+    ;; global-semantic-show-unmatched-syntax-mode
+    ;; global-semantic-show-parser-state-mode
+    ;; global-semantic-highlight-edits-mode
+    ))
 (defun my-clojure-mode-hook ()
   (my-msg "Inside my-clojure-mode-hook for buffer %s " (buffer-name))
   (define-key evil-motion-state-local-map "se" 'nrepl-eval-last-expression)
