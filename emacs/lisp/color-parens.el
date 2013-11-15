@@ -3,7 +3,7 @@
 ;; Copyright (C) 2013  Free Software Foundation, Inc.
 
 ;; Author: Barry O'Reilly <gundaetiapo@gmail.com>
-;; Version: 1.2
+;; Version: 0
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -235,7 +235,6 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   ;; TODO: remove-text-properties
   )
 
-;; TODO: Delete this if approach becomes abandoned
 (defun color-parens-extend-region ()
   "Extend region for JIT lock to fontify."
   (message "DEBUG: Start color-parens-extend-region font-lock-beg=%s font-lock-end=%s" font-lock-beg font-lock-end) 
