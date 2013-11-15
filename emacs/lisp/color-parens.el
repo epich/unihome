@@ -254,7 +254,12 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   indentation."
   nil nil nil
   (if color-parens-mode
-      (jit-lock-register 'color-parens-propertize-region t)
+      (progn
+        (jit-lock-register 'color-parens-propertize-region t)
+        (add-hook 'font-lock-extend-region-functions
+                  'color-parens-extend-region
+                  nil
+                  t))
     (jit-lock-unregister 'color-parens-propertize-region)
     (color-parens-unpropertize-region (point-min) (point-max))))
 
