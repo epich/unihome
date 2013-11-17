@@ -45,10 +45,12 @@ is inconsistent with indentation."
 
 ;; TODO: Faces for mismatched open and close
 
-;; TODO: Remove debugging message statements
-
-;; TODO: Test close parens in doc of c-beginning-of-statement-1 in
-;; cc-engine.el
+;; TODO: Options for performance improvement:
+;; : c-beginning-of-statement-1 is fontified in full 48 times
+;;   : Do what font-lock-fontify-region does to mark text fontified
+;;     : Will this prevent other jit-lock-functions including font-lock-fontify-region from doing their bit?
+;; : Skip more processing when outside JIT lock's region
+;; : Don't use parse-partial-sexp in one char increments
 
 ;; TODO: Threshold column for `() is off.
 ;;
@@ -146,7 +148,6 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
     (color-parens--decolorize (list open-paren close-paren))))
 
 (defun color-parens-propertize-region (start end)
-  (message "Starting start=%s end=%s" start end)
   (save-excursion
     (goto-char start)
     (beginning-of-line)
@@ -187,13 +188,23 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
               (let ((depth-change
                      (- (car parse-state)
                         (car (setq parse-state
-                                   ;; TODO: Will it perform better not
-                                   ;; parsing 1 char at a time?
+                                   ;; TODO: parsing 1 char at a time
+                                   ;; is too slow.
+                                   ;; (parse-partial-sexp (point)
+                                   ;;                     (1+ (point))
+                                   ;;                     nil
+                                   ;;                     nil
+                                   ;;                     parse-state
+                                   ;;                     nil)
+                                   ;; Improves speed with 666666 hack
+                                   ;; (stop at any depth change)
                                    (parse-partial-sexp (point)
-                                                       (1+ (point))
+                                                       line-end
+                                                       666666
                                                        nil
-                                                       nil
-                                                       parse-state))))))
+                                                       parse-state
+                                                       'syntax-table)
+                                   )))))
                 (cond
                  ((or (= 0 depth-change)   ; Didn't cross a paren
                       (nth 3 parse-state)  ; Inside a string
@@ -205,8 +216,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                   (setq paren-stack
                         (cons (make-color-parens--Open :position (1- (point))
                                                        :column text-column)
-                              paren-stack))
-                  (message "Pushed: %s" (car paren-stack)))
+                              paren-stack)))
                  ;; Case: stopped at close paren
                  ((< 0 depth-change)
                   (if paren-stack
@@ -216,7 +226,6 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                          (color-parens--Open-position (car paren-stack))
                          (1- (point)))
                         ;; Pop
-                        (message "Popping: %s" (car paren-stack))
                         (setq paren-stack
                               (cdr paren-stack)))
                     ;; TODO: Handle close paren when nil paren-stack
@@ -237,13 +246,13 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
 
 (defun color-parens-extend-region (start end)
   "Extend region for JIT lock to fontify."
-  (message "Starting extend region start=%s end=%s" start end)
   (save-excursion
     (list (or (syntax-ppss-toplevel-pos (syntax-ppss start))
               start)
           (let ((last-top-level (syntax-ppss-toplevel-pos (syntax-ppss end))))
             (if last-top-level
                 (progn
+                  (goto-char last-top-level)
                   (forward-sexp)
                   (point))
               end)))))
