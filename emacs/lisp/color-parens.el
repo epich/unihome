@@ -235,18 +235,23 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   ;; TODO: remove-text-properties
   )
 
-(defun color-parens-extend-region ()
+(defun color-parens-extend-region (start end)
   "Extend region for JIT lock to fontify."
-  (message "DEBUG: Start color-parens-extend-region font-lock-beg=%s font-lock-end=%s" font-lock-beg font-lock-end) 
+  (message "Starting extend region start=%s end=%s" start end)
   (save-excursion
-    (let ((top-level (syntax-ppss-toplevel-pos (syntax-ppss font-lock-beg))))
-      (when top-level
-        (setq font-lock-beg (min font-lock-beg top-level))
-        (goto-char top-level)
-        (setq font-lock-end (max font-lock-end
-                                (or (scan-lists (point) 1 0)
-                                    (point-max)))))))
-  (message "color-parens-extend-region font-lock-beg=%s font-lock-end=%s" font-lock-beg font-lock-end))
+    (list (or (syntax-ppss-toplevel-pos (syntax-ppss start))
+              start)
+          (let ((last-top-level (syntax-ppss-toplevel-pos (syntax-ppss end))))
+            (if last-top-level
+                (progn
+                  (forward-sexp)
+                  (point))
+              end)))))
+
+(defsubst color-parens-extend-region-after-change (start end _old-len)
+  (let ((extended-region (color-parens-extend-region start end)))
+    (setq jit-lock-start (car extended-region))
+    (setq jit-lock-end (cadr extended-region))))
 
 (define-minor-mode color-parens-mode
   "Color unbalanced parentheses and parentheses inconsistent with
@@ -254,9 +259,12 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   nil nil nil
   (if color-parens-mode
       (progn
-        (jit-lock-register 'color-parens-propertize-region t)
-        (add-hook 'font-lock-extend-region-functions
-                  'color-parens-extend-region
+        (jit-lock-register (lambda (start end)
+                             (apply 'color-parens-propertize-region
+                                    (color-parens-extend-region start end)))
+                           t)
+        (add-hook 'jit-lock-after-change-extend-region-functions
+                  'color-parens-extend-region-after-change
                   nil
                   t))
     (jit-lock-unregister 'color-parens-propertize-region)
