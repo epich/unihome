@@ -17,3 +17,12 @@ sqlplus:
    See transactions:
       select b.LOGON_TIME logontime, b.command cmd, substr(a.spid,1,9) pid, substr(b.username,1,10) username, substr(b.osuser,1,8) os_user, substr(b.program,1,30) program from v$session b, v$process a where b.paddr = a.addr and type='USER' order by spid;
 
+Create an empty Oracle DB schema:
+
+  $ ssh goesr08
+  $ cd $ORACLE_HOME
+  $ sqlplus sys/PMDB@goesr08/PMR1a00 as sysdba
+  SQL> create user tmcleod identified by PMDB;
+  SQL> grant all privileges to tmcleod;
+  SQL> grant select any dictionary to tmcleod;
+  SQL> exit

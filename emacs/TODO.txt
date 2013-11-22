@@ -25,6 +25,8 @@ Issues:
          (define-key evil-normal-state-map "gF" 'evil-find-file-at-point-with-line)
          : Email sent to Evil mailing list asking about this.
       : Insert a tab with C-q TAB, using . to repeat doesn't work.
+      : Unintented selection when clicking Emacs window in evil-normal-mode
+         : https://bitbucket.org/lyro/evil/issue/355/unintented-selection-when-clicking-emacs
    : Increment and decrement numbers in buffer
       : Using evil-numbers, but why should it have anything to do with Evil? Is there a generic package? Perhaps adapt evil-numbers for myself.
    : Kbd macros:

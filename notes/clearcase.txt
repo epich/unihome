@@ -49,6 +49,11 @@ Find location of snapshot views:
 Create view:
     ct mkview -tag path-for-view
 
+Unreserve checkout:
+    Can be done in any view as normal user
+    Get view-storage-dir-pname from "Global path" of: cleartool lsview -properties -long VIEW-NAME
+    cleartool unreserve -nc -view VIEW-STORAGE-DIR-PNAME FILE-PATH
+
 Merge arrow:
     cleartool mkhlink -unidir Merge FROM_VERSION TO_VERSION
 
