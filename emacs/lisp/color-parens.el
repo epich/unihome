@@ -45,10 +45,12 @@ is inconsistent with indentation."
 
 ;; TODO: Faces for mismatched open and close
 
-;; TODO: Remove debugging message statements
-
-;; TODO: Test close parens in doc of c-beginning-of-statement-1 in
-;; cc-engine.el
+;; TODO: Options for performance improvement:
+;; : c-beginning-of-statement-1 is fontified in full 48 times
+;;   : Do what font-lock-fontify-region does to mark text fontified
+;;     : Will this prevent other jit-lock-functions including font-lock-fontify-region from doing their bit?
+;; : Skip more processing when outside JIT lock's region
+;; : Don't use parse-partial-sexp in one char increments
 
 ;; TODO: Threshold column for `() is off.
 ;;
@@ -146,7 +148,6 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
     (color-parens--decolorize (list open-paren close-paren))))
 
 (defun color-parens-propertize-region (start end)
-  (message "Starting start=%s end=%s" start end)
   (save-excursion
     (goto-char start)
     (beginning-of-line)
@@ -187,13 +188,23 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
               (let ((depth-change
                      (- (car parse-state)
                         (car (setq parse-state
-                                   ;; TODO: Will it perform better not
-                                   ;; parsing 1 char at a time?
+                                   ;; TODO: parsing 1 char at a time
+                                   ;; is too slow.
+                                   ;; (parse-partial-sexp (point)
+                                   ;;                     (1+ (point))
+                                   ;;                     nil
+                                   ;;                     nil
+                                   ;;                     parse-state
+                                   ;;                     nil)
+                                   ;; Improves speed with 666666 hack
+                                   ;; (stop at any depth change)
                                    (parse-partial-sexp (point)
-                                                       (1+ (point))
+                                                       line-end
+                                                       666666
                                                        nil
-                                                       nil
-                                                       parse-state))))))
+                                                       parse-state
+                                                       'syntax-table)
+                                   )))))
                 (cond
                  ((or (= 0 depth-change)   ; Didn't cross a paren
                       (nth 3 parse-state)  ; Inside a string
@@ -205,8 +216,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                   (setq paren-stack
                         (cons (make-color-parens--Open :position (1- (point))
                                                        :column text-column)
-                              paren-stack))
-                  (message "Pushed: %s" (car paren-stack)))
+                              paren-stack)))
                  ;; Case: stopped at close paren
                  ((< 0 depth-change)
                   (if paren-stack
@@ -216,7 +226,6 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                          (color-parens--Open-position (car paren-stack))
                          (1- (point)))
                         ;; Pop
-                        (message "Popping: %s" (car paren-stack))
                         (setq paren-stack
                               (cdr paren-stack)))
                     ;; TODO: Handle close paren when nil paren-stack
@@ -235,18 +244,23 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   ;; TODO: remove-text-properties
   )
 
-(defun color-parens-extend-region ()
+(defun color-parens-extend-region (start end)
   "Extend region for JIT lock to fontify."
-  (message "DEBUG: Start color-parens-extend-region font-lock-beg=%s font-lock-end=%s" font-lock-beg font-lock-end) 
   (save-excursion
-    (let ((top-level (syntax-ppss-toplevel-pos (syntax-ppss font-lock-beg))))
-      (when top-level
-        (setq font-lock-beg (min font-lock-beg top-level))
-        (goto-char top-level)
-        (setq font-lock-end (max font-lock-end
-                                (or (scan-lists (point) 1 0)
-                                    (point-max)))))))
-  (message "color-parens-extend-region font-lock-beg=%s font-lock-end=%s" font-lock-beg font-lock-end))
+    (list (or (syntax-ppss-toplevel-pos (syntax-ppss start))
+              start)
+          (let ((last-top-level (syntax-ppss-toplevel-pos (syntax-ppss end))))
+            (if last-top-level
+                (progn
+                  (goto-char last-top-level)
+                  (forward-sexp)
+                  (point))
+              end)))))
+
+(defsubst color-parens-extend-region-after-change (start end _old-len)
+  (let ((extended-region (color-parens-extend-region start end)))
+    (setq jit-lock-start (car extended-region))
+    (setq jit-lock-end (cadr extended-region))))
 
 (define-minor-mode color-parens-mode
   "Color unbalanced parentheses and parentheses inconsistent with
@@ -254,9 +268,12 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   nil nil nil
   (if color-parens-mode
       (progn
-        (jit-lock-register 'color-parens-propertize-region t)
-        (add-hook 'font-lock-extend-region-functions
-                  'color-parens-extend-region
+        (jit-lock-register (lambda (start end)
+                             (apply 'color-parens-propertize-region
+                                    (color-parens-extend-region start end)))
+                           t)
+        (add-hook 'jit-lock-after-change-extend-region-functions
+                  'color-parens-extend-region-after-change
                   nil
                   t))
     (jit-lock-unregister 'color-parens-propertize-region)
