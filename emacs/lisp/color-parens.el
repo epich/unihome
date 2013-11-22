@@ -20,31 +20,6 @@
 
 ;;; Commentary:
 
-;;; Code:
-
-(require 'cl-lib)
-
-(defgroup color-parens nil
-  "Color unbalanced parentheses and parentheses inconsistent with indentation."
-  :prefix "color-parens-"
-  :group 'paren-matching)
-
-(defgroup color-parens-faces nil
-  "Faces for color-parens package. "
-  :group 'color-parens
-  :group 'faces)
-
-(defface color-parens-inconsistent
-  '((((class color) (background light))
-     :foreground "dark orange")
-    (((class color) (background dark))
-     :foreground "orange"))
-  "Face to use for matching open and close parens whose placement
-is inconsistent with indentation."
-  :group 'color-parens-faces)
-
-;; TODO: Faces for mismatched open and close
-
 ;; TODO: Options for performance improvement:
 ;; : c-beginning-of-statement-1 is fontified in full 48 times
 ;;   : Do what font-lock-fontify-region does to mark text fontified
@@ -88,6 +63,31 @@ is inconsistent with indentation."
 ;;
 ;; Probably doesn't matter significantly, as long as it's consistent
 ;; regardless of how JIT inputs the regions.
+
+;; TODO: Implement coloring of parens with no pair at all
+
+;;; Code:
+
+(require 'cl-lib)
+
+(defgroup color-parens nil
+  "Color unbalanced parentheses and parentheses inconsistent with indentation."
+  :prefix "color-parens-"
+  :group 'paren-matching)
+
+(defgroup color-parens-faces nil
+  "Faces for color-parens package. "
+  :group 'color-parens
+  :group 'faces)
+
+(defface color-parens-inconsistent
+  '((((class color) (background light))
+     :foreground "dark orange")
+    (((class color) (background dark))
+     :foreground "orange"))
+  "Face to use for matching open and close parens whose placement
+is inconsistent with indentation."
+  :group 'color-parens-faces)
 
 ;; An open paren and algorithmic data about it. Instances are placed
 ;; on a stack as this packages parses a buffer region.
