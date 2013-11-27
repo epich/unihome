@@ -61,6 +61,7 @@
 (my-msg "Initializing third party lisp. ")
 (add-to-list 'load-path "~/unihome/emacs/lisp")
 (require 'adjust-parens)
+(add-hook 'emacs-lisp-mode-hook #'adjust-parens-mode)
 (require 'color-parens)
 ;; TODO (add-hook 'emacs-lisp-mode-hook (lambda () (color-parens-mode 1)))
 (require 'evil-numbers)
