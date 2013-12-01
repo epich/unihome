@@ -147,6 +147,55 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                               'color-parens-inconsistent)
     (color-parens--decolorize (list open-paren close-paren))))
 
+(defun cp-propertize-region (start end)
+  (save-excursion
+    (goto-char start)
+    (let* ((init-ppss (syntax-ppss))
+           (table-start (or (car (nth 9 init-ppss))
+                            start))
+           ;; Sparse vector of open paren data, indexed by position in
+           ;; buffer minus table-start.
+           (open-paren-table (make-vector (- end table-start) nil))
+           ;; List of all color-parens--Open objects created
+           (open-objs))
+      (while (< (point) end)
+        (let (;; Column at which text starts on the line, except if
+              ;; inside a string. Text doesn't start in a comment,
+              ;; since ; is text.
+              (text-column (progn (back-to-indentation)
+                                  (current-column)))
+              (line-ppss (syntax-ppss))
+              (line-end (save-excursion (end-of-line)
+                                        (point))))
+          ;; Skip whitespace only lines and lines beginning inside
+          ;; string
+          (unless (or (eq (point) line-end)
+                      (nth 3 line-ppss))
+            (mapc
+             (lambda (open-pos)
+               (let ((open-obj (or (aref open-paren-table
+                                         (- open-pos table-start))
+                                   (progn
+                                     (setq open-objs
+                                           (cons (make-color-parens--Open
+                                                  :position open-pos
+                                                  :column (save-excursion
+                                                            (goto-char open-pos)
+                                                            (current-column)))
+                                                 open-objs))
+                                     (aset open-paren-table
+                                           (- open-pos table-start)
+                                           (car open-objs))))))
+                 (when (<= text-column
+                           (color-parens--Open-column open-obj))
+                   (setf (color-parens--Open-inconsistent open-obj)
+                         t))
+                 ;; TODO: Set in open-obj the last position open-pos known to be in it
+                 ))
+             (nth 9 line-ppss)))
+          (goto-char line-end)
+          (forward-char))))))
+
 (defun color-parens-propertize-region (start end)
   (save-excursion
     (goto-char start)
@@ -257,6 +306,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                   (point))
               end)))))
 
+;; TODO: Extend to either outermost list or visible range
 (defsubst color-parens-extend-region-after-change (start end _old-len)
   (let ((extended-region (color-parens-extend-region start end)))
     (setq jit-lock-start (car extended-region))
@@ -268,9 +318,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   nil nil nil
   (if color-parens-mode
       (progn
-        (jit-lock-register (lambda (start end)
-                             (apply 'color-parens-propertize-region
-                                    (color-parens-extend-region start end)))
+        (jit-lock-register #'cp-propertize-region
                            t)
         (add-hook 'jit-lock-after-change-extend-region-functions
                   'color-parens-extend-region-after-change

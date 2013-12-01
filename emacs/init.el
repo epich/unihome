@@ -63,7 +63,7 @@
 (require 'adjust-parens)
 (add-hook 'emacs-lisp-mode-hook #'adjust-parens-mode)
 (require 'color-parens)
-;; TODO (add-hook 'emacs-lisp-mode-hook (lambda () (color-parens-mode 1)))
+(add-hook 'emacs-lisp-mode-hook #'color-parens-mode)
 (require 'evil-numbers)
 (require 'goto-chg)
 (require 'rainbow-delimiters)
