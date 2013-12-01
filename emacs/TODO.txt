@@ -90,6 +90,7 @@ Issues:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
       : Is there a way to disable electric-pair-mode in the minibuffer?
+   : use-package looks useful: https://github.com/jwiegley/use-package
    : Consider freeing up the m key for something like the % command.
    : How to automatically wrap text and code at 80 columns?
       : Auto fill mode?
