@@ -151,12 +151,15 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
 (defun cp-propertize-region (start end)
   (save-excursion
     (goto-char start)
-    (let* ((init-ppss (syntax-ppss))
-           (table-start (or (car (nth 9 init-ppss))
+    (let* ((table-start (or (car (nth 9 (syntax-ppss)))
                             start))
            ;; Sparse vector of open paren data, indexed by position in
            ;; buffer minus table-start. The purpose is speed through
            ;; non redundant calculation of current-column.
+           ;;
+           ;; TODO: Rewrite to use hash table instead, to assess
+           ;; performance. Also eliminate open-objs and use maphash
+           ;; instead.
            (open-paren-table (make-vector (- end table-start) nil))
            ;; List of all color-parens--Open objects created
            (open-objs nil))
@@ -287,7 +290,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                   ;; Push
                   (setq paren-stack
                         (cons (make-color-parens--Open :position (1- (point))
-                                                       :column text-column)
+                                                       :column (1- (current-column)))
                               paren-stack)))
                  ;; Case: stopped at close paren
                  ((< 0 depth-change)
@@ -344,7 +347,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   (if color-parens-mode
       (progn
         (jit-lock-register (lambda (start end)
-                             (apply #'color-parens-propertize-region
+                             (apply #'cp-propertize-region
                                     (color-parens-extend-region start end)))
                            t)
         (add-hook 'jit-lock-after-change-extend-region-functions
