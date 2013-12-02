@@ -60,6 +60,7 @@ Issues:
          : When indenting comments, look at if they're ; or ;; and behave accordingly:
             : ) is placed before ;
             : ) is placed on subsequent line after ;; (ie ;; is indented)
+         : 2.0 changes broke case of dedenting when line begins with close paren
       : Try evil-paredit
       : Go through ParEdit reference guide and identify the alternatives
       : How to stop Emacs loading Lisp files when visiting them.
