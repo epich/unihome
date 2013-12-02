@@ -26,7 +26,6 @@
 ;;     : Will this prevent other jit-lock-functions including font-lock-fontify-region from doing their bit?
 ;; : Skip more processing when outside JIT lock's region
 ;; : Don't use parse-partial-sexp in one char increments
-;; : mapc over lambda is slower than a while loop, prefer the latter
 
 ;; TODO: Threshold column for `() is off.
 ;;
@@ -116,30 +115,28 @@ Font Lock.
 POSITIONS is a list of positions in the buffer to colorize. nil
 positions are ignored."
   (with-silent-modifications
-    (mapc (lambda (pos-i)
-            (when pos-i
-              (add-text-properties pos-i
-                                   (1+ pos-i)
-                                   `(font-lock-face
-                                     ,face-arg
-                                     rear-nonsticky
-                                     t))))
-          positions)))
+    (dolist (pos-i positions)
+      (when pos-i
+        (add-text-properties pos-i
+                             (1+ pos-i)
+                             `(font-lock-face
+                               ,face-arg
+                               rear-nonsticky
+                               t))))))
 
 (defsubst color-parens--decolorize (positions)
   "Decolorize chars in the buffer colored with Font Lock.
 
 POSITIONS is a list of positions in the buffer to colorize."
   (with-silent-modifications
-    (mapc (lambda (pos-i)
-            (when pos-i
-              (remove-text-properties pos-i
-                                      (1+ pos-i)
-                                      '(font-lock-face
-                                        nil
-                                        rear-nonsticky
-                                        nil))))
-          positions)))
+    (dolist (pos-i positions)
+      (when pos-i
+        (remove-text-properties pos-i
+                                (1+ pos-i)
+                                '(font-lock-face
+                                  nil
+                                  rear-nonsticky
+                                  nil))))))
 
 (defsubst color-parens--update-inconsistency-colors (inconsistentp
                                                      open-paren
@@ -176,58 +173,51 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
           ;; string
           (unless (or (eq (point) line-end)
                       (nth 3 line-ppss))
-            (mapc
-             ;; This lambda must be fast because it is called
-             ;; approximately N*M times where N is the number of lines
-             ;; in the region and M is the average sexp depth at
-             ;; beginning of lines.
-             (lambda (open-pos)
-               (let ((open-obj (or (aref open-paren-table
-                                         (- open-pos table-start))
-                                   (progn
-                                     (setq open-objs
-                                           (cons (make-color-parens--Open
-                                                  :position open-pos
-                                                  :column (save-excursion
-                                                            (goto-char open-pos)
-                                                            (current-column)))
-                                                 open-objs))
-                                     (aset open-paren-table
-                                           (- open-pos table-start)
-                                           (car open-objs))))))
-                 (when (<= text-column
-                           (color-parens--Open-column open-obj))
-                   (setf (color-parens--Open-inconsistent open-obj)
-                         t))))
-             ;; Mapping over list of unclosed open parens
-             (nth 9 line-ppss)))
+            ;; Iterate over list of unclosed open parens
+            (dolist (open-pos (nth 9 line-ppss))
+              (let ((open-obj (or (aref open-paren-table
+                                        (- open-pos table-start))
+                                  (progn
+                                    (setq open-objs
+                                          (cons (make-color-parens--Open
+                                                 :position open-pos
+                                                 :column (save-excursion
+                                                           (goto-char open-pos)
+                                                           (current-column)))
+                                                open-objs))
+                                    (aset open-paren-table
+                                          (- open-pos table-start)
+                                          (car open-objs))))))
+                (when (<= text-column
+                          (color-parens--Open-column open-obj))
+                  (setf (color-parens--Open-inconsistent open-obj)
+                        t)))))
           ;; Since we already know line-end, efficiently go to next line
           (goto-char line-end)
           (forward-char)))
-      (mapc (lambda (open-i)
-              ;; TODO: It might be possible to speed close-pos
-              ;; calculation by setting "last known position and depth
-              ;; inside list" at each line for each color-parens--Open
-              ;; object. Then here use scan-lists from that info. The
-              ;; performance gain is not certain, so would need to be
-              ;; measured. (Note however that the iteration over lines
-              ;; above is measured to be the significant time
-              ;; consumer, not the iteration over open-objs here.)
-              (let ((close-pos (condition-case nil
-                                   (1- (scan-lists (color-parens--Open-position open-i) 1 0))
-                                 (scan-error nil))))
-                (if (color-parens--Open-inconsistent open-i)
-                    (color-parens--colorize (list (color-parens--Open-position open-i)
-                                                  close-pos)
-                                            'color-parens-inconsistent)
-                  ;; If open paren is consistent, we've only proved
-                  ;; it's ok to clear the inconsistency color if open
-                  ;; and close were in the region.
-                  (when (and (<= start (color-parens--Open-position open-i))
-                             (< close-pos end))
-                    (color-parens--decolorize (list (color-parens--Open-position open-i)
-                                                    close-pos))))))
-            open-objs))))
+      (dolist (open-i open-objs)
+        ;; TODO: It might be possible to speed close-pos
+        ;; calculation by setting "last known position and depth
+        ;; inside list" at each line for each color-parens--Open
+        ;; object. Then here use scan-lists from that info. The
+        ;; performance gain is not certain, so would need to be
+        ;; measured. (Note however that the iteration over lines
+        ;; above is measured to be the significant time
+        ;; consumer, not the iteration over open-objs here.)
+        (let ((close-pos (condition-case nil
+                             (1- (scan-lists (color-parens--Open-position open-i) 1 0))
+                           (scan-error nil))))
+          (if (color-parens--Open-inconsistent open-i)
+              (color-parens--colorize (list (color-parens--Open-position open-i)
+                                            close-pos)
+                                      'color-parens-inconsistent)
+            ;; If open paren is consistent, we've only proved
+            ;; it's ok to clear the inconsistency color if open
+            ;; and close were in the region.
+            (when (and (<= start (color-parens--Open-position open-i))
+                       (< close-pos end))
+              (color-parens--decolorize (list (color-parens--Open-position open-i)
+                                              close-pos)))))))))
 
 (defun color-parens-propertize-region (start end)
   (save-excursion
@@ -354,7 +344,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   (if color-parens-mode
       (progn
         (jit-lock-register (lambda (start end)
-                             (apply #'cp-propertize-region
+                             (apply #'color-parens-propertize-region
                                     (color-parens-extend-region start end)))
                            t)
         (add-hook 'jit-lock-after-change-extend-region-functions
