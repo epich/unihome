@@ -26,6 +26,12 @@
 ;;     : Will this prevent other jit-lock-functions including font-lock-fontify-region from doing their bit?
 ;; : Skip more processing when outside JIT lock's region
 ;; : Don't use parse-partial-sexp in one char increments
+;; : Instead of expanding the region JIT lock passes, process the
+;;   extended region minimally: sexp parsing is unnecessary. Parse
+;;   line by line comparing (current-column) to the subset of open
+;;   parens which extend into the region to prove they are consistent.
+;; : Instead of expanding the region after each buffer change, perhaps
+;;   just call redisplay ourselves. Maybe better overall.
 
 ;; TODO: Threshold column for `() is off.
 ;;
@@ -195,9 +201,9 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                           (color-parens--Open-column open-obj))
                   (setf (color-parens--Open-inconsistent open-obj)
                         t)))))
-          ;; Since we already know line-end, efficiently go to next line
-          (goto-char line-end)
-          (forward-char)))
+          ;; Go to next line. Since we already know line-end, use it
+          ;; instead of rescanning the line
+          (goto-char (min (1+ line-end) (point-max)))))
       (dolist (open-i open-objs)
         ;; TODO: It might be possible to speed close-pos
         ;; calculation by setting "last known position and depth
@@ -249,12 +255,16 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                 ;; decreasing moving down the stack (towards the tail).
                 ;; Since we're only interested in marking Opens
                 ;; inconsistent, that allows the iteration to stop at
-                ;; the first inconsistent=nil Open with small enough
+                ;; the first inconsistent==nil Open with small enough
                 ;; column.
                 (while (and open-i
-                            (or (<= text-column
-                                    (color-parens--Open-column (car open-i)))
-                                (color-parens--Open-inconsistent (car open-i))))
+                            (or (color-parens--Open-inconsistent (car open-i))
+                                (<= text-column
+                                    (or (color-parens--Open-column (car open-i))
+                                        ;; Lazy computation of column
+                                        (save-excursion
+                                          (goto-char (color-parens--Open-position (car open-i)))
+                                          (setf (color-parens--Open-column (car open-i)) (current-column)))))))
                   (setf (color-parens--Open-inconsistent (car open-i))
                         t)
                   (setq open-i (cdr open-i)))))
@@ -289,8 +299,17 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                  ((< depth-change 0)
                   ;; Push
                   (setq paren-stack
-                        (cons (make-color-parens--Open :position (1- (point))
-                                                       :column (1- (current-column)))
+                        ;; Note: color-parens--Open's column field is
+                        ;; initialized nil and computed lazily. This
+                        ;; avoids computing current-column for open
+                        ;; parens closed on the same line. These also
+                        ;; tend to be further from the beginning of
+                        ;; line.
+                        ;;
+                        ;; TODO: Benchmark it. Diminished data
+                        ;; locality and save-excursion overhead might
+                        ;; prevent an actual performance improvement.
+                        (cons (make-color-parens--Open :position (1- (point)))
                               paren-stack)))
                  ;; Case: stopped at close paren
                  ((< 0 depth-change)
