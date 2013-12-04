@@ -305,10 +305,6 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                         ;; parens closed on the same line. These also
                         ;; tend to be further from the beginning of
                         ;; line.
-                        ;;
-                        ;; TODO: Benchmark it. Diminished data
-                        ;; locality and save-excursion overhead might
-                        ;; prevent an actual performance improvement.
                         (cons (make-color-parens--Open :position (1- (point)))
                               paren-stack)))
                  ;; Case: stopped at close paren
