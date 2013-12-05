@@ -154,10 +154,12 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                               'color-parens-inconsistent)
     (color-parens--decolorize (list open-paren close-paren))))
 
+(require 'my-util)
 (defun cp-propertize-region (start end)
   (save-excursion
     (goto-char start)
-    (let* ((table-start (or (car (nth 9 (syntax-ppss)))
+    (let* ((timing-info (list (current-time)))
+           (table-start (or (car (nth 9 (syntax-ppss)))
                             start))
            ;; Sparse vector of open paren data, indexed by position in
            ;; buffer minus table-start. The purpose is speed through
@@ -169,6 +171,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
            (open-paren-table (make-vector (- end table-start) nil))
            ;; List of all color-parens--Open objects created
            (open-objs nil))
+      (push (current-time) timing-info)
       (while (< (point) end)
         (let (;; Column at which text starts on the line, except if
               ;; inside a string. Text doesn't start in a comment,
@@ -187,13 +190,12 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
               (let ((open-obj (or (aref open-paren-table
                                         (- open-pos table-start))
                                   (progn
-                                    (setq open-objs
-                                          (cons (make-color-parens--Open
-                                                 :position open-pos
-                                                 :column (save-excursion
-                                                           (goto-char open-pos)
-                                                           (current-column)))
-                                                open-objs))
+                                    (push (make-color-parens--Open
+                                           :position open-pos
+                                           :column (save-excursion
+                                                     (goto-char open-pos)
+                                                     (current-column)))
+                                          open-objs)
                                     (aset open-paren-table
                                           (- open-pos table-start)
                                           (car open-objs))))))
@@ -204,6 +206,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
           ;; Go to next line. Since we already know line-end, use it
           ;; instead of rescanning the line
           (goto-char (min (1+ line-end) (point-max)))))
+      (push (current-time) timing-info)
       (dolist (open-i open-objs)
         ;; TODO: It might be possible to speed close-pos
         ;; calculation by setting "last known position and depth
@@ -226,7 +229,11 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
             (when (and (<= start (color-parens--Open-position open-i))
                        (< close-pos end))
               (color-parens--decolorize (list (color-parens--Open-position open-i)
-                                              close-pos)))))))))
+                                              close-pos))))))
+      (push (current-time) timing-info)
+      (my-msg "DEBUG: cp-color-parens timing: %s"
+              (my-time-diffs (nreverse timing-info)))
+      )))
 
 (defun color-parens-propertize-region (start end)
   (save-excursion
@@ -267,7 +274,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                                           (setf (color-parens--Open-column (car open-i)) (current-column)))))))
                   (setf (color-parens--Open-inconsistent (car open-i))
                         t)
-                  (setq open-i (cdr open-i)))))
+                  (pop open-i))))
             ;; Note: point is at indentation
             (while (and (< (point) line-end))
               (let ((depth-change
@@ -297,16 +304,13 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                   nil) ; Keep parsing
                  ;; Case: stopped at open paren
                  ((< depth-change 0)
-                  ;; Push
-                  (setq paren-stack
-                        ;; Note: color-parens--Open's column field is
-                        ;; initialized nil and computed lazily. This
-                        ;; avoids computing current-column for open
-                        ;; parens closed on the same line. These also
-                        ;; tend to be further from the beginning of
-                        ;; line.
-                        (cons (make-color-parens--Open :position (1- (point)))
-                              paren-stack)))
+                  ;; Note: color-parens--Open's column field is
+                  ;; initialized nil and computed lazily. This avoids
+                  ;; computing current-column for open parens closed
+                  ;; on the same line. These also tend to be further
+                  ;; from the beginning of line.
+                  (push (make-color-parens--Open :position (1- (point)))
+                        paren-stack))
                  ;; Case: stopped at close paren
                  ((< 0 depth-change)
                   (if paren-stack
@@ -315,9 +319,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                          (color-parens--Open-inconsistent (car paren-stack))
                          (color-parens--Open-position (car paren-stack))
                          (1- (point)))
-                        ;; Pop
-                        (setq paren-stack
-                              (cdr paren-stack)))
+                        (pop paren-stack))
                     ;; TODO: Handle close paren when nil paren-stack
                     ))))))
           ;; Go forward to beginning of next line, keeping parse-state
@@ -362,6 +364,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   (if color-parens-mode
       (progn
         (jit-lock-register (lambda (start end)
+                             ;; (apply #'color-parens-propertize-region
                              (apply #'cp-propertize-region
                                     (color-parens-extend-region start end)))
                            t)
