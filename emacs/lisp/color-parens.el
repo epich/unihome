@@ -154,7 +154,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                               'color-parens-inconsistent)
     (color-parens--decolorize (list open-paren close-paren))))
 
-(require 'my-util)
+(require 'my-util) ;TODO
 (defun cp-propertize-region (start end)
   (save-excursion
     (goto-char start)
@@ -164,10 +164,6 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
            ;; Sparse vector of open paren data, indexed by position in
            ;; buffer minus table-start. The purpose is speed through
            ;; non redundant calculation of current-column.
-           ;;
-           ;; TODO: Rewrite to use hash table instead, to assess
-           ;; performance. Also eliminate open-objs and use maphash
-           ;; instead.
            (open-paren-table (make-vector (- end table-start) nil))
            ;; List of all color-parens--Open objects created
            (open-objs nil))
@@ -239,9 +235,11 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   (save-excursion
     (goto-char start)
     (beginning-of-line)
-    (let (;; Push at open parens, pop at close parens
+    (let ((timing-info (list (current-time)))
+          ;; Push at open parens, pop at close parens
           (paren-stack)
           (parse-state (syntax-ppss)))
+      (push (current-time) timing-info)
       (while (< (point) end)
         (let ((line-start (point))
               ;; Column at which text starts on the line, except if
@@ -330,7 +328,11 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                                       (1+ (point))
                                       nil
                                       nil
-                                      parse-state))))))))
+                                      parse-state)))))
+      (push (current-time) timing-info)
+      (my-msg "DEBUG: color-parens-color-parens timing: %s"
+              (my-time-diffs (nreverse timing-info)))
+      )))
 
 (defun color-parens-unpropertize-region (start end)
   ;; TODO: remove-text-properties
