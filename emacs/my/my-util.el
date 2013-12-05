@@ -78,6 +78,16 @@
                               (buffer-name)
                               default-directory)))
 
+(defun my-time-diffs (time-list)
+  "Take a list of times and return a list of the consecutive
+differences."
+  (let ((time-i time-list)
+        (ret nil))
+    (while (cdr time-i)
+      (push (time-subtract (cadr time-i) (car time-i)) ret)
+      (pop time-i))
+    (nreverse ret)))
+
 (defun my-find-file-upwards (file-to-find)
   "Recursively searches each parent directory starting from the default-directory.
 looking for a file with name file-to-find.  Returns the path to it
