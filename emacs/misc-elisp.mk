@@ -23,12 +23,12 @@ all: compile
 compile: $(ELCFILES)
 
 $(ELCFILES): %.elc: %.el
-	$(EMACS) --batch -Q -L . $(LIBS) -f batch-byte-compile $<
+	$(EMACS) --batch -Q -L . -L my $(LIBS) -f batch-byte-compile $<
 
 # Byte-compile all files in one batch. This is faster than
 # compiling each file in isolation, but also less stringent.
 compile-batch: clean
-	$(EMACS) --batch -Q -L . $(LIBS) -f batch-byte-compile ${FILES}
+	$(EMACS) --batch -Q -L . -L my $(LIBS) -f batch-byte-compile ${FILES}
 
 evil: evil/lib/goto-chg.el evil/lib/undo-tree.el
 	make -C evil
