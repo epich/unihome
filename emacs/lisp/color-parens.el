@@ -113,7 +113,7 @@ is inconsistent with indentation."
 ;;
 ;; NB: There's no value for "consistent" because once it is known, the
 ;; struct instance is popped and no longer used.
-(cl-defstruct color-parens--Open position column inconsistent)
+(cl-defstruct cp--Open position column inconsistent)
 
 (defsubst color-parens--colorize (positions face-arg)
   "Colorize chars in the buffer to the specified FACE-ARG with
@@ -162,7 +162,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
           (line-ppss (syntax-ppss)))
       (dolist (open-pos (nth 9 line-ppss))
         ;; TODO: Initialize :inconsistent
-        (push (make-color-parens--Open :position open-pos
+        (push (make-cp--Open :position open-pos
                                        :column (save-excursion
                                                  (goto-char open-pos)
                                                  (current-column)))
@@ -190,11 +190,11 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
               ;; the first inconsistent==nil Open with small enough
               ;; column.
               (while (and open-i
-                          (or (color-parens--Open-inconsistent (car open-i))
+                          (or (cp--Open-inconsistent (car open-i))
                               (<= text-column
-                                  (color-parens--Open-column (car open-i)))))
+                                  (cp--Open-column (car open-i)))))
                 (my-msg "DEBUG: Marking inconsistent: %s point=%s text-column=%s paren-stack=%s" (car open-i) (point) text-column paren-stack) 
-                (setf (color-parens--Open-inconsistent (car open-i))
+                (setf (cp--Open-inconsistent (car open-i))
                       t)
                 (pop open-i))))
           ;; TODO: Let bound current point and sexp depth here so as
@@ -210,17 +210,17 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                                   (let ((cons-i open-positions))
                                     (while (and (cdr cons-i)
                                                 (<= (cadr cons-i)
-                                                    (color-parens--Open-position (car paren-stack))))
+                                                    (cp--Open-position (car paren-stack))))
                                       (pop cons-i))
                                     cons-i))))
             ;; Process parens that closed upon going to this next line
             (my-msg "DEBUG: paren-stack before updating: %s" paren-stack) 
             (while (and paren-stack
                         (or (not common-open)
-                            (/= (color-parens--Open-position (car paren-stack))
+                            (/= (cp--Open-position (car paren-stack))
                                 (car common-open))))
               (let ((close-pos (condition-case nil
-                                   (1- (scan-lists (color-parens--Open-position (car paren-stack))
+                                   (1- (scan-lists (cp--Open-position (car paren-stack))
                                                    1 0))
                                  (scan-error nil)))
                     (open-obj (pop paren-stack)))
@@ -228,11 +228,11 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                 ;; TODO: If operating on a subset region, it's not
                 ;; always correct to color consistent
                 (color-parens--update-inconsistency-colors
-                 (color-parens--Open-inconsistent open-obj)
-                 (color-parens--Open-position open-obj)
+                 (cp--Open-inconsistent open-obj)
+                 (cp--Open-position open-obj)
                  close-pos)))
             (my-msg "DEBUG: paren-stack after pops: %s" paren-stack) 
-            ;; Create new color-parens--Open objects
+            ;; Create new cp--Open objects
             (save-excursion
               (dolist (open-i (if common-open
                                   (cdr common-open)
@@ -244,17 +244,17 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                 ;; themselves in a way that the algorithm won't detect
                 ;; because of the short circuiting of the paren-stack
                 ;; check. Either do a particular consistency check
-                ;; here, or add color-parens--Open objects on lines
+                ;; here, or add cp--Open objects on lines
                 ;; that begin in a string (leaning towards former).
-                (push (make-color-parens--Open :position open-i
+                (push (make-cp--Open :position open-i
                                                :column (current-column))
                       paren-stack))))))
       (dolist (open-i paren-stack)
         (color-parens--update-inconsistency-colors
-         (color-parens--Open-inconsistent open-i)
-         (color-parens--Open-position open-i)
+         (cp--Open-inconsistent open-i)
+         (cp--Open-position open-i)
          (condition-case nil
-             (1- (scan-lists (color-parens--Open-position open-i)
+             (1- (scan-lists (cp--Open-position open-i)
                              1 0))
            (scan-error nil)))))))
 
@@ -268,7 +268,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
            ;; buffer minus table-start. The purpose is speed through
            ;; non redundant calculation of current-column.
            (open-paren-table (make-vector (- end table-start) nil))
-           ;; List of all color-parens--Open objects created
+           ;; List of all cp--Open objects created
            (open-objs nil))
       (push (current-time) timing-info)
       (while (< (point) end)
@@ -289,7 +289,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
               (let ((open-obj (or (aref open-paren-table
                                         (- open-pos table-start))
                                   (progn
-                                    (push (make-color-parens--Open
+                                    (push (make-cp--Open
                                            :position open-pos
                                            :column (save-excursion
                                                      (goto-char open-pos)
@@ -299,8 +299,8 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                                           (- open-pos table-start)
                                           (car open-objs))))))
                 (when (<= text-column
-                          (color-parens--Open-column open-obj))
-                  (setf (color-parens--Open-inconsistent open-obj)
+                          (cp--Open-column open-obj))
+                  (setf (cp--Open-inconsistent open-obj)
                         t)))))
           ;; Go to next line. Since we already know line-end, use it
           ;; instead of rescanning the line
@@ -309,25 +309,25 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
       (dolist (open-i open-objs)
         ;; TODO: It might be possible to speed close-pos
         ;; calculation by setting "last known position and depth
-        ;; inside list" at each line for each color-parens--Open
+        ;; inside list" at each line for each cp--Open
         ;; object. Then here use scan-lists from that info. The
         ;; performance gain is not certain, so would need to be
         ;; measured. (Note however that the iteration over lines
         ;; above is measured to be the significant time
         ;; consumer, not the iteration over open-objs here.)
         (let ((close-pos (condition-case nil
-                             (1- (scan-lists (color-parens--Open-position open-i) 1 0))
+                             (1- (scan-lists (cp--Open-position open-i) 1 0))
                            (scan-error nil))))
-          (if (color-parens--Open-inconsistent open-i)
-              (color-parens--colorize (list (color-parens--Open-position open-i)
+          (if (cp--Open-inconsistent open-i)
+              (color-parens--colorize (list (cp--Open-position open-i)
                                             close-pos)
                                       'color-parens-inconsistent)
             ;; If open paren is consistent, we've only proved
             ;; it's ok to clear the inconsistency color if open
             ;; and close were in the region.
-            (when (and (<= start (color-parens--Open-position open-i))
+            (when (and (<= start (cp--Open-position open-i))
                        (< close-pos end))
-              (color-parens--decolorize (list (color-parens--Open-position open-i)
+              (color-parens--decolorize (list (cp--Open-position open-i)
                                               close-pos))))))
       (push (current-time) timing-info)
       (my-msg "DEBUG: cp-color-parens timing: %s"
@@ -363,14 +363,14 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                 ;; the first inconsistent==nil Open with small enough
                 ;; column.
                 (while (and open-i
-                            (or (color-parens--Open-inconsistent (car open-i))
+                            (or (cp--Open-inconsistent (car open-i))
                                 (<= text-column
-                                    (or (color-parens--Open-column (car open-i))
+                                    (or (cp--Open-column (car open-i))
                                         ;; Lazy computation of column
                                         (save-excursion
-                                          (goto-char (color-parens--Open-position (car open-i)))
-                                          (setf (color-parens--Open-column (car open-i)) (current-column)))))))
-                  (setf (color-parens--Open-inconsistent (car open-i))
+                                          (goto-char (cp--Open-position (car open-i)))
+                                          (setf (cp--Open-column (car open-i)) (current-column)))))))
+                  (setf (cp--Open-inconsistent (car open-i))
                         t)
                   (pop open-i))))
             ;; Note: point is at indentation
@@ -402,20 +402,20 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                   nil) ; Keep parsing
                  ;; Case: stopped at open paren
                  ((< depth-change 0)
-                  ;; Note: color-parens--Open's column field is
+                  ;; Note: cp--Open's column field is
                   ;; initialized nil and computed lazily. This avoids
                   ;; computing current-column for open parens closed
                   ;; on the same line. These also tend to be further
                   ;; from the beginning of line.
-                  (push (make-color-parens--Open :position (1- (point)))
+                  (push (make-cp--Open :position (1- (point)))
                         paren-stack))
                  ;; Case: stopped at close paren
                  ((< 0 depth-change)
                   (if paren-stack
                       (progn
                         (color-parens--update-inconsistency-colors
-                         (color-parens--Open-inconsistent (car paren-stack))
-                         (color-parens--Open-position (car paren-stack))
+                         (cp--Open-inconsistent (car paren-stack))
+                         (cp--Open-position (car paren-stack))
                          (1- (point)))
                         (pop paren-stack))
                     ;; TODO: Handle close paren when nil paren-stack
