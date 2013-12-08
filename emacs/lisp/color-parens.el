@@ -75,6 +75,7 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'my-util) ; TODO
 
 (defgroup color-parens nil
   "Color unbalanced parentheses and parentheses inconsistent with indentation."
@@ -154,8 +155,110 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                               'color-parens-inconsistent)
     (color-parens--decolorize (list open-paren close-paren))))
 
-(require 'my-util) ;TODO
-(defun cp-propertize-region (start end)
+(defun cp-propertize-region-3 (start end)
+  (save-excursion
+    (goto-char start)
+    (let ((paren-stack nil)
+          (line-ppss (syntax-ppss)))
+      (dolist (open-pos (nth 9 line-ppss))
+        ;; TODO: Initialize :inconsistent
+        (push (make-color-parens--Open :position open-pos
+                                       :column (save-excursion
+                                                 (goto-char open-pos)
+                                                 (current-column)))
+              paren-stack))
+      (while (< (point) end)
+        (let (;; Column at which text starts on the line, except if
+              ;; inside a string. Text doesn't start in a comment,
+              ;; since ; is text.
+              (text-column (progn (back-to-indentation)
+                                  (current-column)))
+              (line-end (save-excursion (end-of-line)
+                                        (point))))
+          ;; Skip whitespace only lines and lines beginning inside
+          ;; string
+          (unless (or (eq (point) line-end)
+                      (nth 3 line-ppss)) ; Whether inside string
+            ;; Mark open parens on the paren-stack that become
+            ;; inconsistent because of the current line.
+            (let ((open-i paren-stack))
+              ;; If one considers only the inconsistent==nil Opens on
+              ;; the paren-stack, their columns are strictly
+              ;; decreasing moving down the stack (towards the tail).
+              ;; Since we're only interested in marking Opens
+              ;; inconsistent, that allows the iteration to stop at
+              ;; the first inconsistent==nil Open with small enough
+              ;; column.
+              (while (and open-i
+                          (or (color-parens--Open-inconsistent (car open-i))
+                              (<= text-column
+                                  (color-parens--Open-column (car open-i)))))
+                (my-msg "DEBUG: Marking inconsistent: %s point=%s text-column=%s paren-stack=%s" (car open-i) (point) text-column paren-stack) 
+                (setf (color-parens--Open-inconsistent (car open-i))
+                      t)
+                (pop open-i))))
+          ;; TODO: Let bound current point and sexp depth here so as
+          ;; scan-lists can use it to efficiently find the close
+          ;; parens we're passing over.
+          ;;
+          ;; Go to next line. Since we already know line-end, use it
+          ;; instead of rescanning the line
+          (goto-char (min (1+ line-end) (point-max)))
+          (setq line-ppss (syntax-ppss))
+          (let* ((open-positions (nth 9 line-ppss))
+                 (common-open (and paren-stack
+                                  (let ((cons-i open-positions))
+                                    (while (and (cdr cons-i)
+                                                (<= (cadr cons-i)
+                                                    (color-parens--Open-position (car paren-stack))))
+                                      (pop cons-i))
+                                    cons-i))))
+            ;; Process parens that closed upon going to this next line
+            (my-msg "DEBUG: paren-stack before updating: %s" paren-stack) 
+            (while (and paren-stack
+                        (or (not common-open)
+                            (/= (color-parens--Open-position (car paren-stack))
+                                (car common-open))))
+              (let ((close-pos (condition-case nil
+                                   (1- (scan-lists (color-parens--Open-position (car paren-stack))
+                                                   1 0))
+                                 (scan-error nil)))
+                    (open-obj (pop paren-stack)))
+                ;; TODO: Set mismatched paren face if close-pos is nil
+                ;; TODO: If operating on a subset region, it's not
+                ;; always correct to color consistent
+                (color-parens--update-inconsistency-colors
+                 (color-parens--Open-inconsistent open-obj)
+                 (color-parens--Open-position open-obj)
+                 close-pos)))
+            (my-msg "DEBUG: paren-stack after pops: %s" paren-stack) 
+            ;; Create new color-parens--Open objects
+            (save-excursion
+              (dolist (open-i (if common-open
+                                  (cdr common-open)
+                                open-positions))
+                (goto-char open-i)
+                ;; TODO: Account for the case of skipping lines that
+                ;; begin in a string. In those cases, these parens
+                ;; we're adding could be inconsistent amongst
+                ;; themselves in a way that the algorithm won't detect
+                ;; because of the short circuiting of the paren-stack
+                ;; check. Either do a particular consistency check
+                ;; here, or add color-parens--Open objects on lines
+                ;; that begin in a string (leaning towards former).
+                (push (make-color-parens--Open :position open-i
+                                               :column (current-column))
+                      paren-stack))))))
+      (dolist (open-i paren-stack)
+        (color-parens--update-inconsistency-colors
+         (color-parens--Open-inconsistent open-i)
+         (color-parens--Open-position open-i)
+         (condition-case nil
+             (1- (scan-lists (color-parens--Open-position open-i)
+                             1 0))
+           (scan-error nil)))))))
+
+(defun cp-propertize-region-2 (start end)
   (save-excursion
     (goto-char start)
     (let* ((timing-info (list (current-time)))
@@ -231,18 +334,15 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
               (my-time-diffs (nreverse timing-info)))
       )))
 
-(defun color-parens-propertize-region (start end)
+(defun cp-propertize-region-1 (start end)
   (save-excursion
     (goto-char start)
     (beginning-of-line)
-    (let ((timing-info (list (current-time)))
-          ;; Push at open parens, pop at close parens
+    (let (;; Push at open parens, pop at close parens
           (paren-stack)
           (parse-state (syntax-ppss)))
-      (push (current-time) timing-info)
       (while (< (point) end)
-        (let ((line-start (point))
-              ;; Column at which text starts on the line, except if
+        (let (;; Column at which text starts on the line, except if
               ;; inside a string. Text doesn't start in a comment,
               ;; since ; is text.
               (text-column (progn (back-to-indentation)
@@ -328,11 +428,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                                       (1+ (point))
                                       nil
                                       nil
-                                      parse-state)))))
-      (push (current-time) timing-info)
-      (my-msg "DEBUG: color-parens-color-parens timing: %s"
-              (my-time-diffs (nreverse timing-info)))
-      )))
+                                      parse-state))))))))
 
 (defun color-parens-unpropertize-region (start end)
   ;; TODO: remove-text-properties
@@ -359,6 +455,8 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
     (setq jit-lock-start (car extended-region))
     (setq jit-lock-end (cadr extended-region))))
 
+(defalias 'cp-propertize-region 'cp-propertize-region-3)
+
 (define-minor-mode color-parens-mode
   "Color unbalanced parentheses and parentheses inconsistent with
   indentation."
@@ -366,15 +464,14 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   (if color-parens-mode
       (progn
         (jit-lock-register (lambda (start end)
-                             ;; (apply #'color-parens-propertize-region
-                             (apply #'cp-propertize-region
+                             (apply 'cp-propertize-region
                                     (color-parens-extend-region start end)))
                            t)
         (add-hook 'jit-lock-after-change-extend-region-functions
                   'color-parens-extend-region-after-change
                   nil
                   t))
-    (jit-lock-unregister 'color-parens-propertize-region)
+    (jit-lock-unregister 'cp-propertize-region)
     (color-parens-unpropertize-region (point-min) (point-max))))
 
 (provide 'color-parens)
