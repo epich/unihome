@@ -101,6 +101,8 @@ is inconsistent with indentation."
 ;;
 ;; position is the position in the buffer of the open paren
 ;;
+;; close is the position before the closing paren, or nil if unknown
+;;
 ;; column is the displayed column of the open paren in its logical
 ;; line of the buffer
 ;;
@@ -113,7 +115,7 @@ is inconsistent with indentation."
 ;;
 ;; NB: There's no value for "consistent" because once it is known, the
 ;; struct instance is popped and no longer used.
-(cl-defstruct cp--Open position column inconsistent)
+(cl-defstruct cp--Open position close column inconsistent)
 
 (defsubst color-parens--colorize (positions face-arg)
   "Colorize chars in the buffer to the specified FACE-ARG with
@@ -258,45 +260,112 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                              1 0))
            (scan-error nil)))))))
 
+(defsubst cp--line-check-opens (open-stack)
+  """Check cp--Open objects of the OPEN-STACK list for
+consistency.
+
+The inconsistent==nil elements of OPEN-STACK must have columns
+that are strictly decreasing moving towards the tail. Otherwise
+they would be inconsistent. The implementation optimizes on this
+assumption.
+
+Call with point on the line being checked; puts point on the next
+line or EOB."""
+  (let ((indent-pos (back-to-indentation))
+        (indent-column (current-column))
+        (line-end (end-of-line)))
+    ;; Assess open-objs against indent-column
+    (unless (eq indent-pos line-end) ; Skip whitespace lines
+      ;; Since we're only interested in marking Opens inconsistent,
+      ;; the open-stack's documented property allows the iteration to
+      ;; stop at the first inconsistent==nil Open with small enough
+      ;; column.
+      (while (and open-stack
+                  (or (cp--Open-inconsistent (car open-stack))
+                      (<= indent-column
+                          (cp--Open-column (car open-stack)))))
+        ;; Check cp--Open-inconsistent to avoid excessive
+        ;; syntax-ppss when there's a lot of bad
+        ;; indentation.
+        (unless (or (cp--Open-inconsistent (car open-stack))
+                    ;; Multi line strings don't cause inconsistency
+                    (nth 3 (syntax-ppss indent-pos)))
+          (setf (cp--Open-inconsistent (car open-stack))
+                t))
+        (pop open-stack)))
+    ;; Go to next line. Since we already know line-end, use it
+    ;; instead of rescanning the line
+    ;;
+    ;; TODO: Better account for EOB, mark remaining
+    ;; open-objs mismatched as appropriate.
+    (goto-char (min (1+ line-end) (point-max)))))
+
 (defun cp-propertize-region-2 (start end)
   (save-excursion
-    (let* ((start-ps (syntax-ppss start))
-           (ps-opens (nth 9 start-ps))
-           (open-objs nil))
-      (when ps-opens
-        (goto-char (car ps-opens))
-        (let ((ps-open-i ps-opens))
-          (while ps-open-i
-            (let ((indent-column (progn (back-to-indentation)
-                                        (current-column)))
-                  (line-end (end-of-line)))
-              (while (< (car pos-open-i)
-                        indent-column)
-                (push (make-cp--Open :column
-                                     (progn
-                                       (goto-char (car ps-open-i))
-                                       (current-column))
-                                     :position
-                                     (pop ps-open-i))
-                      open-objs))))
-          (while (< (point) TODO)
-            ))))
-    (goto-char start)
     (let* ((timing-info (list (current-time)))
-           (table-start (or (car (nth 9 (syntax-ppss)))
-                            start))
-           ;; Sparse vector of open paren data, indexed by position in
-           ;; buffer minus table-start. The purpose is speed through
-           ;; non redundant calculation of current-column.
-           (open-paren-table (make-vector (- end table-start) nil))
-           ;; List of all cp--Open objects created
+           (start-ps (syntax-ppss start))
+           ;; Open positions, outer to inner
+           (ps-opens (nth 9 start-ps))
+           ;; cp--Open objects, positions inner to outer
            (open-objs nil))
+      (push (current-time) timing-info)
+      ;; Process the broader region spanned by ps-opens. We need only
+      ;; check the ps-opens themselves, not their children lying
+      ;; outside the region.
+      ;;
+      ;; Efficiency is important because of the broad region covered.
+      ;; Sexp parsing is mostly avoided, except to check whether a
+      ;; line began with a multi line string as the last check before
+      ;; marking an open paren inconsistent.
+      (when ps-opens
+        ;; Initialize cp--Open objects
+        (dolist (ps-open-i ps-opens)
+          (push (make-cp--Open :position
+                               ps-open-i
+                               :column
+                               (progn
+                                 (goto-char ps-open-i)
+                                 (current-column)))
+                open-objs))
+        ;; Initialize close positions of cp--Open objects
+        (let ((open-objs-reversed nil))
+          (dolist (open-i open-objs)
+            (let ((close-pos (condition-case nil
+                                 (scan-lists (cp--Open-position open-i) 1 0)
+                               (scan-error nil)))))
+            (when close-pos
+              (goto-char close-pos)
+              (setf (cp--Open-close open-i) (1- close-pos)))
+            (push open-i open-objs-reversed))
+          (goto-char (cp--Open-position (car open-objs-reversed)))
+          (let ((downward-i open-objs-reversed)
+                (upward-i nil))
+            (while downward-i
+              (cp--line-check-opens upward-i)
+              (while (and downward-i
+                          (< (cp--Open-position (car downward-i))
+                             (point)))
+                (push (pop downward-i)
+                      upward-i)))
+            (while (and upward-i
+                        (cp--Open-close (car upward-i)))
+              (cp--line-check-opens upward-i)
+              (while (and upward-i
+                          (< (cp--Open-close (car upward-i))
+                             (point)))
+                (pop upward-i)))))))
+    (goto-char start)
+    (push (current-time) timing-info)
+    (let* (;; Sparse vector of open paren data, indexed by position in
+           ;; buffer minus start. The purpose is speed through non
+           ;; redundant calculation of current-column.
+           (open-paren-table (make-vector (- end start) nil)))
       (push (current-time) timing-info)
       (while (< (point) end)
         (let (;; Column at which text starts on the line, except if
               ;; inside a string. Text doesn't start in a comment,
               ;; since ; is text.
-              (text-column (progn (back-to-indentation)
+              (indent-column (progn (back-to-indentation)
                                   (current-column)))
               (line-ppss (syntax-ppss))
               (line-end (save-excursion (end-of-line)
@@ -307,49 +376,44 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                       (nth 3 line-ppss))
             ;; Iterate over list of unclosed open parens
             (dolist (open-pos (nth 9 line-ppss))
-              (let ((open-obj (or (aref open-paren-table
-                                        (- open-pos table-start))
-                                  (progn
-                                    (push (make-cp--Open
-                                           :position open-pos
-                                           :column (save-excursion
-                                                     (goto-char open-pos)
-                                                     (current-column)))
-                                          open-objs)
-                                    (aset open-paren-table
-                                          (- open-pos table-start)
-                                          (car open-objs))))))
-                (when (<= text-column
-                          (cp--Open-column open-obj))
-                  (setf (cp--Open-inconsistent open-obj)
-                        t)))))
+              ;; Skip the already processed ones outside the region
+              (when (<= start open-pos)
+                (let ((open-obj (or (aref open-paren-table
+                                          (- open-pos start))
+                                    (progn
+                                      (push (make-cp--Open
+                                             :position open-pos
+                                             :column (save-excursion
+                                                       (goto-char open-pos)
+                                                       (current-column)))
+                                            open-objs)
+                                      (aset open-paren-table
+                                            (- open-pos start)
+                                            (car open-objs))))))
+                  (when (<= indent-column
+                            (cp--Open-column open-obj))
+                    (setf (cp--Open-inconsistent open-obj)
+                          t))))))
           ;; Go to next line. Since we already know line-end, use it
           ;; instead of rescanning the line
           (goto-char (min (1+ line-end) (point-max)))))
       (push (current-time) timing-info)
       (dolist (open-i open-objs)
-        ;; TODO: It might be possible to speed close-pos
-        ;; calculation by setting "last known position and depth
-        ;; inside list" at each line for each cp--Open
-        ;; object. Then here use scan-lists from that info. The
-        ;; performance gain is not certain, so would need to be
-        ;; measured. (Note however that the iteration over lines
-        ;; above is measured to be the significant time
-        ;; consumer, not the iteration over open-objs here.)
-        (let ((close-pos (condition-case nil
-                             (1- (scan-lists (cp--Open-position open-i) 1 0))
-                           (scan-error nil))))
-          (if (cp--Open-inconsistent open-i)
-              (color-parens--colorize (list (cp--Open-position open-i)
-                                            close-pos)
-                                      'color-parens-inconsistent)
-            ;; If open paren is consistent, we've only proved
-            ;; it's ok to clear the inconsistency color if open
-            ;; and close were in the region.
-            (when (and (<= start (cp--Open-position open-i))
-                       (< close-pos end))
-              (color-parens--decolorize (list (cp--Open-position open-i)
-                                              close-pos))))))
+        ;; Set close position
+        (unless (cp--Open-close open-i)
+          (setf (cp--Open-close open-i)
+                (condition-case nil
+                    (1- (scan-lists (cp--Open-position open-i) 1 0))
+                  (scan-error nil))))
+        (if (cp--Open-inconsistent open-i)
+            (color-parens--colorize (list (cp--Open-position open-i)
+                                          (cp--Open-close open-i))
+                                    'color-parens-inconsistent)
+          ;; TODO: Until we process parens after end of region, check
+          ;; its within
+          (when (< (cp--Open-close open-i) end)
+            (color-parens--decolorize (list (cp--Open-position open-i)
+                                            (cp--Open-close open-i))))))
       (push (current-time) timing-info)
       (my-msg "DEBUG: cp-color-parens timing: %s"
               (my-time-diffs (nreverse timing-info)))
