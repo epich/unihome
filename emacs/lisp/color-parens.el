@@ -330,12 +330,13 @@ line or EOB."""
         ;; Initialize close positions of cp--Open objects
         (let ((open-objs-reversed nil))
           (dolist (open-i open-objs)
+            ;; TODO: short circuit dolist if scan-error
             (let ((close-pos (condition-case nil
                                  (scan-lists (cp--Open-position open-i) 1 0)
-                               (scan-error nil)))))
-            (when close-pos
-              (goto-char close-pos)
-              (setf (cp--Open-close open-i) (1- close-pos)))
+                               (scan-error nil))))
+              (when close-pos
+                (goto-char close-pos)
+                (setf (cp--Open-close open-i) (1- close-pos))))
             (push open-i open-objs-reversed))
           (goto-char (cp--Open-position (car open-objs-reversed)))
           (let ((downward-i open-objs-reversed)
@@ -353,71 +354,71 @@ line or EOB."""
               (while (and upward-i
                           (< (cp--Open-close (car upward-i))
                              (point)))
-                (pop upward-i)))))))
-    (goto-char start)
-    (push (current-time) timing-info)
-    (let* (;; Sparse vector of open paren data, indexed by position in
-           ;; buffer minus start. The purpose is speed through non
-           ;; redundant calculation of current-column.
-           (open-paren-table (make-vector (- end start) nil)))
+                (pop upward-i))))))
+      (goto-char start)
       (push (current-time) timing-info)
-      (while (< (point) end)
-        (let (;; Column at which text starts on the line, except if
-              ;; inside a string. Text doesn't start in a comment,
-              ;; since ; is text.
-              (indent-column (progn (back-to-indentation)
-                                  (current-column)))
-              (line-ppss (syntax-ppss))
-              (line-end (save-excursion (end-of-line)
-                                        (point))))
-          ;; Skip whitespace only lines and lines beginning inside
-          ;; string
-          (unless (or (eq (point) line-end)
-                      (nth 3 line-ppss))
-            ;; Iterate over list of unclosed open parens
-            (dolist (open-pos (nth 9 line-ppss))
-              ;; Skip the already processed ones outside the region
-              (when (<= start open-pos)
-                (let ((open-obj (or (aref open-paren-table
-                                          (- open-pos start))
-                                    (progn
-                                      (push (make-cp--Open
-                                             :position open-pos
-                                             :column (save-excursion
-                                                       (goto-char open-pos)
-                                                       (current-column)))
-                                            open-objs)
-                                      (aset open-paren-table
-                                            (- open-pos start)
-                                            (car open-objs))))))
-                  (when (<= indent-column
-                            (cp--Open-column open-obj))
-                    (setf (cp--Open-inconsistent open-obj)
-                          t))))))
-          ;; Go to next line. Since we already know line-end, use it
-          ;; instead of rescanning the line
-          (goto-char (min (1+ line-end) (point-max)))))
-      (push (current-time) timing-info)
-      (dolist (open-i open-objs)
-        ;; Set close position
-        (unless (cp--Open-close open-i)
-          (setf (cp--Open-close open-i)
-                (condition-case nil
-                    (1- (scan-lists (cp--Open-position open-i) 1 0))
-                  (scan-error nil))))
-        (if (cp--Open-inconsistent open-i)
-            (color-parens--colorize (list (cp--Open-position open-i)
-                                          (cp--Open-close open-i))
-                                    'color-parens-inconsistent)
-          ;; TODO: Until we process parens after end of region, check
-          ;; its within
-          (when (< (cp--Open-close open-i) end)
-            (color-parens--decolorize (list (cp--Open-position open-i)
-                                            (cp--Open-close open-i))))))
-      (push (current-time) timing-info)
-      (my-msg "DEBUG: cp-color-parens timing: %s"
-              (my-time-diffs (nreverse timing-info)))
-      )))
+      (let* (;; Sparse vector of open paren data, indexed by position in
+             ;; buffer minus start. The purpose is speed through non
+             ;; redundant calculation of current-column.
+             (open-paren-table (make-vector (- end start) nil)))
+        (push (current-time) timing-info)
+        (while (< (point) end)
+          (let (;; Column at which text starts on the line, except if
+                ;; inside a string. Text doesn't start in a comment,
+                ;; since ; is text.
+                (indent-column (progn (back-to-indentation)
+                                      (current-column)))
+                (line-ppss (syntax-ppss))
+                (line-end (save-excursion (end-of-line)
+                                          (point))))
+            ;; Skip whitespace only lines and lines beginning inside
+            ;; string
+            (unless (or (eq (point) line-end)
+                        (nth 3 line-ppss))
+              ;; Iterate over list of unclosed open parens
+              (dolist (open-pos (nth 9 line-ppss))
+                ;; Skip the already processed ones outside the region
+                (when (<= start open-pos)
+                  (let ((open-obj (or (aref open-paren-table
+                                            (- open-pos start))
+                                      (progn
+                                        (push (make-cp--Open
+                                               :position open-pos
+                                               :column (save-excursion
+                                                         (goto-char open-pos)
+                                                         (current-column)))
+                                              open-objs)
+                                        (aset open-paren-table
+                                              (- open-pos start)
+                                              (car open-objs))))))
+                    (when (<= indent-column
+                              (cp--Open-column open-obj))
+                      (setf (cp--Open-inconsistent open-obj)
+                            t))))))
+            ;; Go to next line. Since we already know line-end, use it
+            ;; instead of rescanning the line
+            (goto-char (min (1+ line-end) (point-max)))))
+        (push (current-time) timing-info)
+        (dolist (open-i open-objs)
+          ;; Set close position
+          (unless (cp--Open-close open-i)
+            (setf (cp--Open-close open-i)
+                  (condition-case nil
+                      (1- (scan-lists (cp--Open-position open-i) 1 0))
+                    (scan-error nil))))
+          (if (cp--Open-inconsistent open-i)
+              (color-parens--colorize (list (cp--Open-position open-i)
+                                            (cp--Open-close open-i))
+                                      'color-parens-inconsistent)
+            ;; TODO: Until we process parens after end of region, check
+            ;; its within
+            (when (< (cp--Open-close open-i) end)
+              (color-parens--decolorize (list (cp--Open-position open-i)
+                                              (cp--Open-close open-i))))))
+        (push (current-time) timing-info)
+        (my-msg "DEBUG: cp-color-parens timing: %s"
+                (my-time-diffs (nreverse timing-info)))
+        ))))
 
 (defun cp-propertize-region-1 (start end)
   (save-excursion
@@ -522,7 +523,7 @@ line or EOB."""
 (defun color-parens-extend-region (start end)
   "Extend region for JIT lock to fontify."
   (save-excursion
-    (list (or (syntax-ppss-toplevel-pos (syntax-ppss start))
+    (list (or ;(syntax-ppss-toplevel-pos (syntax-ppss start))
               start)
           (let ((last-top-level (syntax-ppss-toplevel-pos (syntax-ppss end))))
             (if last-top-level
@@ -540,7 +541,7 @@ line or EOB."""
     (setq jit-lock-start (car extended-region))
     (setq jit-lock-end (cadr extended-region))))
 
-(defalias 'cp-propertize-region 'cp-propertize-region-3)
+(defalias 'cp-propertize-region 'cp-propertize-region-2)
 
 (define-minor-mode color-parens-mode
   "Color unbalanced parentheses and parentheses inconsistent with
