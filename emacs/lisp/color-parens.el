@@ -260,6 +260,27 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
 
 (defun cp-propertize-region-2 (start end)
   (save-excursion
+    (let* ((start-ps (syntax-ppss start))
+           (ps-opens (nth 9 start-ps))
+           (open-objs nil))
+      (when ps-opens
+        (goto-char (car ps-opens))
+        (let ((ps-open-i ps-opens))
+          (while ps-open-i
+            (let ((indent-column (progn (back-to-indentation)
+                                        (current-column)))
+                  (line-end (end-of-line)))
+              (while (< (car pos-open-i)
+                        indent-column)
+                (push (make-cp--Open :column
+                                     (progn
+                                       (goto-char (car ps-open-i))
+                                       (current-column))
+                                     :position
+                                     (pop ps-open-i))
+                      open-objs))))
+          (while (< (point) TODO)
+            ))))
     (goto-char start)
     (let* ((timing-info (list (current-time)))
            (table-start (or (car (nth 9 (syntax-ppss)))
