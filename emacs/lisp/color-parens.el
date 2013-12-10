@@ -271,9 +271,11 @@ assumption.
 
 Call with point on the line being checked; puts point on the next
 line or EOB."""
-  (let ((indent-pos (back-to-indentation))
+  (let ((indent-pos (progn (back-to-indentation)
+                           (point)))
         (indent-column (current-column))
-        (line-end (end-of-line)))
+        (line-end (progn (end-of-line)
+                         (point))))
     ;; Assess open-objs against indent-column
     (unless (eq indent-pos line-end) ; Skip whitespace lines
       ;; Since we're only interested in marking Opens inconsistent,
