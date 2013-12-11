@@ -87,7 +87,7 @@
   :group 'color-parens
   :group 'faces)
 
-(defface color-parens-inconsistent
+(defface cp-inconsistent
   '((((class color) (background light))
      :foreground "dark orange")
     (((class color) (background dark))
@@ -96,12 +96,21 @@
 is inconsistent with indentation."
   :group 'color-parens-faces)
 
+(defcustom cp-inconsistency-max-lines 1000
+  "The number of lines across which color-parens will detect
+  inconsistencies between indentation and the placement of close
+  parens. This is meant to tradeoff accuracy across long buffer
+  distances for sake of performance."
+  :group 'color-parens
+  :type 'integer)
+
 ;; An open paren and algorithmic data about it. Instances are placed
 ;; on a stack as this packages parses a buffer region.
 ;;
 ;; position is the position in the buffer of the open paren
 ;;
-;; close is the position before the closing paren, or nil if unknown
+;; close is the position before the closing paren, or nil if unknown,
+;; or the symbol "mismatched" if no matching close paren exists (TODO)
 ;;
 ;; column is the displayed column of the open paren in its logical
 ;; line of the buffer
@@ -154,7 +163,7 @@ POSITIONS is a list of positions in the buffer to colorize."
 CLOSE-PAREN as buffer positions based on INCONSISTENTP."
   (if inconsistentp
       (color-parens--colorize (list open-paren close-paren)
-                              'color-parens-inconsistent)
+                              'cp-inconsistent)
     (color-parens--decolorize (list open-paren close-paren))))
 
 (defun cp-propertize-region-3 (start end)
@@ -445,7 +454,7 @@ line or EOB."""
           (if (cp--Open-inconsistent open-i)
               (color-parens--colorize (list (cp--Open-position open-i)
                                             (cp--Open-close open-i))
-                                      'color-parens-inconsistent)
+                                      'cp-inconsistent)
             ;; TODO: Until we process parens after end of region, check
             ;; its within
             (when (< (cp--Open-close open-i) end)
@@ -588,11 +597,10 @@ line or EOB."""
       (progn
         (jit-lock-register 'cp-propertize-region
                            t)
-        ;; TODO: Expand region or not?
-        ;; (add-hook 'jit-lock-after-change-extend-region-functions
-        ;;           'color-parens-extend-region-after-change
-        ;;           nil
-        ;;           t)
+        (add-hook 'jit-lock-after-change-extend-region-functions
+                  'color-parens-extend-region-after-change
+                  nil
+                  t)
         )
     (jit-lock-unregister 'cp-propertize-region)
     (color-parens-unpropertize-region (point-min) (point-max))))
