@@ -588,10 +588,12 @@ line or EOB."""
       (progn
         (jit-lock-register 'cp-propertize-region
                            t)
-        (add-hook 'jit-lock-after-change-extend-region-functions
-                  'color-parens-extend-region-after-change
-                  nil
-                  t))
+        ;; TODO: Expand region or not?
+        ;; (add-hook 'jit-lock-after-change-extend-region-functions
+        ;;           'color-parens-extend-region-after-change
+        ;;           nil
+        ;;           t)
+        )
     (jit-lock-unregister 'cp-propertize-region)
     (color-parens-unpropertize-region (point-min) (point-max))))
 
