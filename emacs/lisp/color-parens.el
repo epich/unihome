@@ -195,7 +195,6 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                           (or (cp--Open-inconsistent (car open-i))
                               (<= text-column
                                   (cp--Open-column (car open-i)))))
-                (my-msg "DEBUG: Marking inconsistent: %s point=%s text-column=%s paren-stack=%s" (car open-i) (point) text-column paren-stack) 
                 (setf (cp--Open-inconsistent (car open-i))
                       t)
                 (pop open-i))))
@@ -216,7 +215,6 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                                       (pop cons-i))
                                     cons-i))))
             ;; Process parens that closed upon going to this next line
-            (my-msg "DEBUG: paren-stack before updating: %s" paren-stack) 
             (while (and paren-stack
                         (or (not common-open)
                             (/= (cp--Open-position (car paren-stack))
@@ -233,7 +231,6 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
                  (cp--Open-inconsistent open-obj)
                  (cp--Open-position open-obj)
                  close-pos)))
-            (my-msg "DEBUG: paren-stack after pops: %s" paren-stack) 
             ;; Create new cp--Open objects
             (save-excursion
               (dolist (open-i (if common-open
@@ -362,8 +359,7 @@ line or EOB."""
       (goto-char start)
       (push (current-time) timing-info)
       (let* (;; Sparse vector of open paren data, indexed by position in
-             ;; buffer minus start. The purpose is speed through non
-             ;; redundant calculation of current-column.
+             ;; buffer minus start. The purpose is speed.
              (open-paren-table (make-vector (- end start) nil)))
         (push (current-time) timing-info)
         (while (< (point) end)
@@ -408,8 +404,19 @@ line or EOB."""
               (open-obj-list nil))
           (dolist (ps-open-i ps-opens)
             (when (<= start ps-open-i)
-              (let ((open-i (aref open-paren-table
-                                  (- ps-open-i start))))
+              (let ((open-i (or (aref open-paren-table
+                                      (- ps-open-i start))
+                                ;; TODO: Duplicates above
+                                (progn
+                                  (push (make-cp--Open
+                                         :position ps-open-i
+                                         :column (save-excursion
+                                                   (goto-char ps-open-i)
+                                                   (current-column)))
+                                        open-objs)
+                                  (aset open-paren-table
+                                        (- ps-open-i start)
+                                        (car open-objs))))))
                 ;; TODO: short circuit dolist if scan-error
                 (let ((close-pos (condition-case nil
                                      (scan-lists (cp--Open-position open-i) 1 0)
