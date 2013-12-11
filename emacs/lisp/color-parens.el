@@ -302,6 +302,8 @@ line or EOB."""
     ;; open-objs mismatched as appropriate.
     (goto-char (min (1+ line-end) (point-max)))))
 
+;; TODO: Address duplication: Between broad scan before region and after region
+;; TODO: Create function just for passing a list of cp--Open to find close position if nil and colorize, the three parts of this function would call it.
 (defun cp-propertize-region-2 (start end)
   (save-excursion
     (let* ((timing-info (list (current-time)))
@@ -401,6 +403,31 @@ line or EOB."""
             ;; instead of rescanning the line
             (goto-char (min (1+ line-end) (point-max)))))
         (push (current-time) timing-info)
+        (let ((ps-opens (nth 9 (syntax-ppss end)))
+              ;; Inner to outer going towards the tail
+              (open-obj-list nil))
+          (dolist (ps-open-i ps-opens)
+            (when (<= start ps-open-i)
+              (let ((open-i (aref open-paren-table
+                                  (- ps-open-i start))))
+                ;; TODO: short circuit dolist if scan-error
+                (let ((close-pos (condition-case nil
+                                     (scan-lists (cp--Open-position open-i) 1 0)
+                                   (scan-error nil))))
+                  (when close-pos
+                    (goto-char close-pos)
+                    (setf (cp--Open-close open-i) (1- close-pos))))
+                (push open-i open-obj-list))))
+          (goto-char end)
+          (let ((upward-i open-obj-list))
+            (while (and upward-i
+                        (cp--Open-close (car upward-i)))
+              (cp--line-check-opens upward-i)
+              (while (and upward-i
+                          (< (cp--Open-close (car upward-i))
+                             (point)))
+                (pop upward-i)))))
+        (push (current-time) timing-info)
         (dolist (open-i open-objs)
           ;; Set close position
           (unless (cp--Open-close open-i)
@@ -418,7 +445,8 @@ line or EOB."""
               (color-parens--decolorize (list (cp--Open-position open-i)
                                               (cp--Open-close open-i))))))
         (push (current-time) timing-info)
-        (my-msg "DEBUG: cp-color-parens timing: %s"
+        (my-msg "DEBUG: cp-color-parens start=%s end=%s timing: %s"
+                start end
                 (my-time-diffs (nreverse timing-info)))
         ))))
 
@@ -525,7 +553,7 @@ line or EOB."""
 (defun color-parens-extend-region (start end)
   "Extend region for JIT lock to fontify."
   (save-excursion
-    (list (or ;(syntax-ppss-toplevel-pos (syntax-ppss start))
+    (list (or (syntax-ppss-toplevel-pos (syntax-ppss start))
               start)
           (let ((last-top-level (syntax-ppss-toplevel-pos (syntax-ppss end))))
             (if last-top-level
@@ -551,9 +579,7 @@ line or EOB."""
   nil nil nil
   (if color-parens-mode
       (progn
-        (jit-lock-register (lambda (start end)
-                             (apply 'cp-propertize-region
-                                    (color-parens-extend-region start end)))
+        (jit-lock-register 'cp-propertize-region
                            t)
         (add-hook 'jit-lock-after-change-extend-region-functions
                   'color-parens-extend-region-after-change
