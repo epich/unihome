@@ -109,8 +109,10 @@ is inconsistent with indentation."
 ;;
 ;; position is the position in the buffer of the open paren
 ;;
-;; close is the position before the closing paren, or nil if unknown,
-;; or the symbol "mismatched" if no matching close paren exists (TODO)
+;; close is one of:
+;;   - the position before the matching close paren
+;;   - the symbol "mismatched" if no matching close paren exists (TODO)
+;;   - nil if unknown
 ;;
 ;; column is the displayed column of the open paren in its logical
 ;; line of the buffer
@@ -267,7 +269,7 @@ CLOSE-PAREN as buffer positions based on INCONSISTENTP."
            (scan-error nil)))))))
 
 (defsubst cp--line-check-opens (open-stack)
-  """Check cp--Open objects of the OPEN-STACK list for
+  "Check cp--Open objects of the OPEN-STACK list for
 consistency.
 
 The inconsistent==nil elements of OPEN-STACK must have columns
@@ -276,7 +278,7 @@ they would be inconsistent. The implementation optimizes on this
 assumption.
 
 Call with point on the line being checked; puts point on the next
-line or EOB."""
+line or EOB."
   (let ((indent-pos (progn (back-to-indentation)
                            (point)))
         (indent-column (current-column))
@@ -308,8 +310,64 @@ line or EOB."""
     ;; open-objs mismatched as appropriate.
     (goto-char (min (1+ line-end) (point-max)))))
 
-;; TODO: Address duplication: Between broad scan before region and after region
-;; TODO: Create function just for passing a list of cp--Open to find close position if nil and colorize, the three parts of this function would call it.
+(defsubst cp--region-check-opens (downward-objs
+                                  upward-objs
+                                  beg-limit
+                                  end-limit)
+  "Propertize inputted parens in a region, first going down in
+sexp depth then up per the DOWNWARD-OBJS and UPWARD-OBJS.
+
+Point must be at the start of the region to process and will end
+up near the end.
+
+DOWNWARD-OBJS is a list of cp--Open objects. Each must be a
+parent of the next in the list.
+
+UPWARD-OBJS is a list of cp--Open objects. Each must be a child
+of the next in the list.
+
+BEG-LIMIT and END-LIMIT are buffer positions limiting the portion
+of the buffer scanned."
+  ;; TODO: Pop from downward-objs and upward-objs based on limits
+  (while downward-objs
+    (cp--line-check-opens upward-objs)
+    (while (and downward-objs
+                (< (cp--Open-position (car downward-objs))
+                   (point)))
+      (push (pop downward-objs)
+            upward-objs)))
+  (while (and upward-objs
+              (cp--Open-close (car upward-objs)))
+    (cp--line-check-opens upward-objs)
+    (while (and upward-objs
+                (< (cp--Open-close (car upward-objs))
+                   (point)))
+      (pop upward-objs))))
+
+(defsubst cp--set-closes (open-obj-list init-pos)
+  "Sets the close attribute of each element of OPEN-OBJ-LIST.
+
+OPEN-OBJ-LIST is a list of cp--Open. Each must be a child of the
+next in the list. This is used to scan-lists efficiently.
+
+INIT-POS is a buffer position that is an immediate child of the
+first element of OPEN-OBJ-LIST. In other words: up-list from
+INIT-POS should arrive at its close position."
+  (let ((buf-pos init-pos))
+    (dolist (open-i open-obj-list)
+      (when buf-pos
+        (setq buf-pos (condition-case nil
+                          (scan-lists buf-pos 1 1)
+                        (scan-error nil))))
+      (setf (cp--Open-close open-i) (if buf-pos
+                                        (1- buf-pos)
+                                      ;; TODO: Set to 'mismatched
+                                      nil)))))
+
+;; TODO: Try always initializing cp--Open objects with close set to
+;; see the effect on performance. On the one hand, it doesn't benefit
+;; from cp--set-closes function's optimization, but could benefit from
+;; less garbage collection.
 (defun cp-propertize-region-2 (start end)
   (save-excursion
     (let* ((timing-info (list (current-time)))
@@ -337,34 +395,16 @@ line or EOB."""
                                  (goto-char ps-open-i)
                                  (current-column)))
                 open-objs))
-        ;; Initialize close positions of cp--Open objects
-        (let ((open-objs-reversed nil))
-          (dolist (open-i open-objs)
-            ;; TODO: short circuit dolist if scan-error
-            (let ((close-pos (condition-case nil
-                                 (scan-lists (cp--Open-position open-i) 1 0)
-                               (scan-error nil))))
-              (when close-pos
-                (goto-char close-pos)
-                (setf (cp--Open-close open-i) (1- close-pos))))
-            (push open-i open-objs-reversed))
+        (cp--set-closes open-objs start)
+        ;; Check lists beginning before JIT lock's region (could
+        ;; scan to after JIT lock's region)
+        (let ((open-objs-reversed (reverse open-objs)))
+          ;; Position to goto is non nil because ps-opens is non nil
           (goto-char (cp--Open-position (car open-objs-reversed)))
-          (let ((downward-i open-objs-reversed)
-                (upward-i nil))
-            (while downward-i
-              (cp--line-check-opens upward-i)
-              (while (and downward-i
-                          (< (cp--Open-position (car downward-i))
-                             (point)))
-                (push (pop downward-i)
-                      upward-i)))
-            (while (and upward-i
-                        (cp--Open-close (car upward-i)))
-              (cp--line-check-opens upward-i)
-              (while (and upward-i
-                          (< (cp--Open-close (car upward-i))
-                             (point)))
-                (pop upward-i))))))
+          (cp--region-check-opens open-objs-reversed
+                                  nil
+                                  (point-min)
+                                  (point-max))))
       (goto-char start)
       (push (current-time) timing-info)
       (let* (;; Sparse vector of open paren data, indexed by position in
@@ -372,17 +412,18 @@ line or EOB."""
              (open-paren-table (make-vector (- end start) nil)))
         (push (current-time) timing-info)
         (while (< (point) end)
-          (let (;; Column at which text starts on the line, except if
+          (let ((indent-pos (progn (back-to-indentation)
+                                   (point)))
+                ;; Column at which text starts on the line, except if
                 ;; inside a string. Text doesn't start in a comment,
                 ;; since ; is text.
-                (indent-column (progn (back-to-indentation)
-                                      (current-column)))
+                (indent-column (current-column))
                 (line-ppss (syntax-ppss))
-                (line-end (save-excursion (end-of-line)
-                                          (point))))
+                (line-end (progn (end-of-line)
+                                 (point))))
             ;; Skip whitespace only lines and lines beginning inside
             ;; string
-            (unless (or (eq (point) line-end)
+            (unless (or (eq indent-pos line-end)
                         (nth 3 line-ppss))
               ;; Iterate over list of unclosed open parens
               (dolist (open-pos (nth 9 line-ppss))
@@ -393,7 +434,8 @@ line or EOB."""
                                       (progn
                                         (push (make-cp--Open
                                                :position open-pos
-                                               :column (save-excursion
+                                               ;; TODO: move init of close to here
+                                               :column (progn
                                                          (goto-char open-pos)
                                                          (current-column)))
                                               open-objs)
@@ -413,36 +455,27 @@ line or EOB."""
               (open-obj-list nil))
           (dolist (ps-open-i ps-opens)
             (when (<= start ps-open-i)
-              (let ((open-i (or (aref open-paren-table
-                                      (- ps-open-i start))
-                                ;; TODO: Duplicates above
-                                (progn
-                                  (push (make-cp--Open
-                                         :position ps-open-i
-                                         :column (save-excursion
-                                                   (goto-char ps-open-i)
-                                                   (current-column)))
-                                        open-objs)
-                                  (aset open-paren-table
-                                        (- ps-open-i start)
-                                        (car open-objs))))))
-                ;; TODO: short circuit dolist if scan-error
-                (let ((close-pos (condition-case nil
-                                     (scan-lists (cp--Open-position open-i) 1 0)
-                                   (scan-error nil))))
-                  (when close-pos
-                    (goto-char close-pos)
-                    (setf (cp--Open-close open-i) (1- close-pos))))
-                (push open-i open-obj-list))))
+              (push (or (aref open-paren-table
+                              (- ps-open-i start))
+                        (progn
+                          (push (make-cp--Open
+                                 :position ps-open-i
+                                 :column (progn
+                                           (goto-char ps-open-i)
+                                           (current-column)))
+                                open-objs)
+                          (aset open-paren-table
+                                (- ps-open-i start)
+                                (car open-objs))))
+                    open-obj-list)))
+          (cp--set-closes open-obj-list end)
           (goto-char end)
-          (let ((upward-i open-obj-list))
-            (while (and upward-i
-                        (cp--Open-close (car upward-i)))
-              (cp--line-check-opens upward-i)
-              (while (and upward-i
-                          (< (cp--Open-close (car upward-i))
-                             (point)))
-                (pop upward-i)))))
+          ;; Check lists beginning in JIT lock's region but ending
+          ;; after it.
+          (cp--region-check-opens nil
+                                  open-obj-list
+                                  (point-min)
+                                  (point-max)))
         (push (current-time) timing-info)
         (dolist (open-i open-objs)
           ;; Set close position
