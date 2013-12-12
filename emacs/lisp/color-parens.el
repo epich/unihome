@@ -20,19 +20,6 @@
 
 ;;; Commentary:
 
-;; TODO: Options for performance improvement:
-;; : c-beginning-of-statement-1 is fontified in full 48 times
-;;   : Do what font-lock-fontify-region does to mark text fontified
-;;     : Will this prevent other jit-lock-functions including font-lock-fontify-region from doing their bit?
-;; : Skip more processing when outside JIT lock's region
-;; : Don't use parse-partial-sexp in one char increments
-;; : Instead of expanding the region JIT lock passes, process the
-;;   extended region minimally: sexp parsing is unnecessary. Parse
-;;   line by line comparing (current-column) to the subset of open
-;;   parens which extend into the region to prove they are consistent.
-;; : Instead of expanding the region after each buffer change, perhaps
-;;   just call redisplay ourselves. Maybe better overall.
-
 ;; TODO: Threshold column for `() is off.
 ;;
 ;; Consistent:
@@ -55,22 +42,14 @@
 ;;
 ;; (abc ...) are inconsistent parens because (ghi) is indented too far
 
-;; TODO: How to handle:
-;;
-;; (abc a-symbol (a-func-call "word_a
-;; word_b" (def ghi
-;;         jkl)
-;;
-;; (abc a-symbol (a-func-call "word_a
-;; word_b" (def)
-;;                            jkl))
-;;
-;; And the inputted region is only the jkl lines.
-;;
-;; Probably doesn't matter significantly, as long as it's consistent
-;; regardless of how JIT inputs the regions.
+;; TODO: Implement coloring of mismatched parens
 
-;; TODO: Implement coloring of parens with no pair at all
+;; TODO: Write tests:
+;;
+;;   ;; (abc ...) is consistent, (def ...) is inconsistent in the following:
+;;   (abc a-symbol (a-func-call "word_a
+;;   word_b" (def ghi
+;;           jkl)
 
 ;;; Code:
 
@@ -254,10 +233,6 @@ INIT-POS should arrive at its close position."
                                       ;; TODO: Set to 'mismatched
                                       nil)))))
 
-;; TODO: Try always initializing cp--Open objects with close set to
-;; see the effect on performance. On the one hand, it doesn't benefit
-;; from cp--set-closes function's optimization, but could benefit from
-;; less garbage collection.
 (defun cp-propertize-region (start end)
   (save-excursion
     (let* ((timing-info (list (current-time)))
