@@ -121,6 +121,8 @@ Zip files:
     To extract:
     7za e filename.zip
 
+flock is a nice way to synchronize in the shell. It is robust to SIGINT.
+
 System summary:
     strace -c time <cmd>
 
