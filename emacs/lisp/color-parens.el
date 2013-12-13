@@ -142,9 +142,9 @@ POSITIONS is a list of positions in the buffer to colorize."
 consistency.
 
 The inconsistent==nil elements of OPEN-STACK must have columns
-that are strictly decreasing moving towards the tail. Otherwise
-they would be inconsistent. The implementation optimizes on this
-assumption.
+that are strictly decreasing moving towards the tail (a necessary
+but not sufficient condition for being consistent). The
+implementation optimizes on this assumption.
 
 Call with point on the line being checked; puts point on the next
 line or EOB."
