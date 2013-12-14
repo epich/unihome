@@ -376,8 +376,9 @@ INIT-POS should arrive at its close position."
   ;; so it's more important to expand the start in order to get
   ;; correct redisplays.
   ;; TODO: Account for cp-inconsistency-max-lines
-  (setq jit-lock-start (or (syntax-ppss-toplevel-pos (syntax-ppss start))
-                           start)))
+  (save-excursion
+    (setq jit-lock-start (or (syntax-ppss-toplevel-pos (syntax-ppss start))
+                             start))))
 
 (define-minor-mode color-parens-mode
   "Color unbalanced parentheses and parentheses inconsistent with
