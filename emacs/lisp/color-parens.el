@@ -3,7 +3,7 @@
 ;; Copyright (C) 2013  Free Software Foundation, Inc.
 
 ;; Author: Barry O'Reilly <gundaetiapo@gmail.com>
-;; Version: 0
+;; Version: 0.1
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -19,6 +19,36 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
+
+;; Colors open and close parentheses which are inconsistent with the
+;; indentation of lines between them. This is useful for the Lisp
+;; programmer who infers a close paren's location from the open paren
+;; and indentation. The coloring serves as a warning that the
+;; indentation misleads about where the close paren is. It may also
+;; help to localize the mistake, whether due to a misindented line or
+;; a misplaced paren.
+;;
+;; As an example, consider:
+;;
+;;   (aaa (bbb "word-a
+;;   word-b" (ccc 1
+;;                2)
+;;        fff))
+;;
+;; (aaa ...) and (ccc ...) are consistent, so are not colored.
+;; (bbb ...) is inconsistent because the indentation of fff is
+;; inconsistent with the actual location of the close paren. The open
+;; and close paren are thus colored with the cp-inconsistent face.
+;; This example also shows that multi line strings don't cause an
+;; inconsistency.
+;;
+;; Currently, the package only detects close parens that are after the
+;; place indentation would predict. A planned feature is to also
+;; indicate when the close paren is before.
+;;
+;; Also planned is to show mismatched parens.
+
+;;; Code:
 
 ;; TODO: Threshold column for `() is off.
 ;;
@@ -51,10 +81,7 @@
 ;;   word-b" (def ghi
 ;;           jkl)
 
-;;; Code:
-
 (require 'cl-lib)
-(require 'my-util) ; TODO
 
 (defgroup color-parens nil
   "Color unbalanced parentheses and parentheses inconsistent with indentation."
@@ -75,29 +102,25 @@
 is inconsistent with indentation."
   :group 'color-parens-faces)
 
-;; An open paren and algorithmic data about it. Instances are placed
-;; on a stack as this packages parses a buffer region.
+;; An open paren and algorithmic data about it.
 ;;
 ;; position is the position in the buffer of the open paren
 ;;
 ;; close is one of:
-;;   - the position before the matching close paren
-;;   - the symbol "mismatched" if no matching close paren exists (TODO)
 ;;   - nil if unknown
+;;   - the position before the matching close paren
+;;   - the symbol 'mismatched if no matching close paren exists (TODO)
 ;;
 ;; column is the displayed column of the open paren in its logical
 ;; line of the buffer
 ;;
-;; inconsistent is whether the open paren's close paren is inconsistent
-;; with the indentation within the list defined by the parens.
-;;
-;;   nil means unknown
-;;
-;;   an integer means the offset from the open position at which the
-;;   first inconsistency was detected
-;;
-;; NB: There's no value for "consistent" because once it is known, the
-;; struct instance is popped and no longer used.
+;; inconsistent is whether the open paren's close paren is
+;; inconsistent with the indentation within the list defined by the
+;; parens. It is one of:
+;;   - nil if unknown or consistent
+;;   - an integer offset from the open position to the position of the
+;;     first inconsistency. This offset is also cached in the open
+;;     paren text properties for performance.
 (cl-defstruct cp--Open position close column inconsistent)
 
 (defsubst cp--line-check-opens (open-stack)
@@ -143,8 +166,9 @@ line or EOB."
 
 (defsubst cp--region-check-opens (downward-objs
                                   upward-objs)
-  "Propertize inputted parens in a region, first going down in
-sexp depth then up per the DOWNWARD-OBJS and UPWARD-OBJS.
+  "Check inputted parens in a region for inconsistency, first
+going down in sexp depth then up per the DOWNWARD-OBJS and
+UPWARD-OBJS.
 
 Point must be at the start of the region to process and will end
 up near the end.
@@ -175,7 +199,7 @@ of the next in the list."
 OPEN-OBJ-LIST is a list of cp--Open. Each must be a child of the
 next in the list. This is used to scan-lists efficiently."
   (let ((buf-pos (and open-obj-list
-                      ;; scan_lists C code tolerates buf-pos past EOB
+                      ;; scan_lists tolerates buf-pos past EOB
                       (1+ (cp--Open-position (car open-obj-list))))))
     (dolist (open-i open-obj-list)
       (when buf-pos
@@ -196,16 +220,12 @@ next in the list. This is used to scan-lists efficiently."
            ;; cp--Open objects, positions inner to outer
            (open-objs nil))
       (push (current-time) timing-info)
-      ;; Process the broader region spanned by ps-opens. We need only
-      ;; check the ps-opens themselves, not their children lying
-      ;; outside the region.
+      ;; Process the broader region spanned by ps-opens. There's no
+      ;; need to consider other children lists lying outside the
+      ;; JIT lock region.
       ;;
-      ;; Efficiency is important because of the broad region covered.
-      ;; Sexp parsing is mostly avoided, except to check whether a
-      ;; line began with a multi line string as the last check before
-      ;; marking an open paren inconsistent.
-      ;;
-      ;; Initialize cp--Open objects
+      ;; We mostly avoid sexp parsing in the broader region, except to
+      ;; check for multiline string just before setting inconsistent.
       (dolist (ps-open-i ps-opens)
         (push (make-cp--Open :position
                              ps-open-i
@@ -215,11 +235,12 @@ next in the list. This is used to scan-lists efficiently."
                                (current-column)))
               open-objs))
       (cp--set-closes open-objs)
-      ;; Filter out parens which don't need consideration outside the
-      ;; JIT lock region. The ones that do are currently inconsistent,
-      ;; and could become consistent if all its enclosed lines are
-      ;; analyzed.
       (push (current-time) timing-info)
+      ;; Filter out parens which don't need consideration outside the
+      ;; JIT lock region. The ones that do are currently fontified as
+      ;; inconsistent, and could become consistent if all its enclosed
+      ;; lines are checked. The filtering of open-objs is for
+      ;; performance and does not affect correctness.
       (setq open-objs
             (let* ((objs-head (cons nil open-objs))
                    (prev-open objs-head)
@@ -233,15 +254,17 @@ next in the list. This is used to scan-lists efficiently."
                              (+ (cp--Open-position (car open-i))
                                 inconsistency-offset))))
                   (if (or (not inconsistency-pos)
-                          ;; Spot check inconsistent parens to
-                          ;; possibly avoid analyzing more
-                          ;; thoroughly in cp--region-check-opens.
+                          ;; Spot check using the cached offset to
+                          ;; possibly avoid a complete check in
+                          ;; cp--region-check-opens.
                           ;;
                           ;; Because of buffer changes,
                           ;; inconsistency-pos is not necessarily
                           ;; the original. Just do a valid check.
-                          (and (< (cp--Open-position (car open-i)) inconsistency-pos)
-                               (<= inconsistency-pos (cp--Open-close (car open-i)))
+                          (and (< (cp--Open-position (car open-i))
+                                  inconsistency-pos)
+                               (<= inconsistency-pos
+                                   (cp--Open-close (car open-i)))
                                (progn
                                  (goto-char inconsistency-pos)
                                  (cp--line-check-opens (list (car open-i)))
@@ -256,22 +279,21 @@ next in the list. This is used to scan-lists efficiently."
         ;; Check lists beginning before JIT lock's region (could
         ;; scan to after JIT lock's region)
         (let ((open-objs-reversed (reverse open-objs)))
-          ;; Position to goto is non nil because ps-opens is non nil
           (goto-char (cp--Open-position (car open-objs-reversed)))
           (cp--region-check-opens open-objs-reversed
                                   nil)))
-      (goto-char start)
       (push (current-time) timing-info)
-      (let* (;; Sparse vector of open paren data, indexed by position in
-             ;; buffer minus start. The purpose is speed.
+      (goto-char start)
+      ;; Process within the inputted JIT lock region
+      (let* (;; Sparse vector of open paren data, indexed by position
+             ;; in buffer minus start. This benchmarked better than
+             ;; keeping a stack of cp--Open objects updated from the
+             ;; parse states of syntax-ppss.
              (open-paren-table (make-vector (- end start) nil)))
-        (push (current-time) timing-info)
         (while (< (point) end)
           (let ((indent-pos (progn (back-to-indentation)
                                    (point)))
-                ;; Column at which text starts on the line, except if
-                ;; inside a string. Text doesn't start in a comment,
-                ;; since ; is text.
+                ;; Column at which text starts on the line
                 (indent-column (current-column))
                 (line-ppss (syntax-ppss))
                 (line-end (progn (end-of-line)
@@ -302,8 +324,9 @@ next in the list. This is used to scan-lists efficiently."
                             (- indent-pos (cp--Open-position open-obj))))))))
             ;; Go to next line. Since we already know line-end, use it
             ;; instead of rescanning the line
-            (goto-char (min (1+ line-end) (point-max)))))
+            (goto-char (1+ line-end))))
         (push (current-time) timing-info)
+        ;; Process parens beginning in the JIT lock region but extending after
         (let ((ps-opens (nth 9 (syntax-ppss end)))
               ;; Inner to outer going towards the tail
               (open-obj-list nil))
@@ -311,6 +334,9 @@ next in the list. This is used to scan-lists efficiently."
             (when (<= start ps-open-i)
               (push (or (aref open-paren-table
                               (- ps-open-i start))
+                        ;; Open parens on the last line of the JIT
+                        ;; lock region don't have a cp--Open object
+                        ;; created yet.
                         (progn
                           (push (make-cp--Open
                                  :position ps-open-i
@@ -324,10 +350,7 @@ next in the list. This is used to scan-lists efficiently."
                     open-obj-list)))
           (cp--set-closes open-obj-list)
           (goto-char end)
-          ;; Check lists beginning in JIT lock's region but ending
-          ;; after it.
-          (cp--region-check-opens nil
-                                  open-obj-list))
+          (cp--region-check-opens nil open-obj-list))
         (push (current-time) timing-info)
         (dolist (open-i open-objs)
           ;; Set close position
