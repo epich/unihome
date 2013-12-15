@@ -138,10 +138,8 @@ line or EOB."
     ;; Go to next line. Since we already know line-end, use it
     ;; instead of rescanning the line
     ;;
-    ;; TODO: Better account for EOB, mark remaining
-    ;; open-objs mismatched as appropriate.
-    ;; TODO: Move out of this function?
-    (goto-char (min (1+ line-end) (point-max)))))
+    ;; goto-char tolerates going beyond EOB
+    (goto-char (1+ line-end))))
 
 (defsubst cp--region-check-opens (downward-objs
                                   upward-objs)
@@ -176,8 +174,8 @@ of the next in the list."
 
 OPEN-OBJ-LIST is a list of cp--Open. Each must be a child of the
 next in the list. This is used to scan-lists efficiently."
-  ;; TODO: What if open paren is last in buffer?
   (let ((buf-pos (and open-obj-list
+                      ;; scan_lists C code tolerates buf-pos past EOB
                       (1+ (cp--Open-position (car open-obj-list))))))
     (dolist (open-i open-obj-list)
       (when buf-pos
