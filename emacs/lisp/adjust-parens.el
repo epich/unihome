@@ -313,7 +313,8 @@ Binding to <backtab> (ie Shift-Tab) is a sensible choice."
            #'adjust-close-paren-for-indent
          'adjust-close-paren-for-dedent)
        (and parg (abs parg)))
-    nil))
+    ;; Possibly not the best thing to do, but it's good for usability
+    (indent-for-tab-command parg)))
 
 (defgroup adjust-parens nil
   "Indent and dedent Lisp code, automatically adjust close parens."
