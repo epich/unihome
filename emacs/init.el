@@ -41,7 +41,7 @@
        (electric-pair-mode 0)))
 
 ;; Load my stuff
-(add-to-list 'load-path "~/unihome/emacs/my")
+(push "~/unihome/emacs/my" load-path)
 (require 'my-util)
 
 (my-toggle-fullscreen)
@@ -51,16 +51,20 @@
 
 ;;; File associations
 ;;
-(add-to-list 'auto-mode-alist '("README.*" . text-mode))
+(push '("README.*" . text-mode) auto-mode-alist)
 ;; Ruby rake build files
-(add-to-list 'auto-mode-alist '("\\.clj" . lisp-mode))
-(add-to-list 'auto-mode-alist '("Rakefile" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.rkt" . scheme-mode))
-(add-to-list 'auto-mode-alist '("wscript" . python-mode))
+(push '("\\.clj" . lisp-mode) auto-mode-alist)
+(push '("Rakefile" . ruby-mode) auto-mode-alist)
+(push '("\\.rkt" . scheme-mode) auto-mode-alist)
+(push '("wscript" . python-mode) auto-mode-alist)
 
 (my-msg "Initializing third party lisp. ")
-(add-to-list 'load-path "~/unihome/emacs/lisp")
+(package-initialize)
+(push "~/unihome/emacs/lisp" load-path)
 (require 'adjust-parens)
+(ignore-errors (require 'diff-hl))
+(when (featurep 'diff-hl)
+  (global-diff-hl-mode))
 (add-hook 'emacs-lisp-mode-hook #'adjust-parens-mode)
 (require 'color-parens)
 (add-hook 'emacs-lisp-mode-hook #'color-parens-mode)
@@ -80,7 +84,7 @@
 
 ;;; Evil
 (my-msg "Initializing Evil.")
-(add-to-list 'load-path "~/unihome/emacs/evil")
+(push "~/unihome/emacs/evil" load-path)
 (require 'evil)
 (evil-mode 1)
 
@@ -125,7 +129,7 @@
   "Whether to use JDEE. ")
 (when my-use-jdee
   (my-msg "Initializing JDEE.")
-  (add-to-list 'load-path (format "%s/dist/jdee-2.4.1/lisp" my-jdee-path))
+  (push (format "%s/dist/jdee-2.4.1/lisp" my-jdee-path) load-path)
   (require 'jde)
   (autoload 'jde-mode "jde" "JDE mode." t)
   (setq auto-mode-alist
