@@ -57,6 +57,9 @@ Unreserve checkout:
 Merge arrow:
     cleartool mkhlink -unidir Merge FROM_VERSION TO_VERSION
 
+Generate unified diff:
+    cleartool find . -type f -branch "brtype(nc_pm_mag_swit01)" -exec 'cleartool get -to $CLEARCASE_PN.prev `echo $CLEARCASE_XPN | sed "s/nc_pm_mag_swit01/LATEST/"`; diff -u $CLEARCASE_PN.prev $CLEARCASE_PN; rm -f $CLEARCASE_PN.prev' > ~/nc_pm_mag_swit01.diff
+
 Undo bad merge:
     Example:
     ct find . -type f -branch 'version(.../tmcleod_pm_r1a_ptr8030/LATEST) && merge(.../lex_pm_r1a_int, .../tmcleod_pm_r1a_ptr8030) && created_since(22-Oct-2013)' -exec '/opt/ibm/RationalSDLC/clearcase/linux_x86/bin/cleartool rmbranch -f $CLEARCASE_XPN'
