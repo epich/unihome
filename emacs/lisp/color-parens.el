@@ -50,20 +50,6 @@
 
 ;;; Code:
 
-;; TODO: Threshold column for `() is off.
-;;
-;; Consistent:
-;;   `()
-;;    foo
-;;
-;; Inconsistent:
-;;   `()
-;;   foo
-;;
-;; (But font lock is on the open paren, not the backtick)
-;;
-;; Similarly, ,@() is off by two
-
 ;; TODO: Algorithm doesn't account for close paren which is too soon.
 ;;
 ;; (abc
@@ -73,6 +59,43 @@
 ;; (abc ...) are inconsistent parens because (ghi) is indented too far
 
 ;; TODO: Implement coloring of mismatched parens
+
+;; TODO: Bug:
+;;
+;;   (when (and t
+;;         nil))
+;;
+;; (and ...) is colored inconsistent correctly, but then add close paren:
+;;
+;;   (when (and t)
+;;         nil))
+;;
+;; (and ...)'s open remains colored incorrectly, but the close was cleared.
+;;
+;; A problematic variation: '(a (b)' (a ...) inconsistent, but delete
+;; so as '(a b)'.
+;;
+;; Another problematic variation with close parens: '(a ...)'
+;; inconsistent, edit so as: '(a ...()', close paren remains
+;; inconsistent incorrectly.
+;;
+;; Possible solution to these: Write a function to clear the text
+;; property from:
+;;
+;;   - open parens in the JIT lock region
+;;   - close parens in the JIT lock region and whose open is also*
+;;
+;; (Couldn't think of a case where the text property needs clearing
+;; outside the JIT lock region.)
+;;
+;; * Determining whether a close's open is in the region could be
+;; inefficient. An alternative is to clear these text properties in
+;; the JIT lock region first, then when when processing the broader
+;; region, refontify the close parens based on the open parens.
+;;
+;; Also use the new function when turning minor mode off.
+;;
+;; (skip-syntax-forward "^()" end) looks useful
 
 ;; TODO: Write tests:
 ;;
@@ -224,8 +247,9 @@ next in the list. This is used to scan-lists efficiently."
       ;; need to consider other children lists lying outside the
       ;; JIT lock region.
       ;;
-      ;; We mostly avoid sexp parsing in the broader region, except to
-      ;; check for multiline string just before setting inconsistent.
+      ;; We mostly avoid further sexp parsing in the broader region,
+      ;; except to check for multiline string just before setting
+      ;; inconsistent.
       (dolist (ps-open-i ps-opens)
         (push (make-cp--Open :position
                              ps-open-i
@@ -240,7 +264,7 @@ next in the list. This is used to scan-lists efficiently."
       ;; JIT lock region. The ones that do are currently fontified as
       ;; inconsistent, and could become consistent if all its enclosed
       ;; lines are checked. The filtering of open-objs is for
-      ;; performance and does not affect correctness.
+      ;; performance.
       (setq open-objs
             (let* ((objs-head (cons nil open-objs))
                    (prev-open objs-head)
