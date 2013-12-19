@@ -53,12 +53,9 @@ class ShellCmdError(GeneralError):
    pass
 
 class FdReader(threading.Thread):
-   """Reads the readFd file descriptor in a thread and prints it to stdout if specified.
-
-   Reading the same stdout which printLines==True would write to is not supported usage.
-   Reading a child process's stdout creates no issue however.
+   """Reads a system FD (file descriptor) in a thread and optionally prints it to stdout.
    """
-   
+
    def __init__(s, readFd, printLines):
       """Initialize data and initialize the thread super class.
       
@@ -70,7 +67,9 @@ class FdReader(threading.Thread):
       threading.Thread.__init__(s)
       s.readFd = readFd
       s.printLines = printLines
-      s.outBuf = ''
+      # List of strings which are concatenated to get the full output
+      # from reading readFd
+      s.outBuf = []
    
    def run(s):
       """Run the thread, which exits when the FD closes."""
@@ -78,11 +77,14 @@ class FdReader(threading.Thread):
       while True:
          readLine = s.readFd.readline()
          if not readLine: break
-         s.outBuf += readLine
+         s.outBuf.append(readLine)
          if s.printLines: print readLine,
          time.sleep(0)
 
-def cmd(cmdStr, shellStr='sh', background=False, printStdout=False, printStderr=False, printDebug=False):
+   def getOutput(s):
+      return ''.join(s.outBuf)
+
+def cmd(cmdStr, shellStr='sh', background=False, printStdout=False, printStderr=False, printDebug=False, ignoreReturnCode=False):
    """Issue a shell command
 
    If background is False (the default), the stdout is returned from this function after
@@ -99,6 +101,8 @@ def cmd(cmdStr, shellStr='sh', background=False, printStdout=False, printStderr=
    printStderr -- whether to print the stderr.
    printDebug -- whether to print internal debugging information, including 
    the command issued and its timing.
+   ignoreReturnCode -- True means ignore the return code and return the stdout,
+                    False means throw an exception if return code is not 0.
    """
 
    if printDebug:
@@ -125,18 +129,19 @@ def cmd(cmdStr, shellStr='sh', background=False, printStdout=False, printStderr=
       return None
    for readerI in fdReaders.values():
       readerI.join()
-   (out, err) = (fdReaders['stdout'].outBuf, fdReaders['stderr'].outBuf)
+   # If we don't wait, returncode was observed to not be up to date.
+   childSh.wait()
 
    if printDebug:
       print('Completed in %f seconds.' % (time.time()-startTime))
 
-   # If we don't wait, returncode may not be up to date.
-   childSh.wait()
-      
-   if childSh.returncode!=None and childSh.returncode!=0:
-      raise ShellCmdError('Shell command failed with errno:%s cmd:%s stderr:%s' % (childSh.returncode,cmdStr,err))
-      
-   return out
+   if childSh.returncode!=None and childSh.returncode!=0 and not ignoreReturnCode:
+      raise ShellCmdError('Shell command failed with errno:%s cmd:%s stderr:%s' % (
+         childSh.returncode,
+         cmdStr,
+         fdReaders['stderr'].getOutput()))
+
+   return fdReaders['stdout'].getOutput()
 
 def sourceBash(bashFile):
    """Source a Bash file and set its environment variables in the Python environment.
