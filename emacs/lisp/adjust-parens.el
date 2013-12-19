@@ -284,9 +284,17 @@ moved."
   (back-to-indentation)
   t)
 
+(defcustom adjust-parens-fallback-indent-function 'indent-for-tab-command
+  "The function to call with prefix arg instead of
+adjust-parens-and-indent when adjust-parens-p returns false."
+  :type 'function
+  :group 'adjust-parens)
 (defun lisp-indent-adjust-parens (&optional parg)
   "Indent Lisp code to the next level while adjusting sexp balanced
 expressions to be consistent.
+
+Returns t if adjust-parens changed the buffer, else returns the
+result of calling adjust-parens-fallback-indent-function.
 
 This command can be bound to TAB instead of indent-for-tab-command. It
 potentially calls the latter."
@@ -297,13 +305,19 @@ potentially calls the latter."
            #'adjust-close-paren-for-dedent
          #'adjust-close-paren-for-indent)
        (and parg (abs parg)))
-    (indent-for-tab-command parg)))
+    (funcall adjust-parens-fallback-indent-function parg)))
 
+(defcustom adjust-parens-fallback-dedent-function 'indent-for-tab-command
+  "The function to call with prefix arg instead of
+adjust-parens-and-indent when adjust-parens-p returns false."
+  :type 'function
+  :group 'adjust-parens)
 (defun lisp-dedent-adjust-parens (&optional parg)
   "Dedent Lisp code to the previous level while adjusting sexp
 balanced expressions to be consistent.
 
-Returns t iff this function changed the buffer.
+Returns t if adjust-parens changed the buffer, else returns the
+result of calling adjust-parens-fallback-dedent-function.
 
 Binding to <backtab> (ie Shift-Tab) is a sensible choice."
   (interactive "p")
@@ -313,7 +327,7 @@ Binding to <backtab> (ie Shift-Tab) is a sensible choice."
            #'adjust-close-paren-for-indent
          'adjust-close-paren-for-dedent)
        (and parg (abs parg)))
-    nil))
+    (funcall adjust-parens-fallback-dedent-function parg)))
 
 (defgroup adjust-parens nil
   "Indent and dedent Lisp code, automatically adjust close parens."
