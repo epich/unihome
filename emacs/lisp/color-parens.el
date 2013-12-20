@@ -406,12 +406,9 @@ next in the list. This is used to scan-lists efficiently."
                                            t))
                   (remove-text-properties pos-i
                                           (1+ pos-i)
-                                          '(cp-inconsistency
-                                            nil
-                                            font-lock-face
-                                            nil
-                                            rear-nonsticky
-                                            nil)))))))
+                                          '(cp-inconsistency nil
+                                            font-lock-face nil
+                                            rear-nonsticky nil)))))))
         (push (current-time) timing-info)
         ;; (my-msg "cp-color-parens start=%s end=%s timing: %s"
         ;;         start end
