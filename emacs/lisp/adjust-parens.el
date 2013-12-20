@@ -325,7 +325,7 @@ Binding to <backtab> (ie Shift-Tab) is a sensible choice."
       (adjust-parens-and-indent
        (if (and parg (< parg 0))
            #'adjust-close-paren-for-indent
-         'adjust-close-paren-for-dedent)
+         #'adjust-close-paren-for-dedent)
        (and parg (abs parg)))
     (funcall adjust-parens-fallback-dedent-function parg)))
 

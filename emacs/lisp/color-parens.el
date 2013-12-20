@@ -79,8 +79,8 @@
 ;; inconsistent, edit so as: '(a ...()', close paren remains
 ;; inconsistent incorrectly.
 ;;
-;; Possible solution to these: Write a function to clear the text
-;; property from:
+;; Possible solution to these: Use cp-unpropertize-region to clear the
+;; text properties from:
 ;;
 ;;   - open parens in the JIT lock region
 ;;   - close parens in the JIT lock region and whose open is also*
@@ -90,12 +90,8 @@
 ;;
 ;; * Determining whether a close's open is in the region could be
 ;; inefficient. An alternative is to clear these text properties in
-;; the JIT lock region first, then when when processing the broader
-;; region, refontify the close parens based on the open parens.
-;;
-;; Also use the new function when turning minor mode off.
-;;
-;; (skip-syntax-forward "^()" end) looks useful
+;; the JIT lock region first, then when processing the broader region,
+;; refontify the close parens based on the open parens.
 
 ;; TODO: Consider not adding cp-inconsistency text property to the
 ;; close paren. It doesn't need to be there, and the above makes it
@@ -419,9 +415,20 @@ next in the list. This is used to scan-lists efficiently."
         ;;         (my-time-diffs (nreverse timing-info)))
         ))))
 
-(defun color-parens-unpropertize-region (start end)
-  ;; TODO: remove-text-properties
-  )
+(defun cp-unpropertize-region (start end)
+  (goto-char start)
+  ;; remove-text-properties errors if (1+ (point)) is past EOB, so
+  ;; adjust end
+  (let ((end (min (1- (point-max))
+                  end)))
+    (while (< (point) end)
+      (skip-syntax-forward "^()" end)
+      (remove-text-properties (point)
+                              (1+ (point))
+                              '(cp-inconsistency nil
+                                font-lock-face nil
+                                rear-nonsticky nil))
+      (forward-char 1))))
 
 (defsubst color-parens-extend-region-after-change (start end _old-len)
   ;; It seems redisplay works its way from before start to after end,
@@ -440,12 +447,15 @@ next in the list. This is used to scan-lists efficiently."
       (progn
         (jit-lock-register 'cp-propertize-region t)
         (add-hook 'jit-lock-after-change-extend-region-functions
-                  'color-parens-extend-region-after-change
+                  #'color-parens-extend-region-after-change
                   nil
                   t))
-    ;; TODO: Remove from jit-lock-after-change-extend-region-functions
+    (remove-hook 'jit-lock-after-change-extend-region-functions
+                 #'color-parens-extend-region-after-change
+                 t)
     (jit-lock-unregister 'cp-propertize-region)
-    (color-parens-unpropertize-region (point-min) (point-max))))
+    (save-excursion
+      (cp-unpropertize-region (point-min) (point-max)))))
 
 (provide 'color-parens)
 
