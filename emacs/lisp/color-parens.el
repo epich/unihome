@@ -97,6 +97,10 @@
 ;;
 ;; (skip-syntax-forward "^()" end) looks useful
 
+;; TODO: Consider not adding cp-inconsistency text property to the
+;; close paren. It doesn't need to be there, and the above makes it
+;; churn slightly more than the open paren.
+
 ;; TODO: Write tests:
 ;;
 ;;   ;; (abc ...) is consistent, (def ...) is inconsistent in the following:
