@@ -76,17 +76,16 @@
 ;; (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
 ;; (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
 
-;;; Undo Tree
-(defvar my-use-undo-tree t)
-(when my-use-undo-tree
-  (my-msg "Initializing Undo Tree. ")
-  (require 'undo-tree))
-
 ;;; Evil
 (my-msg "Initializing Evil.")
 (push "~/unihome/emacs/evil" load-path)
 (require 'evil)
 (evil-mode 1)
+
+;;; Undo Tree
+(my-msg "Initializing Undo Tree. ")
+(require 'undo-tree)
+(global-undo-tree-mode 1)
 
 ;;; Initialize CEDET
 ;;;
