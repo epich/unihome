@@ -20,13 +20,16 @@
 
 ;;; Commentary:
 
-;; Colors open and close parentheses which are inconsistent with the
-;; indentation of lines between them. This is useful for the Lisp
-;; programmer who infers a close paren's location from the open paren
-;; and indentation. The coloring serves as a warning that the
-;; indentation misleads about where the close paren is. It may also
-;; help to localize the mistake, whether due to a misindented line or
-;; a misplaced paren.
+;; Colors mismatched parens with cp-mismatched-face (red by default).
+;;
+;; Also colors open and close parentheses which are inconsistent with
+;; the indentation of lines between them with cp-inconsistent-face
+;; (yellow by default). This is useful for the Lisp programmer who
+;; infers a close paren's location from the open paren and
+;; indentation. The coloring serves as a warning that the indentation
+;; misleads about where the close paren is. It may also help to
+;; localize the mistake, whether due to a misindented line or a
+;; misplaced paren.
 ;;
 ;; As an example, consider:
 ;;
@@ -38,17 +41,18 @@
 ;; (aaa ...) and (ccc ...) are consistent, so are not colored.
 ;; (bbb ...) is inconsistent because the indentation of fff is
 ;; inconsistent with the actual location of the close paren. The open
-;; and close paren are thus colored with the cp-inconsistent face.
+;; and close paren are thus colored with the cp-inconsistent-face.
 ;; This example also shows that multi line strings don't cause an
 ;; inconsistency.
 ;;
 ;; Currently, the package only detects close parens that are after the
 ;; place indentation would predict. A planned feature is to also
 ;; indicate when the close paren is before.
-;;
-;; Also planned is to show mismatched parens.
 
 ;;; Code:
+
+;; TODO: There are display problems with mismatched parens. Region
+;; doesn't expand enough, apparent syntax-ppss problem.
 
 ;; TODO: Algorithm doesn't account for close paren which is too soon.
 ;;
@@ -57,8 +61,6 @@
 ;;   (ghi)
 ;;
 ;; (abc ...) are inconsistent parens because (ghi) is indented too far
-
-;; TODO: Implement coloring of mismatched parens
 
 ;; TODO: Bug:
 ;;
@@ -116,13 +118,21 @@
   :group 'color-parens
   :group 'faces)
 
-(defface cp-inconsistent
+(defface cp-inconsistent-face
   '((((class color) (background light))
      :foreground "dark orange")
     (((class color) (background dark))
      :foreground "orange"))
-  "Face to use for matching open and close parens whose placement
+  "Face applied to matching open and close parens whose placement
 is inconsistent with indentation."
+  :group 'color-parens-faces)
+
+(defface cp-mismatched-face
+  '((((class color) (background light))
+     :foreground "dark red")
+    (((class color) (background dark))
+     :foreground "red"))
+  "Face applied to a paren who has no match."
   :group 'color-parens-faces)
 
 ;; An open paren and algorithmic data about it.
@@ -132,7 +142,7 @@ is inconsistent with indentation."
 ;; close is one of:
 ;;   - nil if unknown
 ;;   - the position before the matching close paren
-;;   - the symbol 'mismatched if no matching close paren exists (TODO)
+;;   - the symbol 'mismatched if no matching close paren exists
 ;;
 ;; column is the displayed column of the open paren in its logical
 ;; line of the buffer
@@ -209,9 +219,10 @@ of the next in the list."
       (push (pop downward-objs)
             upward-objs)))
   (while (and upward-objs
-              (cp--Open-close (car upward-objs)))
+              (number-or-marker-p (cp--Open-close (car upward-objs))))
     (cp--line-check-opens upward-objs)
     (while (and upward-objs
+                (number-or-marker-p (cp--Open-close (car upward-objs)))
                 (< (cp--Open-close (car upward-objs))
                    (point)))
       (pop upward-objs))))
@@ -231,8 +242,7 @@ next in the list. This is used to scan-lists efficiently."
                         (scan-error nil))))
       (setf (cp--Open-close open-i) (if buf-pos
                                         (1- buf-pos)
-                                      ;; TODO: Set to 'mismatched
-                                      nil)))))
+                                      'mismatched)))))
 
 (defun cp-propertize-region (start end)
   (save-excursion
@@ -287,6 +297,7 @@ next in the list. This is used to scan-lists efficiently."
                           ;; the original. Just do a valid check.
                           (and (< (cp--Open-position (car open-i))
                                   inconsistency-pos)
+                               (number-or-marker-p (cp--Open-close (car open-i)))
                                (<= inconsistency-pos
                                    (cp--Open-close (car open-i)))
                                (progn
@@ -388,27 +399,32 @@ next in the list. This is used to scan-lists efficiently."
             (setf (cp--Open-close open-i)
                   (condition-case nil
                       (1- (scan-lists (cp--Open-position open-i) 1 0))
-                    ;; TODO: Set to 'mismatched
-                    (scan-error nil))))
+                    (scan-error 'mismatched))))
           ;; Apply the font color via text properties
           (with-silent-modifications
-            (dolist (pos-i (list (cp--Open-position open-i)
-                                 (cp--Open-close open-i)))
-              (when pos-i ; TODO: handle mismatched
+            (if (eq 'mismatched (cp--Open-close open-i))
+                (add-text-properties (cp--Open-position open-i)
+                                     (1+ (cp--Open-position open-i))
+                                     `(font-lock-face
+                                       cp-mismatched-face
+                                       rear-nonsticky
+                                       t))
+              (dolist (pos-i (list (cp--Open-position open-i)
+                                   (cp--Open-close open-i)))
                 (if (cp--Open-inconsistent open-i)
                     (add-text-properties pos-i
                                          (1+ pos-i)
                                          `(cp-inconsistency
                                            ,(cp--Open-inconsistent open-i)
                                            font-lock-face
-                                           cp-inconsistent
+                                           cp-inconsistent-face
                                            rear-nonsticky
                                            t))
                   (remove-text-properties pos-i
                                           (1+ pos-i)
                                           '(cp-inconsistency nil
-                                            font-lock-face nil
-                                            rear-nonsticky nil)))))))
+                                                             font-lock-face nil
+                                                             rear-nonsticky nil)))))))
         (push (current-time) timing-info)
         ;; (my-msg "cp-color-parens start=%s end=%s timing: %s"
         ;;         start end
@@ -437,7 +453,7 @@ next in the list. This is used to scan-lists efficiently."
   (save-excursion
     (setq jit-lock-start
           (or (syntax-ppss-toplevel-pos (syntax-ppss start))
-                             start))))
+              start))))
 
 (define-minor-mode color-parens-mode
   "Color unbalanced parentheses and parentheses inconsistent with
