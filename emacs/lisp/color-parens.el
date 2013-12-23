@@ -20,11 +20,12 @@
 
 ;;; Commentary:
 
-;; Colors mismatched parens with cp-mismatched-face (red by default).
+;; Colors mismatched open parentheses with cp-mismatched-face, red by
+;; default.
 ;;
 ;; Also colors open and close parentheses which are inconsistent with
-;; the indentation of lines between them with cp-inconsistent-face
-;; (yellow by default). This is useful for the Lisp programmer who
+;; the indentation of lines between them with cp-inconsistent-face,
+;; yellow by default. This is useful for the Lisp programmer who
 ;; infers a close paren's location from the open paren and
 ;; indentation. The coloring serves as a warning that the indentation
 ;; misleads about where the close paren is. It may also help to
@@ -48,6 +49,8 @@
 ;; Currently, the package only detects close parens that are after the
 ;; place indentation would predict. A planned feature is to also
 ;; indicate when the close paren is before.
+;;
+;; Also planned is to color mismatched close parens.
 
 ;;; Code:
 
@@ -62,45 +65,24 @@
 ;;
 ;; (abc ...) are inconsistent parens because (ghi) is indented too far
 
-;; TODO: Bug:
-;;
-;;   (when (and t
-;;         nil))
-;;
-;; (and ...) is colored inconsistent correctly, but then add close paren:
-;;
-;;   (when (and t)
-;;         nil))
-;;
-;; (and ...)'s open remains colored incorrectly, but the close was cleared.
-;;
-;; A problematic variation: '(a (b)' (a ...) inconsistent, but delete
-;; so as '(a b)'.
-;;
-;; Another problematic variation with close parens: '(a ...)'
-;; inconsistent, edit so as: '(a ...()', close paren remains
-;; inconsistent incorrectly.
-;;
-;; Possible solution to these: Use cp-unpropertize-region to clear the
-;; text properties from:
-;;
-;;   - open parens in the JIT lock region
-;;   - close parens in the JIT lock region and whose open is also*
-;;
-;; (Couldn't think of a case where the text property needs clearing
-;; outside the JIT lock region.)
-;;
-;; * Determining whether a close's open is in the region could be
-;; inefficient. An alternative is to clear these text properties in
-;; the JIT lock region first, then when processing the broader region,
-;; refontify the close parens based on the open parens.
+;; TODO: implement mismatched close parens
 
 ;; TODO: Write tests:
 ;;
-;;   ;; (abc ...) is consistent, (def ...) is inconsistent in the following:
+;;   ;; Expect (abc ...) is consistent, (def ...) is inconsistent:
 ;;   (abc a-symbol (a-func-call "word-a
 ;;   word-b" (def ghi
 ;;           jkl)
+;;
+;;   ;; Expect (when ...) is inconsistent:
+;;   (when (and t
+;;         nil))
+;;   ;; After change, expect (when ...) is consistent and last paren mismatched:
+;;   (when (and t)
+;;         nil))
+;;
+;;   Given (a ...) inconsistent, change to (a ...(), and verify close
+;;   paren is consistent.
 
 (require 'cl-lib)
 
@@ -151,6 +133,23 @@ is inconsistent with indentation."
 ;;     first inconsistency. This offset is also cached in the open
 ;;     paren text properties for performance.
 (cl-defstruct cp--Open position close column inconsistent)
+
+(defsubst cp--colorize-inconsistent (open-obj)
+  "Colorize the cp--Open OPEN-OBJ as inconsistent."
+  (add-text-properties (cp--Open-position open-obj)
+                       (1+ (cp--Open-position open-obj))
+                       `(cp-inconsistency
+                         ,(cp--Open-inconsistent open-obj)
+                         font-lock-face
+                         cp-inconsistent-face
+                         rear-nonsticky
+                         t))
+  (add-text-properties (cp--Open-close open-obj)
+                       (1+ (cp--Open-close open-obj))
+                       `(font-lock-face
+                         cp-inconsistent-face
+                         rear-nonsticky
+                         t)))
 
 (defsubst cp--line-check-opens (open-stack)
   "Check cp--Open objects of the OPEN-STACK list for
@@ -245,6 +244,10 @@ next in the list. This is used to scan-lists efficiently."
 
 (defun cp-propertize-region (start end)
   (save-excursion
+    ;; In order to correctly remove faces from parens that changed
+    ;; from multiline to uniline, we clear them in the JIT lock region
+    ;; to start with.
+    (cp-unpropertize-region start end)
     (let* ((timing-info (list (current-time)))
            (start-ps (syntax-ppss start))
            ;; Open positions, outer to inner
@@ -313,7 +316,10 @@ next in the list. This is used to scan-lists efficiently."
                                (progn
                                  (goto-char inconsistency-pos)
                                  (cp--line-check-opens (list (car open-i)))
-                                 (cp--Open-inconsistent (car open-i)))))
+                                 (when (cp--Open-inconsistent (car open-i))
+                                   ;; Close paren's face was cleared
+                                   (cp--colorize-inconsistent (car open-i))
+                                   t))))
                       ;; Remove (car open-i) from list
                       (setcdr prev-open (cdr open-i))
                     (pop prev-open))
@@ -432,21 +438,7 @@ next in the list. This is used to scan-lists efficiently."
                                        rear-nonsticky
                                        t))
               (if (cp--Open-inconsistent open-i)
-                  (progn
-                    (add-text-properties (cp--Open-position open-i)
-                                         (1+ (cp--Open-position open-i))
-                                         `(cp-inconsistency
-                                           ,(cp--Open-inconsistent open-i)
-                                           font-lock-face
-                                           cp-inconsistent-face
-                                           rear-nonsticky
-                                           t))
-                    (add-text-properties (cp--Open-close open-i)
-                                         (1+ (cp--Open-close open-i))
-                                         `(font-lock-face
-                                           cp-inconsistent-face
-                                           rear-nonsticky
-                                           t)))
+                  (cp--colorize-inconsistent open-i)
                 (dolist (pos-i (list (cp--Open-position open-i)
                                      (cp--Open-close open-i)))
                   (remove-text-properties pos-i
