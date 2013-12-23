@@ -232,6 +232,9 @@ of the next in the list."
 
 OPEN-OBJ-LIST is a list of cp--Open. Each must be a child of the
 next in the list. This is used to scan-lists efficiently."
+  ;; Note: Because cp--Open-position values come from (nth 9
+  ;; (syntax-ppss)), we know they are not inside a string or comment.
+  ;; Thus buf-pos inits to a valid position to start scan-lists from.
   (let ((buf-pos (and open-obj-list
                       ;; scan_lists tolerates buf-pos past EOB
                       (1+ (cp--Open-position (car open-obj-list))))))
