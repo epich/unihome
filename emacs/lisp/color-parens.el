@@ -268,7 +268,6 @@ next in the list. This is used to scan-lists efficiently."
                                (goto-char ps-open-i)
                                (current-column)))
               open-objs))
-      (cp--set-closes open-objs)
       (push (current-time) timing-info)
       ;; Filter out parens which don't need consideration outside the
       ;; JIT lock region. The ones that do are currently fontified as
@@ -278,7 +277,14 @@ next in the list. This is used to scan-lists efficiently."
       (setq open-objs
             (let* ((objs-head (cons nil open-objs))
                    (prev-open objs-head)
-                   (open-i (cdr objs-head)))
+                   (open-i (cdr objs-head))
+                   ;; Whether we've called cp--set-closes
+                   ;;
+                   ;; cp--set-closes is fairly expensive when near the
+                   ;; beginning of a long Lisp function. We can avoid
+                   ;; calling it if all open-objs are propertized as
+                   ;; consistent or mismatched.
+                   (closes-set nil))
               (while open-i
                 (let* ((inconsistency-offset
                         (get-text-property (cp--Open-position (car open-i))
@@ -288,6 +294,11 @@ next in the list. This is used to scan-lists efficiently."
                              (+ (cp--Open-position (car open-i))
                                 inconsistency-offset))))
                   (if (or (not inconsistency-pos)
+                          ;; Always nil so as "or" evaluation continues
+                          (unless closes-set
+                            ;; Lazy one-time call
+                            (cp--set-closes open-objs)
+                            (not (setq closes-set t)))
                           ;; Spot check using the cached offset to
                           ;; possibly avoid a complete check in
                           ;; cp--region-check-opens.
@@ -362,6 +373,16 @@ next in the list. This is used to scan-lists efficiently."
             (goto-char (1+ line-end))))
         (push (current-time) timing-info)
         ;; Process parens beginning in the JIT lock region but extending after
+        ;;
+        ;; Note: the reason we don't filter cp--Open after the JIT
+        ;; lock region, as we did for the region before it, is mostly
+        ;; because of the directionality of redisplay from BOB to EOB.
+        ;; If we allow subsequent cp-propertize-region to propertize
+        ;; the open parens in the current JIT lock region, it wouldn't
+        ;; show to the user because by then redisplay has finished
+        ;; this JIT lock region. An additional consideration is that
+        ;; the coloring of the open paren is of more interest than the
+        ;; close paren.
         (let ((ps-opens (nth 9 (syntax-ppss end)))
               ;; Inner to outer going towards the tail
               (open-obj-list nil))
@@ -383,7 +404,9 @@ next in the list. This is used to scan-lists efficiently."
                                 (- ps-open-i start)
                                 (car open-objs))))
                     open-obj-list)))
+          (push (current-time) timing-info)
           (cp--set-closes open-obj-list)
+          (push (current-time) timing-info)
           (goto-char end)
           (cp--region-check-opens nil open-obj-list))
         (push (current-time) timing-info)
