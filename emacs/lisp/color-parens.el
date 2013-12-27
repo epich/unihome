@@ -1,9 +1,9 @@
-;;; color-parens.el --- Color unbalanced parentheses and parentheses inconsistent with indentation -*- lexical-binding: t; -*-
+;;; flylisp.el --- Color unbalanced parentheses and parentheses inconsistent with indentation -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013  Free Software Foundation, Inc.
 
 ;; Author: Barry O'Reilly <gundaetiapo@gmail.com>
-;; Version: 0.1
+;; Version: 0.2
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,11 +20,11 @@
 
 ;;; Commentary:
 
-;; Colors mismatched open parentheses with cp-mismatched-face, red by
+;; Colors mismatched open parentheses with fl-mismatched-face, red by
 ;; default.
 ;;
 ;; Also colors open and close parentheses which are inconsistent with
-;; the indentation of lines between them with cp-inconsistent-face,
+;; the indentation of lines between them with fl-inconsistent-face,
 ;; orange by default. This is useful for the Lisp programmer who
 ;; infers a close paren's location from the open paren and
 ;; indentation. The coloring serves as a warning that the indentation
@@ -42,7 +42,7 @@
 ;; (aaa ...) and (ccc ...) are consistent, so are not colored.
 ;; (bbb ...) is inconsistent because the indentation of fff is
 ;; inconsistent with the actual location of the close paren. The open
-;; and close paren are thus colored with the cp-inconsistent-face.
+;; and close paren are thus colored with the fl-inconsistent-face.
 ;; This example also shows that multi line strings don't cause an
 ;; inconsistency.
 ;;
@@ -87,32 +87,32 @@
 
 (require 'cl-lib)
 
-(defgroup color-parens nil
+(defgroup flylisp nil
   "Color unbalanced parentheses and parentheses inconsistent with indentation."
-  :prefix "color-parens-"
+  :prefix "flylisp-"
   :group 'paren-matching)
 
-(defgroup color-parens-faces nil
-  "Faces for color-parens package. "
-  :group 'color-parens
+(defgroup flylisp-faces nil
+  "Faces for flylisp package. "
+  :group 'flylisp
   :group 'faces)
 
-(defface cp-inconsistent-face
+(defface fl-inconsistent-face
   '((((class color) (background light))
      :foreground "dark orange")
     (((class color) (background dark))
      :foreground "orange"))
   "Face applied to matching open and close parens whose placement
 is inconsistent with indentation."
-  :group 'color-parens-faces)
+  :group 'flylisp-faces)
 
-(defface cp-mismatched-face
+(defface fl-mismatched-face
   '((((class color) (background light))
      :foreground "dark red")
     (((class color) (background dark))
      :foreground "red"))
   "Face applied to a paren who has no match."
-  :group 'color-parens-faces)
+  :group 'flylisp-faces)
 
 ;; An open paren and algorithmic data about it.
 ;;
@@ -133,27 +133,27 @@ is inconsistent with indentation."
 ;;   - an integer offset from the open position to the position of the
 ;;     first inconsistency. This offset is also cached in the open
 ;;     paren text properties for performance.
-(cl-defstruct cp--Open position close column inconsistent)
+(cl-defstruct fl--Open position close column inconsistent)
 
-(defsubst cp--colorize-inconsistent (open-obj)
-  "Colorize the cp--Open OPEN-OBJ as inconsistent."
-  (add-text-properties (cp--Open-position open-obj)
-                       (1+ (cp--Open-position open-obj))
-                       `(cp-inconsistency
-                         ,(cp--Open-inconsistent open-obj)
+(defsubst fl--colorize-inconsistent (open-obj)
+  "Colorize the fl--Open OPEN-OBJ as inconsistent."
+  (add-text-properties (fl--Open-position open-obj)
+                       (1+ (fl--Open-position open-obj))
+                       `(fl-inconsistency
+                         ,(fl--Open-inconsistent open-obj)
                          font-lock-face
-                         cp-inconsistent-face
+                         fl-inconsistent-face
                          rear-nonsticky
                          t))
-  (add-text-properties (cp--Open-close open-obj)
-                       (1+ (cp--Open-close open-obj))
+  (add-text-properties (fl--Open-close open-obj)
+                       (1+ (fl--Open-close open-obj))
                        `(font-lock-face
-                         cp-inconsistent-face
+                         fl-inconsistent-face
                          rear-nonsticky
                          t)))
 
-(defsubst cp--line-check-opens (open-stack)
-  "Check cp--Open objects of the OPEN-STACK list for
+(defsubst fl--line-check-opens (open-stack)
+  "Check fl--Open objects of the OPEN-STACK list for
 consistency.
 
 The inconsistent==nil elements of OPEN-STACK must have columns
@@ -175,17 +175,17 @@ line or EOB."
       ;; stop at the first inconsistent==nil Open with small enough
       ;; column.
       (while (and open-stack
-                  (or (cp--Open-inconsistent (car open-stack))
+                  (or (fl--Open-inconsistent (car open-stack))
                       (<= indent-column
-                          (cp--Open-column (car open-stack)))))
-        ;; Check cp--Open-inconsistent to avoid excessive
+                          (fl--Open-column (car open-stack)))))
+        ;; Check fl--Open-inconsistent to avoid excessive
         ;; syntax-ppss when there's a lot of bad
         ;; indentation.
-        (unless (or (cp--Open-inconsistent (car open-stack))
+        (unless (or (fl--Open-inconsistent (car open-stack))
                     ;; Multi line strings don't cause inconsistency
                     (nth 3 (syntax-ppss indent-pos)))
-          (setf (cp--Open-inconsistent (car open-stack))
-                (- indent-pos (cp--Open-position (car open-stack)))))
+          (setf (fl--Open-inconsistent (car open-stack))
+                (- indent-pos (fl--Open-position (car open-stack)))))
         (pop open-stack)))
     ;; Go to next line. Since we already know line-end, use it
     ;; instead of rescanning the line
@@ -193,7 +193,7 @@ line or EOB."
     ;; goto-char tolerates going beyond EOB
     (goto-char (1+ line-end))))
 
-(defsubst cp--region-check-opens (downward-objs
+(defsubst fl--region-check-opens (downward-objs
                                   upward-objs)
   "Check inputted parens in a region for inconsistency, first
 going down in sexp depth then up per the DOWNWARD-OBJS and
@@ -202,58 +202,58 @@ UPWARD-OBJS.
 Point must be at the start of the region to process and will end
 up near the end.
 
-DOWNWARD-OBJS is a list of cp--Open objects. Each must be a
+DOWNWARD-OBJS is a list of fl--Open objects. Each must be a
 parent of the next in the list.
 
-UPWARD-OBJS is a list of cp--Open objects. Each must be a child
+UPWARD-OBJS is a list of fl--Open objects. Each must be a child
 of the next in the list."
   (while downward-objs
-    (cp--line-check-opens upward-objs)
+    (fl--line-check-opens upward-objs)
     (while (and downward-objs
-                (< (cp--Open-position (car downward-objs))
+                (< (fl--Open-position (car downward-objs))
                    (point)))
       (push (pop downward-objs)
             upward-objs)))
   (while (and upward-objs
-              (number-or-marker-p (cp--Open-close (car upward-objs))))
-    (cp--line-check-opens upward-objs)
+              (number-or-marker-p (fl--Open-close (car upward-objs))))
+    (fl--line-check-opens upward-objs)
     (while (and upward-objs
-                (number-or-marker-p (cp--Open-close (car upward-objs)))
-                (< (cp--Open-close (car upward-objs))
+                (number-or-marker-p (fl--Open-close (car upward-objs)))
+                (< (fl--Open-close (car upward-objs))
                    (point)))
       (pop upward-objs))))
 
-(defsubst cp--set-closes (open-obj-list)
+(defsubst fl--set-closes (open-obj-list)
   "Sets the close attribute of each element of OPEN-OBJ-LIST.
 
-OPEN-OBJ-LIST is a list of cp--Open. Each must be a child of the
+OPEN-OBJ-LIST is a list of fl--Open. Each must be a child of the
 next in the list. This is used to scan-lists efficiently."
-  ;; Note: Because cp--Open-position values come from (nth 9
+  ;; Note: Because fl--Open-position values come from (nth 9
   ;; (syntax-ppss)), we know they are not inside a string or comment.
   ;; Thus buf-pos inits to a valid position to start scan-lists from.
   (let ((buf-pos (and open-obj-list
                       ;; scan_lists tolerates buf-pos past EOB
-                      (1+ (cp--Open-position (car open-obj-list))))))
+                      (1+ (fl--Open-position (car open-obj-list))))))
     (dolist (open-i open-obj-list)
       (when buf-pos
         (setq buf-pos (condition-case nil
                           (scan-lists buf-pos 1 1)
                         (scan-error nil))))
-      (setf (cp--Open-close open-i) (if buf-pos
+      (setf (fl--Open-close open-i) (if buf-pos
                                         (1- buf-pos)
                                       'mismatched)))))
 
-(defun cp-propertize-region (start end)
+(defun fl-propertize-region (start end)
   (save-excursion
     ;; In order to correctly remove faces from parens that changed
     ;; from multiline to uniline, we clear all parens in the JIT lock
     ;; region to start with.
-    (cp-unpropertize-region start end)
+    (fl-unpropertize-region start end)
     (let* ((timing-info (list (current-time)))
            (start-ps (syntax-ppss start))
            ;; Open positions, outer to inner
            (ps-opens (nth 9 start-ps))
-           ;; cp--Open objects, positions inner to outer
+           ;; fl--Open objects, positions inner to outer
            (open-objs nil))
       (push (current-time) timing-info)
       ;; Process the broader region spanned by ps-opens. Consider only
@@ -264,7 +264,7 @@ next in the list. This is used to scan-lists efficiently."
       ;; except to check for a multiline string just before setting
       ;; inconsistent.
       (dolist (ps-open-i ps-opens)
-        (push (make-cp--Open :position
+        (push (make-fl--Open :position
                              ps-open-i
                              :column
                              (progn
@@ -284,44 +284,44 @@ next in the list. This is used to scan-lists efficiently."
             (let* ((objs-head (cons nil open-objs))
                    (prev-open objs-head)
                    (open-i (cdr objs-head))
-                   ;; Whether we've called cp--set-closes
+                   ;; Whether we've called fl--set-closes
                    ;;
-                   ;; cp--set-closes is fairly expensive when near the
+                   ;; fl--set-closes is fairly expensive when near the
                    ;; beginning of a long Lisp function. We can avoid
                    ;; calling it if all open-objs are propertized as
                    ;; consistent or mismatched.
                    (closes-set nil))
               (while open-i
                 (let* ((inconsistency-offset
-                        (get-text-property (cp--Open-position (car open-i))
-                                           'cp-inconsistency))
+                        (get-text-property (fl--Open-position (car open-i))
+                                           'fl-inconsistency))
                        (inconsistency-pos
                         (and inconsistency-offset
-                             (+ (cp--Open-position (car open-i))
+                             (+ (fl--Open-position (car open-i))
                                 inconsistency-offset))))
                   (if (or (not inconsistency-pos)
                           ;; Always nil so as "or" evaluation continues
                           (unless closes-set
                             ;; Lazy one-time call
-                            (cp--set-closes open-objs)
+                            (fl--set-closes open-objs)
                             (not (setq closes-set t)))
                           ;; Spot check using the cached offset to
                           ;; possibly avoid a complete check in
-                          ;; cp--region-check-opens for open-i.
+                          ;; fl--region-check-opens for open-i.
                           ;;
                           ;; Because of buffer changes,
                           ;; inconsistency-pos is not necessarily
                           ;; the original. Just do a valid check.
-                          (and (< (cp--Open-position (car open-i))
+                          (and (< (fl--Open-position (car open-i))
                                   inconsistency-pos)
-                               (number-or-marker-p (cp--Open-close (car open-i)))
+                               (number-or-marker-p (fl--Open-close (car open-i)))
                                (<= inconsistency-pos
-                                   (cp--Open-close (car open-i)))
+                                   (fl--Open-close (car open-i)))
                                (progn
                                  (goto-char inconsistency-pos)
-                                 (cp--line-check-opens (list (car open-i)))
-                                 (when (cp--Open-inconsistent (car open-i))
-                                   (cp--colorize-inconsistent (car open-i))
+                                 (fl--line-check-opens (list (car open-i)))
+                                 (when (fl--Open-inconsistent (car open-i))
+                                   (fl--colorize-inconsistent (car open-i))
                                    t))))
                       ;; Remove (car open-i) from list
                       (setcdr prev-open (cdr open-i))
@@ -333,15 +333,15 @@ next in the list. This is used to scan-lists efficiently."
         ;; Check lists beginning before JIT lock's region (could
         ;; scan to after JIT lock's region)
         (let ((open-objs-reversed (reverse open-objs)))
-          (goto-char (cp--Open-position (car open-objs-reversed)))
-          (cp--region-check-opens open-objs-reversed
+          (goto-char (fl--Open-position (car open-objs-reversed)))
+          (fl--region-check-opens open-objs-reversed
                                   nil)))
       (push (current-time) timing-info)
       (goto-char start)
       ;; Process within the inputted JIT lock region
       (let* (;; Sparse vector of open paren data, indexed by position
              ;; in buffer minus start. This benchmarked better than
-             ;; keeping a stack of cp--Open objects updated from the
+             ;; keeping a stack of fl--Open objects updated from the
              ;; parse states of syntax-ppss.
              (open-paren-table (make-vector (- end start) nil)))
         (while (< (point) end)
@@ -363,7 +363,7 @@ next in the list. This is used to scan-lists efficiently."
                   (let ((open-obj (or (aref open-paren-table
                                             (- open-pos start))
                                       (progn
-                                        (push (make-cp--Open
+                                        (push (make-fl--Open
                                                :position open-pos
                                                :column (progn
                                                          (goto-char open-pos)
@@ -373,19 +373,19 @@ next in the list. This is used to scan-lists efficiently."
                                               (- open-pos start)
                                               (car open-objs))))))
                     (when (<= indent-column
-                              (cp--Open-column open-obj))
-                      (setf (cp--Open-inconsistent open-obj)
-                            (- indent-pos (cp--Open-position open-obj))))))))
+                              (fl--Open-column open-obj))
+                      (setf (fl--Open-inconsistent open-obj)
+                            (- indent-pos (fl--Open-position open-obj))))))))
             ;; Go to next line. Since we already know line-end, use it
             ;; instead of rescanning the line
             (goto-char (1+ line-end))))
         (push (current-time) timing-info)
         ;; Process parens beginning in the JIT lock region but extending after
         ;;
-        ;; Note: the reason we don't filter cp--Open after the JIT
+        ;; Note: the reason we don't filter fl--Open after the JIT
         ;; lock region, as we did for the region before it, is mostly
         ;; because of the directionality of redisplay from BOB to EOB.
-        ;; If we allow subsequent cp-propertize-region to propertize
+        ;; If we allow subsequent fl-propertize-region to propertize
         ;; the open parens in the current JIT lock region, it wouldn't
         ;; show to the user because by then redisplay has finished
         ;; this JIT lock region. An additional consideration is that
@@ -399,10 +399,10 @@ next in the list. This is used to scan-lists efficiently."
               (push (or (aref open-paren-table
                               (- ps-open-i start))
                         ;; Open parens on the last line of the JIT
-                        ;; lock region don't have a cp--Open object
+                        ;; lock region don't have a fl--Open object
                         ;; created yet.
                         (progn
-                          (push (make-cp--Open
+                          (push (make-fl--Open
                                  :position ps-open-i
                                  :column (progn
                                            (goto-char ps-open-i)
@@ -413,52 +413,52 @@ next in the list. This is used to scan-lists efficiently."
                                 (car open-objs))))
                     open-obj-list)))
           (push (current-time) timing-info)
-          (cp--set-closes open-obj-list)
+          (fl--set-closes open-obj-list)
           (push (current-time) timing-info)
           (goto-char end)
-          (cp--region-check-opens nil open-obj-list))
+          (fl--region-check-opens nil open-obj-list))
         (push (current-time) timing-info)
         (dolist (open-i open-objs)
           ;; Set close position
           ;;
           ;; Note: We do it here instead of when it was made so as
-          ;; some benefit from the cp--set-closes function's buffer
+          ;; some benefit from the fl--set-closes function's buffer
           ;; scanning optimization. The lists processed here are
           ;; opened and closed within JIT lock's region, so the less
           ;; efficient buffer scanning is not a big deal.
-          (unless (cp--Open-close open-i)
-            (setf (cp--Open-close open-i)
+          (unless (fl--Open-close open-i)
+            (setf (fl--Open-close open-i)
                   (condition-case nil
-                      (1- (scan-lists (cp--Open-position open-i) 1 0))
+                      (1- (scan-lists (fl--Open-position open-i) 1 0))
                     (scan-error 'mismatched))))
           ;; Apply the font color via text properties
           (with-silent-modifications
-            (if (eq 'mismatched (cp--Open-close open-i))
-                (add-text-properties (cp--Open-position open-i)
-                                     (1+ (cp--Open-position open-i))
+            (if (eq 'mismatched (fl--Open-close open-i))
+                (add-text-properties (fl--Open-position open-i)
+                                     (1+ (fl--Open-position open-i))
                                      `(font-lock-face
-                                       cp-mismatched-face
+                                       fl-mismatched-face
                                        rear-nonsticky
                                        t))
-              (if (cp--Open-inconsistent open-i)
-                  (cp--colorize-inconsistent open-i)
-                (dolist (pos-i (list (cp--Open-position open-i)
-                                     (cp--Open-close open-i)))
+              (if (fl--Open-inconsistent open-i)
+                  (fl--colorize-inconsistent open-i)
+                (dolist (pos-i (list (fl--Open-position open-i)
+                                     (fl--Open-close open-i)))
                   (remove-text-properties pos-i
                                           (1+ pos-i)
-                                          '(cp-inconsistency
+                                          '(fl-inconsistency
                                             nil
                                             font-lock-face
                                             nil
                                             rear-nonsticky
                                             nil)))))))
         (push (current-time) timing-info)
-        ;; (my-msg "cp-color-parens start=%s end=%s timing: %s"
+        ;; (my-msg "fl-propertize-region start=%s end=%s timing: %s"
         ;;         start end
         ;;         (my-time-diffs (nreverse timing-info)))
         ))))
 
-(defun cp-unpropertize-region (start end)
+(defun fl-unpropertize-region (start end)
   (goto-char start)
   ;; remove-text-properties errors if (1+ (point)) is past EOB, so
   ;; adjust end
@@ -468,12 +468,12 @@ next in the list. This is used to scan-lists efficiently."
       (skip-syntax-forward "^()" end)
       (remove-text-properties (point)
                               (1+ (point))
-                              '(cp-inconsistency nil
+                              '(fl-inconsistency nil
                                 font-lock-face nil
                                 rear-nonsticky nil))
       (forward-char 1))))
 
-(defsubst color-parens-extend-region-after-change (start end _old-len)
+(defsubst flylisp-extend-region-after-change (start end _old-len)
   ;; It seems redisplay works its way from before start to after end,
   ;; so it's more important to expand the start in order to get
   ;; correct redisplays.
@@ -482,24 +482,24 @@ next in the list. This is used to scan-lists efficiently."
           (or (syntax-ppss-toplevel-pos (syntax-ppss start))
               start))))
 
-(define-minor-mode color-parens-mode
+(define-minor-mode flylisp-mode
   "Color unbalanced parentheses and parentheses inconsistent with
   indentation."
   nil nil nil
-  (if color-parens-mode
+  (if flylisp-mode
       (progn
-        (jit-lock-register 'cp-propertize-region t)
+        (jit-lock-register 'fl-propertize-region t)
         (add-hook 'jit-lock-after-change-extend-region-functions
-                  #'color-parens-extend-region-after-change
+                  #'flylisp-extend-region-after-change
                   nil
                   t))
     (remove-hook 'jit-lock-after-change-extend-region-functions
-                 #'color-parens-extend-region-after-change
+                 #'flylisp-extend-region-after-change
                  t)
-    (jit-lock-unregister 'cp-propertize-region)
+    (jit-lock-unregister 'fl-propertize-region)
     (save-excursion
-      (cp-unpropertize-region (point-min) (point-max)))))
+      (fl-unpropertize-region (point-min) (point-max)))))
 
-(provide 'color-parens)
+(provide 'flylisp)
 
-;;; color-parens.el ends here
+;;; flylisp.el ends here
