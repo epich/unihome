@@ -25,7 +25,7 @@
 ;;
 ;; Also colors open and close parentheses which are inconsistent with
 ;; the indentation of lines between them with cp-inconsistent-face,
-;; yellow by default. This is useful for the Lisp programmer who
+;; orange by default. This is useful for the Lisp programmer who
 ;; infers a close paren's location from the open paren and
 ;; indentation. The coloring serves as a warning that the indentation
 ;; misleads about where the close paren is. It may also help to
@@ -54,8 +54,9 @@
 
 ;;; Code:
 
-;; TODO: There are display problems with mismatched parens. Region
-;; doesn't expand enough, apparent syntax-ppss problem.
+;; TODO: There are display problems with mismatched parens, due to the
+;; region not expanding enough, in turn due to an apparent syntax-ppss
+;; bug. See Emacs bug 16247.
 
 ;; TODO: Algorithm doesn't account for close paren which is too soon.
 ;;
@@ -245,8 +246,8 @@ next in the list. This is used to scan-lists efficiently."
 (defun cp-propertize-region (start end)
   (save-excursion
     ;; In order to correctly remove faces from parens that changed
-    ;; from multiline to uniline, we clear them in the JIT lock region
-    ;; to start with.
+    ;; from multiline to uniline, we clear all parens in the JIT lock
+    ;; region to start with.
     (cp-unpropertize-region start end)
     (let* ((timing-info (list (current-time)))
            (start-ps (syntax-ppss start))
@@ -255,12 +256,12 @@ next in the list. This is used to scan-lists efficiently."
            ;; cp--Open objects, positions inner to outer
            (open-objs nil))
       (push (current-time) timing-info)
-      ;; Process the broader region spanned by ps-opens. There's no
-      ;; need to consider other children lists lying outside the
-      ;; JIT lock region.
+      ;; Process the broader region spanned by ps-opens. Consider only
+      ;; the ps-opens, not their children which lie entirely outside
+      ;; the JIT lock region.
       ;;
       ;; We mostly avoid further sexp parsing in the broader region,
-      ;; except to check for multiline string just before setting
+      ;; except to check for a multiline string just before setting
       ;; inconsistent.
       (dolist (ps-open-i ps-opens)
         (push (make-cp--Open :position
@@ -274,8 +275,11 @@ next in the list. This is used to scan-lists efficiently."
       ;; Filter out parens which don't need consideration outside the
       ;; JIT lock region. The ones that do are currently fontified as
       ;; inconsistent, and could become consistent if all its enclosed
-      ;; lines are checked. The filtering of open-objs is for
-      ;; performance.
+      ;; lines are checked.
+      ;;
+      ;; In addition to filtering, this passage sets close positions
+      ;; and may reapply the inconsistency-face to some close parens
+      ;; which were just cleared.
       (setq open-objs
             (let* ((objs-head (cons nil open-objs))
                    (prev-open objs-head)
@@ -303,7 +307,7 @@ next in the list. This is used to scan-lists efficiently."
                             (not (setq closes-set t)))
                           ;; Spot check using the cached offset to
                           ;; possibly avoid a complete check in
-                          ;; cp--region-check-opens.
+                          ;; cp--region-check-opens for open-i.
                           ;;
                           ;; Because of buffer changes,
                           ;; inconsistency-pos is not necessarily
@@ -317,7 +321,6 @@ next in the list. This is used to scan-lists efficiently."
                                  (goto-char inconsistency-pos)
                                  (cp--line-check-opens (list (car open-i)))
                                  (when (cp--Open-inconsistent (car open-i))
-                                   ;; Close paren's face was cleared
                                    (cp--colorize-inconsistent (car open-i))
                                    t))))
                       ;; Remove (car open-i) from list
