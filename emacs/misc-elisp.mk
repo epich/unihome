@@ -7,8 +7,8 @@ EMACS ?= emacs
 # The my- elisp files depend on practically everything, so I always rebuild them from build.py -- for now.
 FILES := \
   lisp/adjust-parens.el \
-  lisp/color-parens.el \
   lisp/evil-numbers.el \
+  lisp/flylisp.el \
   lisp/goto-chg.el \
   lisp/rainbow-delimiters.el \
   lisp/undo-tree.el
