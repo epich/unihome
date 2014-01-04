@@ -52,9 +52,12 @@ Notes:
       : Lisp debugging:
          : If Emacs hangs, set debug-on-quit to t
          : Debugging font lock
-            : Stefan: https://lists.gnu.org/archive/html/bug-gnu-emacs/2013-11/msg00070.html
+            : Stefan:
+               : https://lists.gnu.org/archive/html/bug-gnu-emacs/2013-11/msg00070.html
+               : https://lists.gnu.org/archive/html/bug-gnu-emacs/2014-01/msg00061.html
                : (setq font-lock-support-mode nil) before visiting the buffer
                : M-x jit-lock-debug-mode
+               : (setq debug-on-error t)
             : Wrap known font lock function in condition-case with (debug ...) as a handler
             : Also try debug-on-signal t
          : Removing the .elc can give more informative backtraces
@@ -96,6 +99,8 @@ Notes:
             : \|
    : Useful commands:
       : align-regexp for aligning to the right of other text, eg Python dictionaries with an entry per line, use :.*, as regexp.
+      : To align rows and columns of a CSV file: C-u M-x align-regexp RET ,\(\s-*\) RET RET RET y
+         : From: http://stackoverflow.com/questions/970759/how-to-align-arguments-to-functions-in-emacs
    : Etags
       : Call visit-tag-table function to load TAGS file.
    : Use M-; on a selection to comment it out.
