@@ -263,7 +263,8 @@
 
 ;; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
 (when (featurep 'undo-tree)
-  (define-key evil-normal-state-map "U" 'undo-tree-redo))
+  (define-key evil-visual-state-map "U" nil)
+  (define-key evil-motion-state-map "U" 'undo-tree-redo))
 
 (defvar my-leap-scroll-size 16)
 (define-key evil-normal-state-map ";" nil)
