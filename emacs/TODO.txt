@@ -243,20 +243,32 @@ Issues:
          : http://lists.gnu.org/archive/html/emacs-devel/2013-11/msg00263.html
          : http://lists.gnu.org/archive/html/emacs-devel/2013-11/msg00274.html
    : Undo Tree
-      : Undo in region can create inefficiencies so extreme I can't access parts of the undo tree in reasonable time periods.
-      : Visual tree is not as compact as it could be
-      : Diffing:
-         : Windows: Can't get undo diffs to work
-         : Linux: Diff is so slow, I have to customize undo-tree-visualizer-diff to nil.
-            : Profiling reveals that diff-no-select function takes up the time.
-            : gnulib might have something useful:
-               http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob;f=lib/diffseq.h;hb=HEAD
-      : Undos are not correct for a test case
-         : Steps on Windows 7:
-            : Edit in Emacs and save
-            : Outside of Emacs, edit earlier in buffer
-         : Determine behavior with stock undo.
-         : Could not reproduce on RHEL 5, either with stock undo or undo-tree.
+      : Bugs:
+         : Undo in region can hang accessing another node after an undo in region
+            : Repro: cc-engine.el j j j j i x x x C-c 0 v j u U u U C-c o v j
+            : http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16377
+         : Without saving, make a few edits, undo each in their region, buffer is marked * when it shouldn't be, undo tree current node is correct
+         : Enable and disable global-undo-tree-mode during startup. I can see Undo Tree inserting undo-tree-canary into undo-equiv-table.
+         : Undos are not correct for a test case
+            : Steps on Windows 7:
+               : Edit in Emacs and save
+               : Outside of Emacs, edit earlier in buffer
+            : Determine behavior with stock undo.
+            : Could not reproduce on RHEL 5, either with stock undo or undo-tree.
+      : Enhancements:
+         : Visual tree is not as compact as it could be
+         : Diffing:
+            : Windows: Can't get undo diffs to work
+            : Linux: Diff is so slow, I have to customize undo-tree-visualizer-diff to nil.
+               : Profiling reveals that diff-no-select function takes up the time.
+               : gnulib might have something useful:
+                  http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob;f=lib/diffseq.h;hb=HEAD
+         : Integrate with builtin undo system, see:
+            http://lists.gnu.org/archive/html/gnu-emacs-sources/2009-11/msg00010.html
+      : Advantages over builtin
+         : intuitive model
+         : diff nodes
+         : persistent undo history
       : Test undo tree when there is a buffer revert of externally made file changes
    : Learn merging in Git
       : Use magit?
