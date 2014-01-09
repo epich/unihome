@@ -86,6 +86,7 @@
 ;;   paren is consistent.
 
 (require 'cl-lib)
+(require 'jit-lock)
 
 (defgroup flylisp nil
   "Color unbalanced parentheses and parentheses inconsistent with indentation."
@@ -473,7 +474,7 @@ next in the list. This is used to scan-lists efficiently."
                                 rear-nonsticky nil))
       (forward-char 1))))
 
-(defsubst flylisp-extend-region-after-change (start end _old-len)
+(defsubst flylisp-extend-region-after-change (start _end _old-len)
   ;; It seems redisplay works its way from before start to after end,
   ;; so it's more important to expand the start in order to get
   ;; correct redisplays.
