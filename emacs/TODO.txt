@@ -245,6 +245,29 @@ Issues:
       : Diff idea threads:
          : http://lists.gnu.org/archive/html/emacs-devel/2013-11/msg00263.html
          : http://lists.gnu.org/archive/html/emacs-devel/2013-11/msg00274.html
+   : Builtin undo system:
+      : Bugs:
+         : Recipe 1:
+           • Insert "aaa"
+           • Insert "bbb"
+           • Undo
+           • Insert "ccc"
+           • Insert "ddd"
+           • Undo
+           • Undo-only with prefix arg 2
+           • Expected: none of the above insertions are in the buffer
+           • Actual: buffer has aaa and bbb insertions
+           : Reason: undo-only skips "redo records" prior to calling undo-more through recursive lookup in undo-equiv-table. However, it doesn't reference undo-equiv-table again when it iterates in undo-more, so it may undo redo records after the first correct undo. In this case, it redoes bbb.
+         : Recipe 2:
+           • Insert "aaa"
+           • Insert "bbb"
+           • Mark region around "aaa" but not "bbb"
+           • Undo (in region)
+           • Mark region around "bbb" and where "aaa" used to be
+           • Undo-only
+           • Expected: none of the above insertions are in the buffer
+           • Actual: buffer has aaa and bbb insertions
+           : Reason: code appears to simply punt on undo-only in region and behaves like ordinary undo. Thus it undoes the redo record to bring back bbb.
    : Undo Tree
       : Bugs:
          : Undo in region can hang accessing another node after an undo in region
