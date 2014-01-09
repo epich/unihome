@@ -5,4 +5,8 @@ See origin:
    git remote [returns origin]
    git remote show origin
 
-   
+Merging in Git:
+  From http://lists.gnu.org/archive/html/emacs-devel/2014-01/msg00673.html :
+    git diff -r <lastsync> | (cd ..../emacs/lisp/org; patch)
+
+
