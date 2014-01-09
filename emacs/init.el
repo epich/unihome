@@ -85,7 +85,7 @@
 ;;; Undo Tree
 (my-msg "Initializing Undo Tree. ")
 (require 'undo-tree)
-(global-undo-tree-mode 1)
+(global-undo-tree-mode -1)
 
 ;;; Initialize CEDET
 ;;;
