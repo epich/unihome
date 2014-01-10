@@ -268,6 +268,17 @@ Issues:
            • Expected: none of the above insertions are in the buffer
            • Actual: buffer has aaa and bbb insertions
            : Reason: code appears to simply punt on undo-only in region and behaves like ordinary undo. Thus it undoes the redo record to bring back bbb.
+         : Possible solution: for each redo record, store the nodes (plural because of prefix arg) which were undone
+            : Possible algorithm when undo-only in region:
+               : Foreach nodeI in pending-undo-list:
+                  : If nodeI is a redo record:
+                     : Remove the referenced undone nodes from pending-undo-list (takes effect immediately for sake of the foreach)
+            : This algorithm means that for an undo A of an undo B of an edit C in the region:
+               : B will be removed from pending-undo-list
+               : The foreach will not process B, so C would remain in pending-undo-list
+               : C is correctly picked for undo
+         : Enhancements:
+            : Why compute the full pending-undo-list in advance instead of lazily?
    : Undo Tree
       : Bugs:
          : Undo in region can hang accessing another node after an undo in region
