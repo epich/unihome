@@ -70,11 +70,6 @@
 (add-hook 'emacs-lisp-mode-hook #'flylisp-mode)
 (require 'evil-numbers)
 (require 'goto-chg)
-(require 'rainbow-delimiters)
-;; TODO
-;; (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
-;; (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
-;; (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
 
 ;;; Evil
 (my-msg "Initializing Evil.")
@@ -256,15 +251,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(lazy-highlight ((t (:background "gold" :foreground "black"))))
- '(rainbow-delimiters-depth-1-face ((t (:foreground "white"))))
- '(rainbow-delimiters-depth-2-face ((t (:foreground "MediumOrchid2"))))
- '(rainbow-delimiters-depth-3-face ((t (:foreground "orange"))))
- '(rainbow-delimiters-depth-4-face ((t (:foreground "white"))))
- '(rainbow-delimiters-depth-5-face ((t (:foreground "MediumOrchid2"))))
- '(rainbow-delimiters-depth-6-face ((t (:foreground "orange"))))
- '(rainbow-delimiters-depth-7-face ((t (:foreground "white"))))
- '(rainbow-delimiters-depth-8-face ((t (:foreground "MediumOrchid2"))))
- '(rainbow-delimiters-depth-9-face ((t (:foreground "orange"))))
  '(semantic-idle-symbol-highlight ((t (:background "gray20"))))
  '(whitespace-tab ((((class color) (background dark)) (:background "grey30" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))

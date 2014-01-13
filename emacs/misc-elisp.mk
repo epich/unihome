@@ -10,7 +10,6 @@ FILES := \
   lisp/evil-numbers.el \
   lisp/flylisp.el \
   lisp/goto-chg.el \
-  lisp/rainbow-delimiters.el \
   lisp/undo-tree.el
 LIBS :=
 
