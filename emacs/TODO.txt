@@ -34,6 +34,7 @@ Issues:
    : Emacs bug:
       : With my font lock settings, auto revert of source code does not cause font lock update until move point
    : delete-pair doesn't work for <> pairs
+   : Investigate using emacs 24.4's superword-mode instead of adding '-' to syntax tables
    : Bind C-g to keyboard-quit but with debug-on-quit set to t?
    : Editing Lisp
       : color-parens: minor mode to fontify mismatched parens and parens inconsistent with indentation
