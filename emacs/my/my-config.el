@@ -255,16 +255,21 @@
 (define-key evil-motion-state-map "or" 'revert-buffer)
 (define-key evil-motion-state-map "os" 'ff-find-other-file)
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (my-toggle-fullscreen)))
-(define-key evil-motion-state-map "ov" 'undo-tree-visualize)
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-normal-state-map "S" 'save-buffer)
 
 ;;; More Evil key bindings
 
-;; Use U for redo.  This is meant to mimic a similar line in evil-maps.el .
-(when (featurep 'undo-tree)
-  (define-key evil-visual-state-map "U" nil)
-  (define-key evil-motion-state-map "U" 'undo-tree-redo))
+;;; Undo system key bindings
+(define-key evil-normal-state-map "u" nil)
+(define-key evil-motion-state-map "u" 'undo-only)
+(define-key evil-visual-state-map "U" nil)
+;; TODO: http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16377
+(if nil ;(featurep 'undo-tree)
+    (progn
+      (define-key evil-motion-state-map "U" 'undo-tree-redo)
+      (define-key evil-motion-state-map "ov" 'undo-tree-visualize))
+  (define-key evil-motion-state-map "U" 'undo))
 
 (defvar my-leap-scroll-size 16)
 (define-key evil-normal-state-map ";" nil)
