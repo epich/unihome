@@ -206,6 +206,7 @@
  '(cc-search-directories
    (quote
     ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "../../src" "./include" "../include" "./inc" "../inc" "../inc/L1aObject")))
+ '(column-number-mode t)
  '(delete-by-moving-to-trash t)
  '(dired-auto-revert-buffer t)
  '(ediff-merge-split-window-function (quote split-window-vertically))
@@ -222,6 +223,7 @@
  '(ff-always-try-to-create nil)
  '(ff-special-constructs nil)
  '(font-lock-maximum-decoration (quote ((c++-mode . 2))))
+ '(font-use-system-font t)
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(inverse-video t)
@@ -239,7 +241,9 @@
  '(scroll-conservatively 101)
  '(scroll-margin 4)
  '(sentence-end-double-space nil)
+ '(show-paren-mode t)
  '(tags-case-fold-search nil)
+ '(tool-bar-mode nil)
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
  '(whitespace-style (quote (face tabs trailing)))
@@ -250,6 +254,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:family "DejaVu LGC Sans Mono" :foundry "unknown" :slant normal :weight normal :height 68 :width normal))))
  '(lazy-highlight ((t (:background "gold" :foreground "black"))))
  '(semantic-idle-symbol-highlight ((t (:background "gray20"))))
  '(whitespace-tab ((((class color) (background dark)) (:background "grey30" :foreground "darkgray"))))
