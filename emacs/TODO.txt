@@ -281,13 +281,21 @@ Issues:
                : Same memory consumption as undo-equiv-table
                : Changes user observable behavior
          : Other issues:
-            : Why compute the full pending-undo-list in advance instead of lazily?
+            : undo-make-selective-list issues
+               : Why doesn't the code try to cumulate deltas as it goes, to do better than O(n*n)?
+                  : Perhaps: BST sorted by position, non leaf nodes carrying sum of offsets in its subtree
+               : Why not compute the list lazily instead of in full up front?
+               : TODO: Understand markers and undo-adjusted-markers better
             : buffer-undo-list doesn't share data as much as it could
                : eg delete text of size M, do N cycles of undo and redo. Memory grows approximately M*N, but could be M
                : Idea: have all "redo records" use the existing (apply delta beg end funname . args) kind of undo element
-                  : funname would serve as indicator of type of undo
+                  : Infer type of undo from funname
+                     : Compare funname itself or one of its symbol properties?
                   : one of the args would be a cons in buffer-undo-list for the element undone
-                  : another arg would be the undo-delta necessary to carry out the undo of the element undone
+                  : another arg would be the undo-delta from it to its undone
+                     : delta from head of buffer-undo-list may need recalculation
+                  : when truncating undo history: if an undone is truncated, its referee needs to count that memory towards limit
+                     : TODO: Understand types of truncation, eg the different history limits
    : Undo Tree
       : Bugs:
          : Undo in region can hang accessing another node after an undo in region
