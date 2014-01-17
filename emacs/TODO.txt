@@ -235,6 +235,8 @@ Issues:
             : Ediff manual suggests ediff-patch-file is the only way.
             : ediff-patch-buffer doesn't work for multi file diffs.
          : Is there a way to forego having another window at all, and I can simply bind useful Ediff commands myself.
+      : Improving
+         : See reference to ediff at: https://lists.gnu.org/archive/html/bug-gnu-emacs/2014-01/msg00815.html
    : Try diff-hl in ELPA, highlights changes in VCS
    : Diff mode
       : When navigating hunks, top of hunk displays in the middle of display, even if all of the hunk doesn't show.
@@ -247,39 +249,45 @@ Issues:
          : http://lists.gnu.org/archive/html/emacs-devel/2013-11/msg00263.html
          : http://lists.gnu.org/archive/html/emacs-devel/2013-11/msg00274.html
    : Builtin undo system:
-      : Bugs:
-         : Recipe 1:
-           • Insert "aaa"
-           • Insert "bbb"
-           • Undo
-           • Insert "ccc"
-           • Insert "ddd"
-           • Undo
-           • Undo-only with prefix arg 2
-           • Expected: none of the above insertions are in the buffer
-           • Actual: buffer has aaa and bbb insertions
-           : Reason: undo-only skips "redo records" prior to calling undo-more through recursive lookup in undo-equiv-table. However, it doesn't reference undo-equiv-table again when it iterates in undo-more, so it may undo redo records after the first correct undo. In this case, it redoes bbb.
-         : Recipe 2:
-           • Insert "aaa"
-           • Insert "bbb"
-           • Mark region around "aaa" but not "bbb"
-           • Undo (in region)
-           • Mark region around "bbb" and where "aaa" used to be
-           • Undo-only
-           • Expected: none of the above insertions are in the buffer
-           • Actual: buffer has aaa and bbb insertions
-           : Reason: code appears to simply punt on undo-only in region and behaves like ordinary undo. Thus it undoes the redo record to bring back bbb.
-         : Possible solution: for each redo record, store the nodes (plural because of prefix arg) which were undone
-            : Possible algorithm when undo-only in region:
-               : Foreach nodeI in pending-undo-list:
-                  : If nodeI is a redo record:
-                     : Remove the referenced undone nodes from pending-undo-list (takes effect immediately for sake of the foreach)
-            : This algorithm means that for an undo A of an undo B of an edit C in the region:
-               : B will be removed from pending-undo-list
-               : The foreach will not process B, so C would remain in pending-undo-list
+      : See debbugs.gnu.org/16411
+      : Possible solutions to 16411 and supporting undo-tree integration:
+         : For all of these, a buffer-undo-list cons or change group would reference undone cons or change groups and remove them from the position adjusted copy of buffer-undo-list
+            : For an undo A of an undo B of an edit C in the region:
+               : B will be removed from list
+               : B's undone references are not processed, so C would remain in list
                : C is correctly picked for undo
-         : Enhancements:
+         : Extend format of elements of buffer-undo-list with an "undoes" field
+            : Example: ("foo" . 123) becomes (('undo-in-region <cons of buffer-undo-list>) "foo" . 123) or some variation
+            : undo-make-selective-list would use the undoes field for cases of both undo-only and undo-in-region
+            : primitive-undo can dynamically bind a variable undo--current indicating cons of buffer-undo-list being undone
+            : Change C code: truncate_undo_list to not reference truncated data
+            : Change C code: compact_undo-list remove unmarked markers in the undoes field
+            : Change C code: when buffer edits occur, use undo--current to fill in undoes field
+            : Obsolete undo-equiv-table
+            : TODO: Work out specifically how to tell if a change group was an undo-in-region
+            : Pros and cons:
+               : Intuitive data model
+               : Allows for solution to bug 2
+               : Allows for undo-tree to visualize undo history as a tree
+               : May break Elisp code that uses buffer-undo-list
+         : Weak hash table redo-record-table with cons of buffer-undo-list mapping to cons of buffer-undo-list undone
+            : Pros and cons:
+               : Uses more more memory
+               : Dances around changing buffer-undo-list format
+         : Change behavior of undo-in-region to undo change group as all-or-none, then redo-record-table maps a change group to undone change groups
+            : Arguably change groups are logically grouped and shouldn't be partially undone
+            : If user depends on this, could be indication the relevant Emacs feature needs to insert undo-boundaries
+            : Pros and cons:
+               : Same memory consumption as undo-equiv-table
+               : Changes user observable behavior
+         : Other issues:
             : Why compute the full pending-undo-list in advance instead of lazily?
+            : buffer-undo-list doesn't share data as much as it could
+               : eg delete text of size M, do N cycles of undo and redo. Memory grows approximately M*N, but could be M
+               : Idea: have all "redo records" use the existing (apply delta beg end funname . args) kind of undo element
+                  : funname would serve as indicator of type of undo
+                  : one of the args would be a cons in buffer-undo-list for the element undone
+                  : another arg would be the undo-delta necessary to carry out the undo of the element undone
    : Undo Tree
       : Bugs:
          : Undo in region can hang accessing another node after an undo in region

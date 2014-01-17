@@ -254,7 +254,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "DejaVu LGC Sans Mono" :foundry "unknown" :slant normal :weight normal :height 68 :width normal))))
+ '(default ((t (:family "DejaVu LGC Sans Mono" :foundry "unknown" :slant normal :weight normal :height 80 :width normal))))
  '(lazy-highlight ((t (:background "gold" :foreground "black"))))
  '(semantic-idle-symbol-highlight ((t (:background "gray20"))))
  '(whitespace-tab ((((class color) (background dark)) (:background "grey30" :foreground "darkgray"))))
