@@ -28,7 +28,7 @@
 ;; This fixes that.
 (setq c-default-style "k&r")
 ;; Font size (multiplied by 10)
-(set-face-attribute 'default nil :height 80)
+(set-face-attribute 'default nil :height 64)
 (fset 'yes-or-no-p 'y-or-n-p)
 (prefer-coding-system 'utf-8)
 ;;(setq truncate-lines nil)
