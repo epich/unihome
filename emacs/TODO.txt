@@ -136,6 +136,13 @@ Issues:
       : There are serious bugs when using GDB and there's process output
          : The GDB window inappropriately switches to where execution breaks
          : C-x o buffer-menu then opens buffer-menu in the wrong window
+         : Can't send SIGTSTP via C-c C-z
+            : Debug statements indicate Emacs sends SIGTSTP to its child GDB
+            : Commenting out src/.gdbinit to pass SIGTSTP does not seem to allow it to get to the grandchild Emacs being debugged
+            : Relevant references:
+               Asking about it: http://lists.gnu.org/archive/html/emacs-devel/2013-06/msg00240.html
+               Git commit changing .gdbinit: f5e0904034dd920c03970877406249f0049c0348
+               Talking about .gdbinit change: http://lists.gnu.org/archive/html/emacs-devel/2005-11/msg00850.html
    : Error handling in Elisp
       : Why don't errors have the original backtrace available in some form?
    : Learn about Dired
