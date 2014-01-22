@@ -125,15 +125,14 @@ Issues:
          : C coding style
          : Two spaces after period
          : my-offset
-   : Debugging
-      : Learn Edebug
-         : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
+   : Find lower memory alternative to usage pattern: e `find . -name "*.ext"`
+      : Need a way to see a list of files deep under a directory and open selectively
+   : General debugging:
       : Consider approaches to put *Messages* buffer to file.
          : standard-output variable can be a function that takes one argument: the char to print
          : See also with-output-to-temp-buffer
-      : edebug-initial-mode to continue to breakpoint
-      : How to send SIGSTOP from the gdb window
-      : There are serious bugs when using GDB and there's process output
+   : GDB in Emacs:
+      : Bugs:
          : The GDB window inappropriately switches to where execution breaks
          : C-x o buffer-menu then opens buffer-menu in the wrong window
          : Can't send SIGTSTP via C-c C-z
@@ -143,6 +142,10 @@ Issues:
                Asking about it: http://lists.gnu.org/archive/html/emacs-devel/2013-06/msg00240.html
                Git commit changing .gdbinit: f5e0904034dd920c03970877406249f0049c0348
                Talking about .gdbinit change: http://lists.gnu.org/archive/html/emacs-devel/2005-11/msg00850.html
+         : gdb Emacs command stupidly finds the config.status as the executable argument to prefill for the gdb shell command
+   : Learn Edebug:
+      : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
+      : edebug-initial-mode to continue to breakpoint
    : Error handling in Elisp
       : Why don't errors have the original backtrace available in some form?
    : Learn about Dired
@@ -437,96 +440,3 @@ Issues:
          : Evil does not call replace-regexp, so need to also defadvice the appropriate Evil function.
          : Note: Evil's search and replace supports the \, feature.
 
-After looking at and considering more of the undo code, here's my
-current thinking about how to solve bug 2.
-
-The Elisp manual states that undo elements of buffer-undo-list can be
-of the form:
-
-  (apply delta beg end funname . args)
-
-Define a "redo element" as an element of buffer-undo-list created
-because of an undo command. Suppose we change the way redo elements
-are represented to:
-
-  (apply delta beg end 'undo-redo . (undone-element undo-delta skip))
-
-Where:
-  • delta, beg, end are as documented.
-  • undo-redo is a new function that copies undone-element, applies
-    undo-delta, then calls primitive-undo on it.
-  • undone-element is the undone element of buffer-undo-list.
-  • undo-delta is (position . offset) indicating how undo-redo should
-    modify a copy of undone-element in order to carry out the redo. It
-    would only be a delta of elements between itself and the
-    undone-element -- deltas between itself and buffer-undo-list head
-    would come from elsewhere.
-  • skip is an optional arg completely ignored by the undo-redo
-    function. Instead, it is used during undo-only and undo-in-region
-    algorithm.
-
-When executing undo-only, it would need to copy elements of
-buffer-undo-list in order to adjust positions, much as undo in region
-currently does. The algorithm:
-  • Start at head of the undo list and iterate over elements:
-    • If the element has skip value t, skip it and continue loop
-    • If the element is of the form for a redo element:
-      • Set the skip value to t
-      • Push the element onto a undo-elements-skipped list
-    • Else undo the element
-    • If prefix-arg undos were completed: break
-  • Iterate over undo-elements-skipped and set skip to nil
-
-  Options:
-    • Use hash table, BST, or skip list mapping elements to whatever
-      • For each element, look it up
-        • If there, remove from map and skip
-    • Use dummy skip flag in redo elements. Undo element skip flag would have to be tracked someway else
-    • Grow pending-undo-list ahead to undone-element as necessary
-
-The algorithm for undo-in-region is similar in essence.
-
-In your earlier reply, you hinted at a possible objection: this might
-cause undo-only to suffer a noticable performance regression.
-Currently undo-list does not undo-make-selective-list, which I see is
-an O(N*N) algorithm for N sized undo history.
-
-One way to improve this is to calculate the next adjusted undo element
-lazily rather than fully computing the whole pending-undo-list up
-front. A simple way to do this is with a list of undo-delta sorted by
-position. Still O(N*N) if the whole history needs to be checked, but
-with high potential to short circuit. I would think undo-only will
-generally have an element to find, in which case it's not dependent on
-N. Undo in region average performance would improve.
-
-A more elaborate solution could improve the algorithm to O(N*log(N)),
-using a BST with position keys and values which are the sum of offsets
-in its subtree. Unless there's a BST ready to use (and provides the
-means to update the subtree offsets during tree rotation), I'm
-inclined to reduce my work if I can get away with it. I don't suspect
-the BST is necessary to prevent a performance regression the user
-would notice.
-
-There's another benefit to my proposed representation for redo
-elements. Consider the use case:
-  • Delete text X bytes large
-  • Do Y cycles of undo and redo
-
-As I understand the current code, the size of undo history grows by
-approximately X*Y. With this new way to represent redo elements, undo
-history grows approximately Y instead.
-
-This proposal implies recursive calls to primitive-undo. The size of
-the Lisp call stack would be a function of how deep redo records refer
-to undone redo records. Maybe there are reasonable ways to deal with
-that or maybe it's a non issue.
-
-Are there examples of existing code putting (apply delta beg end
-'undo-redo . (undone-element undo-delta)) into the buffer-undo-list? I
-want to see what the options might be for pushing redo elements in
-that format. The best I can think of right now is a dynamically bound
-variable set only during an undo and examined in record functions in
-undo.c.
-
-There's more I could say about other details, but I'll stop now to get
-feedback on the overall idea.
