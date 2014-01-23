@@ -66,6 +66,7 @@ Issues:
       : Go through ParEdit reference guide and identify the alternatives
       : How to stop Emacs loading Lisp files when visiting them.
    : Keymapping
+      : Find a better way to deal with g being typed during Evil replace or isearch
       : Edebug comes up in normal state.
          : Learn why
          : Give Edebug keymap priority for SPC over Evil.

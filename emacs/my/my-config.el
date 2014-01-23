@@ -103,6 +103,7 @@
    ;; replacing a char with g (translated to Ctrl-x) would replace the char with ^X instead.  This check is
    ;; a somewhat hackish way of inferring Evil is in the middle of an evil-read-key call.
    (not (eq overriding-local-map evil-read-key-map))
+   (not (eq overriding-terminal-local-map isearch-mode-map))
    (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))))
 (defun my-translate-keys-initial-p (key-from)
   "Returns whether conditional key translations should be active; nil if not the initial key of a Key Sequence.  See make-conditional-key-translation function. "
