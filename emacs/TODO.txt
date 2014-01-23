@@ -125,8 +125,6 @@ Issues:
          : C coding style
          : Two spaces after period
          : my-offset
-   : Find lower memory alternative to usage pattern: e `find . -name "*.ext"`
-      : Need a way to see a list of files deep under a directory and open selectively
    : General debugging:
       : Consider approaches to put *Messages* buffer to file.
          : standard-output variable can be a function that takes one argument: the char to print
@@ -148,12 +146,9 @@ Issues:
       : edebug-initial-mode to continue to breakpoint
    : Error handling in Elisp
       : Why don't errors have the original backtrace available in some form?
-   : Learn about Dired
-      : Is there a notion of finding a set of files based on a criteria (search term, use of symbol), then iteratively visiting just those?
-         : Need Dired Plus to visit marked files
-      : Dired doesn't update when a directory is created separately.  Including when Auto Revert is enabled.
-      : Would be nice if I could expand and collapse directories inline, rather than at the bottom of the same buffer, and retain same information.
-      : The ^ command is inconvenient to reach, find another key binding.
+   : Dired:
+      : How to mark certain directories and open them recursively such as what my-insert-subdir-r does for all subdirs
+      : Dired doesn't update when a directory is created separately, even when Auto Revert is enabled.
    : Abolish ChangeLog in Emacs
       : See Stefan's post: http://lists.gnu.org/archive/html/emacs-devel/2013-03/msg00889.html
    : CEDET
@@ -237,6 +232,7 @@ Issues:
             : Can we use indicators in the margin?
                : How to indicate the intra line diffs this way?
                   : Perhaps with underline or bold face?
+               : See how diff-hl uses colored blocks in the margin
          : Should open vertically by default.
             : Set custom value, but doesn't work.
                : '(ediff-merge-split-window-function (quote split-window-vertically))
@@ -247,7 +243,6 @@ Issues:
          : Is there a way to forego having another window at all, and I can simply bind useful Ediff commands myself.
       : Improving
          : See reference to ediff at: https://lists.gnu.org/archive/html/bug-gnu-emacs/2014-01/msg00815.html
-   : Try diff-hl in ELPA, highlights changes in VCS
    : Diff mode
       : When navigating hunks, top of hunk displays in the middle of display, even if all of the hunk doesn't show.
          : Can use zt zb commands for now
@@ -258,60 +253,27 @@ Issues:
       : Diff idea threads:
          : http://lists.gnu.org/archive/html/emacs-devel/2013-11/msg00263.html
          : http://lists.gnu.org/archive/html/emacs-devel/2013-11/msg00274.html
+   : What is the difference between margin and fringe?
+      : Try diff-hl-margin-mode: "changes the highlighting function to use the margin instead of the fringe"
    : Builtin undo system:
       : See debbugs.gnu.org/16411
-      : Possible solutions to 16411 and supporting undo-tree integration:
-         : For all of these, a buffer-undo-list cons or change group would reference undone cons or change groups and remove them from the position adjusted copy of buffer-undo-list
-            : For an undo A of an undo B of an edit C in the region:
-               : B will be removed from list
-               : B's undone references are not processed, so C would remain in list
-               : C is correctly picked for undo
-         : Extend format of elements of buffer-undo-list with an "undoes" field
-            : Example: ("foo" . 123) becomes (('undo-in-region <cons of buffer-undo-list>) "foo" . 123) or some variation
-            : undo-make-selective-list would use the undoes field for cases of both undo-only and undo-in-region
+         : Outline of changes
+            : Make pending-undo-list lazy
             : primitive-undo can dynamically bind a variable undo--current indicating cons of buffer-undo-list being undone
-            : Change C code: truncate_undo_list to not reference truncated data
-            : Change C code: compact_undo-list remove unmarked markers in the undoes field
+               : Since funname will lead to recursive calls to primitive-undo, need to be careful that the newly generated redo element contains a reference to the outermost undone element
             : Change C code: when buffer edits occur, use undo--current to fill in undoes field
+            : Change C code: truncate_undo_list truncates elements, its referees need to count that memory towards limit
+            : Change C code: compact_undo-list remove unmarked markers in the undoes field
             : Obsolete undo-equiv-table
-            : TODO: Work out specifically how to tell if a change group was an undo-in-region
-            : Pros and cons:
-               : Intuitive data model
-               : Allows for solution to bug 2
-               : Allows for undo-tree to visualize undo history as a tree
-               : May break Elisp code that uses buffer-undo-list
-         : Weak hash table redo-record-table with cons of buffer-undo-list mapping to cons of buffer-undo-list undone
-            : Pros and cons:
-               : Uses more more memory
-               : Dances around changing buffer-undo-list format
-         : Change behavior of undo-in-region to undo change group as all-or-none, then redo-record-table maps a change group to undone change groups
-            : Arguably change groups are logically grouped and shouldn't be partially undone
-            : If user depends on this, could be indication the relevant Emacs feature needs to insert undo-boundaries
-            : Pros and cons:
-               : Same memory consumption as undo-equiv-table
-               : Changes user observable behavior
-         : Other issues:
-            : undo-make-selective-list issues
-               : Why doesn't the code try to cumulate deltas as it goes, to do better than O(n*n)?
-                  : Perhaps: BST sorted by position, non leaf nodes carrying sum of offsets in its subtree
-               : Why not compute the list lazily instead of in full up front?
-               : TODO: Understand markers and undo-adjusted-markers better
-            : buffer-undo-list doesn't share data as much as it could
-               : eg delete text of size M, do N cycles of undo and redo. Memory grows approximately M*N, but could be M
-               : Idea: have all "redo records" use the existing (apply delta beg end funname . args) kind of undo element
-                  : Infer type of undo from funname
-                     : Compare funname itself or one of its symbol properties?
-                  : Since funname will lead to recursive calls to primitive-undo, need to be careful that the newly generated redo element contains a reference to the outermost undone element
-                  : one of the args would be a cons in buffer-undo-list for the element undone
-                  : another arg would be the undo-delta from it to its undone
-                     : delta from head of buffer-undo-list may need recalculation
-                  : when truncating undo history: if an undone is truncated, its referee needs to count that memory towards limit
-                     : TODO: Understand types of truncation, eg the different history limits
+         : TODO:
+            : Work out specifically how to tell if a change group was an undo-in-region
+            : Understand markers and undo-adjusted-markers better
+            : Understand types of truncation, eg the different history limits
    : Undo Tree
       : Bugs:
          : Undo in region can hang accessing another node after an undo in region
-            : Repro: cc-engine.el j j j j i x x x C-c 0 v j u U u U C-c o v j
             : http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16377
+         : Found a case involving undo or redo in region in which text was reinserted in the wrong place
          : Without saving, make a few edits, undo each in their region, buffer is marked * when it shouldn't be, undo tree current node is correct
          : Enable and disable global-undo-tree-mode during startup. I can see Undo Tree inserting undo-tree-canary into undo-equiv-table.
          : Undos are not correct for a test case
@@ -330,10 +292,6 @@ Issues:
                   http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob;f=lib/diffseq.h;hb=HEAD
          : Integrate with builtin undo system, see:
             http://lists.gnu.org/archive/html/gnu-emacs-sources/2009-11/msg00010.html
-      : Advantages over builtin
-         : intuitive model
-         : diff nodes
-         : persistent undo history
       : Test undo tree when there is a buffer revert of externally made file changes
    : Learn merging in Git
       : Use magit?
@@ -403,6 +361,8 @@ Issues:
             foo, // blah
             a,   // |
         (// is aligned)
+   : Auto completion
+      : Check out company mode, including Semantic and Clang support
    : Consider Stefan's settings for anything useful
       https://lists.gnu.org/archive/html/bug-gnu-emacs/2013-06/msg00539.html
    : Improve Emacs initialization
