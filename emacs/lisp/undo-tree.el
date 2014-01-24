@@ -1690,22 +1690,22 @@ Comparison is done with `eq'."
 (defun undo-tree-copy-list (undo-list)
   ;; Return a deep copy of first changeset in `undo-list'. Object id's are
   ;; replaced by corresponding objects from `buffer-undo-tree' object-pool.
-  (when undo-list
-    (let (copy p)
-      ;; if first element contains an object id, replace it with object from
-      ;; pool, discarding element entirely if it's been GC'd
-      (while (null copy)
-	(setq copy
-	      (undo-tree-restore-GC-elts-from-pool (pop undo-list))))
+  (let (copy p)
+    ;; if first element contains an object id, replace it with object from
+    ;; pool, discarding element entirely if it's been GC'd
+    (while (and undo-list (null copy))
+      (setq copy
+            (undo-tree-restore-GC-elts-from-pool (pop undo-list))))
+    (when copy
       (setq copy (list copy)
-	    p copy)
+            p copy)
       ;; copy remaining elements, replacing object id's with objects from
       ;; pool, or discarding them entirely if they've been GC'd
       (while undo-list
-	(when (setcdr p (undo-tree-restore-GC-elts-from-pool
-			 (undo-copy-list-1 (pop undo-list))))
-	  (setcdr p (list (cdr p)))
-	  (setq p (cdr p))))
+        (when (setcdr p (undo-tree-restore-GC-elts-from-pool
+                         (undo-copy-list-1 (pop undo-list))))
+          (setcdr p (list (cdr p)))
+          (setq p (cdr p))))
       copy)))
 
 
