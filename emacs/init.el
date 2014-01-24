@@ -6,6 +6,7 @@
 ;;; General emacs settings
 (setq visible-bell t) 
 (tool-bar-mode 0)
+(scroll-bar-mode 0)
 (column-number-mode 1)
 (setq print-circle t)
 ;; TODO: auto-fill-mode doesn't work right for debug statement insert commands

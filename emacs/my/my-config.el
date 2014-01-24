@@ -103,6 +103,7 @@
    ;; replacing a char with g (translated to Ctrl-x) would replace the char with ^X instead.  This check is
    ;; a somewhat hackish way of inferring Evil is in the middle of an evil-read-key call.
    (not (eq overriding-local-map evil-read-key-map))
+   (not (eq overriding-terminal-local-map isearch-mode-map))
    (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))))
 (defun my-translate-keys-initial-p (key-from)
   "Returns whether conditional key translations should be active; nil if not the initial key of a Key Sequence.  See make-conditional-key-translation function. "
@@ -111,6 +112,7 @@
     (equal key-from (this-command-keys))
     (my-translate-keys-p key-from)))
 (make-conditional-key-translation (kbd "cc") (kbd "C-c") 'my-translate-keys-p)
+(make-conditional-key-translation "c " (kbd "C-SPC") 'my-translate-keys-p)
 ;; Create Key Translations for Control keys. Some examples:
 ;;   (kbd "ch") to (kbd "C-h")
 ;;   (kbd "cx") to (kbd "C-x")
@@ -284,6 +286,14 @@
     (interactive)
     (scroll-down my-leap-scroll-size)
     (evil-previous-line my-leap-scroll-size)))
+
+;; Dired mapping to open all subdirs recursively
+(require 'dired)
+(defun my-insert-subdir-r ()
+  (interactive)
+  (let ((dired-listing-switches (concat dired-listing-switches "R")))
+    (dired dired-directory dired-listing-switches)))
+(define-key dired-mode-map "r" 'my-insert-subdir-r)
 
 ;;; Load TAGS file, searching upwards from the directory Emacs was launched.
 (let ((my-tags-file (my-find-file-upwards "TAGS")))

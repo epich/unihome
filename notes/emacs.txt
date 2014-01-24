@@ -34,7 +34,8 @@ Notes:
          : M-x gdb
             : Use provided -i=mi flag then executable to debug
          : run <args>
-         : cccc ie C-c C-c will send SIGINT to child.
+         : cccc or zcc translated to C-c C-c will send SIGINT
+         : cccz or zcz translated to C-c C-z is supposed to send SIGTSTP
          : SIGSTOP can be sent from a separate terminal: kill -s STOP <pid>
          : C-x SPC to add breakpoint
          : gud-remove to remove breakpoint
