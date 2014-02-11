@@ -57,21 +57,9 @@
   (w32-send-sys-command 61488))
 (defun my-toggle-fullscreen ()
   (interactive)
-  ;; When cl-case is available, use that for a bit more cleanliness.
   (cond
-   ((not (display-graphic-p))        nil)
-   ((eql system-type 'aix)           (my-x-toggle-fullscreen))
-   ((eql system-type 'berkeley-unix) (my-x-toggle-fullscreen))
-   ((eql system-type 'cygwin)        (my-msw-toggle-fullscreen))
-   ((eql system-type 'darwin)        (my-x-toggle-fullscreen))
-   ((eql system-type 'gnu)           (my-x-toggle-fullscreen))
-   ((eql system-type 'gnu/linux)     (my-x-toggle-fullscreen))
-   ((eql system-type 'gnu/kfreebsd)  (my-x-toggle-fullscreen))
-   ((eql system-type 'hpux)          (my-x-toggle-fullscreen))
-   ((eql system-type 'irix)          (my-x-toggle-fullscreen))
-   ((eql system-type 'ms-dos)        (my-msw-toggle-fullscreen))
-   ((eql system-type 'usg-unix-v)    (my-x-toggle-fullscreen))
-   ((eql system-type 'windows-nt)    (my-msw-toggle-fullscreen))))
+   ((eq window-system 'x) (my-x-toggle-fullscreen))
+   ((eq window-system 'w32) (my-msw-toggle-fullscreen))))
 (defun my-get-buffer-name ()
   "Get the buffer name. "
   (file-name-nondirectory (or (buffer-file-name)
