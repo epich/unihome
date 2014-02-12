@@ -225,6 +225,7 @@
  '(ff-special-constructs nil)
  '(font-lock-maximum-decoration (quote ((c++-mode . 2))))
  '(font-use-system-font t)
+ '(frame-background-mode 'dark)
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(inverse-video t)
