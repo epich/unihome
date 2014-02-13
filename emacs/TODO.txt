@@ -217,6 +217,8 @@ Issues:
          : Evil greps for require calls
          : In Emacs core, cc-*.el dependencies are listed explicitly
       : See also: http://www.emacswiki.org/emacs/LibraryDependencies
+   : Unihome byte compilation errors
+      : Is declare-function useful?
    : Java development
       : Try out emacs-eclim which uses Eclipse as a backend
          http://www.skybert.net/emacs/java/
