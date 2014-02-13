@@ -10,6 +10,7 @@ FILES := \
   lisp/evil-numbers.el \
   lisp/flylisp.el \
   lisp/goto-chg.el \
+  lisp/undo-play.el \
   lisp/undo-tree.el
 LIBS :=
 
