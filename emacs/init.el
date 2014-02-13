@@ -125,7 +125,6 @@
 (when my-use-jdee
   (my-msg "Initializing JDEE.")
   (push (format "%s/dist/jdee-2.4.1/lisp" my-jdee-path) load-path)
-  (require 'jde)
   (autoload 'jde-mode "jde" "JDE mode." t)
   (setq auto-mode-alist
         (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
