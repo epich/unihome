@@ -3,6 +3,7 @@ Notes:
       http://git.savannah.gnu.org/cgit/
       http://hydra.nixos.org/jobset/gnu/emacs-trunk
          Glenn Morris describes it: http://lists.gnu.org/archive/html/emacs-devel/2013-09/msg00205.html
+      Emacs bugs: http://debbugs.gnu.org/cgi/pkgreport.cgi?include=originator%3AOReilly;package=emacs
    : Setup on RHEL5
        wget http://ftp.gnu.org/pub/gnu/emacs/emacs-23.4.tar.gz
        ./configure --prefix=/nas/home/boreilly/sw/emacs-install --with-gif=no
