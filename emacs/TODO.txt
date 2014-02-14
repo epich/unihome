@@ -79,14 +79,6 @@ Issues:
             : read-event approach:
                : Does the hyperify example in the Elisp manual's documentation of key-translation-map help?
                : Bind a function to the desired prefix key, read-event, use event-modifiers function to check if control is applied, ...
-         : GDB key bindings
-            : Change C-x C-a C-<key> to (something convenient (maybe an upper case letter)) then <key>.
-               : See http://www.gnu.org/software/emacs/manual/html_node/emacs/Commands-of-GUD.html
-            : Compare with Edebug bindings, perhaps mimic key bindings
-            : Bind SPC to step when debugger is active.
-            : gud-until is busted.
-               : Opens up source on other buffer when should use current source code buffer
-               : Current execution is steps out, not actually at the until point
       : See here for how to rebind keys that are indistinguishable in the tty:
          http://lists.gnu.org/archive/html/help-gnu-emacs/2013-06/msg00300.html
       : Stefan describes functional keymaps:
@@ -130,18 +122,21 @@ Issues:
       : Consider approaches to put *Messages* buffer to file.
          : standard-output variable can be a function that takes one argument: the char to print
          : See also with-output-to-temp-buffer
+   : If a string like process.c:4588 appears in a buffer, how to use that to conveniently go straight to both the file and line number?
+      : eg backtrace frames in gud-gdb displays these, also 'grep -n'
    : GDB in Emacs:
-      : Bugs:
-         : The GDB window inappropriately switches to where execution breaks
-         : C-x o buffer-menu then opens buffer-menu in the wrong window
-         : Can't send SIGTSTP via C-c C-z
-            : Debug statements indicate Emacs sends SIGTSTP to its child GDB
-            : Commenting out src/.gdbinit to pass SIGTSTP does not seem to allow it to get to the grandchild Emacs being debugged
-            : Relevant references:
-               Asking about it: http://lists.gnu.org/archive/html/emacs-devel/2013-06/msg00240.html
-               Git commit changing .gdbinit: f5e0904034dd920c03970877406249f0049c0348
-               Talking about .gdbinit change: http://lists.gnu.org/archive/html/emacs-devel/2005-11/msg00850.html
-         : gdb Emacs command stupidly finds the config.status as the executable argument to prefill for the gdb shell command
+      : gud-until can sometimes stop at wrong place in wrong buffer
+         : Does compiler optimization play a role?
+         : gud-until at line that shouldn't be hit at all, stop at wrong place
+         : Compare to gdb outside of Emacs
+      : GDB key bindings
+         : Change C-x C-a C-<key> to (something convenient (maybe an upper case letter)) then <key>.
+            : See http://www.gnu.org/software/emacs/manual/html_node/emacs/Commands-of-GUD.html
+         : Compare with Edebug bindings, perhaps mimic key bindings
+         : Bind SPC to step when debugger is active.
+      : gud-gdb often prefills the wrong executable
+         : See gud-query-cmdline
+         : Try advising gud-query-cmdline to set the init arg to (or init "")
    : Learn Edebug:
       : Make it so as space uses the debugger's keybinding instead of Evil, in normal/motion state.  See solution above under "Keymapping".
       : edebug-initial-mode to continue to breakpoint

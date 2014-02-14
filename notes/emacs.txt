@@ -556,6 +556,14 @@ Retired issues with residual notes:
       : Developer
          : campbell@mumble.net
          : Blog: http://mumble.net/~campbell/blag.txt
+   : GDB in Emacs:
+      : Problems with gdb command (now use gud-gdb instead):
+         : Strange windowing behavior, possibly by design:
+            : The GDB window inappropriately switches to where execution breaks
+            : C-x o buffer-menu then opens buffer-menu in the wrong window
+         : Dx in buffer-menu, buffer-menu continues to display deleted buffers
+            : Does this happen anytime killing one buffer kills others?
+         : See bug http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16745
    : Disconnect about Emacs' notion of where point is:
       : Decided to live with it
       : Official definition of point is between chars, cursor displayed over the next char.
