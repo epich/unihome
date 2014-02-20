@@ -12,15 +12,19 @@
     (undo-boundary))
   (let ((iters 0))
     ;; (insert (substring my-insertion-string 0 (/ (length my-insertion-string) 8)))
-    (insert "bbb")
+    (insert "b")
     (undo-boundary)
-    ;; Check (< iters 490) when "aaa" needs to be at the end of history
+    ;; When inserting "bbb", check (< iters 490) when "aaa" needs to
+    ;; be at the end of history.
+    ;;
+    ;; When inserting "b", check (< iters 499) when "aaa" needs to be
+    ;; at the end of history. undo function takes 0.23s in this case
     ;;
     ;; TODO: iters 1, select region around where aaa was inserted,
     ;; undo in region. Minibuffer says undo in region happened, but
     ;; aaa not restored. Not reproducable manually. The 141 in
     ;; buffer-undo-list appears to make the difference.
-    (while (and (< iters 1)
+    (while (and (< iters 1000000)
                 (cl-find "aaa"
                          buffer-undo-list
                          :test
