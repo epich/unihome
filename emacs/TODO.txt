@@ -266,10 +266,8 @@ Issues:
             : Obsolete undo-equiv-table
          : TODO:
             : Work out specifically how to tell if a change group was an undo-in-region
-            : Understand markers and undo-adjusted-markers better
             : Understand types of truncation, eg the different history limits
-      : Unreported bugs:
-         : In *scratch*, insert bbb, delete it, reinsert it, select region from BOB to just before bbb, undo, no buffer change but selection moves strangely
+      : See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16818
    : Undo Tree
       : Bugs:
          : Undo in region can hang accessing another node after an undo in region
