@@ -170,6 +170,8 @@ Issues:
       : Semantic is a global minor mode, but what if I don't want it in a particular major mode, such as Python?
       : Have semantic-ia-fast-jump push the location it left
          : See bug#15641: 24.3; [PATCH] Add find-definition for M-.
+      : semantic-ia-fast-jump unable to follow from editfns.c to mark's definition in buffer.h:
+         BVAR (current_buffer, mark)
       : I found a case in Java (with JDEE) where calling semantic-symref seemed to permanently change point in other Java source files
       : bug#15045 Point jumps inappropriately around time of Semantic lexing
       : [cedet-semantic] How does EDE find C++ implementation files
