@@ -37,7 +37,9 @@ def buildMy():
 
 def buildEmacsD():
    # Create directories Emacs expects
-   generalUtil.cmd('mkdir -p ~/.emacs.d ~/.emacs.d/semanticdb ~/.emacs.d/backup')
+   for dirI in ['~/.emacs.d' '~/.emacs.d/semanticdb' '~/.emacs.d/backup']:
+      if os.path.exists(dirI):
+         generalUtil.cmd('mkdir -p %s'%(dirI,))
    # Make sure abbrev_defs exists or I'll get an annoying prompt
    generalUtil.cmd('touch ~/.emacs.d/abbrev_defs')
    buildMiscElisp()
