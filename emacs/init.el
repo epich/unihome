@@ -28,11 +28,18 @@
 ;; Emacs stupidly formats curly braces in neither of the two most common ways.
 ;; This fixes that.
 (setq c-default-style "k&r")
-;; Font size (multiplied by 10)
-(set-face-attribute 'default nil :height 64)
 (fset 'yes-or-no-p 'y-or-n-p)
 (prefer-coding-system 'utf-8)
 ;;(setq truncate-lines nil)
+
+;;; Set font
+(defvar my-font "Monospace 7")
+;; Works on Windows? If not, make it conditional
+(set-frame-font my-font nil t)
+;; With default RHEL 5 font of Sans, :height 72 seems to be the minimum that 'B' and '8' can be distinguished.
+;; The :height is basically 10 times font size
+;; (set-face-attribute 'default nil :family "DejaVu LGC Sans Mono" :height 72)
+;; '(default ((t (:family "DejaVu LGC Sans Mono" :foundry "unknown" :slant normal :weight normal :height 80 :width normal))))
 
 ;;; Version specific elisp
 ;; electric-pair-mode introduced in version 24.
@@ -223,7 +230,6 @@
  '(ff-always-try-to-create nil)
  '(ff-special-constructs nil)
  '(font-lock-maximum-decoration (quote ((c++-mode . 2))))
- '(font-use-system-font t)
  '(frame-background-mode 'dark)
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
