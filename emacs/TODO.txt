@@ -144,6 +144,7 @@ Issues:
       : Why don't errors have the original backtrace available in some form?
    : Dired:
       : How to mark certain directories and open them recursively such as what my-insert-subdir-r does for all subdirs
+         : See dired-get-marked-files function
       : Dired doesn't update when a directory is created separately, even when Auto Revert is enabled.
    : Abolish ChangeLog in Emacs
       : See Stefan's post: http://lists.gnu.org/archive/html/emacs-devel/2013-03/msg00889.html
