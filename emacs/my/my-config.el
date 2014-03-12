@@ -321,7 +321,9 @@
 (defun my-insert-elisp-log ()
    "Insert log statement for elisp. "
    (interactive)
-   (insert "(my-msg \"DEBUG: \") ")
+   ;; Insert a debug statement that doesn't require any of my own functions
+   ;; TODO: Use my-msg without duplicating its code here
+   (insert "(let ((cur-time (current-time))) (message \"%s.%s DEBUG: \" (format-time-string \"%Y-%m-%dT%H:%M:%S\" cur-time) (format \"%06d\" (nth 2 cur-time))))")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
 (defun my-insert-c-log ()

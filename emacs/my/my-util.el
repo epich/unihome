@@ -18,7 +18,7 @@
    "Get the current time as a string. "
    (let ((cur-time (current-time)))
       (format "%s.%s" 
-         (format-time-string my-date-time-format)
+         (format-time-string my-date-time-format cur-time)
          (format "%06d" (nth 2 cur-time)))))
 (defmacro my-msg (msg &rest vargs)
   "Log a message, with prepended information. Used for debugging. "
