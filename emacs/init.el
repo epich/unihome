@@ -110,6 +110,8 @@
   ;; started in major mode hooks. This is because some of the Semantic
   ;; minor modes are not useful or even annoying in other major modes.
   (setq semantic-default-submodes nil)
+  ;; See if this helps disruptive pauses while editing
+  ;; (setq semantic-idle-scheduler-idle-time 60)
   (semantic-mode 1)
   (global-ede-mode 1)
   (setq cedet-loaded t)
