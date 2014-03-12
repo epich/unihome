@@ -1,4 +1,5 @@
 Issues:
+   : Debug hangs, set garbage-collection-messages to non nil
    : Logging with my-msg
       : Using backtrace-frame is not useful for two reasons:
          : Isn't necessarily the name of the top level function, but a widely used subform calling my-msg
