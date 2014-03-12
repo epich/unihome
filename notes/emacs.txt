@@ -7,6 +7,8 @@ Notes:
    : Setup on RHEL5
        wget http://ftp.gnu.org/pub/gnu/emacs/emacs-23.4.tar.gz
        ./configure --prefix=/nas/home/boreilly/sw/emacs-install --with-gif=no
+   : Run tests, eg timer-tests:
+      cd test/automated ; ../../src/emacs -Q --batch -L :. -l ./timer-tests.el -f ert-run-tests-batch-and-exit
    : Patches:
       http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00441.html
       http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00628.html
