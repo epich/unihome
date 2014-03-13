@@ -202,6 +202,9 @@ Notes:
             : Enter semanticdb-
             : Execute a command such as semantic-ia-fast-jump
             : elp-results
+      : Memory profiler:
+         : From https://lists.gnu.org/archive/html/bug-gnu-emacs/2014-03/msg00395.html
+            : M-x profiler-start RET mem RET [...] M-x profiler-report RET
       : http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Compilation-Tips
       : http://www.emacswiki.org/emacs/OptimizingEmacsStartup
       : http://stackoverflow.com/questions/778716/how-can-i-make-emacs-start-up-faster/779145#779145
