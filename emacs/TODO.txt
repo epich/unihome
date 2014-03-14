@@ -125,6 +125,7 @@ Issues:
       : Consider approaches to put *Messages* buffer to file.
          : standard-output variable can be a function that takes one argument: the char to print
          : See also with-output-to-temp-buffer
+         : See Stefan's post: http://lists.gnu.org/archive/html/help-gnu-emacs/2014-03/msg00276.html
    : If a string like process.c:4588 appears in a buffer, how to use that to conveniently go straight to both the file and line number?
       : eg backtrace frames in gud-gdb displays these, also 'grep -n'
    : GDB in Emacs:
