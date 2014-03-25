@@ -33,7 +33,15 @@
             "unihome" "OTS" "trunk" "sw")
         "Path to current project. " )
 
-(defun my-proj-emacs-init ())
+(defun my-proj-emacs-init ()
+  (setq my-offset 2)
+  ;; TODO: DRY
+  (setq evil-shift-width my-offset)
+  (setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
+  (let ((cur-time (current-time))) (message "%s.%s DEBUG: Setting c-basic-offset to %s" (format-time-string "%Y-%m-%dT%H:%M:%S" cur-time) (format "%06d" (nth 2 cur-time))
+                                            my-offset))
+  (setq c-basic-offset my-offset)
+  (setq-default c-default-style "gnu"))
 
 ;; Inside ede-expand-filename-impl name=BasicStatistics.h 
 ;; Inside ede-expand-filename-impl string dir=(void) 
@@ -93,7 +101,7 @@ NAME is the name of the file to find, basename including extension.  DIR is the 
 ;;(ede-java-root-project "goesr-java" :file (format "%s/Makefile" my-project-root))
 
 (cond
- ((string= my-project-root "emacs")
+ ((string= (file-name-nondirectory my-project-root) "emacs")
   (my-proj-emacs-init))
  ((and (file-accessible-directory-p "/goesr/user/boreilly")
        (getenv "LOAD_GOESR_ELISP"))
