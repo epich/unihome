@@ -311,6 +311,10 @@
   (let ((c-electric-flag t) (c-auto-newline))
     ad-do-it))
 
+;; Want to actually see the directory contents I go to
+(defadvice dired-maybe-insert-subdir (after my-advice-dired-maybe-insert-subdir activate)
+  (evil-scroll-line-to-top nil))
+
 ;;; Debug logging
 (defun my-insert-ant-log ()
   "Insert log statement for Ant build files. "
