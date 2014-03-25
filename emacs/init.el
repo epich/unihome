@@ -25,11 +25,9 @@
 (show-paren-mode 1)
 (setq show-paren-delay 0)
 (setq enable-recursive-minibuffers t)
-;; Emacs stupidly formats curly braces in neither of the two most common ways.
-;; This fixes that.
 (setq c-default-style "k&r")
 (fset 'yes-or-no-p 'y-or-n-p)
-(prefer-coding-system 'utf-8)
+;; (prefer-coding-system 'utf-8)
 ;;(setq truncate-lines nil)
 
 ;;; Set font
@@ -111,7 +109,7 @@
   ;; minor modes are not useful or even annoying in other major modes.
   (setq semantic-default-submodes nil)
   ;; See if this helps disruptive pauses while editing
-  ;; (setq semantic-idle-scheduler-idle-time 60)
+  (setq semantic-idle-scheduler-idle-time 60)
   (semantic-mode 1)
   (global-ede-mode 1)
   (setq cedet-loaded t)
