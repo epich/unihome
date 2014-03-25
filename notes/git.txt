@@ -11,7 +11,12 @@ Merging in Git:
 
 See history of lines in a file:
   http://lists.gnu.org/archive/html/emacs-devel/2014-01/msg02139.html
+    git log -L <start>,<end>:<file>
+    git log -L :<regex>:<file>
 
 Stephen Turnbull explains two shared repo setups:
   http://lists.gnu.org/archive/html/emacs-devel/2014-01/msg00834.html
+
+Update non current branch, eg for master:
+  git push . origin/master:master
 
