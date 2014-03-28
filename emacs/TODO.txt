@@ -17,6 +17,8 @@ Issues:
                3: Similarly, inserting text before "foo" creates incorrect highlighting.  {{{i}}}, type "baz", now "bazfoo" is highlighted.
                4: In Vim, if I search and replace (with {{{:1,$s/old/new/g}}}), then undo, the "old" string is highlighted.  Evil doesn't do that.  In Vim I liked this for verifying complex search and replace operations.
                5: Similarly, in Vim, a search and replace would use the new search term for further {{{n}}}, {{{N}}}.  So {{{:1,$s/old/new/g}}}, then {{{n}}} would go to instances of "old".
+      : evil-search overlay obscures region overlay
+         : Should evil-search use the same face as hi-lock-mode?
       : If I C-c or backspace to beginning of evil-search prompt, I have to wait in order to enter more input.  How to fix?
       : Try Frank's advice: https://bitbucket.org/lyro/evil/issue/279/evil-command-repeats-wrong-commands
          : Declare all commands added to evil-motion-state-map by (eg revert-buffer):
@@ -103,17 +105,11 @@ Issues:
       : Can I use an Evil ex hook for this?  See:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
    : How to mark search terms with different colors?
-      : Leverage highlight-regexp or highlight-phrase:
-         : Implementation:
-            : Would use evil-transform-vim-style-regexp to translate regexp to Emacs style
-            : Then feed into one of these highlight- functions.
-            : How to clear highlights?
-         : Limitations
-            : Doesn't case-fold the same way.
-      : Use Evil facilities:
-         : evil-ex-make-hl makes a highlight object
-         : evil-ex-delete-hl to clear them?
-      : Submit RFE to Evil for a function analogous to highlight-regexp and highlight-phrase .
+      : Leverage highlight-regexp or highlight-phrase?
+         : Proof of concept: (defun myhi () (interactive) (highlight-regexp (thing-at-point 'symbol) (hi-lock-read-face-name)))
+         : Clear highlights by turning off hi-lock-mode (then on again perhaps)
+         : Perhaps use evil-transform-vim-style-regexp to translate regexp to Emacs style?
+         : Doesn't seem to respect case-fold
    : Configure by project
       : Find project and set my-project-root
       : unihome is not found correctly because of unihome/emacs

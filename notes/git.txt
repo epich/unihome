@@ -20,3 +20,5 @@ Stephen Turnbull explains two shared repo setups:
 Update non current branch, eg for master:
   git push . origin/master:master
 
+git rev-parse HEAD
+
