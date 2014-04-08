@@ -55,6 +55,7 @@ Notes:
             : xbacktrace
             : See also etc/DEBUG
          : To debug Emacs in a terminal, see https://lists.gnu.org/archive/html/bug-gnu-emacs/2013-10/msg00353.html
+         : Print a Lisp variable: https://lists.gnu.org/archive/html/bug-gnu-emacs/2014-04/msg00088.html
       : Lisp debugging:
          : If Emacs hangs, set debug-on-quit to t
          : Debugging font lock

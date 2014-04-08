@@ -70,6 +70,8 @@ Issues:
       : Try evil-paredit
       : Go through ParEdit reference guide and identify the alternatives
       : How to stop Emacs loading Lisp files when visiting them.
+      : Navigating to definitions
+         : See thread: http://lists.gnu.org/archive/html/help-gnu-emacs/2014-03/msg00600.html
    : Keymapping
       : Find a better way to deal with g being typed during Evil replace or isearch
       : Edebug comes up in normal state.
