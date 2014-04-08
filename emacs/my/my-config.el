@@ -256,7 +256,7 @@
 (define-key evil-motion-state-map "opr" 'elp-results)
 (define-key evil-motion-state-map "or" 'revert-buffer)
 (define-key evil-motion-state-map "os" 'ff-find-other-file)
-(define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (my-toggle-fullscreen)))
+(define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs") (my-toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-normal-state-map "S" 'save-buffer)
 
