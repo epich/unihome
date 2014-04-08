@@ -6,6 +6,7 @@
 ;;; General emacs settings
 (setq visible-bell t) 
 (tool-bar-mode 0)
+(menu-bar-mode 0)
 (scroll-bar-mode 0)
 (column-number-mode 1)
 (setq print-circle t)
@@ -164,6 +165,7 @@
 ;;(setq tab-width my-offset)
 ;; Disable weird auto formatting
 (setq-default c-electric-flag nil)
+(electric-indent-mode -1)
 
 ;;; Packaging
 ;;
@@ -263,7 +265,7 @@
  ;; If there is more than one, they won't work right.
  '(lazy-highlight ((t (:background "gold" :foreground "black"))))
  '(semantic-idle-symbol-highlight ((t (:background "gray20"))))
- '(whitespace-tab ((((class color) (background dark)) (:background "grey30" :foreground "darkgray"))))
+ '(whitespace-tab ((((class color) (background dark)) (:background "grey8" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
 (require 'my-config)
