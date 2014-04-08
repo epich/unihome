@@ -10,7 +10,8 @@
     (undo-boundary)
     (undo)
     (undo-boundary))
-  (let ((iters 0))
+  (let ((iters 0)
+        (play-in-progress t))
     ;; (insert (substring my-insertion-string 0 (/ (length my-insertion-string) 8)))
     (insert "b")
     (undo-boundary)
@@ -24,7 +25,7 @@
     ;; undo in region. Minibuffer says undo in region happened, but
     ;; aaa not restored. Not reproducable manually. The 141 in
     ;; buffer-undo-list appears to make the difference.
-    (while (and (< iters 1000000)
+    (while (and (< iters 499)
                 (cl-find "aaa"
                          buffer-undo-list
                          :test
