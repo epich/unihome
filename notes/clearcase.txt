@@ -74,3 +74,8 @@ Then do:
    cd ~
    ct setcs -current
 
+Triggers:
+  List triggers: ct lstype -kind trtype
+  Describe trigger: cleartool describe trtype:NO_CI_lex_r1_int
+  Change trigger: cleartool mktrtype -replace -element -all -preop checkin -nuser vadm_goe,ccuser,szaccheo,esteinfe,boreilly,ptine,pvanromp -execunix "perl -e die()" -execwin "ccperl -e die()" -brtype lex_r2_int,lex_r1_int NO_CI_lex_r1_int
+
