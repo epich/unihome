@@ -32,3 +32,4 @@ At the start of .sql scripts:
   set feedback off
   WHENEVER SQLERROR EXIT SQL.SQLCODE ROLLBACK
 
+set linesize 250
