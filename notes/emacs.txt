@@ -7,8 +7,10 @@ Notes:
    : Setup on RHEL5
        wget http://ftp.gnu.org/pub/gnu/emacs/emacs-23.4.tar.gz
        ./configure --prefix=/nas/home/boreilly/sw/emacs-install --with-gif=no
-   : Run tests, eg timer-tests:
-      cd test/automated ; ../../src/emacs -Q --batch -L :. -l ./timer-tests.el -f ert-run-tests-batch-and-exit
+   : Run tests, eg in bash:
+      (make && cd test/automated ; ../../src/emacs -Q --batch -L :. -l ./undo-tests.el -f ert-run-tests-batch-and-exit)
+   : Run specific test:
+      (make && cd test/automated ; ../../src/emacs -Q --batch -L :. -l ./undo-tests.el --eval '(ert-run-tests-batch-and-exit "undo-test-in-region-eob")')
    : Redisplay
       : Eli explains redisplay: http://lists.gnu.org/archive/html/emacs-devel/2014-03/msg00677.html
    : Patches:
