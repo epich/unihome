@@ -408,4 +408,6 @@ Issues:
          : Convert Evil regexp to Emacs regexp
          : Evil does not call replace-regexp, so need to also defadvice the appropriate Evil function.
          : Note: Evil's search and replace supports the \, feature.
+   : Clojure:
+      : See Bastien's setup at: http://lists.gnu.org/archive/html/help-gnu-emacs/2014-04/msg00298.html
 
