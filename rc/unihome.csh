@@ -67,7 +67,7 @@ endif
 #
 # To use cyan color prompt: [36m%}
 # To use yellow color prompt: [33m%}
-alias setprompt 'set prompt="%{\033[36m%}`hostname` $ccroot `pwd` :%{\033[0m%} "'
+alias setprompt 'set prompt="%{\033[01;33m%}`hostname` $ccroot `pwd` :%{\033[0m%} "'
 setprompt
 # TODO: Doesn't work if piping output to the cd command.  Aliases are not recognized in this way.
 alias cd 'chdir \!* && setprompt'
