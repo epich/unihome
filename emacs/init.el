@@ -267,7 +267,7 @@
  ;; If there is more than one, they won't work right.
  '(lazy-highlight ((t (:background "gold" :foreground "black"))))
  '(semantic-idle-symbol-highlight ((t (:background "gray20"))))
- '(whitespace-tab ((((class color) (background dark)) (:background "grey8" :foreground "darkgray"))))
+ '(whitespace-tab ((((class color) (background dark)) (:background "grey15" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
 (require 'my-config)
