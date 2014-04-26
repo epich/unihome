@@ -90,6 +90,7 @@ Issues:
          : Could possibly replace need for make-conditional-key-translation business
          : http://lists.gnu.org/archive/html/emacs-devel/2014-01/msg00318.html
          : http://lists.gnu.org/archive/html/emacs-devel/2014-01/msg00352.html
+      : http://stackoverflow.com/questions/22851425/predicate-based-dynamic-key-binding-with-default-fallback
    : Key bindings in minibuffer:
       : See Frank Fischer's posting at:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
@@ -98,10 +99,12 @@ Issues:
    : How to automatically wrap text and code at 80 columns?
       : Auto fill mode?
          : Thought I turned it on, but "Fill" not in modeline.
+         : See http://stackoverflow.com/questions/22751226/vim-setwidth-equivalent-in-emacs
    : When up arrowing through search history, Vim goes to end of line, Evil beginning.
       : This is consistent with Emacs minibuffer in general.  Investigate
       : Can I use an Evil ex hook for this?  See:
          https://bitbucket.org/lyro/evil/issue/166/some-key-bindings-are-missing-in-command
+      : See: http://stackoverflow.com/questions/22774498/using-elisp-to-move-the-cursor-in-the-evil-minibuffer
    : How to mark search terms with different colors?
       : Leverage highlight-regexp or highlight-phrase:
          : Implementation:
@@ -410,4 +413,6 @@ Issues:
          : Convert Evil regexp to Emacs regexp
          : Evil does not call replace-regexp, so need to also defadvice the appropriate Evil function.
          : Note: Evil's search and replace supports the \, feature.
+   : Emacs on Mac
+      : X11 forwarding: http://stackoverflow.com/questions/22735651/how-to-run-emacs-in-ssh-x-from-linux-to-mac-os-x-with-xforwarding
 
