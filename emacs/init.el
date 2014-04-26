@@ -6,6 +6,7 @@
 ;;; General emacs settings
 (setq visible-bell t) 
 (tool-bar-mode 0)
+(menu-bar-mode 0)
 (scroll-bar-mode 0)
 (column-number-mode 1)
 (setq print-circle t)
@@ -25,12 +26,12 @@
 (show-paren-mode 1)
 (setq show-paren-delay 0)
 (setq enable-recursive-minibuffers t)
-;; Emacs stupidly formats curly braces in neither of the two most common ways.
-;; This fixes that.
 (setq c-default-style "k&r")
 (fset 'yes-or-no-p 'y-or-n-p)
-(prefer-coding-system 'utf-8)
+;; (prefer-coding-system 'utf-8)
 ;;(setq truncate-lines nil)
+(setq split-width-threshold 80)
+(setq split-height-threshold nil)
 
 ;;; Set font
 (defvar my-font "Monospace 7")
@@ -111,7 +112,7 @@
   ;; minor modes are not useful or even annoying in other major modes.
   (setq semantic-default-submodes nil)
   ;; See if this helps disruptive pauses while editing
-  ;; (setq semantic-idle-scheduler-idle-time 60)
+  (setq semantic-idle-scheduler-idle-time 60)
   (semantic-mode 1)
   (global-ede-mode 1)
   (setq cedet-loaded t)
@@ -166,6 +167,7 @@
 ;;(setq tab-width my-offset)
 ;; Disable weird auto formatting
 (setq-default c-electric-flag nil)
+(electric-indent-mode -1)
 
 ;;; Packaging
 ;;
@@ -265,7 +267,7 @@
  ;; If there is more than one, they won't work right.
  '(lazy-highlight ((t (:background "gold" :foreground "black"))))
  '(semantic-idle-symbol-highlight ((t (:background "gray20"))))
- '(whitespace-tab ((((class color) (background dark)) (:background "grey30" :foreground "darkgray"))))
+ '(whitespace-tab ((((class color) (background dark)) (:background "grey15" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
 (require 'my-config)

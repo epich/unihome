@@ -26,3 +26,10 @@ Create an empty Oracle DB schema:
   SQL> grant all privileges to tmcleod;
   SQL> grant select any dictionary to tmcleod;
   SQL> exit
+
+At the start of .sql scripts:
+
+  set feedback off
+  WHENEVER SQLERROR EXIT SQL.SQLCODE ROLLBACK
+
+set linesize 250

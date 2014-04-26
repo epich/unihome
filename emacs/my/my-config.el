@@ -256,7 +256,7 @@
 (define-key evil-motion-state-map "opr" 'elp-results)
 (define-key evil-motion-state-map "or" 'revert-buffer)
 (define-key evil-motion-state-map "os" 'ff-find-other-file)
-(define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs.d/init.el") (my-toggle-fullscreen)))
+(define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs") (my-toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-normal-state-map "S" 'save-buffer)
 
@@ -310,6 +310,10 @@
   ;; Dynamic let
   (let ((c-electric-flag t) (c-auto-newline))
     ad-do-it))
+
+;; Want to actually see the directory contents I go to
+(defadvice dired-maybe-insert-subdir (after my-advice-dired-maybe-insert-subdir activate)
+  (evil-scroll-line-to-top nil))
 
 ;;; Debug logging
 (defun my-insert-ant-log ()
