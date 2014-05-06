@@ -258,7 +258,8 @@
 (define-key evil-motion-state-map "os" 'ff-find-other-file)
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs") (my-toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
-(define-key evil-normal-state-map "S" 'save-buffer)
+(define-key evil-motion-state-map " " nil)
+(define-key evil-normal-state-map " " 'save-buffer)
 
 ;;; More Evil key bindings
 
