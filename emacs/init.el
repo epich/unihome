@@ -30,8 +30,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 ;; (prefer-coding-system 'utf-8)
 ;;(setq truncate-lines nil)
-(setq split-width-threshold 80)
-(setq split-height-threshold nil)
+(setq window-min-width 80)
 
 ;;; Set font
 (defvar my-font "Monospace 7")
