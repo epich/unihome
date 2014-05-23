@@ -188,6 +188,7 @@ bash:
    : Redirect to a command instead of to file:
       some-command | tee >(other-command)
       : Requires new enough bash to get Process Substitution functionality.
+   : $? prints the return code of previous command
 
 sed:
    : { ./myexec & } | sed '/String to wait for on stdout from myexec/q'
