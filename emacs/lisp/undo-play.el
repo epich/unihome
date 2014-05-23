@@ -61,3 +61,20 @@
       (cl-incf iters))
     (garbage-collect)))
 
+;; TODO: Problems undo-redo-table solves:
+;;   - undo in region adjustments
+;;   - undo-only to skip over undos in region
+;;   - undo-only in region to work
+;;   - repeated undos and redos of large deletions can share deleted
+;;     Lisp_String
+;;   - Undo Tree integration (with additional change to disambiguate
+;;     regional from nonregional, perhaps by mapping the nil boundary
+;;     that closes a change group.
+
+undo-deltas:
+;; TODO: Should take the form (UNDONE POS . OFFSET) where
+;; UNDONE is at first a reference to cons of buffer-undo-list,
+;; but later its the resulting undo-delta. Later still in
+;; undo-adjust-pos, it is temporarily swapped with a
+;; subadjustment to account for the "ddd" problem.
+
