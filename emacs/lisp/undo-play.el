@@ -78,6 +78,8 @@
 ;; undo-adjust-pos, it is temporarily swapped with a
 ;; subadjustment to account for the "ddd" problem.
 
+;; undo-tree on top of builtin undo system:
+;;
 ;; One implementation idea is to use a weak key hash table
 ;; undo-tree-node-table mapping change groups of buffer-undo-list to
 ;; undo-tree-node. The tree would be truncated based on a mark and
