@@ -38,8 +38,6 @@
   ;; TODO: DRY
   (setq evil-shift-width my-offset)
   (setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
-  (let ((cur-time (current-time))) (message "%s.%s DEBUG: Setting c-basic-offset to %s" (format-time-string "%Y-%m-%dT%H:%M:%S" cur-time) (format "%06d" (nth 2 cur-time))
-                                            my-offset))
   (setq c-basic-offset my-offset)
   (setq-default c-default-style "gnu"))
 

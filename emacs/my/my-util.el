@@ -85,7 +85,10 @@ or nil if not found."
                     (let* ((parent (file-name-directory path))
                            (possible-file (concat parent file-to-find)))
                       (cond
-                       ((file-exists-p possible-file) possible-file) ; Found
+                       ;; Found
+                       ((and (file-exists-p possible-file)
+                             (not (file-directory-p possible-file)))
+                        possible-file)
                        ;; The parent of ~ is nil and the parent of / is itself.
                        ;; Thus the terminating condition for not finding the file
                        ;; accounts for both.
