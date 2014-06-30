@@ -163,10 +163,13 @@
 (define-key evil-normal-state-map "-" nil)
 (define-key evil-motion-state-map "-" 'evil-end-of-line)
 (define-key evil-normal-state-map "s" nil)
-(define-key evil-motion-state-map "t" nil)
-(define-key evil-motion-state-map "T" nil)
-(define-key evil-motion-state-map "t" 'semantic-ia-fast-jump)
-(define-key evil-motion-state-map "T" 'semantic-ia-show-summary)
+
+;; TODO: Needs to be project specific
+;;(define-key evil-motion-state-map "t" nil)
+;;(define-key evil-motion-state-map "T" nil)
+;;(define-key evil-motion-state-map "t" 'semantic-ia-fast-jump)
+;;(define-key evil-motion-state-map "T" 'semantic-ia-show-summary)
+
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
 (define-key evil-normal-state-map "P" 'evil-paste-after)
@@ -297,7 +300,12 @@
 (define-key dired-mode-map "r" 'my-insert-subdir-r)
 
 ;;; Load TAGS file, searching upwards from the directory Emacs was launched.
-(let ((my-tags-file (my-find-file-upwards "TAGS")))
+(let ((my-tags-file (my-find-file-upwards
+                     "TAGS"
+                     ;; Workaround a file system that falsly reports
+                     ;; files as existing as a dir
+                     (lambda (possible-file)
+                       (not (file-directory-p possible-file))))))
   (when my-tags-file
     (my-msg "Loading tags file: %s" my-tags-file)
     (visit-tags-table my-tags-file)))

@@ -76,10 +76,12 @@ differences."
       (pop time-i))
     (nreverse ret)))
 
-(defun my-find-file-upwards (file-to-find)
+(defun my-find-file-upwards (file-to-find &optional additional-criteria-function)
   "Recursively searches each parent directory starting from the default-directory.
-looking for a file with name file-to-find.  Returns the path to it
-or nil if not found."
+looking for a file with name file-to-find. If
+additional-criteria-function taking one POSSIBLE-FILE arg is
+specified, it must return true for a file to be found. Function
+returns the path to the found file or nil if not found."
   (cl-labels
       ((find-file-r (path)
                     (let* ((parent (file-name-directory path))
@@ -87,7 +89,8 @@ or nil if not found."
                       (cond
                        ;; Found
                        ((and (file-exists-p possible-file)
-                             (not (file-directory-p possible-file)))
+                             (or (not additional-criteria-function)
+                                 (funcall additional-criteria-function possible-file)))
                         possible-file)
                        ;; The parent of ~ is nil and the parent of / is itself.
                        ;; Thus the terminating condition for not finding the file

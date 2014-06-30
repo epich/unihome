@@ -20,18 +20,19 @@
 ;;           "path/to/java/src"
 ;;           )) "Path for project .java files.")
 
-(defvar my-rhel-release 5 "Major release of RHEL. ")
-(defvar goesr-sdf-ots-path
-        (let (sdf-ots-path (getenv "SDF_OTS_PATH")) (if sdf-ots-path sdf-ots-path "/goesr/user/build/3rdparty/OTS"))
-        "Path to GOESR OTS (Off the Shelf) software. ")
+;; No longer needed: 
+;; (defvar my-rhel-release 5 "Major release of RHEL. ")
+;; (defvar goesr-sdf-ots-path
+;;         (let (sdf-ots-path (getenv "SDF_OTS_PATH")) (if sdf-ots-path sdf-ots-path "/goesr/user/build/3rdparty/OTS"))
+;;         "Path to GOESR OTS (Off the Shelf) software. ")
+
 (defvar my-project-root
-        (or (my-find-file-upwards "IPT_MM/Dev")
-            (my-find-file-upwards "IPT_PG/Dev")
-            ;; TODO: Do better: find if emacs/COPYING exists to reduce false positives, find emacs-* dirs
+        (or ;; TODO: Do better: find if emacs/COPYING exists to reduce false positives, find emacs-* dirs
             ;; TODO: Find root based on .git, .hg, .bzr
             (my-find-file-upwards "emacs")
             "unihome" "OTS" "trunk" "sw")
         "Path to current project. " )
+(require 'google-project nil t)
 
 (defun my-proj-emacs-init ()
   (setq my-offset 2)
@@ -100,10 +101,7 @@ NAME is the name of the file to find, basename including extension.  DIR is the 
 
 (cond
  ((string= (file-name-nondirectory my-project-root) "emacs")
-  (my-proj-emacs-init))
- ((and (file-accessible-directory-p "/goesr/user/boreilly")
-       (getenv "LOAD_GOESR_ELISP"))
-  (my-proj-goesr-cxx-init)))
+  (my-proj-emacs-init)))
 
 (provide 'my-proj)
 

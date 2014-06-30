@@ -48,6 +48,8 @@
 (cond ((<= 24 emacs-major-version)
        (electric-pair-mode 0)))
 
+(push "~/lisp" load-path)
+
 ;; Load my stuff
 (push "~/unihome/emacs/my" load-path)
 (require 'my-util)
