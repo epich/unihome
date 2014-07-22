@@ -31,9 +31,11 @@
 ;; (prefer-coding-system 'utf-8)
 ;;(setq truncate-lines nil)
 (setq window-min-width 80)
+(setq split-height-threshold nil)
+(setq split-width-threshold 80)
 
 ;;; Set font
-(defvar my-font "Monospace 7")
+(defvar my-font "Monospace 8")
 ;; Works on Windows? If not, make it conditional
 (set-frame-font my-font nil t)
 ;; With default RHEL 5 font of Sans, :height 72 seems to be the minimum that 'B' and '8' can be distinguished.
@@ -92,6 +94,13 @@
 (require 'undo-tree)
 (global-undo-tree-mode -1)
 
+;; Define before loading my-proj, so as projects can set to nil
+(defvar my-use-cedet t)
+
+;; Initialize project-specific elisp
+(my-msg "Initializing project-specific elisp.")
+(require 'my-proj)
+
 ;;; Initialize CEDET
 ;;;
 (defvar cedet-loaded nil
@@ -101,7 +110,7 @@
 ;; use when using JDEE.
 ;;
 ;; CEDET raises an error if loaded again.
-(unless cedet-loaded
+(when (and my-use-cedet (not cedet-loaded))
   (my-msg "Initializing CEDET.")
   ;; When using CEDET source distributed separately from Emacs
   ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
@@ -131,7 +140,7 @@
   "/psd15/linux/boreilly/sw/jdee-trunk/jdee"
   "Path to JDEE checked out from trunk and built.")
 (defvar my-use-jdee
-  (file-accessible-directory-p my-jdee-path)
+  (and my-use-cedet (file-accessible-directory-p my-jdee-path))
   "Whether to use JDEE. ")
 (when my-use-jdee
   (my-msg "Initializing JDEE.")
@@ -140,10 +149,6 @@
   (setq auto-mode-alist
         (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
   )
-
-;; Initialize project-specific elisp
-(my-msg "Initializing project-specific elisp.")
-(require 'my-proj)
 
 ;; Paths for JDEE
 (defvar my-java-classpath (if (boundp 'goesr-classpath)
