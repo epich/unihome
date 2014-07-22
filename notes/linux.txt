@@ -134,6 +134,9 @@ or
 Debug symbol notes:
     Post at 29th July 2009, 03:50 PM of http://nixcraft.com/linux-software/12412-segfault-error-4-a.html looks useful for using objdump and the segfault message in /var/log/messages to narrow down the problem.
 
+Gnome settings:
+  gsettings set org.gnome.settings-daemon.peripherals.keyboard repeat-interval 15
+
 Terminal:
     If terminal gets garbled (eg after 'cat' on a binary file) then paste into terminal:
         echo -e '\017' or '\x0f'
