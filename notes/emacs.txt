@@ -74,6 +74,7 @@ Notes:
             : Also try debug-on-signal t
          : Removing the .elc can give more informative backtraces
          : Capture backtraces for later inspection, see macroexp--backtrace per http://lists.gnu.org/archive/html/emacs-devel/2014-05/msg00268.html
+         : Stefan's advice for putting Lisp backtraces in error objects: http://lists.gnu.org/archive/html/emacs-devel/2014-08/msg00482.html
    : Run Emacs generally with --enable-checking as noted: --enable-checking or CFLAGS='-DENABLE_CHECKING'
    : Line in file for macros:
       http://lists.gnu.org/archive/html/help-gnu-emacs/2013-11/msg00201.html
