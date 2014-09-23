@@ -374,7 +374,7 @@
 (defun my-insert-python-log ()
   "Insert log statement for Python. "
   (interactive)
-  (insert "print( \"DEBUG: \"%() ) ; sys.stdout.flush() # TODO: temporary for debug")
+  (insert "print( \"DEBUG: \".format() ) ; sys.stdout.flush() # TODO: temporary for debug")
   (search-backward "DEBUG: ")
   (goto-char (match-end 0)))
 (defun my-insert-ruby-log ()
@@ -588,4 +588,3 @@
   )
 
 (provide 'my-config)
-
