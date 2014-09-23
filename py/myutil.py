@@ -23,7 +23,7 @@ class GeneralError(Exception):
       Keyword arguments:
       supplementalMsg -- the message to add to the propogating exception
       """
-      
+
       self.supplementalMsg = supplementalMsg
       Exception.__init__( self, supplementalMsg )
 
@@ -32,7 +32,7 @@ class GeneralError(Exception):
 
       This method is meant to be invoked from within an except clause.
 
-      Specifically, the reraised Exception retains the trackback of the currently propogating exception and its 
+      Specifically, the reraised Exception retains the trackback of the currently propogating exception and its
       type and message.  The reraised Exception is of type GeneralError.
 
       Based on tips at http://blog.ianbicking.org/2007/09/12/re-raising-exceptions/
@@ -49,7 +49,7 @@ class GeneralError(Exception):
 
 class ShellCmdError(GeneralError):
    """The cmd function throws this exception for failed shell commands."""
-   
+
    pass
 
 class FdReader(threading.Thread):
@@ -58,22 +58,22 @@ class FdReader(threading.Thread):
 
    def __init__(s, readFd, printLines):
       """Initialize data and initialize the thread super class.
-      
+
       Keyword arguments:
       readFd -- integer file descriptor which this thread should read.
       printLines -- a boolean for whether to print the lines to stdout.
       """
-      
+
       threading.Thread.__init__(s)
       s.readFd = readFd
       s.printLines = printLines
       # List of strings which are concatenated to get the full output
       # from reading readFd
       s.outBuf = []
-   
+
    def run(s):
       """Run the thread, which exits when the FD closes."""
-      
+
       while True:
          readLine = s.readFd.readline()
          if not readLine: break
@@ -99,7 +99,7 @@ def cmd(cmdStr, shellStr='sh', background=False, printStdout=False, printStderr=
    background -- whether to issue the command and return promptly.
    printStdout -- whether to print the stdout.
    printStderr -- whether to print the stderr.
-   printDebug -- whether to print internal debugging information, including 
+   printDebug -- whether to print internal debugging information, including
    the command issued and its timing.
    ignoreReturnCode -- True means ignore the return code and return the stdout,
                     False means throw an exception if return code is not 0.
@@ -118,10 +118,10 @@ def cmd(cmdStr, shellStr='sh', background=False, printStdout=False, printStderr=
    # The FdReader objects don't work in conjunction with the communicate call.  They conflict in their usage
    # of the stdout and stderr pipes.
 
-   childSh = subprocess.Popen(cmdStr, executable=shellStr, bufsize=1, shell=True, 
+   childSh = subprocess.Popen(cmdStr, executable=shellStr, bufsize=1, shell=True,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-   fdReaders = { 'stdout':FdReader(childSh.stdout, printStdout), 
+   fdReaders = { 'stdout':FdReader(childSh.stdout, printStdout),
             'stderr':FdReader(childSh.stderr, printStderr), }
    for readerI in fdReaders.values():
       readerI.start()
@@ -200,7 +200,7 @@ def truncateString(inStr, strMaxLen, suffix=''):
    """
    if strMaxLen<len(suffix):
       raise Exception('Unexpected comparison: %s<%s'%(len(suffix),strMaxLen))
-      
+
    tStr = inStr[:(strMaxLen-len(suffix))]+suffix
    return tStr
 
@@ -211,5 +211,3 @@ def datetime2time(dt):
    """
 
    return time.mktime( dt.timetuple() ) + 1e-6*dt.microsecond
-
-
