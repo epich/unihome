@@ -22,7 +22,8 @@ export EDITOR=vim
 export PAGER=less
 export VISUAL=vim
 # Vi bindings when arrowing up to previous commands
-set -o vi
+# Is this responsible for strange mutations to command history? History should be immutable.
+#set -o vi
 # Based on advice at: http://tldp.org/HOWTO/Xterm-Title-4.html
 #
 # Also used elements from a default Ubuntu bashrc
