@@ -5,8 +5,6 @@
 import getopt
 import os
 import sys
-sys.path.append(sys.path[0]+'/py')
-import generalUtil
 sys.path.append(sys.path[0]+'/emacs')
 import emacsUtil
 
@@ -35,4 +33,3 @@ def __MAIN__():
 
 if __name__=='__main__':
    __MAIN__()
-

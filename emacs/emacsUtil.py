@@ -5,7 +5,7 @@
 import os
 import sys
 # Bootstrap generalUtil
-sys.path.append( '~/unihome/py' )
+sys.path.append(sys.path[0]+'/py')
 import generalUtil
 
 evilDir_g = 'evil'
@@ -51,4 +51,3 @@ def __MAIN__():
 
 if __name__=='__main__':
    __MAIN__()
-
