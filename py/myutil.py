@@ -144,22 +144,21 @@ def cmd(cmdStr, shellStr='sh', background=False, printStdout=False, printStderr=
    return fdReaders['stdout'].getOutput()
 
 def sourceBash(bashFile):
-   """Source a Bash file and set its environment variables in the Python environment.
+  """Source a Bash file and set its environment variables in the Python environment.
 
-   Reference: http://stackoverflow.com/questions/3503719/emulating-bash-source-in-python
+  Reference: http://stackoverflow.com/questions/3503719/emulating-bash-source-in-python
 
-   TODO: Doesn't handle multile line env vars, common for exported
-   Bash functions. Try the pickling approach in the above link (but
-   instead of 'os.environ = env', iterate over env and assign).
+  Keyword arguments:
+  bashFile -- string path to the Bash file to source
 
-   Keyword arguments:
-   bashFile -- string path to the Bash file to source
-
-   """
-   envOut = cmd("source %s && env"%(bashFile,), shellStr="bash")
-   for envI in envOut.splitlines():
-      (key, _, val,) = envI.partition("=")
-      os.environ[key] = val
+  """
+  pickled_env = cmd('source {} && python -c "{}"'
+                    .format(bashFile,
+                            "import os,pickle;print(pickle.dumps(os.environ))"),
+                    shellStr="bash")
+  child_env = pickle.loads(pickled_env)
+  for key, val in child_env.items():
+    os.environ[key] = val
 
 def setupSite():
    """Add Python packages which are not yet installed system-wide."""
