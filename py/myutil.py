@@ -143,17 +143,17 @@ def cmd(cmdStr, shellStr='sh', background=False, printStdout=False, printStderr=
 
    return fdReaders['stdout'].getOutput()
 
-def sourceBash(bashFile):
-  """Source a Bash file and set its environment variables in the Python environment.
+def import_bash(bash_file):
+  """Source a bash file and import its exported variables into this Python process.
 
   Reference: http://stackoverflow.com/questions/3503719/emulating-bash-source-in-python
 
   Keyword arguments:
-  bashFile -- string path to the Bash file to source
+  bash_file -- string path to the Bash file to source
 
   """
   pickled_env = cmd('source {} && python -c "{}"'
-                    .format(bashFile,
+                    .format(bash_file,
                             "import os,pickle;print(pickle.dumps(os.environ))"),
                     shellStr="bash")
   child_env = pickle.loads(pickled_env)
