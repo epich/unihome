@@ -33,6 +33,8 @@ Issues:
       : Unintented selection when clicking Emacs window in evil-normal-mode
          : https://bitbucket.org/lyro/evil/issue/355/unintented-selection-when-clicking-emacs
          : Possibly related: https://lists.gnu.org/archive/html/bug-gnu-emacs/2014-05/msg01050.html
+      : Search for selection:
+        : See Frank's 2014-10-14 email "Search for selected text"
    : Increment and decrement numbers in buffer
       : Using evil-numbers, but why should it have anything to do with Evil? Is there a generic package? Perhaps adapt evil-numbers for myself.
    : Kbd macros:
@@ -416,4 +418,7 @@ Issues:
       : See Bastien's setup at: http://lists.gnu.org/archive/html/help-gnu-emacs/2014-04/msg00298.html
    : Emacs on Mac
       : X11 forwarding: http://stackoverflow.com/questions/22735651/how-to-run-emacs-in-ssh-x-from-linux-to-mac-os-x-with-xforwarding
+  : sshinatab:
+    White background with 'emacs -r':
+      : Someone worked around with: env TERM=xterm-256color emacsclient -nw
 
