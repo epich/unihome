@@ -2,13 +2,18 @@
 ulimit -c unlimited
 
 alias v='vim'
-function e() { emacs --reverse-video "$@" & }
+function e() {
+  emacs --reverse-video "$@" &
+  # So as I can close the shell and Emacs stays open
+  disown
+}
 # Open GDB on the core file and its executable most recently generated in the subtree rooted at the ./ dir.
 function gdb_recent() { recent_core=`find . -name "core.*" | xargs ls -dt | head -1` && cored_exec_file=`file $recent_core | sed "s/.*, from '\(.*\)'/\1/"` && gdb `find . -perm /111 -type f -name "$cored_exec_file*"` $recent_core ; }
 alias ls='ls --color'
 alias l='ls -lart1'
 alias c='cat'
 alias m='mplayer -loop 0'
+#citc=`g4 client -o | grep '^Client:' | sed 's|Client:\tboreilly:\([^:]*\):.*|\1|g'`
 alias title='echo -n "]2;\!*"'
 alias cwdcmd='title "$hostString : `pwd`"'
 alias sa='source ~/.bashrc'
