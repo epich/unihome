@@ -33,6 +33,9 @@
 (setq window-min-width 80)
 (setq split-height-threshold nil)
 (setq split-width-threshold 80)
+;; Disable inappropriate behavior for left click in inactive
+;; minibuffer (opens *Messages*)
+(define-key minibuffer-inactive-mode-map [mouse-1] nil)
 
 ;;; Set font
 (defvar my-font "Monospace 8")
@@ -293,4 +296,3 @@
 (add-hook 'emacs-startup-hook 'my-emacs-startup-hook)
 
 (my-msg "Finished loading init file. ")
-
