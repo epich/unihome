@@ -1,0 +1,5 @@
+Installed:
+  : CrxMouse
+  : Death to _blank
+  : Google Docs
+
