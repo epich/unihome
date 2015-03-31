@@ -44,16 +44,16 @@
 
 # Haven't decided which to bind to middle click
 # TODO: bind the other to copy (Ctrl-C or Ctrl-Shift-C in terminal)
+# "xte 'mouseclick 2'"
+#   b:6 + Release
 "xte 'mouseclick 2'"
-  b:8 + Release
-"xte 'mouseclick 2'"
-  b:9 + Release
+  b:7 + Release
 
 # Browser back and forward with wheel tilts
-"xte 'keydown Alt_L' 'key Left' 'keyup Alt_L'"
-  b:6
-"xte 'keydown Alt_L' 'key Right' 'keyup Alt_L'"
-  b:7
+# "xte 'keydown Alt_L' 'key Left' 'keyup Alt_L'"
+#   b:6
+# "xte 'keydown Alt_L' 'key Right' 'keyup Alt_L'"
+#   b:7
 
 # Bind to 
 # xte 'keydown Control_L' 'keydown Shift_L' 'key v' 'keyup Shift_L' 'keyup Control_L'

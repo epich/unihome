@@ -433,7 +433,8 @@
 
 (defun my-c-mode-common-hook ()
   (my-msg "Inside my-c-mode-common-hook for buffer %s " (buffer-name))
-  (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
+  ;; TODO: Project specific:
+  ;;(define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
   (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
   (my-bind-tab-del-keys)
   ;; Set to just longer than the keyboard repetition rate.

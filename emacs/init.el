@@ -72,6 +72,7 @@
 (push '("Rakefile" . ruby-mode) auto-mode-alist)
 (push '("\\.rkt" . scheme-mode) auto-mode-alist)
 (push '("wscript" . python-mode) auto-mode-alist)
+(push '("\\.log" . text-mode) auto-mode-alist)
 
 (my-msg "Initializing third party lisp. ")
 (package-initialize)
