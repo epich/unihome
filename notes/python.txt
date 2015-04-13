@@ -25,4 +25,18 @@ pexpect:
       patchProc.send(patchString)
       patchProc.sendcontrol('d')
 
+Quick start to get _Cmd:
+  class Error(Exception):
+    """Module level errors."""
 
+
+  def _Cmd(cmd_str):
+    child = subprocess.Popen("bash",
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             stdin=subprocess.PIPE)
+    (out, err) = child.communicate(cmd_str)
+    if child.returncode:
+      raise Error("Shell command failed with errno:{} cmd:{} stderr:{}".format(
+          child.returncode, cmd_str, err))
+    return out

@@ -257,7 +257,6 @@
 (define-key evil-motion-state-map "opf" 'elp-instrument-function)
 (define-key evil-motion-state-map "opp" 'elp-instrument-package)
 (define-key evil-motion-state-map "opr" 'elp-results)
-(define-key evil-motion-state-map "or" 'revert-buffer)
 (define-key evil-motion-state-map "os" 'ff-find-other-file)
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs") (my-toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
@@ -265,6 +264,10 @@
 (define-key evil-normal-state-map " " 'save-buffer)
 
 ;;; More Evil key bindings
+
+;; overwrite-mode (insert key) can supercede Vim's R command.
+(define-key evil-normal-state-map "R" nil)
+(define-key evil-motion-state-map "R" 'revert-buffer)
 
 ;;; Undo system key bindings
 (define-key evil-normal-state-map "u" nil)
