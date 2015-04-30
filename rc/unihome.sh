@@ -34,7 +34,7 @@ export VISUAL=vim
 # Also used elements from a default Ubuntu bashrc
 case $TERM in
     xterm*)
-        export PS1="\[\033]0;\h \w\007\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\h \w :\[\033[00m\] "
+        export PS1="\[\033]0;\h \w\007\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\033[01;40m\]\h \w :\[\033[00m\] "
         ;;
     *)
         PS1="bash : "
