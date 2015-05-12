@@ -16,7 +16,7 @@ set hls
 set nocompatible
 
 " Indent policy
-set autoindent
+set noautoindent
 set nosmartindent
 set tabstop=3
 set shiftwidth=3
