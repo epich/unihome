@@ -13,16 +13,17 @@ function gdb_recent() { recent_core=`find . -name "core.*" | xargs ls -dt | head
 # Mac doesn't support --color, and -G means something different than on Linux.
 if [[ `uname` == 'Darwin' ]]; then
   alias ls='ls -Gp'
+  alias sa='source ~/.bash_profile'
 else
   alias ls='ls --color'
+  alias sa='source ~/.bashrc'
 fi
-alias l='ls -lart1'
+alias l='ls -lart'
 alias c='cat'
 alias m='mplayer -loop 0'
 #citc=`g4 client -o | grep '^Client:' | sed 's|Client:\tboreilly:\([^:]*\):.*|\1|g'`
 alias title='echo -n "]2;\!*"'
 alias cwdcmd='title "$hostString : `pwd`"'
-alias sa='source ~/.bashrc'
 alias 0='cat ~/unihome/misc/clearScreen.txt'
 alias fdate="date '+%Y%m%dT%H%M%S'"
 alias h=history
