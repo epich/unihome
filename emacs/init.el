@@ -4,10 +4,12 @@
 (require 'cl-lib)
 
 ;;; General emacs settings
-(setq visible-bell t) 
+;; Not defined for Darwin
 (when (fboundp #'tool-bar-mode) (tool-bar-mode 0))
+(when (fboundp #'scroll-bar-mode) (scroll-bar-mode 0))
+
+(setq visible-bell t)
 (menu-bar-mode 0)
-(scroll-bar-mode 0)
 (column-number-mode 1)
 (setq print-circle t)
 ;; TODO: auto-fill-mode doesn't work right for debug statement insert commands
