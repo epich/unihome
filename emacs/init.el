@@ -5,7 +5,7 @@
 
 ;;; General emacs settings
 (setq visible-bell t) 
-(tool-bar-mode 0)
+(when (fboundp #'tool-bar-mode) (tool-bar-mode 0))
 (menu-bar-mode 0)
 (scroll-bar-mode 0)
 (column-number-mode 1)
