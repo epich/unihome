@@ -2,21 +2,25 @@
 ulimit -c unlimited
 
 alias v='vim'
-function e() {
-  emacs --reverse-video "$@" &
-  # So as I can close the shell and Emacs stays open
-  disown
-}
+
 # Open GDB on the core file and its executable most recently generated in the subtree rooted at the ./ dir.
 function gdb_recent() { recent_core=`find . -name "core.*" | xargs ls -dt | head -1` && cored_exec_file=`file $recent_core | sed "s/.*, from '\(.*\)'/\1/"` && gdb `find . -perm /111 -type f -name "$cored_exec_file*"` $recent_core ; }
 
-# Mac doesn't support --color, and -G means something different than on Linux.
 if [[ `uname` == 'Darwin' ]]; then
+  # Mac doesn't support --color, and -G means something different than on Linux.
   alias ls='ls -Gp'
   alias sa='source ~/.bash_profile'
+  function e() {
+    open -a Emacs --args --reverse-video "$@"
+  }
 else
   alias ls='ls --color'
   alias sa='source ~/.bashrc'
+  function e() {
+    emacs --reverse-video "$@" &
+    # So as I can close the shell and Emacs stays open
+    disown
+  }
 fi
 alias l='ls -lart'
 alias c='cat'
