@@ -11,7 +11,7 @@ if [[ `uname` == 'Darwin' ]]; then
   alias ls='ls -Gp'
   alias sa='source ~/.bash_profile'
   function e() {
-    open -a Emacs --args --reverse-video "$@"
+    open -n -a ~/sw/emacs/live/nextstep/Emacs.app --args --reverse-video "$@"
   }
 else
   alias ls='ls --color'
