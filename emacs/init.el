@@ -35,7 +35,7 @@
 (setq window-min-width 80)
 (setq split-height-threshold nil)
 (setq split-width-threshold 80)
-(setq mac-command-modifier 'meta)
+;;(setq mac-command-modifier 'meta)
 ;; Disable inappropriate behavior for left click in inactive
 ;; minibuffer (opens *Messages*)
 (define-key minibuffer-inactive-mode-map [mouse-1] nil)
