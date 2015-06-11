@@ -59,6 +59,7 @@
   (interactive)
   (cond
    ((eq window-system 'x) (my-x-toggle-fullscreen))
+   ((eq window-system 'ns) (toggle-frame-maximized))
    ((eq window-system 'w32) (my-msw-toggle-fullscreen))))
 (defun my-get-buffer-name ()
   "Get the buffer name. "
@@ -215,4 +216,3 @@ takes key-from as an argument. "
       (if (funcall translate-keys-p key-from) key-to key-from))))
 
 (provide 'my-util)
-
