@@ -9,7 +9,9 @@
 (when (fboundp #'scroll-bar-mode) (scroll-bar-mode 0))
 
 (setq visible-bell t)
-(menu-bar-mode 0)
+;; Menu bar doesn't take up extra vertical space on Mac
+(unless (eq window-system 'ns)
+  (menu-bar-mode 0))
 (column-number-mode 1)
 (setq print-circle t)
 ;; TODO: auto-fill-mode doesn't work right for debug statement insert commands
