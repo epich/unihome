@@ -41,9 +41,10 @@
 ;; Disable inappropriate behavior for left click in inactive
 ;; minibuffer (opens *Messages*)
 (define-key minibuffer-inactive-mode-map [mouse-1] nil)
+(setq ffap-require-prefix t)
 
 ;;; Set font
-(defvar my-font "Monospace 8")
+(defvar my-font "Monospace 10")
 ;; Works on Windows? If not, make it conditional
 (set-frame-font my-font nil t)
 ;; With default RHEL 5 font of Sans, :height 72 seems to be the minimum that 'B' and '8' can be distinguished.

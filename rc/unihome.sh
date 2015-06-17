@@ -9,6 +9,14 @@ function gdb_recent() { recent_core=`find . -name "core.*" | xargs ls -dt | head
 if [[ `uname` == 'Darwin' ]]; then
   # Mac doesn't support --color, and -G means something different than on Linux.
   alias ls='ls -Gp'
+  export CLICOLOR=1
+  # Dark background colors:
+  #
+  # Default color for directory is too dark
+  export LSCOLORS=GxFxCxDxBxegedabagaced
+  # Light background colors:
+  #export LSCOLORS=ExFxBxDxCxegedabagacad
+
   alias sa='source ~/.bash_profile'
   function e() {
     open -n -a ~/sw/emacs/live/nextstep/Emacs.app --args --reverse-video "$@"
