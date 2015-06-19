@@ -21,9 +21,8 @@ if [[ `uname` == 'Darwin' ]]; then
   function e() {
     open -n -a ~/sw/emacs/live/nextstep/Emacs.app --args --reverse-video "$@"
   }
-  # Generalize purpose command to open apps at the command line.
-  #
-  # Example: o nextstep/Emacs.app -r /tmp/foo.txt
+  # General purpose command to open apps at the command line, eg:
+  #   o nextstep/Emacs.app -r /tmp/foo.txt
   function o() {
     args=( $@ )
     open -n -a `pwd`/$1 --args ${args[@]:1}
@@ -37,6 +36,7 @@ else
     disown
   }
 fi
+alias .=pwd
 alias l='ls -lart'
 alias c='cat'
 alias m='mplayer -loop 0'
