@@ -81,12 +81,13 @@
 (push '("\\.log" . text-mode) auto-mode-alist)
 
 (my-msg "Initializing third party lisp. ")
+;; Any package customizations must precede this.
 (package-initialize)
+;; Emacs manual says to to set this to nil if manually calling
+;; package-initialize
+(setq package-enable-at-startup nil)
 (push "~/unihome/emacs/lisp" load-path)
 (require 'adjust-parens)
-(ignore-errors (require 'diff-hl))
-(when (featurep 'diff-hl)
-  (global-diff-hl-mode))
 (add-hook 'emacs-lisp-mode-hook #'adjust-parens-mode)
 (require 'flylisp)
 (add-hook 'emacs-lisp-mode-hook #'flylisp-mode)
@@ -193,8 +194,21 @@
       package-archives )
 (push '("melpa" . "http://melpa.milkbox.net/packages/")
       package-archives)
+(push '("melpa-stable" . "http://stable.melpa.org/packages/")
+      package-archives)
 ;; (push '("local-elpa" . "/psd15/linux/boreilly/sw/elpa/packages")
 ;;       package-archives)
+
+;; TODO: Move to a byte compiled file
+(defun my-package-install (pkg)
+  (unless (package-installed-p pkg)
+    (my-msg "Downloading package: %s" pkg)
+    (with-demoted-errors (package-install pkg))))
+
+(my-package-install 'diff-hl)
+(with-demoted-errors nil
+  (require 'diff-hl)
+  (global-diff-hl-mode))
 
 ;;; Customizations
 ;;

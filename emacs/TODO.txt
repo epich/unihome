@@ -380,6 +380,7 @@ Issues:
       : See if there's a better way to ensure essential commands are available in the presence of other init errors
          : See http://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Errors
       : use-package looks useful: https://github.com/jwiegley/use-package
+        : Learn more about deferred init. Useful for Grok?
    : Emacs package:
       : How to control priority of repos when calling package-install?
          : Try let binding the package-archives
