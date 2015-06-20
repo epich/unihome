@@ -83,17 +83,6 @@
 (my-msg "Initializing third party lisp. ")
 (push "~/unihome/emacs/lisp" load-path)
 
-;;; Evil
-(my-msg "Initializing Evil.")
-(push "~/unihome/emacs/evil" load-path)
-(require 'evil)
-(evil-mode 1)
-
-;;; Undo Tree
-(my-msg "Initializing Undo Tree. ")
-(require 'undo-tree)
-(global-undo-tree-mode -1)
-
 ;; Define before loading my-proj, so as projects can set to nil
 (defvar my-use-cedet t)
 
@@ -213,14 +202,20 @@
       (my-msg "Loading package: %s" pkg)
       (require pkg))))
 
+;; TODO: Move initialization bits to after-init-hook and remove
+;; package-initialize et al.
 (when (my-package-load 'adjust-parens)
   (add-hook 'emacs-lisp-mode-hook #'adjust-parens-mode))
 (when (my-package-load 'diff-hl)
   (global-diff-hl-mode))
+(when (my-package-load 'evil)
+  (evil-mode 1))
 (my-package-load 'evil-numbers)
 (when (my-package-load 'flylisp)
   (add-hook 'emacs-lisp-mode-hook #'flylisp-mode))
 (my-package-load 'goto-chg)
+(when (my-package-load 'undo-tree)
+  (global-undo-tree-mode -1))
 
 ;;; Customizations
 ;;
