@@ -25,7 +25,7 @@ if [[ `uname` == 'Darwin' ]]; then
   #   o nextstep/Emacs.app -r /tmp/foo.txt
   function o() {
     args=( $@ )
-    open -n -a `pwd`/$1 --args ${args[@]:1}
+    open -n -a $1 --args ${args[@]:1}
   }
 else
   alias ls='ls --color'
