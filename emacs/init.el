@@ -88,65 +88,6 @@
 (my-msg "Initializing project-specific elisp.")
 (require 'my-proj)
 
-;;; Initialize CEDET
-;;;
-(defvar cedet-loaded nil
-  "Whether the initialization loaded CEDET explicitly. ")
-;; CEDET documents loading must occur before other packages load any part of CEDET.
-;; Especially important since Emacs has a different version builtin, which I can't
-;; use when using JDEE.
-;;
-;; CEDET raises an error if loaded again.
-(when (and my-use-cedet (not cedet-loaded))
-  (my-msg "Initializing CEDET.")
-  ;; When using CEDET source distributed separately from Emacs
-  ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
-  (require 'semantic/ia)
-  (require 'semantic/bovine/gcc)
-  ;; Note: Instead of setting any semantic-default-submodes prior to
-  ;; starting semantic-mode, the "submodes" (really minor modes) are
-  ;; started in major mode hooks. This is because some of the Semantic
-  ;; minor modes are not useful or even annoying in other major modes.
-  (setq semantic-default-submodes nil)
-  ;; See if this helps disruptive pauses while editing
-  (setq semantic-idle-scheduler-idle-time 60)
-  (semantic-mode 1)
-  (global-ede-mode 1)
-  (setq cedet-loaded t)
-  (setq semanticdb-default-save-directory (format "%s/semanticdb" my-emacs-data-dir))
-
-  ;; Configure GNU Global
-  ;; (if (not (cedet-gnu-global-version-check t))
-  ;;     (my-msg "WARNING: Failed cedet-gnu-global-version-check ")
-  ;;   (semanticdb-enable-gnu-global-databases 'c-mode)
-  ;;   (semanticdb-enable-gnu-global-databases 'c++-mode))
-  )
-
-;;; Initialize JDEE
-(defvar my-jdee-path
-  "/psd15/linux/boreilly/sw/jdee-trunk/jdee"
-  "Path to JDEE checked out from trunk and built.")
-(defvar my-use-jdee
-  (and my-use-cedet (file-accessible-directory-p my-jdee-path))
-  "Whether to use JDEE. ")
-(when my-use-jdee
-  (my-msg "Initializing JDEE.")
-  (push (format "%s/dist/jdee-2.4.1/lisp" my-jdee-path) load-path)
-  (autoload 'jde-mode "jde" "JDE mode." t)
-  (setq auto-mode-alist
-        (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
-  )
-
-;; Paths for JDEE
-(defvar my-java-classpath (if (boundp 'goesr-classpath)
-                              goesr-classpath
-                            nil)
-  "Classpaths for Java. ")
-(defvar my-java-sourcepath (if (boundp 'goesr-sourcepath)
-                               goesr-sourcepath
-                             nil)
-  "Sourcepaths for Java. ")
-
 ;;; Relating to tabs
 ;; Permanently force Emacs to indent with spaces, never with TABs:
 (setq-default indent-tabs-mode nil)
@@ -215,6 +156,28 @@
 (when (my-package-load 'undo-tree)
   (global-undo-tree-mode -1))
 
+(defvar cedet-loaded nil "Whether my Elisp loaded CEDET.")
+;; If we have Grok, we don't need Semantic. Semantic is too buggy to
+;; leave enabled needlessly.
+(unless (featurep 'grok)
+  (my-msg "Loading CEDET packages.")
+  ;; When using CEDET source distributed separately from Emacs
+  ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
+  (require 'semantic/ia)
+  (require 'semantic/bovine/gcc)
+  ;; Note: Instead of setting any semantic-default-submodes prior to
+  ;; starting semantic-mode, the "submodes" (really minor modes) are
+  ;; started in major mode hooks. This is because some of the Semantic
+  ;; minor modes are not useful or even annoying in other major modes.
+  (setq semantic-default-submodes nil)
+  ;; See if this helps disruptive pauses while editing
+  (setq semantic-idle-scheduler-idle-time 60)
+  (semantic-mode 1)
+  (global-ede-mode 1)
+  (setq semanticdb-default-save-directory (format "%s/semanticdb"
+                                                  my-emacs-data-dir))
+  (setq cedet-loaded t))
+
 ;;; Customizations
 ;;
 ;; Specific customizations are documented outside the sexp, because
@@ -273,11 +236,6 @@
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(inverse-video t)
- '(jde-global-classpath my-java-classpath)
- '(jde-jdk-registry
-   (quote
-    (("1.6.0" . "/usr/lib/jvm/java-1.6.0-openjdk.x86_64"))))
- '(jde-sourcepath my-java-sourcepath)
  '(large-file-warning-threshold 1000000000.0)
  '(message-log-max 100000)
  '(nxml-child-indent my-offset)
