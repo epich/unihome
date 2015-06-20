@@ -36,7 +36,8 @@ def buildEmacs():
       printStdout=True,
       printStderr=True)
    os.chdir('{}/.emacs.d'.format(os.environ['HOME']))
-   myutil.cmd('ln -s {}/emacs/init.elc .'.format(sys.path[0]))
+   if not os.path.exists('init.elc'):
+      myutil.cmd('ln -s {}/emacs/init.elc .'.format(sys.path[0]))
 
 def __MAIN__():
    # Parse args
