@@ -1,15 +1,11 @@
 # Byte compile miscellaneous Elisp source files.  build.py invokes this.
-#
-# Copied initially from Evil's makefile, so GPLed.
 
 SHELL := bash
 EMACS ?= emacs
 # The my- elisp files depend on practically everything, so I always rebuild them from build.py -- for now.
 FILES := \
   lisp/adjust-parens.el \
-  lisp/evil-numbers.el \
   lisp/flylisp.el \
-  lisp/goto-chg.el \
   lisp/undo-play.el \
   lisp/undo-tree.el
 LIBS :=

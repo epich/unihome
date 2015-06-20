@@ -196,8 +196,8 @@
 ;; If there are no archives downloaded, then do so.
 ;;
 ;; This is for bootstrapping a new Emacs installation. In the steady
-;; state, I don't want to contact the remote repos each time Emacs
-;; starts. Downloading updated archives can be done by:
+;; state, don't contact the remote repos every startup. Downloading
+;; updates to the archive contents can be done by:
 ;;   M-x list-packages
 (unless package-archive-contents
   (package-refresh-contents))
