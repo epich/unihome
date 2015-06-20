@@ -87,12 +87,6 @@
 ;; package-initialize
 (setq package-enable-at-startup nil)
 (push "~/unihome/emacs/lisp" load-path)
-(require 'adjust-parens)
-(add-hook 'emacs-lisp-mode-hook #'adjust-parens-mode)
-(require 'flylisp)
-(add-hook 'emacs-lisp-mode-hook #'flylisp-mode)
-(require 'evil-numbers)
-(require 'goto-chg)
 
 ;;; Evil
 (my-msg "Initializing Evil.")
@@ -199,16 +193,25 @@
 ;; (push '("local-elpa" . "/psd15/linux/boreilly/sw/elpa/packages")
 ;;       package-archives)
 
-;; TODO: Move to a byte compiled file
-(defun my-package-install (pkg)
-  (unless (package-installed-p pkg)
-    (my-msg "Downloading package: %s" pkg)
-    (with-demoted-errors (package-install pkg))))
+;; TODO: Move to a byte compiled file, and make sure require works right
+(defun my-package-load (pkg)
+  ;; with-demoted-errors checks debug-on-error
+  (let ((debug-on-error nil))
+    (with-demoted-errors nil
+      (unless (package-installed-p pkg)
+        (my-msg "Downloading package: %s" pkg)
+        (package-install pkg))
+      (my-msg "Loading package: %s" pkg)
+      (require pkg))))
 
-(my-package-install 'diff-hl)
-(with-demoted-errors nil
-  (require 'diff-hl)
+(when (my-package-load 'adjust-parens)
+  (add-hook 'emacs-lisp-mode-hook #'adjust-parens-mode))
+(when (my-package-load 'diff-hl)
   (global-diff-hl-mode))
+(my-package-load 'evil-numbers)
+(when (my-package-load 'flylisp)
+  (add-hook 'emacs-lisp-mode-hook #'flylisp-mode))
+(my-package-load 'goto-chg)
 
 ;;; Customizations
 ;;
