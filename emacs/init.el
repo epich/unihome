@@ -249,7 +249,7 @@
  '(ac-delay 1.0)
  '(cc-search-directories
    (quote
-    ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "../../src" "./include" "../include" "./inc" "../inc" "../inc/L1aObject")))
+    ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "./include" "../include" "./inc" "../inc" "./public" "../public" "./internal" "../internal")))
  '(column-number-mode t)
  '(delete-by-moving-to-trash t)
  '(dired-auto-revert-buffer t)
