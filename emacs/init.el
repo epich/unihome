@@ -59,11 +59,12 @@
 (cond ((<= 24 emacs-major-version)
        (electric-pair-mode 0)))
 
-(push "~/lisp" load-path)
-
 ;; Load my stuff
 (push "~/unihome/emacs/my" load-path)
 (require 'my-util)
+
+(push "~/unihome/emacs/lisp" load-path)
+(push "~/lisp" load-path)
 
 (my-toggle-fullscreen)
 
@@ -79,9 +80,6 @@
 (push '("\\.rkt" . scheme-mode) auto-mode-alist)
 (push '("wscript" . python-mode) auto-mode-alist)
 (push '("\\.log" . text-mode) auto-mode-alist)
-
-(my-msg "Initializing third party lisp. ")
-(push "~/unihome/emacs/lisp" load-path)
 
 ;; Define before loading my-proj, so as projects can set to nil
 (defvar my-use-cedet t)
