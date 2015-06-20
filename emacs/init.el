@@ -81,11 +81,6 @@
 (push '("\\.log" . text-mode) auto-mode-alist)
 
 (my-msg "Initializing third party lisp. ")
-;; Any package customizations must precede this.
-(package-initialize)
-;; Emacs manual says to to set this to nil if manually calling
-;; package-initialize
-(setq package-enable-at-startup nil)
 (push "~/unihome/emacs/lisp" load-path)
 
 ;;; Evil
@@ -188,10 +183,24 @@
       package-archives )
 (push '("melpa" . "http://melpa.milkbox.net/packages/")
       package-archives)
-(push '("melpa-stable" . "http://stable.melpa.org/packages/")
-      package-archives)
+;; (push '("melpa-stable" . "http://stable.melpa.org/packages/")
+;;       package-archives)
 ;; (push '("local-elpa" . "/psd15/linux/boreilly/sw/elpa/packages")
 ;;       package-archives)
+
+;; Any package customizations must precede this.
+(package-initialize)
+;; Emacs manual says to to set this to nil if manually calling
+;; package-initialize
+(setq package-enable-at-startup nil)
+;; If there are no archives downloaded, then do so.
+;;
+;; This is for bootstrapping a new Emacs installation. In the steady
+;; state, I don't want to contact the remote repos each time Emacs
+;; starts. Downloading updated archives can be done by:
+;;   M-x list-packages
+(unless package-archive-contents
+  (package-refresh-contents))
 
 ;; TODO: Move to a byte compiled file, and make sure require works right
 (defun my-package-load (pkg)
