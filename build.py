@@ -28,13 +28,15 @@ def buildEmacs():
    # Make sure abbrev_defs exists or I'll get an annoying prompt
    myutil.cmd('touch ~/.emacs.d/abbrev_defs')
    myutil.cmd(
-      'emacs --batch -L my --eval "{}" -f batch-byte-compile my/*.el'.format(
+      'emacs --batch -L my --eval "{}" -f batch-byte-compile init.el my/*.el'.format(
          # Need to package-initialize because byte compiled files
          # reference packages
          "(progn (require 'package) (package-initialize))"),
       printDebug=True,
       printStdout=True,
       printStderr=True)
+   os.chdir('{}/.emacs.d'.format(os.environ['HOME']))
+   myutil.cmd('ln -s {}/emacs/init.elc .'.format(sys.path[0]))
 
 def __MAIN__():
    # Parse args

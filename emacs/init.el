@@ -81,9 +81,6 @@
 (push '("wscript" . python-mode) auto-mode-alist)
 (push '("\\.log" . text-mode) auto-mode-alist)
 
-;; Define before loading my-proj, so as projects can set to nil
-(defvar my-use-cedet t)
-
 ;; Initialize project-specific elisp
 (my-msg "Initializing project-specific elisp.")
 (require 'my-proj)
@@ -159,7 +156,7 @@
 (defvar cedet-loaded nil "Whether my Elisp loaded CEDET.")
 ;; If we have Grok, we don't need Semantic. Semantic is too buggy to
 ;; leave enabled needlessly.
-(unless (featurep 'grok)
+(unless (or cedet-loaded (featurep 'grok))
   (my-msg "Loading CEDET packages.")
   ;; When using CEDET source distributed separately from Emacs
   ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
