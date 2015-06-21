@@ -1,6 +1,13 @@
 ;; -*- lexical-binding: t -*-
 ;;
 
+;; On Mac, opening Emacs.app loses the exported PWD env var, whilst
+;; other env vars are inherited as expected. unihome.sh smuggles the
+;; pwd via this env var instead.
+(let ((app-open-pwd (getenv "APP_OPEN_PWD")))
+  (when app-open-pwd
+    (setq-default default-directory app-open-pwd)))
+
 (require 'cl-lib)
 
 ;;; General emacs settings
@@ -44,6 +51,7 @@
 (setq ffap-require-prefix t)
 
 ;;; Set font
+;; On Macbook and Emacs configured with --with-ns:
 (defvar my-font "Monospace 10")
 ;; Works on Windows? If not, make it conditional
 (set-frame-font my-font nil t)

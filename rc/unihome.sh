@@ -18,14 +18,17 @@ if [[ `uname` == 'Darwin' ]]; then
   #export LSCOLORS=ExFxBxDxCxegedabagacad
 
   alias sa='source ~/.bash_profile'
-  function e() {
-    open -n -a ~/sw/emacs/live/nextstep/Emacs.app --args --reverse-video "$@"
-  }
   # General purpose command to open apps at the command line, eg:
   #   o nextstep/Emacs.app -r /tmp/foo.txt
   function o() {
+    # A hack to smuggle pwd to Emacs.app. It seems open undefines
+    # PWD, even whilst other env vars are inherited.
+    export APP_OPEN_PWD=`pwd`
     args=( $@ )
     open -n -a $1 --args ${args[@]:1}
+  }
+  function e() {
+    o ~/sw/emacs/live/nextstep/Emacs.app -r "$@"
   }
 else
   alias ls='ls --color'
