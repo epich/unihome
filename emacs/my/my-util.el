@@ -32,7 +32,7 @@
                                       arg))
                               vargs))))
 
-(defvar my-offset 3 "My indentation offset. ")
+(defvar my-offset 2 "My indentation offset. ")
 
 (defun my-check-range (lhs middle rhs)
   "Checks if lhs <= middle < rhs"

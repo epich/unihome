@@ -49,11 +49,30 @@
         (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
   )
 
-;; Paths for JDEE
+;;; Paths for JDEE
+
+;; Classpath for JDEE
+;;
+;; To get a decent classpath from an Ant build system, hack:
+;;   <echo message="Used test.run.classpath ${toString:test.run.classpath}"/>
+;; Then massage that output into something like:
+;;   (defvar my-classpath (quote (
+;;           "path/to/a.jar"
+;;           "path/to/another.jar"
+;;           )) "Path for project .class or .jar files.")
 (defvar my-java-classpath (if (boundp 'goesr-classpath)
                               goesr-classpath
                             nil)
   "Classpaths for Java. ")
+;; Sourcepath for JDEE
+;;   find . -name "*.java"
+;;   Used Emacs to delete package directory structure
+;;   Piped into sort then uniq
+;;
+;;   (defvar my-sourcepath (quote (
+;;           "path/to/java/src"
+;;           "path/to/java/src"
+;;           )) "Path for project .java files.")
 (defvar my-java-sourcepath (if (boundp 'goesr-sourcepath)
                                goesr-sourcepath
                              nil)
@@ -105,3 +124,6 @@
                                                  (jde-import-kill-extra-imports)
                                                  (jde-import-organize)))
   (define-key evil-normal-state-local-map "sg" 'jde-open-class-at-point))
+
+;; TODO: Have not tested Java in the new CEDET, may need to set other properties
+;;(ede-java-root-project "goesr-java" :file (format "%s/Makefile" my-project-root))

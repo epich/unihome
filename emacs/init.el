@@ -91,7 +91,13 @@
 
 ;; Initialize project-specific elisp
 (my-msg "Initializing project-specific elisp.")
-(require 'my-proj)
+;; TODO: Improve this: look for telltale files like lisp/subr.el
+;; TODO: Maybe look for .git, though don't rely on it because of tarballs
+(defvar my-project-root
+        (or (my-find-file-upwards "emacs")
+            "unihome" "trunk" "sw")
+        "Path to current project. " )
+(require 'google-project nil t)
 
 ;;; Relating to tabs
 ;; Permanently force Emacs to indent with spaces, never with TABs:
