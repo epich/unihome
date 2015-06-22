@@ -35,9 +35,7 @@
 (delete-selection-mode 1)
 (setq mouse-yank-at-point t)
 (show-paren-mode 1)
-(setq show-paren-delay 0)
 (setq enable-recursive-minibuffers t)
-(setq c-default-style "k&r")
 (fset 'yes-or-no-p 'y-or-n-p)
 ;; (prefer-coding-system 'utf-8)
 ;;(setq truncate-lines nil)
@@ -48,7 +46,6 @@
 ;; Disable inappropriate behavior for left click in inactive
 ;; minibuffer (opens *Messages*)
 (define-key minibuffer-inactive-mode-map [mouse-1] nil)
-(setq ffap-require-prefix t)
 
 ;;; Set font
 ;; On Macbook and Emacs configured with --with-ns:
@@ -223,6 +220,11 @@
  ;; If there is more than one, they won't work right.
  '(Buffer-menu-name-width 64)
  '(ac-delay 1.0)
+ '(c-default-style
+   (quote
+    ((java-mode . "java")
+     (awk-mode . "awk")
+     (other . "k&r"))))
  '(cc-search-directories
    (quote
     ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "./include" "../include" "./inc" "../inc" "./public" "../public" "./internal" "../internal")))
@@ -242,8 +244,9 @@
  '(evil-shift-width my-offset)
  '(ff-always-try-to-create nil)
  '(ff-special-constructs nil)
+ '(ffap-require-prefix t)
  '(font-lock-maximum-decoration (quote ((c++-mode . 2))))
- '(frame-background-mode 'dark)
+ '(frame-background-mode (quote dark))
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(inverse-video t)
@@ -256,6 +259,7 @@
  '(scroll-conservatively 101)
  '(scroll-margin 4)
  '(sentence-end-double-space nil)
+ '(show-paren-delay 0)
  '(show-paren-mode t)
  '(tags-case-fold-search nil)
  '(tool-bar-mode nil)
