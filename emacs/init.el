@@ -64,12 +64,9 @@
 (cond ((<= 24 emacs-major-version)
        (electric-pair-mode 0)))
 
-;; Load my stuff
-(push "~/unihome/emacs/my" load-path)
-(require 'my-util)
-
 (push "~/unihome/emacs/lisp" load-path)
 (push "~/lisp" load-path)
+(require 'my-util)
 
 (my-toggle-fullscreen)
 
