@@ -93,10 +93,10 @@
 (my-msg "Initializing project-specific elisp.")
 ;; TODO: Improve this: look for telltale files like lisp/subr.el
 ;; TODO: Maybe look for .git, though don't rely on it because of tarballs
-(defvar my-project-root
-        (or (my-find-file-upwards "emacs")
-            "unihome" "trunk" "sw")
-        "Path to current project. " )
+;; (defvar my-project-root
+;;         (or (my-find-file-upwards "emacs")
+;;             "unihome" "trunk" "sw")
+;;         "Path to current project. " )
 (require 'google-project nil t)
 
 ;;; Relating to tabs

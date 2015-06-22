@@ -123,11 +123,18 @@ Issues:
          : Doesn't seem to respect case-fold
    : Configure by project
       : Find project and set my-project-root
-      : unihome is not found correctly because of unihome/emacs
-      : Set Emacs settings:
-         : C coding style
-         : Two spaces after period
-         : my-offset
+      : Try to load ~/lisp/my-extra.el outside of unihome
+         : Like an interface, should implement functions to get:
+            : offset
+            : code style
+            : project root?
+         : Would load non public packages
+         : Allow it to use my-util
+      : Directory local variables can provide a way to provide project settings
+         : Unihome to do so
+         : Don't assume it an be imposed on all projects 
+      : Write my-find-file-upwards into my-find-path-upwards
+      : Find Emacs project by existence of lisp/subr.el
    : General debugging:
       : Consider approaches to put *Messages* buffer to file.
          : standard-output variable can be a function that takes one argument: the char to print
