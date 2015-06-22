@@ -6,6 +6,11 @@
 (require 'my-util)
 (require 'evil)
 
+;; TODO: Move into my-cedet-init, causes compiler warnings
+(require 'semantic)
+(require 'semantic/idle)
+(require 'semantic/db-mode)
+
 ;;; Configure default Evil states for chosen major modes.
 ;;
 ;; Change modes that come up in Emacs state to come up in motion state instead.
@@ -163,12 +168,6 @@
 (define-key evil-normal-state-map "-" nil)
 (define-key evil-motion-state-map "-" 'evil-end-of-line)
 (define-key evil-normal-state-map "s" nil)
-
-;; TODO: Needs to be project specific
-;;(define-key evil-motion-state-map "t" nil)
-;;(define-key evil-motion-state-map "T" nil)
-;;(define-key evil-motion-state-map "t" 'semantic-ia-fast-jump)
-;;(define-key evil-motion-state-map "T" 'semantic-ia-show-summary)
 
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
@@ -432,19 +431,27 @@
   (modify-syntax-entry ?\" "$")
   )
 
-(defun my-c-mode-common-hook ()
-  (my-msg "Inside my-c-mode-common-hook for buffer %s " (buffer-name))
-  ;; TODO: Project specific:
-  ;;(define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
-  (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
-  (my-bind-tab-del-keys)
-  ;; Set to just longer than the keyboard repetition rate.
-  (setq jit-lock-defer-time 0.01)
+(defvar my-cedet-loaded nil "Whether my Elisp loaded CEDET.")
+;; If we have Grok, we don't need Semantic. Semantic is too buggy to
+;; leave enabled needlessly.
+(defun my-cedet-init ()
+  (unless (or my-cedet-loaded (featurep 'grok))
+    (my-msg "Loading CEDET packages.")
+    ;; When using CEDET source distributed separately from Emacs
+    ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
 
-  ;; Semantic minor modes
-  ;;
-  ;; So far, I have only found Semantic useful in C, C++, Java
-  (when cedet-loaded
+    (define-key evil-motion-state-map "t" nil)
+    (define-key evil-motion-state-map "T" nil)
+    (define-key evil-motion-state-map "t" 'semantic-ia-fast-jump)
+    (define-key evil-motion-state-map "T" 'semantic-ia-show-summary)
+    
+    ;; Note: Instead of setting any semantic-default-submodes prior to
+    ;; starting semantic-mode, the "submodes" (really minor modes) are
+    ;; started in major mode hooks. This is because some of the Semantic
+    ;; minor modes are not useful or even annoying in other major modes.
+    (setq semantic-default-submodes nil)
+    (semantic-mode 1)
+    ;;(global-ede-mode 1)
     (global-semantic-idle-scheduler-mode 1)
     (global-semanticdb-minor-mode 1)
     ;; Disabled because it obstructs the minibuffer
@@ -471,7 +478,18 @@
     ;; global-semantic-show-unmatched-syntax-mode
     ;; global-semantic-show-parser-state-mode
     ;; global-semantic-highlight-edits-mode
-    ))
+    (setq my-cedet-loaded t)))
+
+(defun my-c-mode-common-hook ()
+  (my-msg "Inside my-c-mode-common-hook for buffer %s " (buffer-name))
+  ;; TODO: Project specific:
+  ;;(define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
+  (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
+  (my-bind-tab-del-keys)
+  ;; Set to just longer than the keyboard repetition rate.
+  (setq jit-lock-defer-time 0.01)
+  (my-cedet-init)
+  )
 (defun my-clojure-mode-hook ()
   (my-msg "Inside my-clojure-mode-hook for buffer %s " (buffer-name))
   (define-key evil-motion-state-local-map "se" 'nrepl-eval-last-expression)

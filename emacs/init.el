@@ -161,28 +161,6 @@
 (when (my-package-load 'undo-tree)
   (global-undo-tree-mode -1))
 
-(defvar cedet-loaded nil "Whether my Elisp loaded CEDET.")
-;; If we have Grok, we don't need Semantic. Semantic is too buggy to
-;; leave enabled needlessly.
-(unless (or cedet-loaded (featurep 'grok))
-  (my-msg "Loading CEDET packages.")
-  ;; When using CEDET source distributed separately from Emacs
-  ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
-  (require 'semantic/ia)
-  (require 'semantic/bovine/gcc)
-  ;; Note: Instead of setting any semantic-default-submodes prior to
-  ;; starting semantic-mode, the "submodes" (really minor modes) are
-  ;; started in major mode hooks. This is because some of the Semantic
-  ;; minor modes are not useful or even annoying in other major modes.
-  (setq semantic-default-submodes nil)
-  ;; See if this helps disruptive pauses while editing
-  (setq semantic-idle-scheduler-idle-time 60)
-  (semantic-mode 1)
-  (global-ede-mode 1)
-  (setq semanticdb-default-save-directory (format "%s/semanticdb"
-                                                  my-emacs-data-dir))
-  (setq cedet-loaded t))
-
 ;;; Customizations
 ;;
 ;; Specific customizations are documented outside the sexp, because
@@ -208,6 +186,8 @@
 ;; scroll-conservatively
 ;;    Setting is best compromise I've found given the design of automatic
 ;;    scrolling in the redisplay processing.
+;; semantic-idle-scheduler-idle-time
+;;    Potentially helps helps disruptive pauses while editing
 ;; x-select-enable-clipboard
 ;;    This is necessary to paste into Windows running on qemu-kvm .
 (custom-set-variables
@@ -255,6 +235,9 @@
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)
  '(scroll-margin 4)
+ '(semantic-idle-scheduler-idle-time 60)
+ '(semanticdb-default-save-directory (format "%s/semanticdb"
+                                             my-emacs-data-dir))
  '(sentence-end-double-space nil)
  '(show-paren-delay 0)
  '(show-paren-mode t)
