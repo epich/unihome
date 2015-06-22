@@ -41,6 +41,7 @@ Issues:
       : So many ways to get an error (sexp navigation commands for example) that abort the kbd macro. How to improve this?
    : Emacs bug:
       : With my font lock settings, auto revert of source code does not cause font lock update until move point
+   : Auto revert doesn't work in SrcFS
    : delete-pair doesn't work for <> pairs
    : Investigate using emacs 24.4's superword-mode instead of adding '-' to syntax tables
    : Bind C-g to keyboard-quit but with debug-on-quit set to t?
