@@ -215,4 +215,14 @@ takes key-from as an argument. "
     (lambda (_prompt)
       (if (funcall translate-keys-p key-from) key-to key-from))))
 
+(defun my-package-load (pkg)
+  ;; with-demoted-errors checks debug-on-error
+  (let ((debug-on-error nil))
+    (with-demoted-errors nil
+      (unless (package-installed-p pkg)
+        (my-msg "Downloading package: %s" pkg)
+        (package-install pkg))
+      (my-msg "Loading package: %s" pkg)
+      (require pkg))))
+
 (provide 'my-util)

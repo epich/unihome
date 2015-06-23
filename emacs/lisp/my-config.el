@@ -4,12 +4,139 @@
 
 (require 'cl-lib)
 (require 'my-util)
-(require 'evil)
 
-;; TODO: Move into my-cedet-init, causes compiler warnings
-(require 'semantic)
-(require 'semantic/idle)
-(require 'semantic/db-mode)
+;; On Mac, opening Emacs.app loses the exported PWD env var, whilst
+;; other env vars are inherited as expected. unihome.sh smuggles the
+;; pwd via this env var instead.
+(let ((app-open-pwd (getenv "APP_OPEN_PWD")))
+  (when app-open-pwd
+    (setq-default default-directory app-open-pwd)))
+
+;;; General emacs settings
+;; Not defined for Darwin
+(when (fboundp #'tool-bar-mode) (tool-bar-mode 0))
+(when (fboundp #'scroll-bar-mode) (scroll-bar-mode 0))
+
+(setq visible-bell t)
+;; Menu bar doesn't take up extra vertical space on Mac
+(unless (eq window-system 'ns)
+  (menu-bar-mode 0))
+(column-number-mode 1)
+(setq print-circle t)
+;; TODO: auto-fill-mode doesn't work right for debug statement insert commands
+;; (auto-fill-mode 1)
+;; Disable the auto-save, the #* debris files slow down Emacs startup.
+(setq auto-save-default nil)
+(defvar my-emacs-data-dir "~/.emacs.d" "Location of runtime data for Emacs. ")
+;; Don't create debris files next to originals.
+(setq backup-directory-alist `((".*" . ,(format "%s/backup" my-emacs-data-dir))))
+(global-auto-revert-mode 1)
+(setq revert-without-query (quote (".*")))
+(setq case-replace nil)
+(setq vc-follow-symlinks t)
+(delete-selection-mode 1)
+(setq mouse-yank-at-point t)
+(show-paren-mode 1)
+(setq enable-recursive-minibuffers t)
+(fset 'yes-or-no-p 'y-or-n-p)
+;; (prefer-coding-system 'utf-8)
+;;(setq truncate-lines nil)
+(setq window-min-width 80)
+(setq split-height-threshold nil)
+(setq split-width-threshold 80)
+;;(setq mac-command-modifier 'meta)
+;; Disable inappropriate behavior for left click in inactive
+;; minibuffer (opens *Messages*)
+(define-key minibuffer-inactive-mode-map [mouse-1] nil)
+
+;;; Set font
+;; On Macbook and Emacs configured with --with-ns:
+(defvar my-font "Monospace 10")
+;; Works on Windows? If not, make it conditional
+(set-frame-font my-font nil t)
+;; With default RHEL 5 font of Sans, :height 72 seems to be the minimum that 'B' and '8' can be distinguished.
+;; The :height is basically 10 times font size
+;; (set-face-attribute 'default nil :family "DejaVu LGC Sans Mono" :height 72)
+;; '(default ((t (:family "DejaVu LGC Sans Mono" :foundry "unknown" :slant normal :weight normal :height 80 :width normal))))
+
+;;; Version specific elisp
+;; electric-pair-mode introduced in version 24.
+;;
+;; Disabling, see my emacs.txt notes for some of the things to address first.
+(cond ((<= 24 emacs-major-version)
+       (electric-pair-mode 0)))
+
+(my-toggle-fullscreen)
+
+;; Set the frame title to the current filename.
+(setq-default frame-title-format '(:eval (my-get-buffer-name)))
+
+;;; File associations
+;;
+(push '("README.*" . text-mode) auto-mode-alist)
+;; Ruby rake build files
+(push '("\\.clj" . lisp-mode) auto-mode-alist)
+(push '("Rakefile" . ruby-mode) auto-mode-alist)
+(push '("\\.rkt" . scheme-mode) auto-mode-alist)
+(push '("wscript" . python-mode) auto-mode-alist)
+(push '("\\.log" . text-mode) auto-mode-alist)
+
+;; Initialize project-specific elisp
+(my-msg "Initializing project-specific elisp.")
+;; TODO: Improve this: look for telltale files like lisp/subr.el
+;; TODO: Maybe look for .git, though don't rely on it because of tarballs
+;; (defvar my-project-root
+;;         (or (my-find-file-upwards "emacs")
+;;             "unihome" "trunk" "sw")
+;;         "Path to current project. " )
+(push "~/lisp" load-path)
+(require 'google-project nil t)
+
+;;; Relating to tabs
+;; Permanently force Emacs to indent with spaces, never with TABs:
+(setq-default indent-tabs-mode nil)
+(setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
+(setq-default c-basic-offset my-offset)
+;; Doesn't work here, works in custom-set-variables.
+;;(setq evil-shift-width my-offset)
+;; Determines how to display tabs.
+;;
+;; It's best to use the default, for Python editing and because some Emacs elisp code is formatted on that assumption.
+;;(setq tab-width my-offset)
+;; Disable weird auto formatting
+(setq-default c-electric-flag nil)
+(electric-indent-mode -1)
+
+;;; Packaging
+;;
+;; Use M-x list-packages to manage installed packages
+(require 'package)
+(push '("marmalade" . "http://marmalade-repo.org/packages/")
+      package-archives )
+(push '("melpa" . "http://melpa.milkbox.net/packages/")
+      package-archives)
+;; (push '("melpa-stable" . "http://stable.melpa.org/packages/")
+;;       package-archives)
+;; (push '("local-elpa" . "/psd15/linux/boreilly/sw/elpa/packages")
+;;       package-archives)
+
+;; Any package customizations must precede this.
+(package-initialize)
+;; Emacs manual says to to set this to nil if manually calling
+;; package-initialize
+(setq package-enable-at-startup nil)
+;; If there are no archives downloaded, then do so.
+;;
+;; This is for bootstrapping a new Emacs installation. In the steady
+;; state, don't contact the remote repos every startup. Downloading
+;; updates to the archive contents can be done by:
+;;   M-x list-packages
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(require 'evil)
+(when (featurep 'evil)
+  (evil-mode 1))
 
 ;;; Configure default Evil states for chosen major modes.
 ;;
@@ -439,6 +566,10 @@
     (my-msg "Loading CEDET packages.")
     ;; When using CEDET source distributed separately from Emacs
     ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
+    
+    (require 'semantic)
+    (require 'semantic/idle)
+    (require 'semantic/db-mode)
 
     (define-key evil-motion-state-map "t" nil)
     (define-key evil-motion-state-map "T" nil)
@@ -515,7 +646,10 @@
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-elisp-log)
   (define-key evil-motion-state-local-map "se" 'eval-last-sexp)
   (modify-syntax-entry ?- "w")
-  )
+  (when (featurep 'adjust-parens)
+    (adjust-parens-mode 1))
+  (when (featurep 'flylisp)
+    (flylisp-mode 1)))
 (defun my-java-mode-hook ()
   (my-msg "Inside my-java-mode-hook for buffer %s " (buffer-name))
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-java-log))
@@ -563,10 +697,31 @@
 
   (delete-other-windows)
 
+  (when (my-package-load 'diff-hl)
+    (global-diff-hl-mode 1))
+  (when (my-package-load 'undo-tree)
+    (global-undo-tree-mode -1))
+
   ;;(setq search-whitespace-regexp nil)
 
   ;; Make the end obvious, since this is a major point in the Emacs runtime
   (my-msg "---------------- Finished with my-emacs-startup-hook. ----------------")
   )
 
+(add-hook 'prog-mode-hook 'my-prog-mode-hook)
+(add-hook 'text-mode-hook 'my-text-mode-hook)
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+(add-hook 'clojure-mode-hook 'my-clojure-mode-hook)
+(add-hook 'diff-mode-hook 'my-diff-mode-hook)
+(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+(add-hook 'java-mode-hook 'my-java-mode-hook)
+(add-hook 'makefile-mode-hook 'my-makefile-mode-hook)
+(add-hook 'nxml-mode-hook 'my-nxml-mode-hook)
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+(add-hook 'ruby-mode-hook 'my-ruby-mode-hook)
+(add-hook 'sh-mode-hook 'my-sh-mode-hook)
+;; Use emacs-startup-hook or eval-after-load?
+(add-hook 'emacs-startup-hook 'my-emacs-startup-hook)
+
+(my-msg "Finished loading init file. ")
 (provide 'my-config)
