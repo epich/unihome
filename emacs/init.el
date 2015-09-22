@@ -26,6 +26,7 @@
 (delete-selection-mode 1)
 (setq mouse-yank-at-point t)
 (show-paren-mode 1)
+(setq blink-matching-paren nil)
 (setq show-paren-delay 0)
 (setq enable-recursive-minibuffers t)
 (setq c-default-style "k&r")
