@@ -4,7 +4,145 @@
 
 (require 'cl-lib)
 (require 'my-util)
+
+;; On Mac, opening Emacs.app loses the exported PWD env var, whilst
+;; other env vars are inherited as expected. unihome.sh smuggles the
+;; pwd via this env var instead.
+(let ((app-open-pwd (getenv "APP_OPEN_PWD")))
+  (when app-open-pwd
+    (setq-default default-directory app-open-pwd)))
+
+;;; General emacs settings
+;; Not defined for Darwin
+(when (fboundp #'tool-bar-mode) (tool-bar-mode 0))
+(when (fboundp #'scroll-bar-mode) (scroll-bar-mode 0))
+
+(setq visible-bell t)
+;; Menu bar doesn't take up extra vertical space on Mac
+(unless (eq window-system 'ns)
+  (menu-bar-mode 0))
+(column-number-mode 1)
+(setq print-circle t)
+;; TODO: auto-fill-mode doesn't work right for debug statement insert commands
+;; (auto-fill-mode 1)
+;; Disable the auto-save, the #* debris files slow down Emacs startup.
+(setq auto-save-default nil)
+(defvar my-emacs-data-dir "~/.emacs.d" "Location of runtime data for Emacs. ")
+;; Don't create debris files next to originals.
+(setq backup-directory-alist `((".*" . ,(format "%s/backup" my-emacs-data-dir))))
+(global-auto-revert-mode 1)
+(setq revert-without-query (quote (".*")))
+(setq case-replace nil)
+(setq vc-follow-symlinks t)
+(delete-selection-mode 1)
+(setq mouse-yank-at-point t)
+(show-paren-mode 1)
+(setq blink-matching-paren nil)
+(setq enable-recursive-minibuffers t)
+(fset 'yes-or-no-p 'y-or-n-p)
+;; (prefer-coding-system 'utf-8)
+;;(setq truncate-lines nil)
+(setq window-min-width 80)
+(setq split-height-threshold nil)
+(setq split-width-threshold 80)
+;;(setq mac-command-modifier 'meta)
+;; Disable inappropriate behavior for left click in inactive
+;; minibuffer (opens *Messages*)
+(define-key minibuffer-inactive-mode-map [mouse-1] nil)
+
+;; Font
+;;
+;; - On small screen (Macbook and Emacs configured with --with-ns)
+;; - On large screen (Gnome workstation)
+;;
+;; TODO: Use a better criteria
+(defvar my-font (if (eq window-system 'ns) "Monospace 10" "Monospace 8"))
+
+;; Works on Windows? If not, make it conditional
+(set-frame-font my-font nil t)
+;; With default RHEL 5 font of Sans, :height 72 seems to be the minimum that 'B' and '8' can be distinguished.
+;; The :height is basically 10 times font size
+;; (set-face-attribute 'default nil :family "DejaVu LGC Sans Mono" :height 72)
+;; '(default ((t (:family "DejaVu LGC Sans Mono" :foundry "unknown" :slant normal :weight normal :height 80 :width normal))))
+
+;;; Version specific elisp
+;; electric-pair-mode introduced in version 24.
+;;
+;; Disabling, see my emacs.txt notes for some of the things to address first.
+(cond ((<= 24 emacs-major-version)
+       (electric-pair-mode 0)))
+
+(my-toggle-fullscreen)
+
+;; Set the frame title to the current filename.
+(setq-default frame-title-format '(:eval (my-get-buffer-name)))
+
+;;; File associations
+;;
+(push '("README.*" . text-mode) auto-mode-alist)
+;; Ruby rake build files
+(push '("\\.clj" . lisp-mode) auto-mode-alist)
+(push '("Rakefile" . ruby-mode) auto-mode-alist)
+(push '("\\.rkt" . scheme-mode) auto-mode-alist)
+(push '("wscript" . python-mode) auto-mode-alist)
+(push '("\\.log" . text-mode) auto-mode-alist)
+
+;; Initialize project-specific elisp
+(my-msg "Initializing project-specific elisp.")
+;; TODO: Improve this: look for telltale files like lisp/subr.el
+;; TODO: Maybe look for .git, though don't rely on it because of tarballs
+;; (defvar my-project-root
+;;         (or (my-find-file-upwards "emacs")
+;;             "unihome" "trunk" "sw")
+;;         "Path to current project. " )
+(push "~/lisp" load-path)
+(require 'google-project nil t)
+
+;;; Relating to tabs
+;; Permanently force Emacs to indent with spaces, never with TABs:
+(setq-default indent-tabs-mode nil)
+(setq tab-stop-list (cdr (number-sequence 0 256 my-offset)))
+(setq-default c-basic-offset my-offset)
+;; Doesn't work here, works in custom-set-variables.
+;;(setq evil-shift-width my-offset)
+;; Determines how to display tabs.
+;;
+;; It's best to use the default, for Python editing and because some Emacs elisp code is formatted on that assumption.
+;;(setq tab-width my-offset)
+;; Disable weird auto formatting
+(setq-default c-electric-flag nil)
+(electric-indent-mode -1)
+
+;;; Packaging
+;;
+;; Use M-x list-packages to manage installed packages
+(require 'package)
+(push '("marmalade" . "http://marmalade-repo.org/packages/")
+      package-archives )
+(push '("melpa" . "http://melpa.milkbox.net/packages/")
+      package-archives)
+;; (push '("melpa-stable" . "http://stable.melpa.org/packages/")
+;;       package-archives)
+;; (push '("local-elpa" . "/psd15/linux/boreilly/sw/elpa/packages")
+;;       package-archives)
+
+;; Any package customizations must precede this.
+(package-initialize)
+;; Emacs manual says to to set this to nil if manually calling
+;; package-initialize
+(setq package-enable-at-startup nil)
+;; If there are no archives downloaded, then do so.
+;;
+;; This is for bootstrapping a new Emacs installation. In the steady
+;; state, don't contact the remote repos every startup. Downloading
+;; updates to the archive contents can be done by:
+;;   M-x list-packages
+(unless package-archive-contents
+  (package-refresh-contents))
+
 (require 'evil)
+(when (featurep 'evil)
+  (evil-mode 1))
 
 ;;; Configure default Evil states for chosen major modes.
 ;;
@@ -163,12 +301,6 @@
 (define-key evil-normal-state-map "-" nil)
 (define-key evil-motion-state-map "-" 'evil-end-of-line)
 (define-key evil-normal-state-map "s" nil)
-
-;; TODO: Needs to be project specific
-;;(define-key evil-motion-state-map "t" nil)
-;;(define-key evil-motion-state-map "T" nil)
-;;(define-key evil-motion-state-map "t" 'semantic-ia-fast-jump)
-;;(define-key evil-motion-state-map "T" 'semantic-ia-show-summary)
 
 ;; Swap p and P, primarily because of how evil-paste-after behaves on empty lines.
 (define-key evil-normal-state-map "p" 'evil-paste-before)
@@ -366,8 +498,6 @@
    (insert "new Object[]{} );")
    (search-backward "DEBUG: ")
    (goto-char (match-end 0)))
-;; For the GOESR program, redefine logger.
-;; (fset 'my-insert-java-log 'goesr-insert-java-log)
 (defun my-insert-makefile-log ()
   "Insert log statement for make files. "
   (interactive)
@@ -434,19 +564,31 @@
   (modify-syntax-entry ?\" "$")
   )
 
-(defun my-c-mode-common-hook ()
-  (my-msg "Inside my-c-mode-common-hook for buffer %s " (buffer-name))
-  ;; TODO: Project specific:
-  ;;(define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
-  (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
-  (my-bind-tab-del-keys)
-  ;; Set to just longer than the keyboard repetition rate.
-  (setq jit-lock-defer-time 0.01)
+(defvar my-cedet-loaded nil "Whether my Elisp loaded CEDET.")
+;; If we have Grok, we don't need Semantic. Semantic is too buggy to
+;; leave enabled needlessly.
+(defun my-cedet-init ()
+  (unless (or my-cedet-loaded (featurep 'grok))
+    (my-msg "Loading CEDET packages.")
+    ;; When using CEDET source distributed separately from Emacs
+    ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
+    
+    (require 'semantic)
+    (require 'semantic/idle)
+    (require 'semantic/db-mode)
 
-  ;; Semantic minor modes
-  ;;
-  ;; So far, I have only found Semantic useful in C, C++, Java
-  (when cedet-loaded
+    (define-key evil-motion-state-map "t" nil)
+    (define-key evil-motion-state-map "T" nil)
+    (define-key evil-motion-state-map "t" 'semantic-ia-fast-jump)
+    (define-key evil-motion-state-map "T" 'semantic-ia-show-summary)
+    
+    ;; Note: Instead of setting any semantic-default-submodes prior to
+    ;; starting semantic-mode, the "submodes" (really minor modes) are
+    ;; started in major mode hooks. This is because some of the Semantic
+    ;; minor modes are not useful or even annoying in other major modes.
+    (setq semantic-default-submodes nil)
+    (semantic-mode 1)
+    ;;(global-ede-mode 1)
     (global-semantic-idle-scheduler-mode 1)
     (global-semanticdb-minor-mode 1)
     ;; Disabled because it obstructs the minibuffer
@@ -473,7 +615,18 @@
     ;; global-semantic-show-unmatched-syntax-mode
     ;; global-semantic-show-parser-state-mode
     ;; global-semantic-highlight-edits-mode
-    ))
+    (setq my-cedet-loaded t)))
+
+(defun my-c-mode-common-hook ()
+  (my-msg "Inside my-c-mode-common-hook for buffer %s " (buffer-name))
+  ;; TODO: Project specific:
+  ;;(define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-c-log)
+  (define-key evil-insert-state-local-map (kbd "<f4>") 'my-insert-cc-doc)
+  (my-bind-tab-del-keys)
+  ;; Set to just longer than the keyboard repetition rate.
+  (setq jit-lock-defer-time 0.01)
+  (my-cedet-init)
+  )
 (defun my-clojure-mode-hook ()
   (my-msg "Inside my-clojure-mode-hook for buffer %s " (buffer-name))
   (define-key evil-motion-state-local-map "se" 'nrepl-eval-last-expression)
@@ -499,48 +652,13 @@
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-elisp-log)
   (define-key evil-motion-state-local-map "se" 'eval-last-sexp)
   (modify-syntax-entry ?- "w")
-  )
+  (when (featurep 'adjust-parens)
+    (adjust-parens-mode 1))
+  (when (featurep 'flylisp)
+    (flylisp-mode 1)))
 (defun my-java-mode-hook ()
   (my-msg "Inside my-java-mode-hook for buffer %s " (buffer-name))
-  (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-java-log)
-
-  ;;; Based on jde-key-bindings from jde.el, which are not in any keymap by default:
-  (define-key evil-normal-state-local-map "sCa" 'jde-run-menu-run-applet)
-  (define-key evil-normal-state-local-map "sCb" 'jde-build)
-  (define-key evil-normal-state-local-map "sCc" 'jde-compile)
-  (define-key evil-normal-state-local-map "sCd" 'jde-debug)
-  (define-key evil-normal-state-local-map "sCf" 'jde-find)
-  (define-key evil-normal-state-local-map "sCg" 'jde-open-class-at-point)
-  (define-key evil-normal-state-local-map "sCk" 'jde-bsh-run)
-  (define-key evil-normal-state-local-map "sCl" 'jde-gen-println)
-  (define-key evil-normal-state-local-map "sCn" 'jde-help-browse-jdk-doc)
-  (define-key evil-normal-state-local-map "sCp" 'jde-save-project)
-  (define-key evil-normal-state-local-map "sCq" 'jde-wiz-update-class-list)
-  (define-key evil-normal-state-local-map "sCr" 'jde-run)
-  (define-key evil-normal-state-local-map "sCs" 'speedbar-frame-mode)
-  (define-key evil-normal-state-local-map "sCt" 'jde-jdb-menu-debug-applet)
-  (define-key evil-normal-state-local-map "sCw" 'jde-help-symbol)
-  (define-key evil-normal-state-local-map "sCx" 'jde-show-superclass-source)
-  (define-key evil-normal-state-local-map "sCy" 'jde-open-class-at-point)
-  (define-key evil-normal-state-local-map "sCz" 'jde-import-find-and-import)
-  (define-key evil-normal-state-local-map "se"    'jde-wiz-extend-abstract-class)
-  (define-key evil-normal-state-local-map "sf"    'jde-gen-try-finally-wrapper)
-  (define-key evil-normal-state-local-map "si"    'jde-wiz-implement-interface)
-  (define-key evil-normal-state-local-map "sj"    'jde-javadoc-autodoc-at-line)
-  (define-key evil-normal-state-local-map "so"    'jde-wiz-override-method)
-  (define-key evil-normal-state-local-map "st"    'jde-gen-try-catch-wrapper)
-  (define-key evil-normal-state-local-map "sz"    'jde-import-all)
-  (define-key evil-normal-state-local-map "sc[" 'jde-run-etrace-prev)
-  (define-key evil-normal-state-local-map "sc]" 'jde-run-etrace-next)
-  (define-key evil-normal-state-local-map "sc." 'jde-complete)
-  (define-key evil-normal-state-local-map "s." 'jde-complete-in-line)
-  ;; My own
-  (define-key evil-normal-state-local-map "sa" (lambda ()
-                                                 (interactive)
-                                                 (jde-import-all)
-                                                 (jde-import-kill-extra-imports)
-                                                 (jde-import-organize)))
-  (define-key evil-normal-state-local-map "sg" 'jde-open-class-at-point))
+  (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-java-log))
 
 (defun my-makefile-mode-hook ()
   (my-msg "Inside my-makefile-mode-hook for buffer %s " (buffer-name))
@@ -585,10 +703,31 @@
 
   (delete-other-windows)
 
+  (when (my-package-load 'diff-hl)
+    (global-diff-hl-mode 1))
+  (when (my-package-load 'undo-tree)
+    (global-undo-tree-mode -1))
+
   ;;(setq search-whitespace-regexp nil)
 
   ;; Make the end obvious, since this is a major point in the Emacs runtime
   (my-msg "---------------- Finished with my-emacs-startup-hook. ----------------")
   )
 
+(add-hook 'prog-mode-hook 'my-prog-mode-hook)
+(add-hook 'text-mode-hook 'my-text-mode-hook)
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+(add-hook 'clojure-mode-hook 'my-clojure-mode-hook)
+(add-hook 'diff-mode-hook 'my-diff-mode-hook)
+(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+(add-hook 'java-mode-hook 'my-java-mode-hook)
+(add-hook 'makefile-mode-hook 'my-makefile-mode-hook)
+(add-hook 'nxml-mode-hook 'my-nxml-mode-hook)
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+(add-hook 'ruby-mode-hook 'my-ruby-mode-hook)
+(add-hook 'sh-mode-hook 'my-sh-mode-hook)
+;; Use emacs-startup-hook or eval-after-load?
+(add-hook 'emacs-startup-hook 'my-emacs-startup-hook)
+
+(my-msg "Finished loading init file. ")
 (provide 'my-config)

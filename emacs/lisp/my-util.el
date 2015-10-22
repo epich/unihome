@@ -32,7 +32,7 @@
                                       arg))
                               vargs))))
 
-(defvar my-offset 3 "My indentation offset. ")
+(defvar my-offset 2 "My indentation offset. ")
 
 (defun my-check-range (lhs middle rhs)
   "Checks if lhs <= middle < rhs"
@@ -214,5 +214,15 @@ takes key-from as an argument. "
   (define-key key-translation-map key-from
     (lambda (_prompt)
       (if (funcall translate-keys-p key-from) key-to key-from))))
+
+(defun my-package-load (pkg)
+  ;; with-demoted-errors checks debug-on-error
+  (let ((debug-on-error nil))
+    (with-demoted-errors nil
+      (unless (package-installed-p pkg)
+        (my-msg "Downloading package: %s" pkg)
+        (package-install pkg))
+      (my-msg "Loading package: %s" pkg)
+      (require pkg))))
 
 (provide 'my-util)
