@@ -87,17 +87,6 @@
 (push '("wscript" . python-mode) auto-mode-alist)
 (push '("\\.log" . text-mode) auto-mode-alist)
 
-;; Initialize project-specific elisp
-(my-msg "Initializing project-specific elisp.")
-;; TODO: Improve this: look for telltale files like lisp/subr.el
-;; TODO: Maybe look for .git, though don't rely on it because of tarballs
-;; (defvar my-project-root
-;;         (or (my-find-file-upwards "emacs")
-;;             "unihome" "trunk" "sw")
-;;         "Path to current project. " )
-(push "~/lisp" load-path)
-(require 'google-project nil t)
-
 ;;; Relating to tabs
 ;; Permanently force Emacs to indent with spaces, never with TABs:
 (setq-default indent-tabs-mode nil)
@@ -137,12 +126,31 @@
 ;; state, don't contact the remote repos every startup. Downloading
 ;; updates to the archive contents can be done by:
 ;;   M-x list-packages
+;;
+;; If the (my-package-load 'evil) fails, do M-x list-packages and see
+;; if evil is downloaded and listed.
 (unless package-archive-contents
   (package-refresh-contents))
 
+(my-package-load 'evil)
+;; my-package-load required evil, but we do it again to avoid a flood
+;; of compiler warnings.
 (require 'evil)
 (when (featurep 'evil)
   (evil-mode 1))
+(my-package-load 'adjust-parens)
+(my-package-load 'flylisp)
+
+;; Initialize project-specific elisp
+(my-msg "Initializing project-specific elisp.")
+;; TODO: Improve this: look for telltale files like lisp/subr.el
+;; TODO: Maybe look for .git, though don't rely on it because of tarballs
+;; (defvar my-project-root
+;;         (or (my-find-file-upwards "emacs")
+;;             "unihome" "trunk" "sw")
+;;         "Path to current project. " )
+(push "~/lisp" load-path)
+(require 'google-project nil t)
 
 ;;; Configure default Evil states for chosen major modes.
 ;;
