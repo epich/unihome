@@ -1,0 +1,17 @@
+Setup:
+  : .bashrc is not sourced, use .bash_profile
+
+Customizations to a Mac:
+  : Install HyperSwitch
+    : Security settings in terminal may prevent command-tab from working, configure terminal
+
+Shortcut to maximize window:
+  System Preferences > Keyboard > Shortcuts > App Shortcut
+
+Emacs:
+  Either:
+    ./configure --with-ns && make -j32 install
+    ./configure --with-x && make -j32
+
+Run apps from command line:
+  open -a Emacs FILE
