@@ -150,7 +150,7 @@
 ;;             "unihome" "trunk" "sw")
 ;;         "Path to current project. " )
 (push "~/lisp" load-path)
-(require 'google-project nil t)
+(require 'google-project)
 
 ;;; Configure default Evil states for chosen major modes.
 ;;

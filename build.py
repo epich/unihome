@@ -31,7 +31,7 @@ def buildEmacs():
    #
    # Note: No need to compile init.el because only init.el is symlinked below
    myutil.cmd(
-      'emacs --batch -L lisp --eval "{}" -f batch-byte-compile lisp/*.el'.format(
+      'emacs --batch -L lisp -L ~/lisp --eval "{}" -f batch-byte-compile lisp/*.el'.format(
          # Need to package-initialize because byte compiled files
          # reference packages
          "(progn (require 'package) (package-initialize))"),
