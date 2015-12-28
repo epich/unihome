@@ -421,18 +421,29 @@
   (define-key evil-motion-state-map "U" 'undo))
 
 (defvar my-leap-scroll-size 16)
-(define-key evil-normal-state-map ";" nil)
-(define-key evil-motion-state-map ";" 
+(define-key evil-normal-state-map "J" nil)
+(define-key evil-motion-state-map "J" 
   (lambda ()
     (interactive)
     (scroll-up my-leap-scroll-size)
     (evil-next-line my-leap-scroll-size)))
-(define-key evil-normal-state-map "'" nil)
-(define-key evil-motion-state-map "'" 
+(define-key evil-normal-state-map "K" nil)
+(define-key evil-motion-state-map "K" 
   (lambda ()
     (interactive)
     (scroll-down my-leap-scroll-size)
     (evil-previous-line my-leap-scroll-size)))
+(define-key evil-motion-state-map (kbd "<down>")
+  (lambda ()
+    (interactive)
+    (scroll-up-line)
+    (evil-next-line)))
+(define-key evil-motion-state-map (kbd "<up>")
+  (lambda ()
+    (interactive)
+    (scroll-down-line)
+    (evil-previous-line)))
+
 
 ;; Dired mapping to open all subdirs recursively
 (require 'dired)
@@ -664,6 +675,10 @@
     (adjust-parens-mode 1))
   (when (featurep 'flylisp)
     (flylisp-mode 1)))
+(defun my-go-mode-hook ()
+  (my-msg "Inside my-go-mode-hook for buffer %s " (buffer-name))
+  ;; Indentation with tabs is typical, improve readability with smaller tab-width
+  (setq tab-width 2))
 (defun my-java-mode-hook ()
   (my-msg "Inside my-java-mode-hook for buffer %s " (buffer-name))
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-java-log))
@@ -728,6 +743,7 @@
 (add-hook 'clojure-mode-hook 'my-clojure-mode-hook)
 (add-hook 'diff-mode-hook 'my-diff-mode-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+(add-hook 'go-mode-hook 'my-go-mode-hook)
 (add-hook 'java-mode-hook 'my-java-mode-hook)
 (add-hook 'makefile-mode-hook 'my-makefile-mode-hook)
 (add-hook 'nxml-mode-hook 'my-nxml-mode-hook)
