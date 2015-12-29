@@ -1,4 +1,4 @@
 [user]
 	email = gundaetiapo@gmail.com
 [alias]
-	l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	l = log --graph --pretty=format:'%C(bold red)%h %C(yellow)%d%C(green)%ai%Creset %s %C(bold blue)%an%Creset' --abbrev-commit
