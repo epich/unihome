@@ -15,7 +15,10 @@ See history of lines in a file:
     git log -L :<regex>:<file>
 
 See concise history:
-  git log --graph --pretty="format:%h %ai %Cgreen %an %Creset %s %Cred %d"
+  From https://coderwall.com/p/euwpig/a-better-git-log :
+    git log                          --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  To make it an alias:
+    git config --global alias.l "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 
 Stephen Turnbull explains two shared repo setups:
   http://lists.gnu.org/archive/html/emacs-devel/2014-01/msg00834.html
