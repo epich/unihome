@@ -730,6 +730,7 @@
     (global-diff-hl-mode 1))
   (when (my-package-load 'undo-tree)
     (global-undo-tree-mode -1))
+  (my-package-load 'goto-chg)
 
   ;;(setq search-whitespace-regexp nil)
 
