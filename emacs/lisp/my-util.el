@@ -225,4 +225,30 @@ takes key-from as an argument. "
       (my-msg "Loading package: %s" pkg)
       (require pkg))))
 
+(defun my-seperator2Camel (beg end seperator upcase-initial)
+  (save-excursion
+    (goto-char beg)
+    (when upcase-initial
+      (upcase-region (point) (1+ (point))))
+    (while (search-forward seperator end t)
+      (delete-forward-char -1)
+      (upcase-region (point) (1+ (point))))))
+
+(defun my-underscore2Camel (beg end)
+  "Example: foo_bar -> FooBar"
+  (interactive "r")
+  (my-seperator2Camel beg end "_" t))
+(defun my-underscore2camel (beg end)
+  "Example: foo_bar -> fooBar"
+  (interactive "r")
+  (my-seperator2Camel beg end "_" nil))
+(defun my-hyphen2Camel (beg end)
+  "Example: foo-bar -> FooBar"
+  (interactive "r")
+  (my-seperator2Camel beg end "-" t))
+(defun my-hyphen2camel (beg end)
+  "Example: foo-bar -> fooBar"
+  (interactive "r")
+  (my-seperator2Camel beg end "-" nil))
+
 (provide 'my-util)

@@ -12,6 +12,7 @@ Emacs:
   Either:
     ./configure --with-ns && make -j32 install
     ./configure --with-x && make -j32
+  Terminal, preferences, keyboard, "Use Option as Meta key"
 
 Run apps from command line:
   open -a Emacs FILE

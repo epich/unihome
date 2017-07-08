@@ -82,13 +82,14 @@
  '(message-log-max 100000)
  '(nxml-child-indent my-offset)
  '(nxml-sexp-element-flag t)
- '(python-indent my-offset)
+ '(package-selected-packages (quote (diff-hl flylisp adjust-parens evil)))
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)
  '(scroll-margin 4)
+ '(select-enable-clipboard t)
+ '(select-enable-primary t)
  '(semantic-idle-scheduler-idle-time 60)
- '(semanticdb-default-save-directory (format "%s/semanticdb"
-                                             my-emacs-data-dir))
+ '(semanticdb-default-save-directory (format "%s/semanticdb" my-emacs-data-dir))
  '(sentence-end-double-space nil)
  '(show-paren-delay 0)
  '(show-paren-mode t)
@@ -96,9 +97,7 @@
  '(tool-bar-mode nil)
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
- '(whitespace-style (quote (face tabs trailing)))
- '(x-select-enable-clipboard t)
- '(x-select-enable-primary t))
+ '(whitespace-style (quote (face tabs trailing))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

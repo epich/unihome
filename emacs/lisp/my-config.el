@@ -419,6 +419,8 @@
       (define-key evil-motion-state-map "U" 'undo-tree-redo)
       (define-key evil-motion-state-map "ov" 'undo-tree-visualize))
   (define-key evil-motion-state-map "U" 'undo))
+;; Too easily inputted accidentally, yet bound to evil-save-modified-and-close
+(define-key evil-normal-state-map "ZZ" nil)
 
 (defvar my-leap-scroll-size 16)
 (define-key evil-normal-state-map "J" nil)
@@ -645,6 +647,7 @@
   ;; Set to just longer than the keyboard repetition rate.
   (setq jit-lock-defer-time 0.01)
   (my-cedet-init)
+  (modify-syntax-entry ?_ "w")
   )
 (defun my-clojure-mode-hook ()
   (my-msg "Inside my-clojure-mode-hook for buffer %s " (buffer-name))

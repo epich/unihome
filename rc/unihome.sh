@@ -47,14 +47,16 @@ alias m='mplayer -loop 0'
 alias title='echo -n "]2;\!*"'
 alias cwdcmd='title "$hostString : `pwd`"'
 alias 0='cat ~/unihome/misc/clearScreen.txt'
+# Use date --iso-8601=ns ?
 alias fdate="date '+%Y%m%dT%H%M%S'"
 alias h=history
 alias gentags='etags `find . -name "*.h" -o -name "*.c" -o -name "*.cc" -o -name "*.cpp" -o -name "*.java" -o -name "*.py" -o -name "*.pl" -o -name "*.sh" -o -name "*.mk" -o -name "*akefile*" -o -name "*.f90"`'
 alias acmd='cmd runas /noprofile /user:Administrator cmd'
 PATH=~/bin:$PATH
 export EDITOR=vim
-export PAGER=less
+export PAGER='less -X'
 export VISUAL=vim
+export HISTTIMEFORMAT='%Y%m%dT%H%M%S '
 # Vi bindings when arrowing up to previous commands
 # Is this responsible for strange mutations to command history? History should be immutable.
 #set -o vi
@@ -69,6 +71,13 @@ case $TERM in
         PS1="bash : "
         ;;
 esac
+
+export LASTCORE=$(lscpu -p | tail -n 1 | cut -d, -f 1)
+# Execute a command with affinity to one core. eg 'coreaff blaze build :all'
+function coreaff() {
+  taskset -c 2-$LASTCORE "$@"
+}
+export -f coreaff
 
 # Command to make Windows symlinks
 mklink(){
