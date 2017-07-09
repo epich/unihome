@@ -135,6 +135,13 @@
 (my-package-load 'evil)
 ;; my-package-load required evil, but we do it again to avoid a flood
 ;; of compiler warnings.
+;;
+;; TODO: build.py errors on this for first time run. Workaround is to emacs -q,
+;; eval-last-sexp:
+;;   (require 'package)
+;;   (push '("melpa" . "http://melpa.milkbox.net/packages/")
+;;         package-archives)
+;; list-packages and install evil
 (require 'evil)
 (when (featurep 'evil)
   (evil-mode 1))
