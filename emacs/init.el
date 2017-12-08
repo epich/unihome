@@ -56,6 +56,8 @@
  '(cc-search-directories
    (quote
     ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "./include" "../include" "./inc" "../inc" "./public" "../public" "./internal" "../internal")))
+ '(clang-format-style
+   "{BasedOnStyle: Google, BreakBeforeBinaryOperators: NonAssignment}")
  '(column-number-mode t)
  '(delete-by-moving-to-trash t)
  '(dired-auto-revert-buffer t)

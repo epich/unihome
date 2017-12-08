@@ -100,6 +100,7 @@ returns the path to the found file or nil if not found."
                        (t (find-file-r (directory-file-name parent))))))) ; Continue
     (find-file-r default-directory)))
 
+;; From https://stackoverflow.com/questions/13962720/how-to-distribute-strings-in-emacs-or-vim
 ;; TODO: Make the *match-list* variables and functions conform to my- prefix standard.
 
 (defvar match-list nil

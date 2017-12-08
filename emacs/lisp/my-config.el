@@ -586,10 +586,10 @@
   )
 
 (defvar my-cedet-loaded nil "Whether my Elisp loaded CEDET.")
-;; If we have Grok, we don't need Semantic. Semantic is too buggy to
-;; leave enabled needlessly.
+;; Semantic is too buggy to enable if we have alternative code
+;; navigation: Grok or Kythe using lsp-mode.
 (defun my-cedet-init ()
-  (unless (or my-cedet-loaded (featurep 'grok))
+  (unless (or my-cedet-loaded (featurep 'grok) (featurep 'lsp-mode))
     (my-msg "Loading CEDET packages.")
     ;; When using CEDET source distributed separately from Emacs
     ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
@@ -647,8 +647,7 @@
   ;; Set to just longer than the keyboard repetition rate.
   (setq jit-lock-defer-time 0.01)
   (my-cedet-init)
-  (modify-syntax-entry ?_ "w")
-  )
+  (modify-syntax-entry ?_ "w"))
 (defun my-clojure-mode-hook ()
   (my-msg "Inside my-clojure-mode-hook for buffer %s " (buffer-name))
   (define-key evil-motion-state-local-map "se" 'nrepl-eval-last-expression)
@@ -681,7 +680,8 @@
 (defun my-go-mode-hook ()
   (my-msg "Inside my-go-mode-hook for buffer %s " (buffer-name))
   ;; Indentation with tabs is typical, improve readability with smaller tab-width
-  (setq tab-width 2))
+  (setq tab-width 2)
+  (setq window-min-width 120))
 (defun my-java-mode-hook ()
   (my-msg "Inside my-java-mode-hook for buffer %s " (buffer-name))
   (define-key evil-insert-state-local-map (kbd "<f3>") 'my-insert-java-log))

@@ -1,5 +1,6 @@
 Installed:
-  : CrxMouse
+  : miniGestures
+    : Alternatve CrxMouse is blocked
   : Death to _blank
   : Google Docs
 
