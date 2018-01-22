@@ -408,7 +408,18 @@
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs") (my-toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-motion-state-map " " nil)
-(define-key evil-normal-state-map " " 'save-buffer)
+(require 'lsp-methods)
+(defun my-save-buffer ()
+  (interactive)
+  (lsp--send-notification
+   (lsp--make-notification
+    "textDocument/didChange"
+    `(:textDocument
+      ,(lsp--versioned-text-document-identifier)
+      :contentChanges
+      ,(vector (lsp--full-change-event)))))
+  (save-buffer))
+(define-key evil-normal-state-map " " 'my-save-buffer)
 
 ;;; More Evil key bindings
 
