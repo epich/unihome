@@ -411,13 +411,14 @@
 (require 'lsp-methods)
 (defun my-save-buffer ()
   (interactive)
-  (lsp--send-notification
-   (lsp--make-notification
-    "textDocument/didChange"
-    `(:textDocument
-      ,(lsp--versioned-text-document-identifier)
-      :contentChanges
-      ,(vector (lsp--full-change-event)))))
+  (when lsp-mode
+    (lsp--send-notification
+     (lsp--make-notification
+      "textDocument/didChange"
+      `(:textDocument
+        ,(lsp--versioned-text-document-identifier)
+        :contentChanges
+        ,(vector (lsp--full-change-event))))))
   (save-buffer))
 (define-key evil-normal-state-map " " 'my-save-buffer)
 
