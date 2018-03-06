@@ -83,6 +83,7 @@
  '(large-file-warning-threshold 1000000000.0)
  '(lsp-document-sync-method (quote (quote none)))
  '(lsp-enable-codeaction nil)
+ '(lsp-ui-peek-enable nil)
  '(lsp-enable-flycheck nil)
  '(message-log-max 100000)
  '(nxml-child-indent my-offset)

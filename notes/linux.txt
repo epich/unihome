@@ -137,11 +137,19 @@ Debug symbol notes:
 Gnome settings:
   gsettings set org.gnome.settings-daemon.peripherals.keyboard repeat-interval 15
 
+Cinnamon settings:
+  Right click panel -> All Settings -> System Settings -> Windows -> Alt-Tab:
+    Change latency
+    Change switcher style to Thumbnails only
+
 Terminal:
     If terminal gets garbled (eg after 'cat' on a binary file) then paste into terminal:
         echo -e '\017' or '\x0f'
     From C:
         printf("\017");
+    To have double click select characters like colon:
+        https://unix.stackexchange.com/questions/290544/double-click-selection-in-gnome-terminal
+        conf write /org/gnome/terminal/legacy/profiles:/:$termid/word-char-exceptions '@ms "-=&#:/.?@+~_%;"'
 
 Rsync:
     rsync -av --progress sourcefolder /destinationfolder --exclude thefoldertoexclude
