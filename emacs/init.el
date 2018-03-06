@@ -39,6 +39,9 @@
 ;;    scrolling in the redisplay processing.
 ;; semantic-idle-scheduler-idle-time
 ;;    Potentially helps helps disruptive pauses while editing
+;; tramp-mode
+;;    When lsp-mode and tramp-mode are enabled, Tramp tries to access bogus
+;;    hosts, such as a C++ namespace.
 ;; x-select-enable-clipboard
 ;;    This is necessary to paste into Windows running on qemu-kvm .
 (custom-set-variables
@@ -83,8 +86,8 @@
  '(large-file-warning-threshold 1000000000.0)
  '(lsp-document-sync-method (quote (quote none)))
  '(lsp-enable-codeaction nil)
- '(lsp-ui-peek-enable nil)
  '(lsp-enable-flycheck nil)
+ '(lsp-ui-peek-enable nil)
  '(message-log-max 100000)
  '(nxml-child-indent my-offset)
  '(nxml-sexp-element-flag t)
@@ -101,6 +104,7 @@
  '(show-paren-mode t)
  '(tags-case-fold-search nil)
  '(tool-bar-mode nil)
+ '(tramp-mode nil)
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
  '(whitespace-style (quote (face tabs trailing))))
