@@ -78,6 +78,7 @@
  '(ff-always-try-to-create nil)
  '(ff-special-constructs nil)
  '(ffap-require-prefix t)
+ '(fill-column 80)
  '(font-lock-maximum-decoration (quote ((c++-mode . 2))))
  '(frame-background-mode (quote dark))
  '(global-whitespace-mode t)

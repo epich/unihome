@@ -411,7 +411,7 @@
 (require 'lsp-methods)
 (defun my-save-buffer ()
   (interactive)
-  (when lsp-mode
+  (when (and (featurep 'lsp-mode) lsp-mode)
     (lsp--send-notification
      (lsp--make-notification
       "textDocument/didChange"
@@ -608,7 +608,8 @@
 ;; Semantic is too buggy to enable if we have alternative code
 ;; navigation: Grok or Kythe using lsp-mode.
 (defun my-cedet-init ()
-  (unless (or my-cedet-loaded (featurep 'grok) (featurep 'lsp-mode))
+  (unless (or my-cedet-loaded (featurep 'grok) (featurep 'lsp-mode)
+              (featurep 'google-lsp))
     (my-msg "Loading CEDET packages.")
     ;; When using CEDET source distributed separately from Emacs
     ;;(load-file (format "%s/cedet-devel-load.el" my-bzr-cedet-path))
