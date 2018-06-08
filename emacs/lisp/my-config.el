@@ -300,8 +300,6 @@
 ;; Want RET to use other keymaps' binding sometimes.  Buffer Menu's for example.
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
-;; "y" command defaults to evil-normal-state-map, which prevents it from working in non editing buffers
-(my-move-key evil-normal-state-map evil-visual-state-map "y")
 
 (global-set-key (kbd "C-<down>") 'shrink-window)
 (global-set-key (kbd "C-<up>") 'enlarge-window)
@@ -421,6 +419,33 @@
         ,(vector (lsp--full-change-event))))))
   (save-buffer))
 (define-key evil-normal-state-map " " 'my-save-buffer)
+
+(require 'register)
+(defvar my-clipboard-val "")
+;; Modelled after copy-to-register function but with hardcoded register.
+(defun my-copy (start end)
+  (interactive (list (region-beginning)
+                     (region-end)))
+  (let ((cur-time (current-time))) (message "%s.%s DEBUG: Inside my-copy" (format-time-string "%Y-%m-%dT%H:%M:%S" cur-time) (format "%06d" (nth 2 cur-time))))
+  ;; Use an arbitrary character for the register
+  (setq my-clipboard-val (filter-buffer-substring start end))
+  (setq deactivate-mark t)
+  (cond ((called-interactively-p 'interactive)
+         (indicate-copied-region))))
+;; Modelled after insert-register
+(defun my-paste (&optional arg)
+  (interactive (progn
+                 (barf-if-buffer-read-only)
+                 (list (not current-prefix-arg))))
+  (let ((cur-time (current-time))) (message "%s.%s DEBUG: Inside my-paste" (format-time-string "%Y-%m-%dT%H:%M:%S" cur-time) (format "%06d" (nth 2 cur-time))))
+  (push-mark)
+  (register-val-insert my-clipboard-val)
+  (if (not arg) (exchange-point-and-mark)))
+;; "y" command defaults to evil-normal-state-map, which doesn't work in non
+;; editing buffers
+(define-key evil-normal-state-map "y" nil)
+(define-key evil-motion-state-map "y" 'my-copy)
+(define-key evil-normal-state-map "p" 'my-paste)
 
 ;;; More Evil key bindings
 
