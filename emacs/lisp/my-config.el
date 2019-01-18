@@ -449,6 +449,8 @@
 
 ;;; More Evil key bindings
 
+(define-key evil-motion-state-map (kbd "C-y") nil)
+
 ;; overwrite-mode (insert key) can supercede Vim's R command.
 (define-key evil-normal-state-map "R" nil)
 (define-key evil-motion-state-map "R" 'revert-buffer)

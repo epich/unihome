@@ -188,6 +188,8 @@ Interesting commands (RPMs in parans):
     : /sbin/ethtool - Display or change ethernet card settings
     : /sbin/ifconfig
     : /sbin/iptables - administration tool for IPv4 packet filtering and NAT
+    : ncdu is very useful for finding large files to delete
+      : ncdu -rx PARTITION-DIR
 
 PMP Poor Man's Profiler
    : Gets stack traces of running threads.
