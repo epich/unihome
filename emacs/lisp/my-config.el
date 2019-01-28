@@ -693,7 +693,8 @@
   (my-bind-tab-del-keys)
   ;; Set to just longer than the keyboard repetition rate.
   (setq jit-lock-defer-time 0.01)
-  (my-cedet-init)
+  ;; TODO: Reassess whether I ever want CEDET
+  ;; (my-cedet-init)
   (modify-syntax-entry ?_ "w"))
 (defun my-clojure-mode-hook ()
   (my-msg "Inside my-clojure-mode-hook for buffer %s " (buffer-name))
