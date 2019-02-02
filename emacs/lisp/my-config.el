@@ -422,26 +422,20 @@
   (save-buffer))
 (define-key evil-normal-state-map " " 'my-save-buffer)
 
-(require 'register)
 (defvar my-clipboard-val "")
-;; Modelled after copy-to-register function but with hardcoded register.
 (defun my-copy (start end)
   (interactive (list (region-beginning)
                      (region-end)))
-  (let ((cur-time (current-time))) (message "%s.%s DEBUG: Inside my-copy" (format-time-string "%Y-%m-%dT%H:%M:%S" cur-time) (format "%06d" (nth 2 cur-time))))
-  ;; Use an arbitrary character for the register
   (setq my-clipboard-val (filter-buffer-substring start end))
   (setq deactivate-mark t)
   (cond ((called-interactively-p 'interactive)
          (indicate-copied-region))))
-;; Modelled after insert-register
 (defun my-paste (&optional arg)
   (interactive (progn
                  (barf-if-buffer-read-only)
                  (list (not current-prefix-arg))))
-  (let ((cur-time (current-time))) (message "%s.%s DEBUG: Inside my-paste" (format-time-string "%Y-%m-%dT%H:%M:%S" cur-time) (format "%06d" (nth 2 cur-time))))
   (push-mark)
-  (register-val-insert my-clipboard-val)
+  (insert my-clipboard-val)
   (if (not arg) (exchange-point-and-mark)))
 ;; "y" command defaults to evil-normal-state-map, which doesn't work in non
 ;; editing buffers
@@ -450,6 +444,8 @@
 (define-key evil-normal-state-map "p" 'my-paste)
 
 ;;; More Evil key bindings
+
+(define-key evil-motion-state-map (kbd "C-y") nil)
 
 ;; overwrite-mode (insert key) can supercede Vim's R command.
 (define-key evil-normal-state-map "R" nil)
@@ -693,7 +689,8 @@
   (my-bind-tab-del-keys)
   ;; Set to just longer than the keyboard repetition rate.
   (setq jit-lock-defer-time 0.01)
-  (my-cedet-init)
+  ;; TODO: Reassess whether I ever want CEDET
+  ;; (my-cedet-init)
   (modify-syntax-entry ?_ "w"))
 (defun my-clojure-mode-hook ()
   (my-msg "Inside my-clojure-mode-hook for buffer %s " (buffer-name))
