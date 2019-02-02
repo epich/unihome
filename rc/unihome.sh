@@ -34,7 +34,7 @@ else
   alias ls='ls --color'
   alias sa='source ~/.bashrc'
   function e() {
-    emacs --reverse-video "$@" &
+    emacs "$@" &
     # So as I can close the shell and Emacs stays open
     disown
   }
