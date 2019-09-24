@@ -110,8 +110,6 @@
 (require 'package)
 (push '("marmalade" . "http://marmalade-repo.org/packages/")
       package-archives )
-;; (push '("marmalade" . "http://marmalade-repo.org/packages/")
-;;       package-archives )
 (push '("melpa" . "http://melpa.milkbox.net/packages/")
       package-archives)
 ;; (push '("melpa-stable" . "http://stable.melpa.org/packages/")
@@ -161,7 +159,7 @@
 ;;             "unihome" "trunk" "sw")
 ;;         "Path to current project. " )
 (push "~/lisp" load-path)
-(require 'google-project)
+;;(require 'google-project)
 
 ;;; Configure default Evil states for chosen major modes.
 ;;
@@ -410,7 +408,7 @@
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs") (my-toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-motion-state-map " " nil)
-(require 'lsp-methods)
+;;(require 'lsp-methods)
 (defun my-save-buffer ()
   (interactive)
   (when (and (featurep 'lsp-mode) lsp-mode)
