@@ -159,7 +159,7 @@
 ;;             "unihome" "trunk" "sw")
 ;;         "Path to current project. " )
 (push "~/lisp" load-path)
-;;(require 'google-project)
+(require 'google-project)
 
 ;;; Configure default Evil states for chosen major modes.
 ;;
@@ -366,6 +366,8 @@
 (define-key evil-motion-state-map "\C-cb" 'evil-scroll-line-to-bottom)
 (define-key evil-motion-state-map "\C-c-" "\C-cb^")
 
+(define-key evil-motion-state-map "Y" 'kill-ring-save)
+
 (define-key evil-normal-state-map "o" nil)
 (define-key evil-visual-state-map "o" nil)
 (define-key evil-normal-state-map "O" nil)
@@ -408,7 +410,7 @@
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs") (my-toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-motion-state-map " " nil)
-;;(require 'lsp-methods)
+(require 'lsp-methods)
 (defun my-save-buffer ()
   (interactive)
   (when (and (featurep 'lsp-mode) lsp-mode)
