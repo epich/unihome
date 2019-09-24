@@ -17,6 +17,8 @@
 (when (fboundp #'tool-bar-mode) (tool-bar-mode 0))
 (when (fboundp #'scroll-bar-mode) (scroll-bar-mode 0))
 
+(set-background-color "black")
+(set-foreground-color "white")
 (setq visible-bell t)
 ;; Menu bar doesn't take up extra vertical space on Mac
 (unless (eq window-system 'ns)
@@ -108,6 +110,8 @@
 (require 'package)
 (push '("marmalade" . "http://marmalade-repo.org/packages/")
       package-archives )
+;; (push '("marmalade" . "http://marmalade-repo.org/packages/")
+;;       package-archives )
 (push '("melpa" . "http://melpa.milkbox.net/packages/")
       package-archives)
 ;; (push '("melpa-stable" . "http://stable.melpa.org/packages/")
