@@ -410,7 +410,7 @@
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs") (my-toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-motion-state-map " " nil)
-(require 'lsp-methods)
+(require 'lsp-mode)
 (defun my-save-buffer ()
   (interactive)
   (when (and (featurep 'lsp-mode) lsp-mode)
