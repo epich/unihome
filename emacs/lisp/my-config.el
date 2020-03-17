@@ -110,7 +110,7 @@
 (require 'package)
 (push '("marmalade" . "http://marmalade-repo.org/packages/")
       package-archives )
-(push '("melpa" . "http://melpa.milkbox.net/packages/")
+(push '("melpa" . "https://melpa.org/packages/")
       package-archives)
 ;; (push '("melpa-stable" . "http://stable.melpa.org/packages/")
 ;;       package-archives)
@@ -159,7 +159,7 @@
 ;;             "unihome" "trunk" "sw")
 ;;         "Path to current project. " )
 (push "~/lisp" load-path)
-(require 'google-project)
+(require 'google-project nil t)
 
 ;;; Configure default Evil states for chosen major modes.
 ;;
