@@ -230,6 +230,8 @@ Do after logging into tcsh:
   endif
 then try sudo command again.
 
+Mouse settings:
+  See separate mouse.txt
 
 
 
