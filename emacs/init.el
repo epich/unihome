@@ -93,7 +93,7 @@
  '(message-log-max 100000)
  '(nxml-child-indent my-offset)
  '(nxml-sexp-element-flag t)
- '(package-selected-packages (quote (diff-hl flylisp adjust-parens evil)))
+ '(package-selected-packages (quote (lsp-mode diff-hl flylisp adjust-parens evil)))
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)
  '(scroll-margin 4)
