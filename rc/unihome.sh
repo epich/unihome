@@ -42,6 +42,7 @@ fi
 alias .=pwd
 alias l='ls -lart'
 alias c='cat'
+alias em='emacs -nw'
 alias m='mplayer -loop 0'
 #citc=`g4 client -o | grep '^Client:' | sed 's|Client:\tboreilly:\([^:]*\):.*|\1|g'`
 alias title='echo -n "]2;\!*"'
