@@ -299,7 +299,7 @@
 (define-key evil-normal-state-map (kbd "C--") (lambda ()))
 
 (global-set-key (kbd "RET") 'newline-and-indent)
-;; Want RET to use other keymaps' binding sometimes.  Buffer Menu's for example.
+;; Want RET to use other keymaps' binding sometimes. Buffer Menu's for example.
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
 
