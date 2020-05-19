@@ -79,3 +79,5 @@ Triggers:
   Describe trigger: cleartool describe trtype:NO_CI_lex_r1_int
   Change trigger: cleartool mktrtype -replace -element -all -preop checkin -nuser vadm_goe,ccuser,szaccheo,esteinfe,boreilly,ptine,pvanromp -execunix "perl -e die()" -execwin "ccperl -e die()" -brtype lex_r2_int,lex_r1_int NO_CI_lex_r1_int
 
+Git ClearCase integration:
+   http://stackoverflow.com/questions/2342131/how-to-bridge-git-to-clearcase

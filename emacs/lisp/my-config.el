@@ -108,9 +108,9 @@
 ;;
 ;; Use M-x list-packages to manage installed packages
 (require 'package)
-;; (push '("marmalade" . "http://marmalade-repo.org/packages/")
-;;       package-archives )
-(push '("melpa" . "http://melpa.milkbox.net/packages/")
+(push '("marmalade" . "http://marmalade-repo.org/packages/")
+      package-archives )
+(push '("melpa" . "https://melpa.org/packages/")
       package-archives)
 ;; (push '("melpa-stable" . "http://stable.melpa.org/packages/")
 ;;       package-archives)
@@ -159,7 +159,7 @@
 ;;             "unihome" "trunk" "sw")
 ;;         "Path to current project. " )
 (push "~/lisp" load-path)
-;;(require 'google-project)
+(require 'google-project nil t)
 
 ;;; Configure default Evil states for chosen major modes.
 ;;
@@ -299,7 +299,7 @@
 (define-key evil-normal-state-map (kbd "C--") (lambda ()))
 
 (global-set-key (kbd "RET") 'newline-and-indent)
-;; Want RET to use other keymaps' binding sometimes.  Buffer Menu's for example.
+;; Want RET to use other keymaps' binding sometimes. Buffer Menu's for example.
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
 
@@ -366,6 +366,8 @@
 (define-key evil-motion-state-map "\C-cb" 'evil-scroll-line-to-bottom)
 (define-key evil-motion-state-map "\C-c-" "\C-cb^")
 
+(define-key evil-motion-state-map "Y" 'kill-ring-save)
+
 (define-key evil-normal-state-map "o" nil)
 (define-key evil-visual-state-map "o" nil)
 (define-key evil-normal-state-map "O" nil)
@@ -408,19 +410,7 @@
 (define-key evil-motion-state-map "oi" (lambda () (interactive) (load-file "~/.emacs") (my-toggle-fullscreen)))
 (define-key evil-normal-state-map "S" nil)
 (define-key evil-motion-state-map " " nil)
-;;(require 'lsp-methods)
-(defun my-save-buffer ()
-  (interactive)
-  (when (and (featurep 'lsp-mode) lsp-mode)
-    (lsp--send-notification
-     (lsp--make-notification
-      "textDocument/didChange"
-      `(:textDocument
-        ,(lsp--versioned-text-document-identifier)
-        :contentChanges
-        ,(vector (lsp--full-change-event))))))
-  (save-buffer))
-(define-key evil-normal-state-map " " 'my-save-buffer)
+(define-key evil-normal-state-map " " 'save-buffer)
 
 (defvar my-clipboard-val "")
 (defun my-copy (start end)

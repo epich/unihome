@@ -143,13 +143,17 @@ Cinnamon settings:
     Change switcher style to Thumbnails only
 
 Terminal:
-    If terminal gets garbled (eg after 'cat' on a binary file) then paste into terminal:
-        echo -e '\017' or '\x0f'
-    From C:
-        printf("\017");
-    To have double click select characters like colon:
-        https://unix.stackexchange.com/questions/290544/double-click-selection-in-gnome-terminal
-        conf write /org/gnome/terminal/legacy/profiles:/:$termid/word-char-exceptions '@ms "-=&#:/.?@+~_%;"'
+  If terminal gets garbled (eg after 'cat' on a binary file) then paste into terminal:
+    echo -e '\017' or '\x0f'
+  From C:
+    printf("\017");
+  To have double click select characters like colon:
+    https://unix.stackexchange.com/questions/290544/double-click-selection-in-gnome-terminal
+    conf write /org/gnome/terminal/legacy/profiles:/:$termid/word-char-exceptions '@ms "-=&#:/.?@+~_%;"'
+  If scrolling goes through command history instead of output history:
+    tput rmcup
+    See also https://unix.stackexchange.com/questions/259922/scrolling-is-disabled-all-of-a-sudden-in-terminal
+
 
 Rsync:
     rsync -av --progress sourcefolder /destinationfolder --exclude thefoldertoexclude
@@ -234,6 +238,8 @@ Do after logging into tcsh:
   endif
 then try sudo command again.
 
+Mouse settings:
+  See separate mouse.txt
 
 
 

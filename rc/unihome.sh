@@ -42,6 +42,7 @@ fi
 alias .=pwd
 alias l='ls -lart'
 alias c='cat'
+alias em='emacs -nw'
 alias m='mplayer -loop 0'
 #citc=`g4 client -o | grep '^Client:' | sed 's|Client:\tboreilly:\([^:]*\):.*|\1|g'`
 alias title='echo -n "]2;\!*"'
@@ -65,7 +66,9 @@ export HISTTIMEFORMAT='%Y%m%dT%H%M%S '
 # Also used elements from a default Ubuntu bashrc
 case $TERM in
     xterm*)
-        export PS1="\[\033]0;\h \w\007\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\033[01;40m\]\h \w :\[\033[00m\] "
+	# With gray background:
+        #export PS1="\[\033]0;\h \w\007\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\033[01;40m\]\h \w :\[\033[00m\] "
+	PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\h\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] '
         ;;
     *)
         PS1="bash : "

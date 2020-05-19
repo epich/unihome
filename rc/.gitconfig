@@ -2,3 +2,4 @@
 	email = gundaetiapo@gmail.com
 [alias]
 	l = log --graph --pretty=format:'%C(bold red)%h %C(yellow)%d%C(green)%ai%Creset %s %C(bold blue)%an%Creset' --abbrev-commit
+	s = status -vv

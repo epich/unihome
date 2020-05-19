@@ -42,8 +42,8 @@
 "xbindkeys_show" 
   control+shift + q
 
-# Haven't decided which to bind to middle click
-# TODO: bind the other to copy (Ctrl-C or Ctrl-Shift-C in terminal)
+# Binds mouse wheel right tilt click to middle click.
+# TODO: bind left tilt to copy (Ctrl-C or Ctrl-Shift-C in terminal)
 # "xte 'mouseclick 2'"
 #   b:6 + Release
 "xte 'mouseclick 2'"

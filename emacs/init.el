@@ -1,17 +1,5 @@
 ;; -*- lexical-binding: t -*-
 
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-;;
-;; TODO: Reconcile with package-initialize call in my-config.el
-(package-initialize)
-
-(push "~/unihome/emacs/lisp" load-path)
-(require 'my-util)
-(require 'my-config)
-
 ;;; Customizations
 ;;
 ;; Specific customizations are documented outside the sexp, because
@@ -71,6 +59,7 @@
  '(evil-intercept-maps nil)
  '(evil-kbd-macro-suppress-motion-error t)
  '(evil-mouse-word (quote evil-move-WORD))
+ '(evil-move-beyond-eol t)
  '(evil-move-cursor-back nil)
  '(evil-overriding-maps nil)
  '(evil-search-module (quote evil-search))
@@ -92,7 +81,7 @@
  '(message-log-max 100000)
  '(nxml-child-indent my-offset)
  '(nxml-sexp-element-flag t)
- '(package-selected-packages (quote (diff-hl flylisp adjust-parens evil)))
+ '(package-selected-packages (quote (lsp-mode diff-hl flylisp adjust-parens evil)))
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)
  '(scroll-margin 4)
@@ -105,7 +94,7 @@
  '(show-paren-mode t)
  '(tags-case-fold-search nil)
  '(tool-bar-mode nil)
- '(tramp-mode nil)
+ '(tramp-mode nil nil (tramp))
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
  '(whitespace-style (quote (face tabs trailing))))
@@ -118,3 +107,16 @@
  '(semantic-idle-symbol-highlight ((t (:background "gray20"))))
  '(whitespace-tab ((((class color) (background dark)) (:background "grey15" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+;;
+;; TODO: Reconcile with package-initialize call in my-config.el
+(package-initialize)
+
+(push "~/unihome/emacs/lisp" load-path)
+(require 'my-util)
+(require 'my-config)
+

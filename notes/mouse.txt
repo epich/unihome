@@ -2,11 +2,15 @@ Notes on configuring Logitech m500 mouse:
   Useful sites:
     http://blog.hanschen.org/2009/10/13/mouse-shortcuts-with-xbindkeys/
     https://askubuntu.com/questions/213749/how-to-set-mouse-wheel-tilt-click-support-up
-  sudo apt-get install xbindkeys xautomation
-  xbindkeys --defaults > $HOME/.xbindkeysrc
+  sudo apt install xbindkeys xautomation
+  Set up .xbindkeysrc:
+    In home dir: ln -s unihome/rc/.xbindkeysrc .
+    Or: xbindkeys --defaults > $HOME/.xbindkeysrc
   Commands:
     Get button numbers: xev
     Execute mouse and keyboard actions as commands: 'xte' with args, see site
     Restart xbindkeys: kill `pgrep -f '^xbindkeys$'` ; xbindkeys
-  In home dir: ln -s unihome/rc/.xbindkeysrc .xbindkeysrc
   OS may need configuration to start /usr/bin/xbindkeys at system start
+    I have found it is added as part of installation.
+    Even so, from site:
+      Open startup applications. Click 'Add' put xbindkeys in the 'name' field and /usr/bin/xbindkeys in the 'Command Field'.
