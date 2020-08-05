@@ -210,6 +210,10 @@ bash:
 sed:
    : { ./myexec & } | sed '/String to wait for on stdout from myexec/q'
 
+Music:
+  : Split an mp3 file:
+    : https://askubuntu.com/questions/27574/how-can-i-split-a-mp3-file
+
 Ubuntu:
   : To generate core dump files, create file /etc/sysctl.d/60-core-pattern.conf with content:
     kernel.core_pattern = /var/crash/core.%e.%s.%p.%h.%t
