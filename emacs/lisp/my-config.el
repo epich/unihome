@@ -164,11 +164,14 @@
 ;;; Configure default Evil states for chosen major modes.
 ;;
 ;; Change modes that come up in Emacs state to come up in motion state instead.
-(setq evil-motion-state-modes (append evil-emacs-state-modes evil-motion-state-modes))
+(setq evil-motion-state-modes
+      (append '(;; Use Dired in motion state instead of the keymap created in evil-integration.el.
+                dired-mode
+                eassist-mode
+                xref--xref-buffer-mode)
+              evil-emacs-state-modes
+              evil-motion-state-modes))
 (setq evil-emacs-state-modes nil)
-;; Use Dired in motion state instead of the keymap created in evil-integration.el .
-(setq evil-motion-state-modes (cons 'dired-mode evil-motion-state-modes))
-(setq evil-motion-state-modes (cons 'eassist-mode evil-motion-state-modes))
 
 (defun my-bind-tab-del-keys ()
   "Bind the TAB and DEL keys because default behaviors are shitty. "

@@ -22,14 +22,13 @@
 ;; inverse-video
 ;;    An attempt to get white on black.  For some reason this doesn't work
 ;;    but the --reverse-video CLI arg does.
+;; package-load-list
+;;    Merely loading ESS exhibits errors that cause other improper initalizations.
 ;; scroll-conservatively
 ;;    Setting is best compromise I've found given the design of automatic
 ;;    scrolling in the redisplay processing.
 ;; semantic-idle-scheduler-idle-time
 ;;    Potentially helps helps disruptive pauses while editing
-;; tramp-mode
-;;    When lsp-mode and tramp-mode are enabled, Tramp tries to access bogus
-;;    hosts, such as a C++ namespace.
 ;; x-select-enable-clipboard
 ;;    This is necessary to paste into Windows running on qemu-kvm .
 (custom-set-variables
@@ -81,6 +80,7 @@
  '(message-log-max 100000)
  '(nxml-child-indent my-offset)
  '(nxml-sexp-element-flag t)
+ '(package-load-list '(all (ess nil)))
  '(package-selected-packages (quote (lsp-mode diff-hl flylisp adjust-parens evil)))
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)
@@ -94,7 +94,9 @@
  '(show-paren-mode t)
  '(tags-case-fold-search nil)
  '(tool-bar-mode nil)
- '(tramp-mode nil nil (tramp))
+ ;; When lsp-mode and tramp-mode are enabled, Tramp tries to access bogus hosts,
+ ;; such as a C++ namespace.
+ ;; '(tramp-mode nil nil (tramp))
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
  '(whitespace-style (quote (face tabs trailing))))
@@ -108,15 +110,9 @@
  '(whitespace-tab ((((class color) (background dark)) (:background "grey15" :foreground "darkgray"))))
  '(whitespace-trailing ((((class color) (background dark)) (:background "grey10" :foreground "darkgray")))))
 
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-;;
-;; TODO: Reconcile with package-initialize call in my-config.el
-(package-initialize)
+;; package.el expects this commented out. my-config.el calls it instead.
+;;(package-initialize)
 
 (push "~/unihome/emacs/lisp" load-path)
 (require 'my-util)
 (require 'my-config)
-

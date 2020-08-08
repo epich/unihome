@@ -61,14 +61,19 @@ export HISTTIMEFORMAT='%Y%m%dT%H%M%S '
 # Vi bindings when arrowing up to previous commands
 # Is this responsible for strange mutations to command history? History should be immutable.
 #set -o vi
+
 # Based on advice at: http://tldp.org/HOWTO/Xterm-Title-4.html
 #
 # Also used elements from a default Ubuntu bashrc
+#
+# Set MY_LOCALHOST_COLOR to an ANSI color code to customize it in the prompt.
+# - 32 is green
+# - 33 is yellow
 case $TERM in
     xterm*)
 	# With gray background:
         #export PS1="\[\033]0;\h \w\007\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\033[01;40m\]\h \w :\[\033[00m\] "
-	PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\h\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] '
+	PS1='${debian_chroot:+($debian_chroot)}\[\033[01;${MY_LOCALHOST_COLOR:-32}m\]\h\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] '
         ;;
     *)
         PS1="bash : "
