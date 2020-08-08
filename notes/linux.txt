@@ -211,8 +211,8 @@ sed:
    : { ./myexec & } | sed '/String to wait for on stdout from myexec/q'
 
 Music:
-  : Split an mp3 file:
-    : https://askubuntu.com/questions/27574/how-can-i-split-a-mp3-file
+  : Split an mp3 or mp4 file:
+    : With ffmpeg https://askubuntu.com/questions/27574/how-can-i-split-a-mp3-file
 
 Ubuntu:
   : To generate core dump files, create file /etc/sysctl.d/60-core-pattern.conf with content:
