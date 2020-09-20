@@ -213,6 +213,8 @@ sed:
 Music:
   : Split an mp3 or mp4 file:
     : With ffmpeg https://askubuntu.com/questions/27574/how-can-i-split-a-mp3-file
+  : Convert FLAC to 128 mp3:
+    for f in *.flac; do echo --- $f; ffmpeg -i "$f" -ab 128k "$(basename "${f/.flac}")".mp3 ;done
 
 Ubuntu:
   : To generate core dump files, create file /etc/sysctl.d/60-core-pattern.conf with content:
