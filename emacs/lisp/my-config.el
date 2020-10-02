@@ -158,7 +158,7 @@
 ;;         (or (my-find-file-upwards "emacs")
 ;;             "unihome" "trunk" "sw")
 ;;         "Path to current project. " )
-(push "~/lisp" load-path)
+(push "~/mygoog/lisp" load-path)
 (require 'google-project nil t)
 
 ;;; Configure default Evil states for chosen major modes.
