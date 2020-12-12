@@ -136,6 +136,7 @@ Debug symbol notes:
 
 Gnome settings:
   gsettings set org.gnome.settings-daemon.peripherals.keyboard repeat-interval 15
+  gsettings set org.gnome.desktop.session idle-delay 1800
 
 Cinnamon settings:
   Right click panel -> All Settings -> System Settings -> Windows -> Alt-Tab:

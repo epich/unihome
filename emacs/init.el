@@ -80,8 +80,10 @@
  '(message-log-max 100000)
  '(nxml-child-indent my-offset)
  '(nxml-sexp-element-flag t)
- '(package-load-list '(all (ess nil)))
- '(package-selected-packages (quote (lsp-mode diff-hl flylisp adjust-parens evil)))
+ '(package-load-list (quote (all (ess nil))))
+ '(package-selected-packages
+   (quote
+    (undo-tree lsp-mode diff-hl flylisp adjust-parens evil)))
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)
  '(scroll-margin 4)
@@ -94,9 +96,6 @@
  '(show-paren-mode t)
  '(tags-case-fold-search nil)
  '(tool-bar-mode nil)
- ;; When lsp-mode and tramp-mode are enabled, Tramp tries to access bogus hosts,
- ;; such as a C++ namespace.
- ;; '(tramp-mode nil nil (tramp))
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
  '(whitespace-style (quote (face tabs trailing))))
