@@ -29,6 +29,9 @@
 ;;    scrolling in the redisplay processing.
 ;; semantic-idle-scheduler-idle-time
 ;;    Potentially helps helps disruptive pauses while editing
+;; tramp-mode
+;;    When lsp-mode and tramp-mode are enabled, Tramp tries to access bogus hosts,
+;;    such as a C++ namespace.
 ;; x-select-enable-clipboard
 ;;    This is necessary to paste into Windows running on qemu-kvm .
 (custom-set-variables
@@ -38,42 +41,37 @@
  ;; If there is more than one, they won't work right.
  '(Buffer-menu-name-width 64)
  '(ac-delay 1.0)
- '(c-default-style
-   (quote
-    ((java-mode . "java")
-     (awk-mode . "awk")
-     (other . "k&r"))))
+ '(c-default-style '((java-mode . "java") (awk-mode . "awk") (other . "k&r")))
  '(cc-search-directories
-   (quote
-    ("." "/usr/include" "/usr/local/include/*" "./src" "../src" "./include" "../include" "./inc" "../inc" "./public" "../public" "./internal" "../internal")))
+   '("." "/usr/include" "/usr/local/include/*" "./src" "../src" "./include" "../include" "./inc" "../inc" "./public" "../public" "./internal" "../internal"))
  '(clang-format-style
    "{BasedOnStyle: Google, BreakBeforeBinaryOperators: NonAssignment}")
  '(column-number-mode t)
  '(delete-by-moving-to-trash t)
  '(dired-auto-revert-buffer t)
- '(ediff-merge-split-window-function (quote split-window-vertically))
+ '(ediff-merge-split-window-function 'split-window-vertically)
  '(evil-ex-hl-update-delay 0.01)
  '(evil-ex-visual-char-range t)
  '(evil-highlight-closing-paren-at-point-states nil)
  '(evil-intercept-maps nil)
  '(evil-kbd-macro-suppress-motion-error t)
- '(evil-mouse-word (quote evil-move-WORD))
+ '(evil-mouse-word 'evil-move-WORD)
  '(evil-move-beyond-eol t)
  '(evil-move-cursor-back nil)
  '(evil-overriding-maps nil)
- '(evil-search-module (quote evil-search))
+ '(evil-search-module 'evil-search)
  '(evil-shift-width my-offset)
  '(ff-always-try-to-create nil)
  '(ff-special-constructs nil)
  '(ffap-require-prefix t)
  '(fill-column 80)
- '(font-lock-maximum-decoration (quote ((c++-mode . 2))))
- '(frame-background-mode (quote dark))
+ '(font-lock-maximum-decoration '((c++-mode . 2)))
+ '(frame-background-mode 'dark)
  '(global-whitespace-mode t)
  '(inhibit-startup-screen t)
  '(inverse-video t)
  '(large-file-warning-threshold 1000000000.0)
- '(lsp-document-sync-method (quote (quote none)))
+ '(lsp-document-sync-method ''none)
  '(lsp-enable-codeaction nil)
  '(lsp-enable-flycheck nil)
  '(lsp-ui-peek-enable nil)
@@ -81,7 +79,7 @@
  '(nxml-child-indent my-offset)
  '(nxml-sexp-element-flag t)
  '(package-load-list '(all (ess nil)))
- '(package-selected-packages (quote (lsp-mode diff-hl flylisp adjust-parens evil)))
+ '(package-selected-packages '(lsp-mode diff-hl flylisp adjust-parens evil))
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)
  '(scroll-margin 4)
@@ -94,12 +92,9 @@
  '(show-paren-mode t)
  '(tags-case-fold-search nil)
  '(tool-bar-mode nil)
- ;; When lsp-mode and tramp-mode are enabled, Tramp tries to access bogus hosts,
- ;; such as a C++ namespace.
- ;; '(tramp-mode nil nil (tramp))
  '(undo-tree-visualizer-diff nil)
  '(undo-tree-visualizer-timestamps t)
- '(whitespace-style (quote (face tabs trailing))))
+ '(whitespace-style '(face tabs trailing)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
