@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-#
 # General utility module for Python scripts.
 
 import datetime
@@ -45,6 +43,7 @@ class GeneralError(Exception):
          arg0 = self.args[0]
       arg0 += '\nRaised because of %s: %s' % (caughtClass, caughtExc)
       self.args = (arg0,) + self.args[1:]
+      # TODO: Incompatible with Python3
       raise self.__class__, self, caughtTb
 
 class ShellCmdError(GeneralError):
