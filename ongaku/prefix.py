@@ -10,4 +10,7 @@ args = parser.parse_args()
 
 for f in args.files:
   prefix = input("Enter prefix for {}: ".format(f))
-  os.system('mv "{}" "{}/{}{}"'.format(f, os.path.dirname(f), prefix, os.path.basename(f)))
+  os.system('mv "{}" "{}"'.format(
+    f,
+    os.path.join(os.path.dirname(f),
+                 prefix + os.path.basename(f))))
