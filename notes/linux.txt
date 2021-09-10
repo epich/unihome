@@ -207,6 +207,8 @@ bash:
       some-command | tee >(other-command)
       : Requires new enough bash to get Process Substitution functionality.
    : $? prints the return code of previous command
+   : Execute until command passes:
+     until $CMD; do date; sleep 1; done
 
 sed:
    : { ./myexec & } | sed '/String to wait for on stdout from myexec/q'
