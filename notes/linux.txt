@@ -209,6 +209,10 @@ bash:
    : $? prints the return code of previous command
    : Execute until command passes:
      until $CMD; do date; sleep 1; done
+   : Continue after ssh session ends, from https://askubuntu.com/questions/8653/how-to-keep-processes-running-after-ending-ssh-session
+     ctrl+z
+     bg
+     disown -h
 
 sed:
    : { ./myexec & } | sed '/String to wait for on stdout from myexec/q'

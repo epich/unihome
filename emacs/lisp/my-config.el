@@ -685,7 +685,9 @@
   (setq jit-lock-defer-time 0.01)
   ;; TODO: Reassess whether I ever want CEDET
   ;; (my-cedet-init)
-  (modify-syntax-entry ?_ "w"))
+  (modify-syntax-entry ?_ "w")
+  ;; Override this function because syntax highlighting doesn't behave well.
+  (defun eglot-flymake-backend (report-fn &rest _more)))
 (defun my-clojure-mode-hook ()
   (my-msg "Inside my-clojure-mode-hook for buffer %s " (buffer-name))
   (define-key evil-motion-state-local-map "se" 'nrepl-eval-last-expression)
