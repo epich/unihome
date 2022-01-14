@@ -182,6 +182,7 @@ Interesting commands (RPMs in parans):
         : To get summary information about file system disk space: df -h
     : du
         : To get recursive information about disk size: du -s *
+        : To see hidden files: du -s .[^.]*
     : dstat (dstat)
     : locate (mlocate)
     : netstat - Print network connections, routing tables, interface statistics, masquerade connections, and multicast memberships
@@ -222,6 +223,10 @@ Music:
     for f in *.mp3; do echo --- $f; bak_file="$(basename "${f/.mp3}")".bak; mv "$f" "$bak_file"; ffmpeg -i "$bak_file" -ab 128k "$f" ;done && rm *.bak
   : Change bitrate inplace in dirs
     for d in *; do echo --- "$d"; (cd "$d"; for f in *.mp3; do echo --- $f; bak_file="$(basename "${f/.mp3}")".bak; mv "$f" "$bak_file"; ffmpeg -i "$bak_file" -ab 128k "$f"; done; rm *.bak);done
+  : Rip a cd:
+    : In the folder:
+      abcde -o mp3
+      : It does the rest.
 
 Ubuntu:
   : To generate core dump files, create file /etc/sysctl.d/60-core-pattern.conf with content:
