@@ -675,6 +675,17 @@
     ;; global-semantic-highlight-edits-mode
     (setq my-cedet-loaded t)))
 
+;; TODO: Does this help?
+(defun my-eglot-flymake-backend (report-fn &rest _more)
+  "Override because syntax highlighting doesn't behave well."
+  (cond (eglot--managed-mode
+         (setq eglot--current-flymake-report-fn report-fn)
+         ;; Report anything unreported
+         (when eglot--unreported-diagnostics
+           (eglot--report-to-flymake (cdr eglot--unreported-diagnostics))))
+        (t
+         (funcall report-fn nil))))
+
 (defun my-c-mode-common-hook ()
   (my-msg "Inside my-c-mode-common-hook for buffer %s " (buffer-name))
   ;; TODO: Project specific:
@@ -685,7 +696,10 @@
   (setq jit-lock-defer-time 0.01)
   ;; TODO: Reassess whether I ever want CEDET
   ;; (my-cedet-init)
-  (modify-syntax-entry ?_ "w"))
+  (modify-syntax-entry ?_ "w")
+  ;; Override this function because syntax highlighting doesn't behave well.
+  ;; (defun eglot-flymake-backend (report-fn &rest _more))
+  )
 (defun my-clojure-mode-hook ()
   (my-msg "Inside my-clojure-mode-hook for buffer %s " (buffer-name))
   (define-key evil-motion-state-local-map "se" 'nrepl-eval-last-expression)
