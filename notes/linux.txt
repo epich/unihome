@@ -142,6 +142,7 @@ Cinnamon settings:
   Right click panel -> All Settings -> System Settings -> Windows -> Alt-Tab:
     Change latency
     Change switcher style to Thumbnails only
+  If alt-tab is dropped, patch appSwitcher.js per https://github.com/linuxmint/cinnamon/issues/8994#issuecomment-781540415
 
 Terminal:
   If terminal gets garbled (eg after 'cat' on a binary file) then paste into terminal:
