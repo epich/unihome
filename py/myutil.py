@@ -43,8 +43,7 @@ class GeneralError(Exception):
          arg0 = self.args[0]
       arg0 += '\nRaised because of %s: %s' % (caughtClass, caughtExc)
       self.args = (arg0,) + self.args[1:]
-      # TODO: Incompatible with Python3
-      raise self.__class__, self, caughtTb
+      raise self.__class__(self).with_traceback(caughtTb)
 
 class ShellCmdError(GeneralError):
    """The cmd function throws this exception for failed shell commands."""
@@ -77,7 +76,7 @@ class FdReader(threading.Thread):
          readLine = s.readFd.readline()
          if not readLine: break
          s.outBuf.append(readLine)
-         if s.printLines: print readLine,
+         if s.printLines: print(readLine, end=' ')
          time.sleep(0)
 
    def getOutput(s):
@@ -106,7 +105,7 @@ def cmd(cmdStr, shellStr='sh', background=False, printStdout=False, printStderr=
 
    if printDebug:
       startTime = time.time()
-      print 'Using shell:%s to issue command: %s' % (shellStr, cmdStr,)
+      print('Using shell:%s to issue command: %s' % (shellStr, cmdStr,))
 
    # For reference, this is the simpler way to do it if there's no requirement to print
    # output in real time.
@@ -118,21 +117,21 @@ def cmd(cmdStr, shellStr='sh', background=False, printStdout=False, printStderr=
    # of the stdout and stderr pipes.
 
    childSh = subprocess.Popen(cmdStr, executable=shellStr, bufsize=1, shell=True,
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
    fdReaders = { 'stdout':FdReader(childSh.stdout, printStdout),
             'stderr':FdReader(childSh.stderr, printStderr), }
-   for readerI in fdReaders.values():
+   for readerI in list(fdReaders.values()):
       readerI.start()
    if background:
       return None
-   for readerI in fdReaders.values():
+   for readerI in list(fdReaders.values()):
       readerI.join()
    # If we don't wait, returncode was observed to not be up to date.
    childSh.wait()
 
    if printDebug:
-      print('Completed in %f seconds.' % (time.time()-startTime))
+      print(('Completed in %f seconds.' % (time.time()-startTime)))
 
    if childSh.returncode!=None and childSh.returncode!=0 and not ignoreReturnCode:
       raise ShellCmdError('Shell command failed with errno:%s cmd:%s stderr:%s' % (
@@ -156,7 +155,7 @@ def import_bash(bash_file):
                             "import os,pickle;print(pickle.dumps(os.environ))"),
                     shellStr="bash")
   child_env = pickle.loads(pickled_env)
-  for key, val in child_env.items():
+  for key, val in list(child_env.items()):
     os.environ[key] = val
 
 def setupSite():
@@ -165,8 +164,8 @@ def setupSite():
 
 def printSshAdvisory():
    """Print an advisory to the user about SSH."""
-   print ( "If prompted for a password, you may cease the prompting by generating SSH keys.  "
-            +"Web search 'setup ssh keys' or 'ssh without password' or similar. " )
+   print(( "If prompted for a password, you may cease the prompting by generating SSH keys.  "
+            +"Web search 'setup ssh keys' or 'ssh without password' or similar. " ))
 
 def getScriptName():
    """Get the name of the current script."""
@@ -180,7 +179,7 @@ def getRhelVersion():
    (rhelRelease, err) = subprocess.Popen( r"cat /etc/redhat-release | sed 's/.*release \([0-9\.]*\) .*/\1/'",
             stdout=subprocess.PIPE, shell=True).communicate()
    if err!=None:
-      print( 'WARNING: While getting RHEL version, output on stderr: %s' % err )
+      print(( 'WARNING: While getting RHEL version, output on stderr: %s' % err ))
    return rhelRelease.rstrip()
 
 def userTmpDir():
