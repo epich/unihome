@@ -1,3 +1,10 @@
+Github setup:
+  ssh-keygen -t ed25519 -C "gundaetiapo@gmail.com
+  ssh-add ~/.ssh/id_ed25519
+  git remote set-url origin git@github.com:epich/unihome.git
+  cat ~/.ssh/id_ed25519.pub
+  Paste to: github.com -> login -> Settings -> SSH and GPG keys -> New SSH key
+
 See origin:
    git remote [returns origin]
    git remote show origin
