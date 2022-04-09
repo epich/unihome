@@ -30,6 +30,7 @@ for f in args.files:
     new = new_prior
   
   new_file = re.sub(old, new, os.path.basename(f))
+  print("Moving to: {}".format(new_file))
   os.system('mv "{}" "{}"'.format(
     f,
     os.path.join(os.path.dirname(f),
