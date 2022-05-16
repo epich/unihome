@@ -1,0 +1,19 @@
+Split an mp3 or mp4 file:
+  With ffmpeg https://askubuntu.com/questions/27574/how-can-i-split-a-mp3-file
+    Start of track to specified time
+      ffmpeg -i 'song.mp3' -vn -acodec copy -to 00:01:32.5 'song [trimmed].mp3'
+    Specified time to end of track
+      ffmpeg -i 'song.mp3' -vn -acodec copy -ss 00:01:32.5 'song [trimmed].mp3'
+
+Convert FLAC to 128 mp3:
+  for f in *.flac; do echo --- $f; ffmpeg -i "$f" -ab 128k "$(basename "${f/.flac}")".mp3 ;done
+Execute command on files with spaces:
+  find . -name "*.mp3" -print0 | xargs -0 file
+Change bitrate effectively inplace:
+  for f in *.mp3; do echo --- $f; bak_file="$(basename "${f/.mp3}")".bak; mv "$f" "$bak_file"; ffmpeg -i "$bak_file" -ab 128k "$f" ;done && rm *.bak
+Change bitrate inplace in dirs
+  for d in *; do echo --- "$d"; (cd "$d"; for f in *.mp3; do echo --- $f; bak_file="$(basename "${f/.mp3}")".bak; mv "$f" "$bak_file"; ffmpeg -i "$bak_file" -ab 128k "$f"; done; rm *.bak);done
+Rip a cd:
+  In the folder:
+    abcde -o mp3
+    It does the rest.
