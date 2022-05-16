@@ -43,7 +43,10 @@
   control+shift + q
 
 # Binds mouse wheel right tilt click to middle click.
-# TODO: bind left tilt to copy (Ctrl-C or Ctrl-Shift-C in terminal)
+#
+# Requires apt install xautomation
+#
+# TODO: Bind left tilt to copy (Ctrl-C or Ctrl-Shift-C in terminal)
 # "xte 'mouseclick 2'"
 #   b:6 + Release
 "xte 'mouseclick 2'"

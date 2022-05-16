@@ -41,6 +41,7 @@
  ;; If there is more than one, they won't work right.
  '(Buffer-menu-name-width 64)
  '(ac-delay 1.0)
+ '(bazel-buildifier-command "nil")
  '(c-default-style '((java-mode . "java") (awk-mode . "awk") (other . "k&r")))
  '(cc-search-directories
    '("." "/usr/include" "/usr/local/include/*" "./src" "../src" "./include" "../include" "./inc" "../inc" "./public" "../public" "./internal" "../internal"))
