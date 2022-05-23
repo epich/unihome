@@ -24,7 +24,7 @@ for f in args.files:
     old_prior = old
   else:  
     old = old_prior
-  if new:
+  if new == '':
     new_prior = new
   else:  
     new = new_prior
