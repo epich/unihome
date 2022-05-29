@@ -24,11 +24,11 @@ for f in args.files:
     old_prior = old
   else:  
     old = old_prior
-  if new == '':
+  if new != '':
     new_prior = new
   else:  
     new = new_prior
-  
+
   new_file = re.sub(old, new, os.path.basename(f))
   print("Moving to: {}".format(new_file))
   os.system('mv "{}" "{}"'.format(
