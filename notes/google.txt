@@ -9,5 +9,7 @@ Google Photos
       rsync -av --remove-source-files src/ dest/
     Move JSON metadata files over:
       rsync -zarv --remove-source-files --include="*/" --include="*.json" --exclude="*" Takeout/Google\ Photos/ metadata/
+      From https://stackoverflow.com/questions/11111562/rsync-copy-over-only-certain-types-of-files-using-include-option
+  Use mediainfo command to see file metadata
 
 
