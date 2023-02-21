@@ -80,7 +80,7 @@
  '(nxml-child-indent my-offset)
  '(nxml-sexp-element-flag t)
  '(package-load-list '(all (ess nil)))
- '(package-selected-packages '(lsp-mode diff-hl flylisp adjust-parens evil))
+ '(package-selected-packages '(undo-tree lsp-mode diff-hl flylisp adjust-parens evil))
  '(python-indent-offset my-offset)
  '(scroll-conservatively 101)
  '(scroll-margin 4)
