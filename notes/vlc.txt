@@ -1,0 +1,11 @@
+Tools -> Preferences -> Interface
+  unclick Show systray icon
+  unclick Use only one instance when started from file manager
+  Continue playback? Always
+Tools -> Preferences -> Audio
+  Preferred audio language: Japanese
+Tools -> Preferences -> Hotkeys
+  Volume up
+  Volume down
+  Very short backwards jump
+  Very short forward jump
