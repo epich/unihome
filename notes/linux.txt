@@ -122,6 +122,7 @@ Zip files:
     To extract:
     7za e filename.zip
   "File name too long"
+    Encrypted file system is more restrictive. Move to /tmp to extract, then rename as needed before moving back to ~/.
     Single files:
       unzip -p -c example.zip "long file name.ogg" > shortname.ogg
     Many files see https://askubuntu.com/questions/915041/how-to-rename-extract-files-with-long-names-in-zip-archive
