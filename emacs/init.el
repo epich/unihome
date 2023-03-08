@@ -77,6 +77,7 @@
  '(lsp-enable-flycheck nil)
  '(lsp-ui-peek-enable nil)
  '(message-log-max 100000)
+ '(native-comp-async-report-warnings-errors 'silent)
  '(nxml-child-indent my-offset)
  '(nxml-sexp-element-flag t)
  '(package-load-list '(all (ess nil)))
