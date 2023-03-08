@@ -109,8 +109,6 @@
 ;;
 ;; Use M-x list-packages to manage installed packages
 (require 'package)
-(push '("marmalade" . "http://marmalade-repo.org/packages/")
-      package-archives )
 (push '("melpa" . "https://melpa.org/packages/")
       package-archives)
 ;; (push '("melpa-stable" . "http://stable.melpa.org/packages/")

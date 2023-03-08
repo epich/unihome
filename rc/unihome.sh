@@ -80,6 +80,13 @@ case $TERM in
         ;;
 esac
 
+# If the .xsession-errors file is not a symbolic link, delete it and create it as such
+# From https://www.daniloaz.com/en/how-to-prevent-the-xsession-errors-file-from-growing-to-huge-size/
+if [ ! -h $HOME/.xsession-errors ]; then
+ /bin/rm $HOME/.xsession-errors
+ ln -s /dev/null $HOME/.xsession-errors
+fi
+
 export LASTCORE=$(lscpu -p | tail -n 1 | cut -d, -f 1)
 # Execute a command with affinity to one core. eg 'coreaff blaze build :all'
 function coreaff() {
