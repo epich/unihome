@@ -389,6 +389,7 @@
        (interactive "*P")
        (insert-pair parg ,open-char ,close-char))))
 (my-define-insert-pair-key-binding ?\" ?\")
+(my-define-insert-pair-key-binding ?\` ?\`)
 (my-define-insert-pair-key-binding ?\' ?\')
 (my-define-insert-pair-key-binding ?\( ?\))
 (my-define-insert-pair-key-binding ?\[ ?\])
