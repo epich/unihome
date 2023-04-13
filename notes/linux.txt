@@ -256,5 +256,14 @@ then try sudo command again.
 Mouse settings:
   See separate mouse.txt
 
+USB
+  After reformatting USB with LUKS encryption, to work on other accounts and computers:
+    cd /dev/mapper/
+    ls -l
+    sudo mount -v /dev/mapper/luks-$hash /mnt
+    ls -lhd /mnt
+    sudo chmod 777 /mnt
+    Per https://forums.linuxmint.com/viewtopic.php?t=304477
+
 
 
