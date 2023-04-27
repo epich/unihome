@@ -51,7 +51,8 @@
 ;; Disable inappropriate behavior for left click in inactive
 ;; minibuffer (opens *Messages*)
 (define-key minibuffer-inactive-mode-map [mouse-1] nil)
-(setq eglot-ignored-server-capabilites '(:hoverProvider :signatureHelpProvider))
+(setq eglot-ignored-server-capabilites
+      '(:hoverProvider :inlayHintProvider :signatureHelpProvider))
 
 ;; Font
 ;;
