@@ -11,10 +11,10 @@ for f in args.files:
   print("Converting to 128kbps mp3: {}".format(f))
   ret = os.system('mv "{}" "{}.bak"'.format(f,f))
   if ret:
-    raise Error("os.system failed with error code: {}".format(ret))
+    raise RuntimeError("os.system failed with error code: {}".format(ret))
   ret = os.system('ffmpeg -i "{}.bak" -ab 128k "{}".mp3 '.format(f, os.path.splitext(f)[0]))
   if ret:
-    raise Error("os.system failed with error code: {}".format(ret))
+    raise RuntimeError("os.system failed with error code: {}".format(ret))
   ret = os.system('rm "{}.bak"'.format(f))
   if ret:
-    raise Error("os.system failed with error code: {}".format(ret))
+    raise RuntimeError("os.system failed with error code: {}".format(ret))
