@@ -73,7 +73,7 @@ case $TERM in
     xterm*)
 	# With gray background:
         #export PS1="\[\033]0;\h \w\007\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\033[01;40m\]\h \w :\[\033[00m\] "
-	PS1='${debian_chroot:+($debian_chroot)}\[\033[01;${MY_LOCALHOST_COLOR:-32}m\]\h\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] '
+	PS1='${debian_chroot:+($debian_chroot)}\[\033[01;${MY_LOCALHOST_COLOR:-32}m\]\h\[\033[00m\] \[\033[01;36m\]\w\[\033[00m\] '
         ;;
     *)
         PS1="bash : "
