@@ -60,7 +60,7 @@
 ;; - On large screen (Gnome workstation)
 ;;
 ;; TODO: Use a better criteria
-(defvar my-font (if (eq window-system 'ns) "Monospace 10" "Monospace 8"))
+(defvar my-font (if (eq window-system 'ns) "Monospace 10" "Monospace 9"))
 
 ;; Works on Windows? If not, make it conditional
 (set-frame-font my-font nil t)
