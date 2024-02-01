@@ -3,3 +3,9 @@ Follow https://help.ubuntu.com/community/JapaneseInput
   - Launch menu -> Languages -> Language Support -> Install / Remote Languages... -> Add... -> Japanese
   - Launch menu -> Language Settings -> Input method -> Japanese -> Follow onscreen instructions. Input method framework for Fcitx is there at the top.
 Note: https://wiki.debian.org/JapaneseEnvironmentE doesn't work out on Linux Mint MATE.
+
+On workstation:
+  Followed go/linputjp except didn't find "Japanese (Mozc)".
+  Proceeded to install just "Japanese", then tinkered with system tray settings.
+  
+
