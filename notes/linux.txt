@@ -144,6 +144,12 @@ Gnome settings:
   gsettings set org.gnome.settings-daemon.peripherals.keyboard repeat-interval 15
   gsettings set org.gnome.desktop.session idle-delay 1800
 
+Keyboard
+  To get double click of text to cover chars like :
+    puuid=$(gsettings get org.gnome.Terminal.ProfilesList default | tr -d "'")
+    gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$puuid/ word-char-exceptions '@ms "-=&#:/.?@+~_%;$"'
+    From https://unix.stackexchange.com/questions/290544/double-click-selection-in-gnome-terminal
+
 Cinnamon settings:
   Right click panel -> All Settings -> System Settings -> Windows -> Alt-Tab:
     Change latency
