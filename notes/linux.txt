@@ -150,6 +150,13 @@ Cinnamon settings:
     Change switcher style to Thumbnails only
   If alt-tab is dropped, patch appSwitcher.js per https://github.com/linuxmint/cinnamon/issues/8994#issuecomment-781540415
 
+Alt key stops working
+  On home laptop, left alt key stops working sometimes.
+  xev usually shows not detecting key press at all
+  Doesn't get better with reboot.
+  Did get better on its own somehow.
+  In one case, pulled up xev, pressed Right Alt a few times then Left Alt started working again.
+
 Terminal:
   If terminal gets garbled (eg after 'cat' on a binary file) then paste into terminal:
     echo -e '\017' or '\x0f'
@@ -255,6 +262,11 @@ then try sudo command again.
 
 Mouse settings:
   See separate mouse.txt
+
+Android
+  cd /run/user/$UID/gvfs/mtp*
+  rsync --verbose --progress --omit-dir-times --no-perms --recursive --inplace $SRC_DIR $DST_DIR
+  Per https://askubuntu.com/questions/343502/how-to-rsync-to-android
 
 USB
   After reformatting USB with LUKS encryption, to work on other accounts and computers:
