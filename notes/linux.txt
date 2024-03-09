@@ -270,9 +270,16 @@ Mouse settings:
   See separate mouse.txt
 
 Android
-  cd /run/user/$UID/gvfs/mtp*
-  rsync --verbose --progress --omit-dir-times --no-perms --recursive --inplace $SRC_DIR $DST_DIR
-  Per https://askubuntu.com/questions/343502/how-to-rsync-to-android
+  Access in the shell:
+    cd /run/user/$UID/gvfs/mtp*
+    rsync --verbose --progress --omit-dir-times --no-perms --recursive --inplace $SRC_DIR $DST_DIR
+    Per https://askubuntu.com/questions/343502/how-to-rsync-to-android
+  Another way to access:
+    adb shell
+      Requires enabling Developer options, USB debugging
+    cd storage/emulated/0
+    Limitations:
+      file command doesn't infer mp3 bit rate, but above method does.
 
 USB
   After reformatting USB with LUKS encryption, to work on other accounts and computers:
