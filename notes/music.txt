@@ -20,36 +20,26 @@ Commands:
       It does the rest.
 
 To download
-  Mahavishnu Orchestra
-    Amazon
-    DLing P 1 seeder
   Chicago
     Amazon
-  Miles Davis In a Silent Way
-    DLing P 2 seeder
   Hollies Butterfly
     P 0 seeders
     Amazon
-  Santana Caravansarai
-    DLing P 2 seeder
-    not on Amazon
   gentle giant octopus
     P 1 seeder steven wilson remix
     Amazon
   Comus First Utterance
     Amazon
     not on P
-  Kate Bush
-    Amazon
-    DLing P
   Stereolab ABC Music: The Radio 1 Sessions
     on Amazon for 20 usd
   Alice Coltrane Universal Consciousness
     Amazon 7usd
   Lianne La Havas
     Amazon
-  Japanese Breakfast
-    Soft Sounds from Another Planet
+  OPUS
+  Momoko Kikuchi Adventure
+  Kurt Rosenwinkel Deep Song
 
 Downloaded:
   Adrian von Ziegler Complete Discography

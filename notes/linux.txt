@@ -280,6 +280,29 @@ Android
     cd storage/emulated/0
     Limitations:
       file command doesn't infer mp3 bit rate, but above method does.
+  Wifi pairing
+    One time:
+      sudo apt install sdkmanager
+      sudo sdkmanager platform-tools
+    Each time:
+      /opt/android-sdk/platform-tools
+      ./adb pair ip:port
+      Note: If ran another adb, need to:
+        adb kill-server
+      Says successfully paired, but doesn't show under:
+        adb devices
+    So ultimately not successful for transferring files.
+  Syncthing
+    Works fairly well
+      "Start Syncthing" daemon
+      Then "Syncthing Web UI" at http://127.0.0.1:8384
+    Failed on long filenames, even though 'adb pull' succeeds.
+      (01) [Yes] Close To The Edge- i. The Solid Time of Change - ii. Total Mass Retain - iii. I Get Up I Get Down  - iv. Seasons Of Man.mp3
+      21 Riffs and Variations on a Single Note for Jelly Roll, Earl Hines, Louis Armstrong, Baby Dodds, and the King of Swing, to Name a Few.mp3
+    Heed warnings when having one sync folder within another.
+      Shared folders got hosed and had to be recreated.
+    If syncing say /storage/emulated/0/Music/, 'Music' is not append to destination path.
+    Read https://docs.syncthing.net/users/syncing.html
 
 USB
   After reformatting USB with LUKS encryption, to work on other accounts and computers:
