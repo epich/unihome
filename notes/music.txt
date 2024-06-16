@@ -22,36 +22,11 @@ Commands:
 To download
   Chicago
     Amazon
+    From PB, but whole album one track
   Hollies Butterfly
     P 0 seeders
     Amazon
-  gentle giant octopus
-    P 1 seeder steven wilson remix
-    Amazon
-  Comus First Utterance
-    Amazon
-    not on P
-  Stereolab ABC Music: The Radio 1 Sessions
-    on Amazon for 20 usd
-  Alice Coltrane Universal Consciousness
-    Amazon 7usd
-  Lianne La Havas
-    Amazon
   OPUS
-  Momoko Kikuchi Adventure
   Kurt Rosenwinkel Deep Song
 
-Downloaded:
-  Adrian von Ziegler Complete Discography
-    Bandcamp
-  Fleet Foxes
-    Sun Giant, self titled
-    Bandcamp
-  Ranma 1/2 soundtrack
-    no P
-    cds only on Amazon
-    Get from YT
-      https://www.youtube.com/playlist?list=PLl7nrO_ShqxIfGkN9YXXTiqCweINRFQIb
-        Minus first which is full album
-      https://www.youtube.com/playlist?list=PLl7nrO_ShqxIL6j6sxHcDxVWpIrt3pt2o
-        hidden video is full album
+Staging
