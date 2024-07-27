@@ -152,7 +152,6 @@ Keyboard
 
 Cinnamon:
   Initial setup:
-    Ungroup apps on panel per OP of https://forums.linuxmint.com/viewtopic.php?t=403145
     Unpin all apps
     In Applets add Panel launchers
       Drag from the where it appears to the right near system tray
@@ -160,11 +159,39 @@ Cinnamon:
       Volume rightmost
       Battery to show percentage
       Date format %d %H:%M
-    Right click panel -> All Settings -> System Settings -> Windows -> Alt-Tab:
-      Change latency
-      Change switcher style to Thumbnails only
-      If old bug surfaces of alt-tab dropping:
-        patch appSwitcher.js per https://github.com/linuxmint/cinnamon/issues/8994#issuecomment-781540415
+    System Settings
+      Display
+        Set external monitor as primary
+        Disable laptop
+      Windows
+        Alt-Tab
+          Change latency
+          Change switcher style to Icons only
+          If old bug surfaces of alt-tab dropping:
+            patch appSwitcher.js per https://github.com/linuxmint/cinnamon/issues/8994#issuecomment-781540415
+      Window Tiling
+      Effects
+      Backgrounds
+      Themes
+        Toggle over to Advanced settings...
+      General
+      Panel
+      Power Management
+        Perform lid-closed action even with external monitors attached
+      Keyboard
+        Repeat delay: few notches from left
+        Repeat speed: fastest
+      Mouse
+        Speed at 75-80% or so
+        Acceleration: Adaptive
+    Panel -> Right click any running app icon -> Applet preferences -> Configure... -> Grouped window list
+      -> Hover Peek -> Show the window when hovering its thumbnail
+      -> General tab: turn off “Group windows by application”
+      -> “Panel” tab: “Button label” select “Window title”
+
+File explorer
+  Initial setup:
+    Preferences -> Views -> View new folders using: List View
 
 Alt key stops working
   On home laptop, left alt key stops working sometimes.
