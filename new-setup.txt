@@ -1,0 +1,13 @@
+Add to end of .bashrc
+  source ~/unihome/rc/unihome.sh
+sudo apt update
+Basics:
+  sudo apt install git xbindkeys xautomation
+  cd
+  ln -s unihome/rc/.vimrc .
+  ln -s unihome/rc/.gitconfig .
+  ln -s unihome/rc/.xbindkeysrc .
+  ln -s unihome/emacs/init.el .emacs
+  e
+  cd unihome && ./build.py
+See notes/linux.txt Cinnamon notes

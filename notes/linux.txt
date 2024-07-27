@@ -150,11 +150,21 @@ Keyboard
     gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$puuid/ word-char-exceptions '@ms "-=&#:/.?@+~_%;$"'
     From https://unix.stackexchange.com/questions/290544/double-click-selection-in-gnome-terminal
 
-Cinnamon settings:
-  Right click panel -> All Settings -> System Settings -> Windows -> Alt-Tab:
-    Change latency
-    Change switcher style to Thumbnails only
-  If alt-tab is dropped, patch appSwitcher.js per https://github.com/linuxmint/cinnamon/issues/8994#issuecomment-781540415
+Cinnamon:
+  Initial setup:
+    Ungroup apps on panel per OP of https://forums.linuxmint.com/viewtopic.php?t=403145
+    Unpin all apps
+    In Applets add Panel launchers
+      Drag from the where it appears to the right near system tray
+    System tray:
+      Volume rightmost
+      Battery to show percentage
+      Date format %d %H:%M
+    Right click panel -> All Settings -> System Settings -> Windows -> Alt-Tab:
+      Change latency
+      Change switcher style to Thumbnails only
+      If old bug surfaces of alt-tab dropping:
+        patch appSwitcher.js per https://github.com/linuxmint/cinnamon/issues/8994#issuecomment-781540415
 
 Alt key stops working
   On home laptop, left alt key stops working sometimes.
