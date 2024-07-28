@@ -178,6 +178,8 @@ Cinnamon:
       Panel
       Power Management
         Perform lid-closed action even with external monitors attached
+      Screensaver
+        Disable media controls from lock screen
       Keyboard
         Repeat delay: few notches from left
         Repeat speed: fastest
@@ -330,12 +332,14 @@ Android
         adb devices
     So ultimately not successful for transferring files.
   Syncthing
+    sudo apt install syncthing
     Works fairly well
       "Start Syncthing" daemon
       Then "Syncthing Web UI" at http://127.0.0.1:8384
     Failed on long filenames, even though 'adb pull' succeeds.
       (01) [Yes] Close To The Edge- i. The Solid Time of Change - ii. Total Mass Retain - iii. I Get Up I Get Down  - iv. Seasons Of Man.mp3
       21 Riffs and Variations on a Single Note for Jelly Roll, Earl Hines, Louis Armstrong, Baby Dodds, and the King of Swing, to Name a Few.mp3
+      This is enough of a pain to not be worth it.
     Heed warnings when having one sync folder within another.
       Shared folders got hosed and had to be recreated.
     If syncing say /storage/emulated/0/Music/, 'Music' is not append to destination path.
