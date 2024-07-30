@@ -180,6 +180,7 @@ Cinnamon:
         Perform lid-closed action even with external monitors attached
       Screensaver
         Disable media controls from lock screen
+      Sound -> Sound -> turn off sound effects
       Keyboard
         Repeat delay: few notches from left
         Repeat speed: fastest
@@ -190,6 +191,31 @@ Cinnamon:
       -> Hover Peek -> Show the window when hovering its thumbnail
       -> General tab: turn off “Group windows by application”
       -> “Panel” tab: “Button label” select “Window title”
+
+MATE
+  Displays
+  Windows
+    Alt-Tab
+    Turn off window tiling
+    Turn off compositing
+  Keyboard
+    Repeat delay: few notches from left
+    Repeat speed: 70-80%
+  Mouse
+    Don't need simultaneous left and right click
+  Appearence
+    Background
+    Interface -> Show hidden items
+    Theme -> Customize -> Pointer
+  System tray
+    Date and time
+      Move left so as volume is at corner
+      Preferences
+  Quick launcher
+    Terminal
+      Right click -> Properties -> add --maximize flag
+      White on black
+
 
 File explorer
   Initial setup:
@@ -353,6 +379,8 @@ USB
     ls -lhd /mnt
     sudo chmod 777 /mnt
     Per https://forums.linuxmint.com/viewtopic.php?t=304477
+
+VLC see vlc.txt
 
 
 

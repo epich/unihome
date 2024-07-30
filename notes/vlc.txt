@@ -4,6 +4,9 @@ Tools -> Preferences -> Interface
   Continue playback? Always
 Tools -> Preferences -> Audio
   Preferred audio language: Japanese
+  Output module: ALSA audio output
+    Addresses stutter after unpause or rewind
+    Requires restarting VLC
 Tools -> Preferences -> Hotkeys
   Volume up
   Volume down
