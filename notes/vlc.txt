@@ -7,6 +7,7 @@ Tools -> Preferences -> Audio
   Output module: ALSA audio output
     Addresses stutter after unpause or rewind
     Requires restarting VLC
+  Normalize volume to
 Tools -> Preferences -> Hotkeys
   Volume up
   Volume down
