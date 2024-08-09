@@ -4,10 +4,19 @@ Tools -> Preferences -> Interface
   Continue playback? Always
 Tools -> Preferences -> Audio
   Preferred audio language: Japanese
-  Output module: ALSA audio output
-    Addresses stutter after unpause or rewind
-    Requires restarting VLC
+  Output module:
+    Automatic
+      Has a stutter after unpause or rewind
+      Tried:
+        Show settings -> All -> Input/Codecs -> Advanced -> File caching -> Change from 1000 to say 100
+        Effect: stutters, but durations are very short
+        Seems about the most tolerable setting
+    ALSA audio output
+      Solves the stutter, but introduces high latency adjusting volume
+    Change requires restarting VLC
   Normalize volume to
+    Seemed to reintroduce stutter issues above
+    Maybe introduced problem with volume adjustment delay
 Tools -> Preferences -> Hotkeys
   Volume up
   Volume down
