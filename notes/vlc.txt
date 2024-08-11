@@ -9,6 +9,7 @@ Tools -> Preferences -> Audio
       Has a stutter after unpause or rewind
       Tried:
         Show settings -> All -> Input/Codecs -> Advanced -> File caching -> Change from 1000 to say 100
+          Settled on 120
         Effect: stutters, but durations are very short
         Seems about the most tolerable setting
     ALSA audio output
@@ -22,3 +23,6 @@ Tools -> Preferences -> Hotkeys
   Volume down
   Very short backwards jump
   Very short forward jump
+Bugs
+  In .ts file, left key (to go back 3s) sometimes goes forward instead.
+  mpv seems less buggy

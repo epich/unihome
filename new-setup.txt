@@ -2,17 +2,18 @@ Add to end of .bashrc
   source ~/unihome/rc/unihome.sh
 sudo apt update
 Basics:
-  sudo apt install vim git xbindkeys xautomation emacs vlc
+  sudo apt install vim git xbindkeys xautomation emacs
   cd
   git clone https://github.com/epich/unihome.git
   ln -s unihome/rc/.vimrc .
   ln -s unihome/rc/.gitconfig .
   ln -s unihome/rc/.xbindkeysrc .
   ln -s unihome/emacs/init.el .emacs
+  (cd ~/.config/mpv; ln -s ~/unihome/rc/mpv-input.conf input.conf)
   e
   cd unihome && ./build.py
 More:
-  sudo apt install vlc eyed3 mediainfo ffmpeg
+  sudo apt install mpv eyed3 mediainfo ffmpeg
   mkdir bin
   cd bin
     ln -s ~/unihome/ongaku/* .
