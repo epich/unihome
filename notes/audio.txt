@@ -1,0 +1,5 @@
+Extracting audio
+  Determine audio format:
+    ffprobe -v quiet -print_format json -show_streams -select_streams a $FILE | grep codec_name
+  Extract when aac
+    ffmpeg -i input-video.avi -vn -acodec copy output-audio.aac

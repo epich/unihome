@@ -7,5 +7,10 @@ Note: https://wiki.debian.org/JapaneseEnvironmentE doesn't work out on Linux Min
 On workstation:
   Followed go/linputjp except didn't find "Japanese (Mozc)".
   Proceeded to install just "Japanese", then tinkered with system tray settings.
-  
 
+Subtitles from audio
+  Whisper from https://github.com/openai/whisper
+    sudo apt install python3-pip pipx
+    pipx install openai-whisper
+    whisper --model large --language Japanese $FILE
+      Took 2h for a 30min episode
