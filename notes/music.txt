@@ -18,6 +18,12 @@ Commands:
     In the folder:
       abcde -o mp3
       It does the rest.
+  Add image to mp3
+    lame --ti image.jpg audio.mp3
+  Sync to Android
+    cd /run/user/$UID/gvfs/mtp*/Internal*/Music
+    rsync --dry-run --verbose --progress --omit-dir-times --no-perms --recursive --inplace --size-only ~/ongaku/ ./
+    Remove --dry-run
 
 To download
   Chicago

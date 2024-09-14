@@ -337,7 +337,8 @@ Mouse settings:
 Android
   Access in the shell:
     cd /run/user/$UID/gvfs/mtp*
-    rsync --verbose --progress --omit-dir-times --no-perms --recursive --inplace $SRC_DIR $DST_DIR
+    rsync --verbose --progress --omit-dir-times --no-perms --recursive --inplace --size-only $SRC_DIR $DST_DIR
+      Optional: --dry-run --delete-after
     Per https://askubuntu.com/questions/343502/how-to-rsync-to-android
   Another way to access:
     adb shell
