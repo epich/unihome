@@ -9,7 +9,10 @@ Basics:
   ln -s unihome/rc/.gitconfig .
   ln -s unihome/rc/.xbindkeysrc .
   ln -s unihome/emacs/init.el .emacs
-  (cd ~/.config/mpv; ln -s ~/unihome/rc/mpv-input.conf input.conf)
+  (cd ~/.config/mpv; \
+   ln -s ~/unihome/rc/mpv-input.conf input.conf \
+   ln -s ~/unihome/rc/mpv.conf mpv.conf \
+   )
   e
   cd unihome && ./build.py
 More:
