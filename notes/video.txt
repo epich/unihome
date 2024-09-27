@@ -1,0 +1,46 @@
+vlc
+  Tools -> Preferences -> Interface
+    unclick Show systray icon
+    unclick Use only one instance when started from file manager
+    Continue playback? Always
+  Tools -> Preferences -> Audio
+    Preferred audio language: Japanese
+    Output module:
+      Automatic
+        Has a stutter after unpause or rewind
+        Tried:
+          Show settings -> All -> Input/Codecs -> Advanced -> File caching -> Change from 1000 to say 100
+            Settled on 120
+          Effect: stutters, but durations are very short
+          Seems about the most tolerable setting
+      ALSA audio output
+        Solves the stutter, but introduces high latency adjusting volume
+      Change requires restarting VLC
+    Normalize volume to
+      Seemed to reintroduce stutter issues above
+      Maybe introduced problem with volume adjustment delay
+  Tools -> Preferences -> Hotkeys
+    Volume up
+    Volume down
+    Very short backwards jump
+    Very short forward jump
+  Bugs
+    In .ts file, left key (to go back 3s) sometimes goes forward instead.
+    mpv seems less buggy
+mpv
+  See new-setup.txt
+  rikai-mpv
+    https://github.com/fxmarty/rikai-mpv
+    In addition to instructions in the README:
+      sudo apt install npm node-typescript
+      sudo npm install --global yarn
+      sudo npm install --global typescript
+      sudo apt install python3-pyqt5.qtwebengine socat
+  Subtitle timing
+    z and x to temporarily offset subtitle timing
+Memento
+  For watching anime with Japanese support
+  https://github.com/ripose-jp/Memento
+Animebook
+  Watch anime in the browser; use usual Rikai-kun extension
+  https://animebook.github.io/

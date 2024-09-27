@@ -33,3 +33,12 @@ Update non current branch, eg for master:
 git rev-parse HEAD
 
 Rebasing several branches in one go: http://stackoverflow.com/questions/4318161/can-git-pull-all-update-all-my-local-branches
+
+Changes to someone else's GitHub repo:
+  Fork it at github.com
+  git clone REPO
+  git remote set-url origin git@github.com:epich/REPO.git
+  git checkout -b BRANCH
+  Edit and commit
+  git push origin BRANCH
+  Create pull request at github.com
