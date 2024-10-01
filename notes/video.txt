@@ -27,6 +27,8 @@ vlc
   Bugs
     In .ts file, left key (to go back 3s) sometimes goes forward instead.
     mpv seems less buggy
+Subtitles
+  Try https://github.com/smacke/ffsubsync
 mpv
   See new-setup.txt
   rikai-mpv
