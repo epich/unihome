@@ -27,6 +27,7 @@ Commands:
   Sync to Android
     cd /run/user/$UID/gvfs/mtp*/Internal*/Music
     rsync --dry-run --verbose --progress --omit-dir-times --no-perms --recursive --inplace --size-only ~/ongaku/ ./
+    Optionally add --delete
     Remove --dry-run
       Errors
         rsync: [receiver] open "file.mp3" failed: Operation not supported (95)
