@@ -21,6 +21,9 @@ Commands:
   Add image to mp3
     stripimg.py input.mp3
     ffmpeg -i input.mp3 -i image.jpg -map_metadata 0 -map 0 -map 1 -acodec copy output.mp3
+  Edit mp3 metadata
+    Use Kid3 GUI
+      apt install kid3-qt
   Sync to Android
     cd /run/user/$UID/gvfs/mtp*/Internal*/Music
     rsync --dry-run --verbose --progress --omit-dir-times --no-perms --recursive --inplace --size-only ~/ongaku/ ./
