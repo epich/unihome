@@ -32,6 +32,11 @@ Commands:
       Errors
         rsync: [receiver] open "file.mp3" failed: Operation not supported (95)
           File already exists
+  Poweramp
+    List Options
+      If changing, check tracking order in albums:
+        Milton + esperanza
+        IU Modern Times
 
 To download
   OPUS

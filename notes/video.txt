@@ -38,6 +38,10 @@ mpv
       sudo npm install --global yarn
       sudo npm install --global typescript
       sudo apt install python3-pyqt5.qtwebengine socat
+    Open:
+      Drag subtitle to mpv
+      Full screen
+      F5 to start rikai-mpv
   Subtitle timing
     z and x to temporarily offset subtitle timing
 Memento
