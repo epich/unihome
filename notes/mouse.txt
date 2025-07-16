@@ -14,3 +14,6 @@ Notes on configuring Logitech m500 mouse:
     I have found it is added as part of installation.
     Even so, from site:
       Open startup applications. Click 'Add' put xbindkeys in the 'name' field and /usr/bin/xbindkeys in the 'Command Field'.
+Touchpad
+  had a weird issue in which triple finger tap didn't middle mouse click, despite it being configured that way via mouse settings GUI in MATE
+    solution: sudo cp unihome/rc/40-libinput.conf /etc/X11/xorg.conf.d/40-libinput.conf
