@@ -1,14 +1,23 @@
 Installed:
-  : miniGestures
-    : Alternatve CrxMouse is blocked
-  : Death to _blank
-  : Google Docs
+  miniGestures
+    Alternatve CrxMouse is blocked
+  Death to _blank
+  Google Docs
+  smartUp Gestures
+    can be janky.
+      example: sometimes browser back once does so twice
+  SimpleGestures
+    seems ok
+    can't customize gestures for tab left and right
+  Rocker Gestures
+    i can't get any rocker gestures to work.
+      typical is that browser back infrequently works, whilst browser forward works more frequently.
 Initial setup
   packages: autokey-gtk
   open Autokey
     create new script chrome-prev-tab
       keyboard.send_keys("<ctrl>+<shift>+<tab>")
-    Hotkey: alt-a
+    Hotkey: ctrl+`
     Window Filter: .*chrome
 Notes:
   my .xbindkeysrc maps mouse forward browse button to ctrl+w to close tab

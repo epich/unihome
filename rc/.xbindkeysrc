@@ -54,8 +54,6 @@
 
 # Bind the mouse's forward browse button to the keyboard shortcut in Chrome for
 # closing the current tab.
-# "xdotool key ctrl+w"
-#   b:9
 "xdotool key ctrl+w"
   b:9
 
