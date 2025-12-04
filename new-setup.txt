@@ -2,7 +2,7 @@ Add to end of .bashrc
   source ~/unihome/rc/unihome.sh
 sudo apt update
 Basics:
-  sudo apt install vim git xbindkeys xautomation emacs
+  sudo apt install git vim emacs xbindkeys xautomation xdotool autokey-gtk
   cd
   git clone https://github.com/epich/unihome.git
   ln -s unihome/rc/.vimrc .
@@ -15,11 +15,11 @@ Basics:
    )
   e
   cd unihome && ./build.py
-More:
+Personal:
   sudo apt install mpv eyed3 mediainfo ffmpeg
   mkdir bin
   cd bin
     ln -s ~/unihome/ongaku/* .
 See notes/linux.txt "Initial setup" sections
+See notes/chrome.txt "Initial setup"
 See notes/git.txt "Initial setup" for GitHub
-

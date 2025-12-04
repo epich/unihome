@@ -52,6 +52,13 @@
 "xte 'mouseclick 2'"
   b:7 + Release
 
+# Bind the mouse's forward browse button to the keyboard shortcut in Chrome for
+# closing the current tab.
+# "xdotool key ctrl+w"
+#   b:9
+"xdotool key ctrl+w"
+  b:9
+
 # Browser back and forward with wheel tilts
 # "xte 'keydown Alt_L' 'key Left' 'keyup Alt_L'"
 #   b:6

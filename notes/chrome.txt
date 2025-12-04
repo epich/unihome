@@ -3,4 +3,13 @@ Installed:
     : Alternatve CrxMouse is blocked
   : Death to _blank
   : Google Docs
-
+Initial setup
+  packages: autokey-gtk
+  open Autokey
+    create new script chrome-prev-tab
+      keyboard.send_keys("<ctrl>+<shift>+<tab>")
+    Hotkey: alt-a
+    Window Filter: .*chrome
+Notes:
+  my .xbindkeysrc maps mouse forward browse button to ctrl+w to close tab
+    it relies on xdotool package
