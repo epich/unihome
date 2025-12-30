@@ -19,6 +19,7 @@
 
 (set-background-color "black")
 (set-foreground-color "white")
+(add-hook 'focus-in-hook (lambda () (set-cursor-color "white")))
 (setq visible-bell t)
 ;; Menu bar doesn't take up extra vertical space on Mac
 (unless (eq window-system 'ns)
