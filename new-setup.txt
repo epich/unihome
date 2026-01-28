@@ -9,6 +9,8 @@ Basics:
   ln -s unihome/rc/.gitconfig .
   ln -s unihome/rc/.xbindkeysrc .
   ln -s unihome/emacs/init.el .emacs
+  mkdir -p .config/autostart
+  ln -s ~/unihome/rc/autokey.desktop .config/autostart/
   (cd ~/.config/mpv; \
    ln -s ~/unihome/rc/mpv-input.conf input.conf \
    ln -s ~/unihome/rc/mpv.conf mpv.conf \

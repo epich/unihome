@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Exec=autokey-gtk
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=AutoKey
+Comment=Start AutoKey on login
