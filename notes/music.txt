@@ -1,11 +1,10 @@
 Commands:
   Split an mp3 or mp4 file:
-    With ffmpeg https://askubuntu.com/questions/27574/how-can-i-split-a-mp3-file
-      Start of track to specified time
-        ffmpeg -i 'song.mp3' -vn -acodec copy -to 00:01:32.5 'song [trimmed].mp3'
-      Specified time to end of track
-        ffmpeg -i 'song.mp3' -vn -acodec copy -ss 00:01:32.5 'song [trimmed].mp3'
-
+    ffmpeg -ss 00:00:19 -to 00:43:27 -i 'old.mp3' -map 0 -c copy 'new.mp3'
+      -ss start time
+      -to end time
+      -map 0 preserves metadata and cover art
+      -c copy no re-encoding
   Convert FLAC to 128 mp3:
     for f in *.flac; do echo --- $f; ffmpeg -i "$f" -ab 128k "$(basename "${f/.flac}")".mp3 ;done
   Execute command on files with spaces:
@@ -15,12 +14,14 @@ Commands:
   Change bitrate inplace in dirs
     for d in *; do echo --- "$d"; (cd "$d"; for f in *.mp3; do echo --- $f; bak_file="$(basename "${f/.mp3}")".bak; mv "$f" "$bak_file"; ffmpeg -i "$bak_file" -ab 128k "$f"; done; rm *.bak);done
   Rip a cd:
-    In the folder:
+    In the destination folder:
       abcde -o mp3
       It does the rest.
   Add image to mp3
     stripimg.py input.mp3
     ffmpeg -i input.mp3 -i image.jpg -map_metadata 0 -map 0 -map 1 -acodec copy output.mp3
+    used with Banco live album (but why output to mp4?)
+      ffmpeg -loop 1 -i cover.png -i FILE.mp3 -c:v libx264 -tune stillimage -c:a copy -shortest -pix_fmt yuv420p FILE.mp4
   Edit mp3 metadata
     Use Kid3 GUI
       apt install kid3-qt

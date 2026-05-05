@@ -215,7 +215,7 @@ MATE
     Terminal
       Right click -> Properties -> add --maximize flag
       White on black
-
+  use mintMenu
 
 File explorer
   Initial setup:
