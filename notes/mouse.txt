@@ -14,6 +14,16 @@ Notes on configuring Logitech m500 mouse:
     I have found it is added as part of installation.
     Even so, from site:
       Open startup applications. Click 'Add' put xbindkeys in the 'name' field and /usr/bin/xbindkeys in the 'Command Field'.
+  Middle button
+    if middle button tilt-right generates many events:
+      sudo apt install input-remapper
+      input-remapper-gtk
+        notes:
+          "Record" the right tilt
+          type BTN_MIDDLE in Output area
+          click down area for save
+          autoload
+          apply
 Touchpad
   had a weird issue in which triple finger tap didn't middle mouse click, despite it being configured that way via mouse settings GUI in MATE
     solution: sudo cp unihome/rc/40-libinput.conf /etc/X11/xorg.conf.d/40-libinput.conf
